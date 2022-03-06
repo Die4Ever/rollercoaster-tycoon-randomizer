@@ -11,7 +11,6 @@ gen1 = ~~(gen2/2);
 
 function main() {
     setGlobalSeed(context.getRandom(1, 999999 + 1));
-    setGlobalSeed(899516);
     console.log(rando_name+" v"+rando_version+" starting with seed "+globalseed);
     RandomizePark();
     RandomizeMap();
@@ -36,8 +35,9 @@ registerPlugin({
 function rng(min, max) {
     tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
     tseed = ~~Math.abs(tseed);
-    console.log("rng("+min+", "+max+") "+tseed+", "+((tseed >>> 8) % max));
-    return (tseed >>> 8) % max;
+    var ret = (tseed >>> 8) % max;
+    console.log("rng("+min+", "+max+") "+tseed+", "+ret);
+    return ret;
 }
 
 function setGlobalSeed(newSeed) {
