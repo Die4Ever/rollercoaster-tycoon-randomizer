@@ -63,8 +63,9 @@ function SubscribeEvents() {
 }
 
 function rng(min, max) {
-    tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
-    tseed = ~~Math.abs(tseed);
+    tseed = ~~(gen1 * tseed * 5 + gen2 + (tseed/5) * 3);
+    if(tseed < 0)
+        tseed = ~~(-tseed);
     var ret = (tseed >>> 8) % max;
     console.log("rng("+min+", "+max+") "+tseed+", "+ret);
     return ret;
