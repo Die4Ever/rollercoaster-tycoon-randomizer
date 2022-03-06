@@ -1,6 +1,6 @@
 
 var rando_name = 'RollerCoaster Tycoon Randomizer';
-var rando_version = '0.02';
+var rando_version = '0.03';
 var rando_authors = ['Die4Ever'];
 // ~~ forces JS to convert to int
 var globalseed = ~~0;
@@ -10,14 +10,16 @@ gen2 = ~~2147483643;
 gen1 = ~~(gen2/2);
 
 function main() {
-    setGlobalSeed(context.getRandom(1, 999999 + 1));
-    console.log(rando_name+" v"+rando_version+" starting with seed "+globalseed);
-    RandomizePark();
-    RandomizeMap();
-    RandomizeClimate();
-    RandomizeScenario();
-    RandomizeGuests();
-    RandomizeRideTypes();
+    var savedData = context.getParkStorage().getAll();
+    console.log("savedData", savedData);
+    if(savedData.seed) {
+        setGlobalSeed(savedData.seed);
+        console.log("restored saved seed "+globalseed);
+        SubscribeEvents();
+    }
+    else {
+        initRando();
+    }
     console.log(rando_name+" v"+rando_version+" finished startup");
 }
 
@@ -27,10 +29,38 @@ registerPlugin({
     authors: rando_authors,
     type: 'remote',
     licence: "GPL-3.0",
-    targetApiVersion: 34,
+    targetApiVersion: 46,
     minApiVersion: 34,
     main: main
 });
+
+function initRando() {
+    // saves in your Documents\OpenRCT2\plugin.store.json
+    var nextSeed = context.sharedStorage.get('RCTRando.nextSeed');
+    console.log("nextSeed", nextSeed);
+    if(nextSeed) {
+        setGlobalSeed(nextSeed);
+    } else {
+        setGlobalSeed(context.getRandom(1, 999999 + 1));
+    }
+    context.sharedStorage.set("RCTRando.nextSeed", null);
+    context.getParkStorage().set("seed", globalseed);
+    console.log(rando_name+" v"+rando_version+" starting with seed "+globalseed +", api version "+context.apiVersion);
+
+    RandomizePark();
+    RandomizeMap();
+    RandomizeClimate();
+    RandomizeScenario();
+    SubscribeEvents();
+    RandomizeGuests();
+}
+
+function SubscribeEvents() {
+    context.subscribe("guest.generation", function(id) {
+        RandomizeGuest(map.getEntity(id.id));
+    });
+    RandomizeRideTypes();
+}
 
 function rng(min, max) {
     tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
@@ -229,9 +259,17 @@ function RandomizeRideTypes() {
     // TODO: need bindings for ride types to be able to adjust their stats
     // or maybe just do it by listening to the trackplace event?
 
-    /*context.subscribe("ride.ratings.calculate", function() {
-        console.log('ride.ratings.calculate', arguments);
-    });*/
+    context.subscribe("ride.ratings.calculate", function(ratings) {
+        console.log('ride.ratings.calculate', ratings);
+        /* { 0:
+            { rideId: 2,
+            excitement: 121,
+            intensity: 60,
+            nausea: 75 } } */
+        //ratings.excitement = 999;
+        // modifying the ratings values here does work (or does it only modify the display?)
+        // but I want to do it in some meaningful way?
+    });
     context.subscribe("action.execute", function(event) {
         if( event.action != 'trackplace' ) return;
         if( event.isClientOnly ) return;
@@ -271,10 +309,6 @@ function RandomizeRideTypes() {
 }
 
 function RandomizeGuests() {
-    context.subscribe("guest.generation", function(id) {
-        RandomizeGuest(map.getEntity(id.id));
-    });
-
     var guests = map.getAllEntities('guest');
     for(var i in guests) {
         RandomizeGuest(guests[i]);
