@@ -1,10 +1,18 @@
 
 var rando_name = 'RollerCoaster Tycoon Randomizer';
-var rando_version = '0.01';
+var rando_version = '0.02';
 var rando_authors = ['Die4Ever'];
+// ~~ forces JS to convert to int
+var globalseed = ~~0;
+var tseed = ~~0;
+var gen1, gen2;
+gen2 = ~~2147483643;
+gen1 = ~~(gen2/2);
 
 function main() {
-    console.log(rando_name+" v"+rando_version+" starting");
+    setGlobalSeed(context.getRandom(1, 999999 + 1));
+    setGlobalSeed(899516);
+    console.log(rando_name+" v"+rando_version+" starting with seed "+globalseed);
     RandomizePark();
     RandomizeMap();
     RandomizeClimate();
@@ -26,14 +34,20 @@ registerPlugin({
 });
 
 function rng(min, max) {
-    // TODO: need custom rng function to do seeding
-    var ret = context.getRandom(min, max + 1);
-    console.log('rng('+min+', '+max+'): '+ret);
-    return ret;
+    tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
+    tseed = ~~Math.abs(tseed);
+    console.log("rng("+min+", "+max+") "+tseed+", "+((tseed >>> 8) % max));
+    return (tseed >>> 8) % max;
+}
+
+function setGlobalSeed(newSeed) {
+    // use this to set the seed for the whole game
+    globalseed = ~~newSeed;
+    tseed = ~~newSeed;
 }
 
 function setSeed(newSeed) {
-    // TODO
+    tseed = ~~newSeed;
 }
 
 function randomize(value, difficulty) {
@@ -113,6 +127,12 @@ function RandomizePark() {
     RandomizeParkFlag("preferLessIntenseRides", -1);
     RandomizeParkFlag("preferMoreIntenseRides", 1);
     RandomizeParkFlag("unlockAllPrices", 0);
+
+    park.maxBankLoan = randomize(park.maxBankLoan, -1);
+    park.landPrice = randomize(park.landPrice, 1);
+    park.constructionRightsPrice = randomize(park.constructionRightsPrice, 1);
+    park.cash = randomize(park.cash, -1);
+    park.bankLoan = randomize(park.bankLoan, 1);
 }
 
 function RandomizeMap() {
@@ -167,11 +187,19 @@ function RandomizeScenario() {
         "monthlyFoodIncome";
     */
 
-    scenario.objective.guests = randomize(scenario.objective.guests, 1);
-    scenario.objective.excitement = randomize(scenario.objective.excitement, 1);
-    scenario.objective.monthlyIncome = randomize(scenario.objective.monthlyIncome, 1);
-    scenario.objective.parkValue = randomize(scenario.objective.parkValue, 1);
-    scenario.objective.year = randomize(scenario.objective.year, -1);
+    if(scenario.objective.guests)
+        scenario.objective.guests = randomize(scenario.objective.guests, 1);
+    if(scenario.objective.excitement)
+        scenario.objective.excitement = randomize(scenario.objective.excitement, 1);
+    if(scenario.objective.monthlyIncome)
+        scenario.objective.monthlyIncome = randomize(scenario.objective.monthlyIncome, 1);
+    if(scenario.objective.parkValue)
+        scenario.objective.parkValue = randomize(scenario.objective.parkValue, 1);
+    if(scenario.objective.year)
+        scenario.objective.year = randomize(scenario.objective.year, -1);
+    
+    console.log(scenario);
+    console.log(scenario.objective);
 }
 
 function RandomizeClimate() {
