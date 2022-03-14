@@ -1,0 +1,495 @@
+https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/openrct2.d.ts#L20
+https://github.com/OpenRCT2/OpenRCT2/issues/16795
+https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/scripting.md
+https://github.com/OpenRCT2/OpenRCT2/tree/develop/src/openrct2/scripting
+
+
+console.log(park);
+    {
+        cash: 100000,
+        rating: 500,
+        bankLoan: 100000,
+        maxBankLoan: 350000,
+        entranceFee: 0,
+        guests: 2,
+        suggestedGuestMaximum: 0,
+        guestGenerationProbability: 87,
+        guestInitialCash: 500,
+        guestInitialHappiness: 192,
+        guestInitialHunger: 220,
+        guestInitialThirst: 216,
+        value: 140,
+        companyValue: 140,
+        totalRideValueForMoney: 0,
+        totalAdmissions: 0,
+        totalIncomeFromAdmissions: 0,
+        landPrice: 750,
+        constructionRightsPrice: 400,
+        parkSize: 6280,
+        name: 'Crazy Castle',
+        messages: [],
+        casualtyPenalty: 0,
+        getFlag: [Native Function],
+        setFlag: [Native Function],
+        postMessage: [Native Function]
+    }
+
+    type ParkFlags =
+        "difficultGuestGeneration" |
+        "difficultParkRating" |
+        "forbidHighConstruction" |
+        "forbidLandscapeChanges" |
+        "forbidMarketingCampaigns" |
+        "forbidTreeRemoval" |
+        "freeParkEntry" |
+        "noMoney" |
+        "open" |
+        "preferLessIntenseRides" |
+        "preferMoreIntenseRides" |
+        "scenarioCompleteNameInput" |
+        "unlockAllPrices";
+
+
+
+console.log(scenario);
+    {
+        name: 'Crazy Castle',
+        details: 'You have inherited a large castle - Your job is to convert it into a small theme park.',
+        completedBy: '?',
+        filename: 'Crazy Castle.SC6',
+        parkRatingWarningDays: 0,
+        objective:
+        {
+            type: 'guestsBy',
+            guests: 1500,
+            year: 4,
+            excitement: 0,
+            monthlyIncome: 0,
+            parkValue: 0
+        },
+        status: 'inProgress',
+        completedCompanyValue: null,
+        companyValueRecord: 0
+    }
+    
+    type ScenarioObjectiveType =
+        "none" |
+        "guestsBy" |
+        "parkValueBy" |
+        "haveFun" |
+        "buildTheBest" |
+        "10Rollercoasters" |
+        "guestsAndRating" |
+        "monthlyRideIncome" |
+        "10RollercoastersLength" |
+        "finish5Rollercoasters" |
+        "repayLoanAndParkValue" |
+        "monthlyFoodIncome";
+
+
+
+console.log(map);
+    {
+        size: { x: 100, y: 100 },
+       numRides: 0,
+       numEntities: 10000,
+       rides: [],
+       getRide: [Native Function],
+       getTile: [Native Function],
+       getEntity: [Native Function],
+       getAllEntities: [Native Function],
+       createEntity: [Native Function]
+    }
+
+
+
+https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/openrct2.d.ts#L1366
+console.log('RandomizeGuest:', guest);
+    RandomizeGuest': {
+        tshirtColour: 25,
+        trousersColour: 23,
+        balloonColour: 0,
+        hatColour: 0,
+        umbrellaColour: 0,
+        happiness: 170,
+        happinessTarget: 170,
+        nausea: 0,
+        nauseaTarget: 0,
+        hunger: 204,
+        thirst: 208,
+        toilet: 0,
+        mass: 51,
+        minIntensity: 0,
+        maxIntensity: 15,
+        nauseaTolerance: 3,
+        cash: 600,
+        isInPark: false,
+        isLost: true,
+        lostCountdown: 0,
+        peepType: 'guest',
+        name: 'Geoffrey D.',
+        destination:
+        { x: 0,
+            y: 0 },
+        energy: 72,
+        energyTarget: 72,
+        getFlag: [Native Function],
+        setFlag: [Native Function],
+        id: 66,
+        type: 'guest',
+        x: 1296,
+        y: 3263,
+        z: 112,
+        remove: [Native Function]
+    }
+
+
+
+console.log(ride);
+        { id: 3, $
+    object:
+    { description: 'Large swinging pirate ship',
+        capacity: '16 passengers',
+        firstImageId: 131400,
+        flags: 1,
+        rideType:
+        [ 26,
+            255,
+            255 ],
+        minCarsInTrain: 1,
+        maxCarsInTrain: 1,
+        carsPerFlatRide: 1,
+        zeroCars: 0,
+        tabVehicle: 0,
+        defaultVehicle: 0,
+        frontVehicle: 255,
+        secondVehicle: 255,
+        rearVehicle: 255,
+        thirdVehicle: 255,
+        vehicles:
+        [ { rotationFrameMask: 0,
+            numVerticalFrames: 0,
+            numHorizontalFrames: 0,
+            spacing: 139456,
+            carMass: 200,
+            tabHeight: -20,
+            numSeats: 144,
+            spriteFlags: 1,
+            spriteWidth: 90,
+            spriteHeightNegative: 137,
+            spriteHeightPositive: 17,
+            animation: 0,
+            flags: 66560,
+            baseNumFrames: 1,
+            baseImageId: 131403,
+            restraintImageId: 0,
+            gentleSlopeImageId: 0,
+            steepSlopeImageId: 0,
+            verticalSlopeImageId: 0,
+            diagonalSlopeImageId: 0,
+            bankedImageId: 0,
+            inlineTwistImageId: 0,
+            flatToGentleBankImageId: 0,
+            diagonalToGentleSlopeBankImageId: 0,
+            gentleSlopeToBankImageId: 0,
+            gentleSlopeBankTurnImageId: 0,
+            flatBankToGentleSlopeImageId: 0,
+            curvedLiftHillImageId: 0,
+            corkscrewImageId: 0,
+            noVehicleImages: 32,
+            noSeatingRows: 0,
+            spinningInertia: 0,
+            spinningFriction: 0,
+            frictionSoundId: 255,
+            logFlumeReverserVehicleType: 0,
+            soundRange: 255,
+            doubleSoundFrequency: 0,
+            poweredAcceleration: 0,
+            poweredMaxSpeed: 0,
+            carVisual: 1,
+            effectVisual: 1,
+            drawOrder: 6,
+            numVerticalFramesOverride: 0 },
+            { rotationFrameMask: 0,
+            numVerticalFrames: 0,
+            numHorizontalFrames: 0,
+            spacing: 0,
+            carMass: 0,
+            tabHeight: 0,
+            numSeats: 0,
+            spriteFlags: 0,
+            spriteWidth: 0,
+            spriteHeightNegative: 0,
+            spriteHeightPositive: 0,
+            animation: 0,
+            flags: 0,
+            baseNumFrames: 0,
+            baseImageId: 0,
+            restraintImageId: 0,
+            gentleSlopeImageId: 0,
+            steepSlopeImageId: 0,
+            verticalSlopeImageId: 0,
+            diagonalSlopeImageId: 0,
+            bankedImageId: 0,
+            inlineTwistImageId: 0,
+            flatToGentleBankImageId: 0,
+            diagonalToGentleSlopeBankImageId: 0,
+            gentleSlopeToBankImageId: 0,
+            gentleSlopeBankTurnImageId: 0,
+            flatBankToGentleSlopeImageId: 0,
+            curvedLiftHillImageId: 0,
+            corkscrewImageId: 0,
+            noVehicleImages: 0,
+            noSeatingRows: 0,
+            spinningInertia: 0,
+            spinningFriction: 0,
+            frictionSoundId: 0,
+            logFlumeReverserVehicleType: 0,
+            soundRange: 0,
+            doubleSoundFrequency: 0,
+            poweredAcceleration: 0,
+            poweredMaxSpeed: 0,
+            carVisual: 0,
+            effectVisual: 0,
+            drawOrder: 0,
+            numVerticalFramesOverride: 0 },
+            { rotationFrameMask: 0,
+            numVerticalFrames: 0,
+            numHorizontalFrames: 0,
+            spacing: 0,
+            carMass: 0,
+            tabHeight: 0,
+            numSeats: 0,
+            spriteFlags: 0,
+            spriteWidth: 0,
+            spriteHeightNegative: 0,
+            spriteHeightPositive: 0,
+            animation: 0,
+            flags: 0,
+            baseNumFrames: 0,
+            baseImageId: 0,
+            restraintImageId: 0,
+            gentleSlopeImageId: 0,
+            steepSlopeImageId: 0,
+            verticalSlopeImageId: 0,
+            diagonalSlopeImageId: 0,
+            bankedImageId: 0,
+            inlineTwistImageId: 0,
+            flatToGentleBankImageId: 0,
+            diagonalToGentleSlopeBankImageId: 0,
+            gentleSlopeToBankImageId: 0,
+            gentleSlopeBankTurnImageId: 0,
+            flatBankToGentleSlopeImageId: 0,
+            curvedLiftHillImageId: 0,
+            corkscrewImageId: 0,
+            noVehicleImages: 0,
+            noSeatingRows: 0,
+            spinningInertia: 0,
+            spinningFriction: 0,
+            frictionSoundId: 0,
+            logFlumeReverserVehicleType: 0,
+            soundRange: 0,
+            doubleSoundFrequency: 0,
+            poweredAcceleration: 0,
+            poweredMaxSpeed: 0,
+            carVisual: 0,
+            effectVisual: 0,
+            drawOrder: 0,
+            numVerticalFramesOverride: 0 },
+            { rotationFrameMask: 0,
+            numVerticalFrames: 0,
+            numHorizontalFrames: 0,
+            spacing: 0,
+            carMass: 0,
+            tabHeight: 0,
+            numSeats: 0,
+            spriteFlags: 0,
+            spriteWidth: 0,
+            spriteHeightNegative: 0,
+            spriteHeightPositive: 0,
+            animation: 0,
+            flags: 0,
+            baseNumFrames: 0,
+            baseImageId: 0,
+            restraintImageId: 0,
+            gentleSlopeImageId: 0,
+            steepSlopeImageId: 0,
+            verticalSlopeImageId: 0,
+            diagonalSlopeImageId: 0,
+            bankedImageId: 0,
+            inlineTwistImageId: 0,
+            flatToGentleBankImageId: 0,
+            diagonalToGentleSlopeBankImageId: 0,
+            gentleSlopeToBankImageId: 0,
+            gentleSlopeBankTurnImageId: 0,
+            flatBankToGentleSlopeImageId: 0,
+            curvedLiftHillImageId: 0,
+            corkscrewImageId: 0,
+            noVehicleImages: 0,
+            noSeatingRows: 0,
+            spinningInertia: 0,
+            spinningFriction: 0,
+            frictionSoundId: 0,
+            logFlumeReverserVehicleType: 0,
+            soundRange: 0,
+            doubleSoundFrequency: 0,
+            poweredAcceleration: 0,
+            poweredMaxSpeed: 0,
+            carVisual: 0,
+            effectVisual: 0,
+            drawOrder: 0,
+            numVerticalFramesOverride: 0 } ],
+        excitementMultiplier: 0,
+        intensityMultiplier: 0,
+        nauseaMultiplier: 0,
+        maxHeight: 0,
+        shopItem: 255,
+        shopItemSecondary: 255,
+        type: 'ride',
+        index: 64,
+        identifier: 'rct2.ride.swsh1',
+        legacyIdentifier: 'SWSH1   ',
+        name: 'Pirate Ship' },
+    type: 26,
+    classification: 'ride',
+    name: 'Pirate Ship 4',
+    status: 'open',
+    lifecycleFlags: 4363,
+    mode: 14,
+    departFlags: 67,
+    minimumWaitingTime: 10,
+    maximumWaitingTime: 60,
+    vehicles: [ 36 ],
+    vehicleColours:
+    [ { body: 15,
+        trim: 18,
+        ternary: 0 },
+        { body: 0,
+        trim: 0,
+        ternary: 0 },
+        { body: 0,
+        trim: 0,
+        ternary: 0 },
+        { body: 0,
+        trim: 0,
+        ternary: 0 },
+        ... 252 more items ],
+    colourSchemes:
+    [ { main: 24,
+        additional: 24,
+        supports: 0 },
+        { main: 24,
+        additional: 24,
+        supports: 0 },
+        { main: 24,
+        additional: 24,
+        supports: 0 },
+        { main: 24,
+        additional: 24,
+        supports: 0 } ],
+    stationStyle: 0,
+    music: 30,
+    stations:
+    [ { start:
+            { x: 2016,
+            y: 1216,
+            z: 208 },
+        length: 0,
+        entrance:
+            { x: 1984,
+            y: 1184,
+            z: 208,
+            direction: 1 },
+        exit:
+            { x: 1984,
+            y: 1248,
+            z: 208,
+            direction: 3 } },
+        { start: null,
+        length: 0,
+        entrance: null,
+        exit: null },
+        { start: null,
+        length: 0,
+        entrance: null,
+        exit: null },
+        { start: null,
+        length: 0,
+        entrance: null,
+        exit: null },
+        ... 251 more items ],
+    price: [ 15 ],
+    excitement: 205,
+    intensity: 245,
+    nausea: 251,
+    totalCustomers: 0,
+    buildDate: 5,
+    age: 0,
+    runningCost: 31,
+    totalProfit: 0,
+    inspectionInterval: 0,
+    value: 21,
+    downtime: 0 }
+
+
+
+console.log('action.execute', event);
+{
+            action: 'trackplace',
+            args: {
+                x: 832,
+                y: 1536,
+                z: 144,
+                direction: 0,
+                ride: 2,
+                trackType: 261,
+                brakeSpeed: 0,
+                colour: 0,
+                seatRotation: 4,
+                trackPlaceFlags: 0,
+                isFromTrackDesign: false,
+                flags: 0
+            },
+            player: -1,
+            type: 3,
+            isClientOnly: false,
+            result: {
+                cost: 3970,
+                position: {
+                    x: 848,
+                    y: 1552,
+                    z: 144
+                },
+                expenditureType: 'ride_construction'
+            }
+        }
+
+
+        console.log('ride.ratings.calculate', ratings);
+        { 0:
+            { rideId: 2,
+            excitement: 121,
+            intensity: 60,
+            nausea: 75 } }
+        //ratings.excitement = 999;
+
+
+
+console.log(climate);
+    {
+        type: 'warm',
+        current: {
+            weather: 'partiallyCloudy',
+            temperature: 17
+        },
+        future: {
+            weather: 'cloudy',
+            temperature: 12
+        }
+    }
+
+    type ClimateType =
+        "coolAndWet" |
+        "warm" |
+        "hotAndDry" |
+        "cold";
