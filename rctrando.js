@@ -37,7 +37,7 @@ registerPlugin({
     type: 'remote',
     licence: "GPL-3.0",
     targetApiVersion: 46,
-    minApiVersion: 34,
+    minApiVersion: 46,
     main: main
 });
 

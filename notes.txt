@@ -2,6 +2,7 @@ https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/openrct2.d.ts#L20
 https://github.com/OpenRCT2/OpenRCT2/issues/16795
 https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/scripting.md
 https://github.com/OpenRCT2/OpenRCT2/tree/develop/src/openrct2/scripting
+Allow plugins to call change map size game action https://github.com/OpenRCT2/OpenRCT2/commit/83c347218b491b7b0a3bd74ab0839ddff2fe5b36
 
 
 console.log(park);
