@@ -1,6 +1,6 @@
 
 var rando_name = 'RollerCoaster Tycoon Randomizer';
-var rando_version = '0.1';
+var rando_version = '0.2';
 var rando_authors = ['Die4Ever'];
 // ~~ forces JS to convert to int
 var globalseed = ~~0;
@@ -10,9 +10,13 @@ gen2 = ~~2147483643;
 gen1 = ~~(gen2/2);
 
 var difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
-var scenarioLengths = {Speedrun: 0.5, Random: 0, Medium: 1, Long: 1.5, Marathon: 2};
+var scenarioLengths = {Speedrun: 0.5, Random: 0, Normal: 1, Long: 1.5, Marathon: 2};
 var difficulty = 0;
 var scenarioLength = 0;// 0 means random
+var rando_ride_types = true;
+var rando_park_flags = true;
+var rando_park_values = true;
+var rando_goals = true;
 var debug = false;
 
 function main() {
@@ -25,14 +29,26 @@ function main() {
     try {
         savedData = context.getParkStorage().getAll();
         if(savedData)
-            console.log("savedData", savedData);
+            console.log("restored savedData", savedData);
     } catch(e) {
         printException('error checking savedData: ', e);
     }
 
-    if(savedData && savedData.seed) {
+    if(savedData && (savedData.seed || savedData.seed === 0)) {
         setGlobalSeed(savedData.seed);
-        console.log("restored saved seed "+globalseed);
+        console.log("restored saved seed "+globalseed, savedData);
+        if(savedData.hasOwnProperty('difficulty'))
+            difficulty = savedData.difficulty;
+        if(savedData.hasOwnProperty('scenarioLength'))
+            scenarioLength = savedData.scenarioLength;
+        if(savedData.hasOwnProperty('rando_ride_types'))
+            rando_ride_types = savedData.rando_ride_types;
+        if(savedData.hasOwnProperty('rando_park_flags'))
+            rando_park_flags = savedData.rando_park_flags;
+        if(savedData.hasOwnProperty('rando_park_values'))
+            rando_park_values = savedData.rando_park_values;
+        if(savedData.hasOwnProperty('rando_goals'))
+            rando_goals = savedData.rando_goals;
         //initGui();// just for testing
         SubscribeEvents();
     }
@@ -70,6 +86,13 @@ registerPlugin({
 function initRando() {
     try {
         context.getParkStorage().set("seed", globalseed);
+        context.getParkStorage().set("difficulty", difficulty);
+        context.getParkStorage().set("scenarioLength", scenarioLength);
+        context.getParkStorage().set("rando_ride_types", rando_ride_types);
+        context.getParkStorage().set("rando_park_flags", rando_park_flags);
+        context.getParkStorage().set("rando_park_values", rando_park_values);
+        context.getParkStorage().set("rando_goals", rando_goals);
+        console.log('just saved data', context.getParkStorage().getAll());
     } catch(e) {
         printException('error saving seed: ', e);
     }
@@ -94,7 +117,7 @@ function initRando() {
 
 function NewWidget(widget) {
     var margin = 3;
-    var window_width = 300;
+    var window_width = 350 - margin*2;
     var start_y = 26;
     // 3 margins because left, right, and center
     cellWidth = (window_width - margin * 3) / 2;
@@ -141,10 +164,23 @@ function NewDropdown(label, desc) {
     return [label, dropdown];
 }
 
+function NewCheckbox(name, text, y, tooltip) {
+    return NewWidget({
+        type: 'checkbox',
+        name: name,
+        text: text,
+        x: 0.5,
+        y: y,
+        width: 1,
+        tooltip: tooltip,
+        isChecked: true
+    });
+}
+
 function initGui() {
     console.log('initGui()', globalseed);
-    var ww = 300;
-    var wh = 200;
+    var ww = 350;
+    var wh = 300;
 
     context.executeAction('pausetoggle', {});
 
@@ -180,7 +216,11 @@ function initGui() {
                 selectedIndex: 1,
                 tooltip: 'Longer scenario length will also scale up the goals so that difficulty is maintained.'
             }),
-            {
+            NewCheckbox('rando-ride-types', 'Randomize Ride Types', 4, 'Randomizes values such as inspectionInterval and intensity'),
+            NewCheckbox('rando-park-flags', 'Randomize Park Flags', 5, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
+            NewCheckbox('rando-park-values', 'Randomize Park Values', 6, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
+            NewCheckbox('rando-goals', 'Randomize Goals', 7, 'Even when disabled, goals will still be scaled by Scenario Length'),
+            [{
                 type: 'button',
                 name: 'ok-button',
                 x: ww - 90 - 6,
@@ -189,7 +229,7 @@ function initGui() {
                 height: 26,
                 text: 'Start Game',
                 onClick: function() { window.close(); }
-            }
+            }]
         ),
         onClose: function() {
             try {
@@ -199,6 +239,10 @@ function initGui() {
                 difficulty = difficulties[d.text];
                 var l = window.findWidget('length');
                 scenarioLength = scenarioLengths[l.text];
+                rando_ride_types = window.findWidget('rando-ride-types').isChecked;
+                rando_park_flags = window.findWidget('rando-park-flags').isChecked;
+                rando_park_values = window.findWidget('rando-park-values').isChecked;
+                rando_goals = window.findWidget('rando-goals').isChecked;
                 initRando();
                 context.executeAction('pausetoggle', {});
             } catch(e) {
@@ -296,7 +340,7 @@ function RandomizeParkFlag(name, difficulty) {
 }
 
 function RandomizeScenario() {
-    setLocalSeed('RandomizeScenarioLength scenarioLength: '+scenarioLength);
+    setLocalSeed('RandomizeScenarioLength');
     if(Math.abs(scenarioLength) < 0.1) {
         scenarioLength = rng(50, 300) / 100;
     }
@@ -311,41 +355,56 @@ function RandomizeScenario() {
         scenarioLength = 1;
     }
 
-    setLocalSeed('RandomizeScenario');
+    setLocalSeed('RandomizeScenarioGoals');
 
-    if(scenario.objective.guests)
-        scenario.objective.guests = randomize(scenario.objective.guests, 1) * scenarioLength;
-    if(scenario.objective.excitement)
-        scenario.objective.excitement = randomize(scenario.objective.excitement, 1) * scenarioLength;
-    if(scenario.objective.monthlyIncome)
-        scenario.objective.monthlyIncome = randomize(scenario.objective.monthlyIncome, 1) * scenarioLength;
-    if(scenario.objective.parkValue)
-        scenario.objective.parkValue = randomize(scenario.objective.parkValue, 1) * scenarioLength;
-        
+    if(rando_goals) {
+        if(scenario.objective.guests)
+            scenario.objective.guests = randomize(scenario.objective.guests, 1) * scenarioLength;
+        if(scenario.objective.excitement)
+            scenario.objective.excitement = randomize(scenario.objective.excitement, 1) * scenarioLength;
+        if(scenario.objective.monthlyIncome)
+            scenario.objective.monthlyIncome = randomize(scenario.objective.monthlyIncome, 1) * scenarioLength;
+        if(scenario.objective.parkValue)
+            scenario.objective.parkValue = randomize(scenario.objective.parkValue, 1) * scenarioLength;
+    } else {
+        if(scenario.objective.guests)
+            scenario.objective.guests *= scenarioLength;
+        if(scenario.objective.excitement)
+            scenario.objective.excitement *= scenarioLength;
+        if(scenario.objective.monthlyIncome)
+            scenario.objective.monthlyIncome *= scenarioLength;
+        if(scenario.objective.parkValue)
+            scenario.objective.parkValue *= scenarioLength;
+    }
     console.log(scenario);
     console.log(scenario.objective);
 }
 
 function RandomizePark() {
-    setLocalSeed('RandomizePark');
+    setLocalSeed('RandomizeParkFlags');
     
-    RandomizeParkFlag("difficultGuestGeneration", 1);
-    RandomizeParkFlag("difficultParkRating", 1);
-    RandomizeParkFlag("forbidHighConstruction", 1);
-    RandomizeParkFlag("forbidLandscapeChanges", 1);
-    RandomizeParkFlag("forbidMarketingCampaigns", 1);
-    RandomizeParkFlag("forbidTreeRemoval", 1);
-    RandomizeParkFlag("freeParkEntry", 1);
-    RandomizeParkFlag("preferMoreIntenseRides", 1);
-    RandomizeParkFlag("preferLessIntenseRides", -1);
-    RandomizeParkFlag("unlockAllPrices", -1);// I think this allows the player to always set entry fees and ride fees?
-    //RandomizeParkFlag("noMoney", -1);// too easy?
+    if(rando_park_flags) {
+        RandomizeParkFlag("difficultGuestGeneration", 1);
+        RandomizeParkFlag("difficultParkRating", 1);
+        RandomizeParkFlag("forbidHighConstruction", 1);
+        RandomizeParkFlag("forbidLandscapeChanges", 1);
+        RandomizeParkFlag("forbidMarketingCampaigns", 1);
+        RandomizeParkFlag("forbidTreeRemoval", 1);
+        RandomizeParkFlag("freeParkEntry", 1);
+        RandomizeParkFlag("preferMoreIntenseRides", 1);
+        RandomizeParkFlag("preferLessIntenseRides", -1);
+        RandomizeParkFlag("unlockAllPrices", -1);// I think this allows the player to always set entry fees and ride fees?
+        //RandomizeParkFlag("noMoney", -1);// too easy?
+    }
 
-    park.maxBankLoan = randomize(park.maxBankLoan, -1);
-    park.landPrice = randomize(park.landPrice, 1);
-    park.constructionRightsPrice = randomize(park.constructionRightsPrice, 1);
-    park.cash = randomize(park.cash, -1);
-    park.bankLoan = randomize(park.bankLoan, 1);
+    setLocalSeed('RandomizeParkValues');
+    if(rando_park_values) {
+        park.maxBankLoan = randomize(park.maxBankLoan, -1);
+        park.landPrice = randomize(park.landPrice, 1);
+        park.constructionRightsPrice = randomize(park.constructionRightsPrice, 1);
+        park.cash = randomize(park.cash, -1);
+        park.bankLoan = randomize(park.bankLoan, 1);
+    }
 }
 
 function RandomizeMap() {
@@ -358,6 +417,9 @@ function RandomizeClimate() {
 }
 
 function RandomizeRideTypes() {
+    if(!rando_ride_types)
+        return;
+
     for(var r in map.rides) {
         RandomizeRide(map.rides[r].id);
     }
