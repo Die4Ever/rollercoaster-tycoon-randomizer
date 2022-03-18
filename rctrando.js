@@ -1,6 +1,6 @@
 
 var rando_name = 'RollerCoaster Tycoon Randomizer';
-var rando_version = '0.04';
+var rando_version = '0.1';
 var rando_authors = ['Die4Ever'];
 // ~~ forces JS to convert to int
 var globalseed = ~~0;
@@ -9,11 +9,18 @@ var gen1, gen2;
 gen2 = ~~2147483643;
 gen1 = ~~(gen2/2);
 
-var difficulty = 1;
+var difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
+var scenarioLengths = {Speedrun: 0.5, Random: 0, Medium: 1, Long: 1.5, Marathon: 2};
+var difficulty = 0;
 var scenarioLength = 0;// 0 means random
+var debug = false;
 
 function main() {
     var savedData;
+    
+    if(debug)
+        run_tests();
+
     console.log(rando_name+" v"+rando_version+" starting...");
     try {
         savedData = context.getParkStorage().getAll();
@@ -136,8 +143,6 @@ function NewDropdown(label, desc) {
 
 function initGui() {
     console.log('initGui()', globalseed);
-    var difficulties = {Easy: 0.5, Medium: 1, Hard: 2, Extreme: 3};
-    var scenarioLengths = {Speedrun: 0.5, Random: 0, Medium: 1, Long: 1.5, Marathon: 2};
     var ww = 300;
     var wh = 200;
 
@@ -145,7 +150,7 @@ function initGui() {
 
     var window = ui.openWindow({
         classification: 'rando-settings',
-        title: "RollerCoaster Tycoon Randomizer",
+        title: "RollerCoaster Tycoon Randomizer v"+rando_version,
         width: ww,
         height: wh,
         widgets: [].concat(
@@ -211,14 +216,44 @@ function SubscribeEvents() {
     RandomizeRideTypes();
 }
 
+function clamp(number, min, max) {
+    return Math.max(min, Math.min(number, max));
+}
+
 // works with integers
 function rng(min, max) {
     tseed = ~~(gen1 * tseed * 5 + gen2 + (tseed/5) * 3);
     if(tseed < 0)
         tseed = ~~(-tseed);
-    var ret = (tseed >>> 8) % max;
+    var ret = (tseed >>> 8) % (1 + max - min);
+    ret += min;
     //console.log("rng("+min+", "+max+") "+tseed+", "+ret);
     return ret;
+}
+
+// boolean
+function brng() {
+    // next seed
+    rng(0,1);
+    return (tseed >>> 15) & 1;
+}
+
+function GetDifficultyCurve(d) {
+    if(d == 0) return 0.5;
+    var dist = Math.abs(difficulty - d);
+    return 1 - (dist / (dist + 1));
+}
+
+function RngBoolWithDifficulty(d) {
+    var val = rng(0, 100000);
+    var mid = 50000;
+    if( d == 0 ) return val < mid;
+    var adjust = GetDifficultyCurve(d);
+    adjust = adjust * 2;
+    mid *= adjust;
+    //console.log('RngBoolWithDifficulty, adjust: '+adjust+', mid: '+mid);
+
+    return val < mid;
 }
 
 function setGlobalSeed(newSeed) {
@@ -237,22 +272,26 @@ function setLocalSeed(name) {
 }
 
 function randomize(value, difficulty) {
-    // TODO: difficulty > 0 means larger numbers increase difficulty, < 0 means decreases difficulty
-    // have a system to balance difficulty, maybe a card-shuffle rng
-    var ret = (value * rng(50, 150)) / 100.0;
-    console.log('randomize('+value+', '+difficulty+'): '+ret);
+    // difficulty > 0 means larger numbers increase difficulty, < 0 means decreases difficulty
+    var curve = GetDifficultyCurve(difficulty) * 2;
+    var min = 50 * curve;
+    var max = 150 * curve;
+    var ret = (value * rng(min, max)) / 100.0;
+    //console.log('static_randomize('+value+', '+difficulty+'): '+ret);
     return ret;
 }
 
 function RandomizeParkFlag(name, difficulty) {
-    if( rng(0, 1) ) {
-        console.log('flipping flag '+name);
-        park.setFlag(name, !park.getFlag(name) );
+    var val = park.getFlag(name);
+    if( RngBoolWithDifficulty(difficulty) ) {
+        console.log('enabling flag '+name);
+        park.setFlag(name, true );
         // TODO: we need our own UIs so we can put this kind of info in there
         //scenario.details += '\n'+name+': '+park.getFlag(name);
     }
     else {
-        console.log('leaving flag '+name);
+        console.log('disabling flag '+name);
+        park.setFlag(name, false );
     }
 }
 
@@ -275,13 +314,13 @@ function RandomizeScenario() {
     setLocalSeed('RandomizeScenario');
 
     if(scenario.objective.guests)
-        scenario.objective.guests = randomize(scenario.objective.guests, 1);
+        scenario.objective.guests = randomize(scenario.objective.guests, 1) * scenarioLength;
     if(scenario.objective.excitement)
-        scenario.objective.excitement = randomize(scenario.objective.excitement, 1);
+        scenario.objective.excitement = randomize(scenario.objective.excitement, 1) * scenarioLength;
     if(scenario.objective.monthlyIncome)
-        scenario.objective.monthlyIncome = randomize(scenario.objective.monthlyIncome, 1);
+        scenario.objective.monthlyIncome = randomize(scenario.objective.monthlyIncome, 1) * scenarioLength;
     if(scenario.objective.parkValue)
-        scenario.objective.parkValue = randomize(scenario.objective.parkValue, 1);
+        scenario.objective.parkValue = randomize(scenario.objective.parkValue, 1) * scenarioLength;
         
     console.log(scenario);
     console.log(scenario.objective);
@@ -297,10 +336,10 @@ function RandomizePark() {
     RandomizeParkFlag("forbidMarketingCampaigns", 1);
     RandomizeParkFlag("forbidTreeRemoval", 1);
     RandomizeParkFlag("freeParkEntry", 1);
-    RandomizeParkFlag("noMoney", 1);
-    RandomizeParkFlag("preferLessIntenseRides", -1);
     RandomizeParkFlag("preferMoreIntenseRides", 1);
-    RandomizeParkFlag("unlockAllPrices", 0);
+    RandomizeParkFlag("preferLessIntenseRides", -1);
+    RandomizeParkFlag("unlockAllPrices", -1);// I think this allows the player to always set entry fees and ride fees?
+    //RandomizeParkFlag("noMoney", -1);// too easy?
 
     park.maxBankLoan = randomize(park.maxBankLoan, -1);
     park.landPrice = randomize(park.landPrice, 1);
@@ -386,4 +425,41 @@ function printException(msg, e) {
     console.log(e.stack);
     console.log(msg, e.name, e.message);
     console.log('===========');
+}
+
+function test_difficulty(goal, d) {
+    difficulty = goal;
+    currDifficulty = 1;
+    num = 1000;
+
+    total = 0;
+    for(var i=0; i<num; i++) {
+        total += GetDifficultyCurve(d);
+    }
+    console.log("difficulty "+goal+", "+d+", avg: "+ (total/num));
+
+    total = 0;
+    for(var i=0; i<num; i++) {
+        total += RngBoolWithDifficulty(d);
+    }
+    console.log("    RngBoolWithDifficulty difficulty "+goal+", "+d+", avg: "+ (total/num));
+
+    total = 0;
+    for(var i=0; i<num; i++) {
+        total += randomize(1, d);
+    }
+    console.log("    randomize difficulty "+goal+", "+d+", avg: "+ (total/num));
+}
+
+function run_tests() {
+    console.log('starting tests...');
+    setGlobalSeed(25);
+    for(var d = -0.6; d < 0.7; d += 0.6) {
+        for(var i = -1; i <= 1; i += 1) {
+            test_difficulty(d, i);
+        }
+    }
+    currDifficulty = 1;
+    difficulty = 1;
+    console.log('finished tests');
 }
