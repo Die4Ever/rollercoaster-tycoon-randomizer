@@ -46,7 +46,7 @@ function main() {
             initRando();
         }
     }
-    console.log(rando_name+" v"+rando_version+" finished startup with seed "+globalseed);
+    console.log(rando_name+" v"+rando_version+" finished startup");
 }
 
 registerPlugin({
@@ -138,11 +138,16 @@ function initGui() {
     console.log('initGui()', globalseed);
     var difficulties = {Easy: 0.5, Medium: 1, Hard: 2, Extreme: 3};
     var scenarioLengths = {Speedrun: 0.5, Random: 0, Medium: 1, Long: 1.5, Marathon: 2};
+    var ww = 300;
+    var wh = 200;
+
+    context.executeAction('pausetoggle', {});
+
     var window = ui.openWindow({
         classification: 'rando-settings',
         title: "RollerCoaster Tycoon Randomizer",
-        width: 300,
-        height: 200,
+        width: ww,
+        height: wh,
         widgets: [].concat(
             NewLabel('https://discord.gg/jjfKT9nYDR', {
                 name: 'url',
@@ -169,7 +174,17 @@ function initGui() {
                 items: Object.keys(scenarioLengths),
                 selectedIndex: 1,
                 tooltip: 'Longer scenario length will also scale up the goals so that difficulty is maintained.'
-            })
+            }),
+            {
+                type: 'button',
+                name: 'ok-button',
+                x: ww - 90 - 6,
+                y: wh - 6 - 26,
+                width: 90,
+                height: 26,
+                text: 'Start Game',
+                onClick: function() { window.close(); }
+            }
         ),
         onClose: function() {
             try {
@@ -180,6 +195,7 @@ function initGui() {
                 var l = window.findWidget('length');
                 scenarioLength = scenarioLengths[l.text];
                 initRando();
+                context.executeAction('pausetoggle', {});
             } catch(e) {
                 printException('error in GUI onClose(): ', e);
             }
@@ -195,6 +211,7 @@ function SubscribeEvents() {
     RandomizeRideTypes();
 }
 
+// works with integers
 function rng(min, max) {
     tseed = ~~(gen1 * tseed * 5 + gen2 + (tseed/5) * 3);
     if(tseed < 0)
@@ -240,11 +257,12 @@ function RandomizeParkFlag(name, difficulty) {
 }
 
 function RandomizeScenario() {
-    setLocalSeed('RandomizeScenarioLength');
-    if(scenarioLength == 0)
-        scenarioLength = rng(0.5, 3);
-        
-    console.log('scenario.objective.year: ', scenario.objective.year);
+    setLocalSeed('RandomizeScenarioLength scenarioLength: '+scenarioLength);
+    if(Math.abs(scenarioLength) < 0.1) {
+        scenarioLength = rng(50, 300) / 100;
+    }
+    
+    console.log('scenario.objective.year: ', scenario.objective.year, ', scenarioLength: '+scenarioLength);
     if(scenario.objective.year) {
         // ceil because it's nice to lean towards longer scenarios? need to make other things more difficult then
         scenario.objective.year = Math.ceil(scenario.objective.year * scenarioLength);
