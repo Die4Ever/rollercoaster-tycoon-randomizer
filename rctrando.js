@@ -1,13 +1,13 @@
 
 var rando_name = 'RollerCoaster Tycoon Randomizer';
 var rando_version = '0.2';
+console.log(rando_name+" v"+rando_version+", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 46');
 var rando_authors = ['Die4Ever'];
 // ~~ forces JS to convert to int
 var globalseed = ~~0;
 var tseed = ~~0;
-var gen1, gen2;
-gen2 = ~~2147483643;
-gen1 = ~~(gen2/2);
+var gen2 = ~~2147483643;
+var gen1 = ~~(gen2/2);
 
 var difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
 var scenarioLengths = {Speedrun: 0.5, Random: 0, Normal: 1, Long: 1.5, Marathon: 2};
