@@ -497,7 +497,7 @@ function printException(msg, e) {
         console.log(msg, e.name, e.message);
     } catch(e2) {
         console.log('error in printException', msg, e, e2);
-        console.log('types: ', msg.constructor.name, e.constructor.name, e2.constructor.name, e2);
+        console.log('types: ', msg.constructor.name, e.constructor.name, e2.constructor.name);
     }
     console.log('===========');
 }
