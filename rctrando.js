@@ -21,7 +21,7 @@ var debug = false;
 
 function _main() {
     var savedData;
-    
+
     if(debug)
         run_tests();
 
@@ -491,12 +491,13 @@ function crc32(str) {
 };
 
 function printException(msg, e) {
-    console.log('\nERROR:')
+    console.log('===========\nERROR:')
     try {
         console.log(e.stack);
         console.log(msg, e.name, e.message);
     } catch(e2) {
         console.log('error in printException', msg, e, e2);
+        console.log('types: ', msg.constructor.name, e.constructor.name, e2.constructor.name, e2);
     }
     console.log('===========');
 }
