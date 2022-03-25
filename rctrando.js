@@ -19,7 +19,7 @@ var rando_park_values = true;
 var rando_goals = true;
 var debug = false;
 
-function main() {
+function _main() {
     var savedData;
     
     if(debug)
@@ -70,6 +70,14 @@ function main() {
         }
     }
     console.log(rando_name+" v"+rando_version+" finished startup");
+}
+
+function main() {
+    try {
+        _main();
+    } catch(e) {
+        printException('error in _main', e);
+    }
 }
 
 registerPlugin({
