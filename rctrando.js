@@ -492,8 +492,12 @@ function crc32(str) {
 
 function printException(msg, e) {
     console.log('\nERROR:')
-    console.log(e.stack);
-    console.log(msg, e.name, e.message);
+    try {
+        console.log(e.stack);
+        console.log(msg, e.name, e.message);
+    } catch(e2) {
+        console.log('error in printException', msg, e, e2);
+    }
     console.log('===========');
 }
 
