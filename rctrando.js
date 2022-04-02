@@ -10,7 +10,8 @@ var gen2 = ~~2147483643;
 var gen1 = ~~(gen2/2);
 
 var difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
-var scenarioLengths = {Speedrun: 0.5, Random: 0, Normal: 1, Long: 1.5, Marathon: 2};
+// we need big numbers because of rounding issues, we call ceil so speedrun can be really low
+var scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};
 var difficulty = 0;
 var scenarioLength = 0;// 0 means random
 var rando_ride_types = true;
@@ -365,11 +366,12 @@ function RandomizeScenario() {
 
     setLocalSeed('RandomizeScenarioGoals');
 
+    // the excitement goal doesn't get twice as easy when you have twice as much time, so we ** 0.3
     if(rando_goals) {
         if(scenario.objective.guests)
             scenario.objective.guests = randomize(scenario.objective.guests, 1) * scenarioLength;
         if(scenario.objective.excitement)
-            scenario.objective.excitement = randomize(scenario.objective.excitement, 1) * scenarioLength;
+            scenario.objective.excitement = randomize(scenario.objective.excitement, 1) * (scenarioLength ** 0.3);
         if(scenario.objective.monthlyIncome)
             scenario.objective.monthlyIncome = randomize(scenario.objective.monthlyIncome, 1) * scenarioLength;
         if(scenario.objective.parkValue)
@@ -378,7 +380,7 @@ function RandomizeScenario() {
         if(scenario.objective.guests)
             scenario.objective.guests *= scenarioLength;
         if(scenario.objective.excitement)
-            scenario.objective.excitement *= scenarioLength;
+            scenario.objective.excitement *= scenarioLength ** 0.3;
         if(scenario.objective.monthlyIncome)
             scenario.objective.monthlyIncome *= scenarioLength;
         if(scenario.objective.parkValue)
