@@ -1,0 +1,21 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Aquire openrct2.d.ts
+      run: |
+        mkdir lib
+        curl -Lo lib/openrct2.d.ts https://github.com/OpenRCT2/OpenRCT2/raw/develop/distribution/openrct2.d.ts
+    - name: Install
+      run: npm install
+    - name: Build
+      run: npm run build-release
+    - name: Upload artefacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: "rollercoaster-tycoon-randomizer"
+        path: out

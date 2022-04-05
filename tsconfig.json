@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "lib": ["es2015"],
+        "outFile": "./out/RCTRando.js",
+        "target": "ES5",
+        "removeComments": true
+    },
+    "files": ["src/rctrando.ts"]
+}

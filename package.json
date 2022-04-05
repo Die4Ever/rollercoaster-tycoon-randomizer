@@ -1,0 +1,22 @@
+{
+    "name": "rollercoaster-tycoon-randomizer",
+    "version": "0.2",
+    "author": "Die4Ever",
+    "license": "GPL-3.0",
+    "repository": {
+        "url": "https://github.com/Die4Ever/rollercoaster-tycoon-randomizer"
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc --watch --outFile %USERPROFILE%/Documents/OpenRCT2/plugin/rctrando",
+        "minify": "uglifyjs --compress --mangle --output out/rctrando.min.js -- out/rctrando",
+        "build-release": "npm run build"
+    },
+    "devDependencies": {
+        "typescript": "^3.9.10",
+        "uglify-js": "^3.8.0"
+    },
+    "dependencies": {
+        "tsc": "^2.0.4"
+    }
+}
