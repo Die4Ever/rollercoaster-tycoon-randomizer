@@ -8,8 +8,8 @@
     },
     "scripts": {
         "build": "tsc",
-        "watch": "tsc --watch --outFile %USERPROFILE%/Documents/OpenRCT2/plugin/rctrando",
-        "minify": "uglifyjs --compress --mangle --output out/rctrando.min.js -- out/rctrando",
+        "watch": "tsc --watch --outFile %USERPROFILE%/Documents/OpenRCT2/plugin/rctrando.js",
+        "minify": "uglifyjs --compress --mangle --output out/rctrando.min.js -- out/rctrando.js",
         "build-release": "npm run build"
     },
     "devDependencies": {

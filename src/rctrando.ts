@@ -4,8 +4,8 @@
 /// <reference path="tests.ts" />
 
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.2';
-console.log(rando_name+" v"+rando_version+", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 46');
+const rando_version = '0.3';
+console.log(rando_name+" v"+rando_version+", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 46, network.mode: '+network.mode);
 
 function main() {
     try {
@@ -42,7 +42,8 @@ function _main() {
     if(debug)
         run_tests();
 
-    console.log(rando_name+" v"+rando_version+" starting...");
+    console.log(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode);
+
     try {
         savedData = context.getParkStorage().getAll();
         if(savedData)
@@ -52,41 +53,46 @@ function _main() {
     }
 
     if(savedData && (savedData.seed || savedData.seed === 0)) {
-        setGlobalSeed(savedData.seed);
-        console.log("restored saved seed "+globalseed, savedData);
-        if(savedData.hasOwnProperty('difficulty'))
-            difficulty = savedData.difficulty;
-        if(savedData.hasOwnProperty('scenarioLength'))
-            scenarioLength = savedData.scenarioLength;
-        if(savedData.hasOwnProperty('rando_ride_types'))
-            rando_ride_types = savedData.rando_ride_types;
-        if(savedData.hasOwnProperty('rando_park_flags'))
-            rando_park_flags = savedData.rando_park_flags;
-        if(savedData.hasOwnProperty('rando_park_values'))
-            rando_park_values = savedData.rando_park_values;
-        if(savedData.hasOwnProperty('rando_goals'))
-            rando_goals = savedData.rando_goals;
-        //initGui();// just for testing
-        SubscribeEvents();
+        loadedGame(savedData);
     }
     else {
-        // saves in your Documents\OpenRCT2\plugin.store.json
-        var nextSeed = context.sharedStorage.get('RCTRando.nextSeed');
-        console.log("nextSeed", nextSeed);
-        if(nextSeed) {
-            setGlobalSeed(nextSeed);
-        } else {
-            setGlobalSeed(context.getRandom(1, 999999 + 1));
-        }
-        context.sharedStorage.set("RCTRando.nextSeed", null);
-        if (typeof ui !== 'undefined') {
-            // pause game and open menu
-            initGui();
-        } else {
-            initRando();
-        }
+        newGame();
     }
     console.log(rando_name+" v"+rando_version+" finished startup");
+}
+
+function loadedGame(savedData) {
+    setGlobalSeed(savedData.seed);
+    console.log("restored saved seed "+globalseed, savedData);
+    if(savedData.hasOwnProperty('difficulty'))
+        difficulty = savedData.difficulty;
+    if(savedData.hasOwnProperty('scenarioLength'))
+        scenarioLength = savedData.scenarioLength;
+    if(savedData.hasOwnProperty('rando_ride_types'))
+        rando_ride_types = savedData.rando_ride_types;
+    if(savedData.hasOwnProperty('rando_park_flags'))
+        rando_park_flags = savedData.rando_park_flags;
+    if(savedData.hasOwnProperty('rando_park_values'))
+        rando_park_values = savedData.rando_park_values;
+    if(savedData.hasOwnProperty('rando_goals'))
+        rando_goals = savedData.rando_goals;
+    //startGameGui();// just for testing
+    initMenuItem();
+    SubscribeEvents();
+}
+
+function newGame() {
+    // saves in your %USERPROFILE%\Documents\OpenRCT2\plugin.store.json
+    var nextSeed = context.sharedStorage.get('RCTRando.nextSeed');
+    console.log("nextSeed", nextSeed);
+    if(nextSeed) {
+        setGlobalSeed(nextSeed);
+    } else {
+        setGlobalSeed(context.getRandom(1, 999999 + 1));
+    }
+    context.sharedStorage.set("RCTRando.nextSeed", null);
+    // pause game and open menu
+    startGameGui();
 }
 
 function initRando() {

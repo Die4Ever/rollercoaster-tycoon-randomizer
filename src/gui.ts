@@ -62,10 +62,18 @@ function NewCheckbox(name, text, y, tooltip) {
 }
 
 
-function initGui() {
-    console.log('initGui()', globalseed);
+function startGameGui() {
+    console.log('startGameGui()', globalseed);
     var ww = 350;
     var wh = 300;
+
+    if (typeof ui === 'undefined') {
+        console.log('startGameGui() ui is undefined');
+        initRando();
+        return;
+    }
+
+    initMenuItem();
 
     context.executeAction('pausetoggle', {});
 
@@ -136,4 +144,37 @@ function initGui() {
         }
     });
     return window;
+}
+
+function initMenuItem() {
+    if (typeof ui !== 'undefined') {
+        ui.registerMenuItem("RCTRando", createChangesWindow);
+    }
+}
+
+
+function createChangesWindow() {
+    var ww = 350;
+    var wh = 300;
+
+    var window = ui.openWindow({
+        classification: 'rando-changes',
+        title: "RollerCoaster Tycoon Randomizer v"+rando_version,
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel('https://discord.gg/jjfKT9nYDR', {
+                name: 'url',
+                y: 0,
+                width: 2,
+                tooltip: 'Join the Discord!'
+            }),
+            NewLabel('List of things RCTRando has changed...', {
+                name: 'label',
+                y: 1,
+                width: 2,
+                tooltip: 'What\'s changed...'
+            })
+        )
+    });
 }
