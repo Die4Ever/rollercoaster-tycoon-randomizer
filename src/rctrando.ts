@@ -9,7 +9,7 @@ console.log(rando_name+" v"+rando_version+", OpenRCT2 API version "+context.apiV
 
 function main() {
     try {
-        _main();
+        runNextTick(_main);
     } catch(e) {
         printException('error in _main', e);
     }
@@ -235,12 +235,16 @@ function RandomizeRideTypes() {
     }
 
     context.subscribe("ride.ratings.calculate", function(ratings) {
-        RandomizeRide(ratings.rideId);
+        runNextTick(function() {
+            RandomizeRide(ratings.rideId);
+        });
     });
     context.subscribe("action.execute", function(event) {
         if( event.action != 'trackplace' ) return;
         if( event.isClientOnly ) return;
-        RandomizeRide(event.args['ride']);
+        runNextTick(function() {
+            RandomizeRide(event.args['ride']);
+        });
     });
 }
 

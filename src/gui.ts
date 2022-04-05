@@ -136,7 +136,7 @@ function startGameGui() {
                 rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
                 rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
                 rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
-                initRando();
+                runNextTick(initRando);
                 context.executeAction('pausetoggle', {});
             } catch(e) {
                 printException('error in GUI onClose(): ', e);
@@ -151,7 +151,6 @@ function initMenuItem() {
         ui.registerMenuItem("RCTRando", createChangesWindow);
     }
 }
-
 
 function createChangesWindow() {
     var ww = 350;
