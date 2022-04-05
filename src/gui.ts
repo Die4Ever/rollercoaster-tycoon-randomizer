@@ -75,7 +75,7 @@ function startGameGui() {
 
     initMenuItem();
 
-    context.executeAction('pausetoggle', {});
+    PauseGame();
 
     var window = ui.openWindow({
         classification: 'rando-settings',
@@ -136,8 +136,13 @@ function startGameGui() {
                 rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
                 rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
                 rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
-                runNextTick(initRando);
-                context.executeAction('pausetoggle', {});
+                // we need to unpause the game in order for the next tick to run
+                var wasPaused = UnpauseGame();
+                runNextTick(function() {
+                    initRando();
+                    if(wasPaused.wasPaused)
+                        PauseGame();
+                });
             } catch(e) {
                 printException('error in GUI onClose(): ', e);
             }
@@ -181,7 +186,7 @@ function getChangesList(widget) {
     ret.sort();
     rides.sort();
     if(rides.length > 0) {
-        ret.push('Rides:');
+        ret.push('Rides: (only 1 listed per type)');
         ret = ret.concat(rides);
     }
 

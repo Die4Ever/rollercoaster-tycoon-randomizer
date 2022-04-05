@@ -109,6 +109,31 @@ function runNextTick(func) {
     });
 }
 
+function ifPaused(whenPaused: () => void, whenUnpaused: () => void) {
+    var wasPaused = { wasPaused: undefined };
+    var oldElapsed = date.ticksElapsed;
+    context.setTimeout(function() {
+        if( date.ticksElapsed == oldElapsed ) {
+            wasPaused.wasPaused = true;
+            if(whenPaused)
+                whenPaused();
+        } else {
+            wasPaused.wasPaused = false;
+            if(whenUnpaused)
+                whenUnpaused();
+        }
+    }, 250);
+    return wasPaused;
+}
+
+function PauseGame() {
+    return ifPaused(null, () => { context.executeAction('pausetoggle', {}); });
+}
+
+function UnpauseGame() {
+    return ifPaused(() => { context.executeAction('pausetoggle', {}); }, null);
+}
+
 function printException(msg, e) {
     console.log('===========\nERROR:')
     try {
