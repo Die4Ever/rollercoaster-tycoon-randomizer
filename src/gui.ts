@@ -182,7 +182,6 @@ function getChangesList(widget) {
         } else {
             let isMoney:boolean = i in {'bankLoan':1, 'maxBankLoan':1, 'cash':1, 'constructionRightsPrice':1, 'landPrice':1};
             let isBool:boolean = (typeof(c.from) === 'boolean' && typeof(c.to) === 'boolean');
-            console.log(i, isMoney, isBool);
 
             let from = c.from;
             let to = c.to;
@@ -207,6 +206,7 @@ function getChangesList(widget) {
     }
     ret.sort();
     rides.sort();
+    ret.unshift('Seed: '+globalseed);
     if(rides.length > 0) {
         ret.push('Rides: (only 1 listed per type)');
         ret = ret.concat(rides);

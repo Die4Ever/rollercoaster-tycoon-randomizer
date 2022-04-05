@@ -5,10 +5,28 @@
 
 const rando_name = 'RollerCoaster Tycoon Randomizer';
 const rando_version = '0.3';
-console.log(rando_name+" v"+rando_version+", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 46, network.mode: '+network.mode);
+
+console.log("              \n"+rando_name+" v"+rando_version
+    + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 46, recommended API version is 51'
+    + ', network.mode: '+network.mode+', context.mode: '+context.mode
+);
 
 function main() {
     try {
+        if(context.mode != 'normal') {
+            return;
+        }
+        if(network.mode == 'client') {
+            console.log(network.mode);
+            var savedData = context.getParkStorage().getAll();
+            if(savedData && savedData.hasOwnProperty('seed')) {
+                runNextTick(_main);
+            } else {
+                // TODO: fix this hack
+                console.log('ERROR: savedData not found, you probably joined the game before RCT Randomizer initialized!');
+            }
+            return;
+        }
         runNextTick(_main);
     } catch(e) {
         printException('error in _main', e);
@@ -21,7 +39,7 @@ registerPlugin({
     authors: ['Die4Ever'],
     type: 'remote',
     licence: "GPL-3.0",
-    targetApiVersion: 46,
+    targetApiVersion: 51,
     minApiVersion: 46,
     main: main
 });
@@ -49,23 +67,23 @@ function _main() {
     try {
         savedData = context.getParkStorage().getAll();
         if(savedData)
-            console.log("restored savedData", savedData);
+            console.log("restored savedData", JSON.stringify(savedData));
     } catch(e) {
         printException('error checking savedData: ', e);
     }
 
-    if(savedData && (savedData.seed || savedData.seed === 0)) {
+    if(savedData && savedData.hasOwnProperty('seed')) {
         loadedGame(savedData);
     }
     else {
         newGame();
     }
-    console.log(rando_name+" v"+rando_version+" finished startup");
+    console.log(rando_name+" v"+rando_version+" finished startup\n               ");
 }
 
 function loadedGame(savedData) {
     setGlobalSeed(savedData.seed);
-    console.log("restored saved seed "+globalseed);
+    console.log("restored saved seed "+globalseed, JSON.stringify(savedData));
     if(savedData.hasOwnProperty('difficulty'))
         difficulty = savedData.difficulty;
     if(savedData.hasOwnProperty('scenarioLength'))
@@ -109,7 +127,7 @@ function initRando() {
         context.getParkStorage().set("rando_park_values", rando_park_values);
         context.getParkStorage().set("rando_goals", rando_goals);
         context.getParkStorage().set("rando_changes", changes);
-        console.log('just saved data', context.getParkStorage().getAll());
+        console.log('just saved data', JSON.stringify(context.getParkStorage().getAll()));
     } catch(e) {
         printException('error saving seed: ', e);
     }
@@ -141,7 +159,7 @@ function SubscribeEvents() {
 
 function AddChange(key, name, from, to, factor=null) {
     var obj = {name: name, from: from, to: to, factor: factor};
-    console.log('AddChange', key, obj);
+    console.log('AddChange', key, JSON.stringify(obj));
     if(from === to && !factor) return;
 
     changes[key] = obj;
@@ -259,8 +277,7 @@ function RandomizeRideTypeField(ride, name, difficulty) {
     const old = ride[name];
     let factor = randomize(1, difficulty);
     ride[name] *= factor;
-    // TODO: get the actual name of the ride type
-    let ride_type_name = ride.name;
+    let ride_type_name = ride.object.name;
     const key_name = 'ride:'+type+':'+name;
     if( !changes[key_name] || changes[key_name].factor.toFixed(5) !== factor.toFixed(5) )
         AddChange(key_name, ride_type_name+' '+name, null, null, factor); // prefer not changing the name, don't record absolute values just the factor
@@ -273,7 +290,6 @@ function RandomizeRide(rideId) {
 
     if(ride.classification == 'ride') {
         RandomizeRideTypeField(ride, 'runningCost', 1);
-        RandomizeRideTypeField(ride, 'inspectionInterval', 1);
         RandomizeRideTypeField(ride, 'excitement', -1);
         RandomizeRideTypeField(ride, 'intensity', 0);
         RandomizeRideTypeField(ride, 'nausea', -1);
