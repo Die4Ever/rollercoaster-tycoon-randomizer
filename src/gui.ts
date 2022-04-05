@@ -140,8 +140,11 @@ function startGameGui() {
                 var wasPaused = UnpauseGame();
                 runNextTick(function() {
                     initRando();
-                    if(wasPaused.wasPaused)
-                        PauseGame();
+                    if(wasPaused.wasPaused) {
+                        // we know the game is currently unpaused because we're inside a tick event
+                        // so we don't need the fancy PauseGame function
+                        context.executeAction('pausetoggle', {});
+                    }
                 });
             } catch(e) {
                 printException('error in GUI onClose(): ', e);
@@ -198,7 +201,6 @@ function getChangesList(widget) {
     var match = true;
     for(var i in ret) {
         if(widget.items[i][0] !== ret[i]) {
-            console.log(widget.items[i][0], 'doesn\'t match', ret[i], i);
             match = false;
             break;
         }

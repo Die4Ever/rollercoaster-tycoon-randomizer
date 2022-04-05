@@ -122,7 +122,7 @@ function ifPaused(whenPaused: () => void, whenUnpaused: () => void) {
             if(whenUnpaused)
                 whenUnpaused();
         }
-    }, 250);
+    }, 100);
     return wasPaused;
 }
 

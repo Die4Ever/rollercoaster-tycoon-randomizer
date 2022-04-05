@@ -65,7 +65,7 @@ function _main() {
 
 function loadedGame(savedData) {
     setGlobalSeed(savedData.seed);
-    console.log("restored saved seed "+globalseed, savedData);
+    console.log("restored saved seed "+globalseed);
     if(savedData.hasOwnProperty('difficulty'))
         difficulty = savedData.difficulty;
     if(savedData.hasOwnProperty('scenarioLength'))
@@ -86,9 +86,9 @@ function loadedGame(savedData) {
 }
 
 function newGame() {
-    // saves in your %USERPROFILE%\Documents\OpenRCT2\plugin.store.json
+    // use for headless? saves in your %USERPROFILE%\Documents\OpenRCT2\plugin.store.json
     var nextSeed = context.sharedStorage.get('RCTRando.nextSeed');
-    console.log("nextSeed", nextSeed);
+    console.log("nextSeed was", nextSeed);
     if(nextSeed) {
         setGlobalSeed(nextSeed);
     } else {
@@ -199,7 +199,7 @@ function RandomizeScenario() {
     RandomizeObjective('monthlyIncome', 1);
     RandomizeObjective('parkValue', 1);
 
-    console.log(scenario);
+    //console.log(scenario);
     console.log(scenario.objective);
 }
 
