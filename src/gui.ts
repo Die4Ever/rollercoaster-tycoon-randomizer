@@ -148,32 +148,91 @@ function startGameGui() {
 
 function initMenuItem() {
     if (typeof ui !== 'undefined') {
-        ui.registerMenuItem("RCTRando", createChangesWindow);
+        ui.registerMenuItem("RCTRando Changes", createChangesWindow);
     }
 }
 
+function numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
+function getChangesList(widget) {
+    let ret = [];
+    let rides = [];
+    for(var i in changes) {
+        let c = changes[i];
+        let str:string;
+        if(c.factor) {
+            let factor = c.factor;
+            factor = Math.round( factor * 100 + Number.EPSILON ) / 100;
+            str = c.name+' '+factor+'x';
+        } else {
+            let from = numberWithCommas(c.from);
+            let to = numberWithCommas(c.to);
+            str = c.name+' changed from '+from+' to '+to;
+        }
+        if(i.startsWith('ride:'))
+            rides.push(str);
+        else
+            ret.push(str);
+    }
+    ret.sort();
+    rides.sort();
+    if(rides.length > 0) {
+        ret.push('Rides:');
+        ret = ret.concat(rides);
+    }
+
+    if(!widget) return ret;
+    if(widget.items.length != ret.length) {
+        widget.items = ret;
+        return ret;
+    }
+    var match = true;
+    for(var i in ret) {
+        if(widget.items[i][0] !== ret[i]) {
+            console.log(widget.items[i][0], 'doesn\'t match', ret[i], i);
+            match = false;
+            break;
+        }
+    }
+    if(!match)
+        widget.items = ret;
+    return ret;
+}
+
 function createChangesWindow() {
-    var ww = 350;
-    var wh = 300;
+    var ww = 400;
+    var wh = 350;
+
+    let changes_list:ListViewWidget;
+
+    let ticker = context.setInterval(function() {
+        getChangesList(changes_list);
+    }, 1000);
 
     var window = ui.openWindow({
         classification: 'rando-changes',
         title: "RollerCoaster Tycoon Randomizer v"+rando_version,
         width: ww,
         height: wh,
-        widgets: [].concat(
-            NewLabel('https://discord.gg/jjfKT9nYDR', {
-                name: 'url',
-                y: 0,
-                width: 2,
-                tooltip: 'Join the Discord!'
-            }),
-            NewLabel('List of things RCTRando has changed...', {
-                name: 'label',
-                y: 1,
-                width: 2,
-                tooltip: 'What\'s changed...'
-            })
-        )
+        widgets: [{
+                type: 'listview',
+                name: 'changes-list',
+                x: 0,
+                y: 13,
+                width: ww-1,
+                height: wh-13,
+                scrollbars: "vertical",
+                isStriped: true,
+                items: getChangesList(null)
+        }],
+        onClose: function() {
+            context.clearInterval(ticker);
+        }
     });
+
+    changes_list = window.findWidget('changes-list') as ListViewWidget;
 }

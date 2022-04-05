@@ -36,6 +36,8 @@ var rando_park_flags = true;
 var rando_park_values = true;
 var rando_goals = true;
 
+var changes = {};
+
 function _main() {
     var savedData;
 
@@ -76,6 +78,8 @@ function loadedGame(savedData) {
         rando_park_values = savedData.rando_park_values;
     if(savedData.hasOwnProperty('rando_goals'))
         rando_goals = savedData.rando_goals;
+    if(savedData.hasOwnProperty('rando_changes'))
+        changes = savedData.rando_changes;
     //startGameGui();// just for testing
     initMenuItem();
     SubscribeEvents();
@@ -104,6 +108,7 @@ function initRando() {
         context.getParkStorage().set("rando_park_flags", rando_park_flags);
         context.getParkStorage().set("rando_park_values", rando_park_values);
         context.getParkStorage().set("rando_goals", rando_goals);
+        context.getParkStorage().set("rando_changes", changes);
         console.log('just saved data', context.getParkStorage().getAll());
     } catch(e) {
         printException('error saving seed: ', e);
@@ -134,18 +139,39 @@ function SubscribeEvents() {
     RandomizeRideTypes();
 }
 
+function AddChange(key, name, from, to, factor=null) {
+    var obj = {name: name, from: from, to: to, factor: factor};
+    console.log('AddChange', key, obj);
+    if(from === to && !factor) return;
+
+    changes[key] = obj;
+    context.getParkStorage().set("rando_changes", changes);
+}
+
 function RandomizeParkFlag(name, difficulty) {
     var val = park.getFlag(name);
-    if( RngBoolWithDifficulty(difficulty) ) {
-        console.log('enabling flag '+name);
-        park.setFlag(name, true );
-        // TODO: we need our own UIs so we can put this kind of info in there
-        //scenario.details += '\n'+name+': '+park.getFlag(name);
+    park.setFlag(name, RngBoolWithDifficulty(difficulty));
+    AddChange(name, name, val, park.getFlag(name));
+}
+
+function RandomizeObjective(name, difficulty, scenarioLengthExp=1) {
+    if(!scenario.objective[name]) return;
+
+    const old = scenario.objective[name];
+    if(rando_goals) {
+        scenario.objective[name] = randomize(scenario.objective[name], difficulty) * (scenarioLength ** scenarioLengthExp);
+    } else {
+        scenario.objective[name] *= (scenarioLength ** scenarioLengthExp);
     }
-    else {
-        console.log('disabling flag '+name);
-        park.setFlag(name, false );
-    }
+    AddChange(name, 'Objective '+name, old, scenario.objective[name]);
+}
+
+function RandomizeField(obj, name, difficulty) {
+    if(!obj[name]) return;
+
+    const old = obj[name];
+    obj[name] = randomize(obj[name], difficulty);
+    AddChange(name, name, old, obj[name]);
 }
 
 function RandomizeScenario() {
@@ -157,8 +183,9 @@ function RandomizeScenario() {
     console.log('scenario.objective.year: ', scenario.objective.year, ', scenarioLength: '+scenarioLength);
     if(scenario.objective.year) {
         // ceil because it's nice to lean towards longer scenarios? need to make other things more difficult then
+        const old = scenario.objective.year;
         scenario.objective.year = Math.ceil(scenario.objective.year * scenarioLength);
-        console.log('scenarioLength: '+scenarioLength+', new scenario.objective.year: '+scenario.objective.year);
+        AddChange('objective.year', 'Objective Year', old, scenario.objective.year);
     } else {
         // if we fail to adjust the scenario length, then we need to treat it as 1 so that the difficulty scaling isn't ruined
         scenarioLength = 1;
@@ -167,25 +194,11 @@ function RandomizeScenario() {
     setLocalSeed('RandomizeScenarioGoals');
 
     // the excitement goal doesn't get twice as easy when you have twice as much time, so we ** 0.3
-    if(rando_goals) {
-        if(scenario.objective.guests)
-            scenario.objective.guests = randomize(scenario.objective.guests, 1) * scenarioLength;
-        if(scenario.objective.excitement)
-            scenario.objective.excitement = randomize(scenario.objective.excitement, 1) * (scenarioLength ** 0.3);
-        if(scenario.objective.monthlyIncome)
-            scenario.objective.monthlyIncome = randomize(scenario.objective.monthlyIncome, 1) * scenarioLength;
-        if(scenario.objective.parkValue)
-            scenario.objective.parkValue = randomize(scenario.objective.parkValue, 1) * scenarioLength;
-    } else {
-        if(scenario.objective.guests)
-            scenario.objective.guests *= scenarioLength;
-        if(scenario.objective.excitement)
-            scenario.objective.excitement *= scenarioLength ** 0.3;
-        if(scenario.objective.monthlyIncome)
-            scenario.objective.monthlyIncome *= scenarioLength;
-        if(scenario.objective.parkValue)
-            scenario.objective.parkValue *= scenarioLength;
-    }
+    RandomizeObjective('guests', 1);
+    RandomizeObjective('excitement', 1, 0.3);
+    RandomizeObjective('monthlyIncome', 1);
+    RandomizeObjective('parkValue', 1);
+
     console.log(scenario);
     console.log(scenario.objective);
 }
@@ -209,11 +222,11 @@ function RandomizePark() {
 
     setLocalSeed('RandomizeParkValues');
     if(rando_park_values) {
-        park.maxBankLoan = randomize(park.maxBankLoan, -1);
-        park.landPrice = randomize(park.landPrice, 1);
-        park.constructionRightsPrice = randomize(park.constructionRightsPrice, 1);
-        park.cash = randomize(park.cash, -1);
-        park.bankLoan = randomize(park.bankLoan, 1);
+        RandomizeField(park, 'maxBankLoan', -1);
+        RandomizeField(park, 'landPrice', 1);
+        RandomizeField(park, 'constructionRightsPrice', 1);
+        RandomizeField(park, 'cash', -1);
+        RandomizeField(park, 'bankLoan', 1);
     }
 }
 
@@ -239,24 +252,32 @@ function RandomizeRideTypes() {
             RandomizeRide(ratings.rideId);
         });
     });
-    context.subscribe("action.execute", function(event) {
-        if( event.action != 'trackplace' ) return;
-        if( event.isClientOnly ) return;
-        runNextTick(function() {
-            RandomizeRide(event.args['ride']);
-        });
-    });
+}
+
+function RandomizeRideTypeField(ride, name, difficulty) {
+    const type = ride.type;
+    const old = ride[name];
+    let factor = randomize(1, difficulty);
+    ride[name] *= factor;
+    // TODO: get the actual name of the ride type
+    let ride_type_name = ride.name;
+    const key_name = 'ride:'+type+':'+name;
+    if( !changes[key_name] || changes[key_name].factor.toFixed(5) !== factor.toFixed(5) )
+        AddChange(key_name, ride_type_name+' '+name, null, null, factor); // prefer not changing the name, don't record absolute values just the factor
 }
 
 function RandomizeRide(rideId) {
     let ride = map.getRide(rideId);
-    console.log('RandomizeRide '+ride.name+', type: '+ride.type);
+    console.log('RandomizeRide '+ride.name+', type: '+ride.type+', classification: '+ride.classification);
     setLocalSeed('RandomizeRide' + ride.type);
-    ride.runningCost = randomize(ride.runningCost, 1);
-    ride.inspectionInterval = randomize(ride.inspectionInterval, 1);
-    ride.excitement = randomize(ride.excitement, -1);
-    ride.intensity = randomize(ride.intensity, 0);
-    ride.nausea = randomize(ride.nausea, -1);
+
+    if(ride.classification == 'ride') {
+        RandomizeRideTypeField(ride, 'runningCost', 1);
+        RandomizeRideTypeField(ride, 'inspectionInterval', 1);
+        RandomizeRideTypeField(ride, 'excitement', -1);
+        RandomizeRideTypeField(ride, 'intensity', 0);
+        RandomizeRideTypeField(ride, 'nausea', -1);
+    }
 }
 
 function RandomizeGuests() {
