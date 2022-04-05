@@ -160,9 +160,11 @@ function initMenuItem() {
     }
 }
 
-function numberWithCommas(x) {
+function numberWithCommas(x, isMoney:boolean = false) {
     var parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if(isMoney && parts.length > 1 && parts[1].length == 1)
+        parts[1] += '0';
     return parts.join(".");
 }
 
@@ -172,14 +174,31 @@ function getChangesList(widget) {
     for(var i in changes) {
         let c = changes[i];
         let str:string;
+
         if(c.factor) {
             let factor = c.factor;
             factor = Math.round( factor * 100 + Number.EPSILON ) / 100;
             str = c.name+' '+factor+'x';
         } else {
-            let from = numberWithCommas(c.from);
-            let to = numberWithCommas(c.to);
-            str = c.name+' changed from '+from+' to '+to;
+            let isMoney:boolean = i in {'bankLoan':1, 'maxBankLoan':1, 'cash':1, 'constructionRightsPrice':1, 'landPrice':1};
+            let isBool:boolean = (typeof(c.from) === 'boolean' && typeof(c.to) === 'boolean');
+            console.log(i, isMoney, isBool);
+
+            let from = c.from;
+            let to = c.to;
+            if(isMoney) {
+                from /= 10;
+                to /= 10;
+            }
+            from = numberWithCommas(from, isMoney);
+            to = numberWithCommas(to, isMoney);
+
+            if(isBool && to)
+                str = c.name+' enabled';
+            else if(isBool)
+                str = c.name+' disabled';
+            else
+                str = c.name+' changed from '+from+' to '+to;
         }
         if(i.startsWith('ride:'))
             rides.push(str);
