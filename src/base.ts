@@ -1,6 +1,7 @@
 let debug = false;
 
 let difficulty = 0;
+let rando_range = {};
 // ~~ forces JS to convert to int
 let globalseed = ~~0;
 let tseed = ~~0;
@@ -8,7 +9,7 @@ const gen2 = ~~2147483643;
 const gen1 = ~~(gen2/2);
 
 // works with integers
-function rng(min, max) {
+function rng(min:number, max:number) {
     tseed = ~~(gen1 * tseed * 5 + gen2 + (tseed/5) * 3);
     if(tseed < 0)
         tseed = ~~(-tseed);
@@ -16,6 +17,30 @@ function rng(min, max) {
     ret += min;
     //console.log("rng("+min+", "+max+") "+tseed+", "+ret);
     return ret;
+}
+
+function rngf()
+{// 0 to 1.0
+    return rng(0, 1000000)/1000000;
+}
+
+function rngfn()
+{// -1.0 to 1.0
+    return rngf() * 2.0 - 1.0;
+}
+
+function rngexp(origmin:number, origmax:number, curve:number)
+{
+    let min = origmin;
+    let max = origmax;
+    if(min != 0)
+        min = min ** (1/curve);
+    max = (max+1) ** (1/curve);
+    let frange = max-min;
+    let f = rngf()*frange + min;
+    f = f ** curve;
+    f = clamp( f, origmin, origmax );
+    return f;
 }
 
 // boolean
@@ -64,10 +89,15 @@ function setLocalSeed(name) {
 
 function randomize(value, difficulty) {
     // difficulty > 0 means larger numbers increase difficulty, < 0 means decreases difficulty
-    var curve = GetDifficultyCurve(difficulty) * 2;
-    var min = 50 * curve;
-    var max = 150 * curve;
-    var ret = (value * rng(min, max)) / 100.0;
+    var difficulty_curve = GetDifficultyCurve(difficulty) * 2;
+    var min = rando_range['min'] * difficulty_curve * 100.0;
+    var max = rando_range['max'] * difficulty_curve * 100.0;
+    if(RngBoolWithDifficulty(difficulty)) {
+        min = Math.max(min, difficulty_curve * 100.0);
+    } else {
+        max = Math.min(max, difficulty_curve * 100.0);
+    }
+    var ret = (value * rngexp(min, max, rando_range['curve'])) / 100.0;
     //console.log('static_randomize('+value+', '+difficulty+'): '+ret);
     return ret;
 }

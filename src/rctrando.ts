@@ -44,9 +44,6 @@ registerPlugin({
     main: main
 });
 
-var difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
-// we need big numbers because of rounding issues, we call ceil so speedrun can be really low
-var scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};
 //var difficulty = 0;
 var scenarioLength = 0;// 0 means random
 var rando_ride_types = true;
@@ -98,6 +95,8 @@ function loadedGame(savedData) {
         rando_goals = savedData.rando_goals;
     if(savedData.hasOwnProperty('rando_changes'))
         changes = savedData.rando_changes;
+    if(savedData.hasOwnProperty('rando_range'))
+        rando_range = savedData.rando_range;
     //startGameGui();// just for testing
     initMenuItem();
     createChangesWindow();
@@ -120,15 +119,17 @@ function newGame() {
 
 function initRando() {
     try {
-        context.getParkStorage().set("seed", globalseed);
-        context.getParkStorage().set("difficulty", difficulty);
-        context.getParkStorage().set("scenarioLength", scenarioLength);
-        context.getParkStorage().set("rando_ride_types", rando_ride_types);
-        context.getParkStorage().set("rando_park_flags", rando_park_flags);
-        context.getParkStorage().set("rando_park_values", rando_park_values);
-        context.getParkStorage().set("rando_goals", rando_goals);
-        context.getParkStorage().set("rando_changes", changes);
-        console.log('just saved data', JSON.stringify(context.getParkStorage().getAll()));
+        let storage = context.getParkStorage();
+        storage.set("seed", globalseed);
+        storage.set("difficulty", difficulty);
+        storage.set("scenarioLength", scenarioLength);
+        storage.set("rando_ride_types", rando_ride_types);
+        storage.set("rando_park_flags", rando_park_flags);
+        storage.set("rando_park_values", rando_park_values);
+        storage.set("rando_goals", rando_goals);
+        storage.set("rando_changes", changes);
+        storage.set("rando_range", rando_range);
+        console.log('just saved data', JSON.stringify(storage.getAll()));
     } catch(e) {
         printException('error saving seed: ', e);
     }

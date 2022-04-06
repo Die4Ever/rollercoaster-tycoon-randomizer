@@ -1,3 +1,13 @@
+var difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
+// we need big numbers because of rounding issues, we call ceil so speedrun can be really low
+var scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};
+var randoRanges = {
+    Low: {min: 0.75, max: 1.5, curve: 100},
+    Medium: {min: 0.5, max: 2, curve: 1000},
+    High: {min: 0.3, max: 3, curve: 10000},
+    Extreme: {min: 0.2, max: 4, curve: 10000}
+};
+rando_range = randoRanges['Medium'];
 
 function NewWidget(widget) {
     var margin = 3;
@@ -65,7 +75,7 @@ function NewCheckbox(name, text, y, tooltip) {
 function startGameGui() {
     console.log('startGameGui()', globalseed);
     var ww = 350;
-    var wh = 300;
+    var wh = 350;
 
     if (typeof ui === 'undefined') {
         console.log('startGameGui() ui is undefined');
@@ -75,6 +85,8 @@ function startGameGui() {
 
     PauseGame();
 
+    let y = 0;
+
     var window = ui.openWindow({
         classification: 'rando-settings',
         title: "RollerCoaster Tycoon Randomizer v"+rando_version,
@@ -83,34 +95,41 @@ function startGameGui() {
         widgets: [].concat(
             NewLabel('https://discord.gg/jjfKT9nYDR', {
                 name: 'url',
-                y: 0,
+                y: y++,
                 width: 2,
                 tooltip: 'Join the Discord!'
             }),
             NewEdit('Seed:', {
                 name: 'edit-seed',
-                y: 1,
+                y: y++,
                 text: ''+globalseed,
                 tooltip: 'Enter a number'
             }),
             NewDropdown('Difficulty:', {
                 name: 'difficulty',
-                y: 2,
+                y: y++,
                 items: Object.keys(difficulties),
                 selectedIndex: 1,
                 tooltip: 'Choose a difficulty for the randomization'
             }),
+            NewDropdown('Randomization Range:', {
+                name: 'range',
+                y: y++,
+                items: Object.keys(randoRanges),
+                selectedIndex: 1,
+                tooltip: 'The range/spread of randomized values.'
+            }),
             NewDropdown('Scenario Length:', {
                 name: 'length',
-                y: 3,
+                y: y++,
                 items: Object.keys(scenarioLengths),
                 selectedIndex: 1,
                 tooltip: 'Longer scenario length will also scale up the goals so that difficulty is maintained.'
             }),
-            NewCheckbox('rando-ride-types', 'Randomize Ride Types', 4, 'Randomizes values such as excitement, intensity, and runningCost'),
-            NewCheckbox('rando-park-flags', 'Randomize Park Flags', 5, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
-            NewCheckbox('rando-park-values', 'Randomize Park Values', 6, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
-            NewCheckbox('rando-goals', 'Randomize Goals', 7, 'Even when disabled, goals will still be scaled by Scenario Length'),
+            NewCheckbox('rando-ride-types', 'Randomize Ride Types', y++, 'Randomizes values such as excitement, intensity, and runningCost'),
+            NewCheckbox('rando-park-flags', 'Randomize Park Flags', y++, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
+            NewCheckbox('rando-park-values', 'Randomize Park Values', y++, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
+            NewCheckbox('rando-goals', 'Randomize Goals', y++, 'Even when disabled, goals will still be scaled by Scenario Length'),
             [{
                 type: 'button',
                 name: 'ok-button',
@@ -128,6 +147,8 @@ function startGameGui() {
                 setGlobalSeed(s['text']);
                 var d = window.findWidget('difficulty');
                 difficulty = difficulties[d['text']];
+                var r = window.findWidget('range');
+                rando_range = randoRanges[r['text']];
                 var l = window.findWidget('length');
                 scenarioLength = scenarioLengths[l['text']];
                 rando_ride_types = (window.findWidget('rando-ride-types') as CheckboxWidget).isChecked;
