@@ -15,6 +15,6 @@ Currently v0.3 randomizes:
 
 <img src="https://i.imgur.com/7dU88V9.png" alt="v0.3 Settings Menu" width="500"/>
 
-<img src="https://i.imgur.com/BbANmZC.png" alt="v0.3 Changes List" width="600"/>
+<img src="https://i.imgur.com/a2Qd9ET.png" alt="v0.3 Changes List" width="600"/>
 
 Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR) or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM)

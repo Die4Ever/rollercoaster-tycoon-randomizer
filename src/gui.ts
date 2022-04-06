@@ -210,7 +210,7 @@ function getChangesList(widget) {
     rides.sort();
     ret.unshift('Seed: '+globalseed);
     if(rides.length > 0) {
-        ret.push('Rides: (only 1 listed per type)');
+        ret.push('Ride Types:');
         ret = ret.concat(rides);
     }
 
