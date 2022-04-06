@@ -100,6 +100,7 @@ function loadedGame(savedData) {
         changes = savedData.rando_changes;
     //startGameGui();// just for testing
     initMenuItem();
+    createChangesWindow();
     SubscribeEvents();
 }
 

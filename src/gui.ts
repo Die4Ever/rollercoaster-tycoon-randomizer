@@ -107,7 +107,7 @@ function startGameGui() {
                 selectedIndex: 1,
                 tooltip: 'Longer scenario length will also scale up the goals so that difficulty is maintained.'
             }),
-            NewCheckbox('rando-ride-types', 'Randomize Ride Types', 4, 'Randomizes values such as inspectionInterval and intensity'),
+            NewCheckbox('rando-ride-types', 'Randomize Ride Types', 4, 'Randomizes values such as excitement, intensity, and runningCost'),
             NewCheckbox('rando-park-flags', 'Randomize Park Flags', 5, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
             NewCheckbox('rando-park-values', 'Randomize Park Values', 6, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
             NewCheckbox('rando-goals', 'Randomize Goals', 7, 'Even when disabled, goals will still be scaled by Scenario Length'),
@@ -143,6 +143,7 @@ function startGameGui() {
                         // so we don't need the fancy PauseGame function
                         context.executeAction('pausetoggle', {});
                     }
+                    createChangesWindow();
                 });
             } catch(e) {
                 printException('error in GUI onClose(): ', e);
@@ -157,7 +158,6 @@ function startGameGui() {
 function initMenuItem() {
     if (typeof ui !== 'undefined') {
         ui.registerMenuItem("RCTRando Changes", createChangesWindow);
-        createChangesWindow();
     }
 }
 
