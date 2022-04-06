@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Aquire openrct2.d.ts
       run: |
         mkdir lib
@@ -14,8 +14,8 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build-release
-    - name: Upload artefacts
-      uses: actions/upload-artifact@v1
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
       with:
         name: "rollercoaster-tycoon-randomizer"
-        path: out
+        path: out/rctrando.js

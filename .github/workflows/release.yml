@@ -1,0 +1,39 @@
+name: release
+
+on:
+  release:
+    types: [released]
+env:
+  TAG_NAME: ${{ github.event.release.tag_name }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        ref: tagName
+    - name: Aquire openrct2.d.ts
+      run: |
+        mkdir lib
+        curl -Lo lib/openrct2.d.ts https://github.com/OpenRCT2/OpenRCT2/raw/develop/distribution/openrct2.d.ts
+    - name: Install
+      run: npm install
+    - name: Build
+      run: npm run build-release
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: "rollercoaster-tycoon-randomizer"
+        path: out/rctrando.js
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: out/rctrando.js
+        asset_name: rctrando.js
+        asset_content_type: text/javascript
