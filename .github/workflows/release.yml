@@ -2,7 +2,7 @@ name: release
 
 on:
   release:
-    types: [released]
+    types: [published]
 env:
   TAG_NAME: ${{ github.event.release.tag_name }}
 
