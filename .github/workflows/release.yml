@@ -3,8 +3,6 @@ name: release
 on:
   release:
     types: [published]
-env:
-  TAG_NAME: ${{ github.event.release.tag_name }}
 
 jobs:
   build:
@@ -13,7 +11,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        ref: tagName
+        ref: ${{ github.event.release.tag_name }}
     - name: Aquire openrct2.d.ts
       run: |
         mkdir lib
