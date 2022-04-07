@@ -1,7 +1,7 @@
-let debug = false;
+let debug = true;
 
 let difficulty = 0;
-let rando_range = {};
+let rando_range = 2;
 // ~~ forces JS to convert to int
 let globalseed = ~~0;
 let tseed = ~~0;
@@ -90,14 +90,11 @@ function setLocalSeed(name) {
 function randomize(value, difficulty) {
     // difficulty > 0 means larger numbers increase difficulty, < 0 means decreases difficulty
     var difficulty_curve = GetDifficultyCurve(difficulty) * 2;
-    var min = rando_range['min'] * difficulty_curve * 100.0;
-    var max = rando_range['max'] * difficulty_curve * 100.0;
-    if(RngBoolWithDifficulty(difficulty)) {
-        min = Math.max(min, difficulty_curve * 100.0);
-    } else {
-        max = Math.min(max, difficulty_curve * 100.0);
-    }
-    var ret = (value * rngexp(min, max, rando_range['curve'])) / 100.0;
+    var min = difficulty_curve * 100.0;
+    var max = rando_range * difficulty_curve * 100.0;
+    var ret = (value * rng(min, max)) / 100.0;
+    if(RngBoolWithDifficulty(difficulty))
+        ret = 1 / ret;
     //console.log('static_randomize('+value+', '+difficulty+'): '+ret);
     return ret;
 }

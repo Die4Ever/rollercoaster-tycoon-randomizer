@@ -1,12 +1,7 @@
 var difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
 // we need big numbers because of rounding issues, we call ceil so speedrun can be really low
 var scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};
-var randoRanges = {
-    Low: {min: 0.75, max: 1.5, curve: 100},
-    Medium: {min: 0.5, max: 2, curve: 1000},
-    High: {min: 0.3, max: 3, curve: 10000},
-    Extreme: {min: 0.2, max: 4, curve: 10000}
-};
+var randoRanges = { Low: 1.5, Medium: 2, High: 3, Extreme: 4 };
 rando_range = randoRanges['Medium'];
 
 function NewWidget(widget) {
