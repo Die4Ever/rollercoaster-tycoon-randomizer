@@ -4,7 +4,7 @@
 /// <reference path="tests.ts" />
 
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.3';
+const rando_version = '0.4';
 
 console.log("              \n"+rando_name+" v"+rando_version
     + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 46, recommended API version is 51'
