@@ -1,4 +1,4 @@
-let debug = true;
+let debug = false;
 
 let difficulty = 0;
 let rando_range = 2;
@@ -44,7 +44,7 @@ function rngexp(origmin:number, origmax:number, curve:number)
 }
 
 // boolean
-function brng() {
+function rng_bool() {
     // next seed
     rng(0,1);
     return (tseed >>> 15) & 1;
@@ -89,13 +89,14 @@ function setLocalSeed(name) {
 
 function randomize(value, difficulty) {
     // difficulty > 0 means larger numbers increase difficulty, < 0 means decreases difficulty
-    var difficulty_curve = GetDifficultyCurve(difficulty) * 2;
-    var min = difficulty_curve * 100.0;
-    var max = rando_range * difficulty_curve * 100.0;
-    var ret = (value * rng(min, max)) / 100.0;
-    if(RngBoolWithDifficulty(difficulty))
+    var min = 100.0;
+    var max = rando_range * 100.0;
+    var ret = rng(min, max) / 100.0;
+    if(rng_bool())
         ret = 1 / ret;
-    //console.log('static_randomize('+value+', '+difficulty+'): '+ret);
+    let difficulty_curve = GetDifficultyCurve(difficulty) * 2;
+    ret *= value * difficulty_curve;
+    //console.log('randomize('+value+', '+difficulty+'): '+ret, difficulty_curve);
     return ret;
 }
 
