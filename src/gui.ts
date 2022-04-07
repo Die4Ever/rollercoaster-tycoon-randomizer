@@ -198,7 +198,7 @@ function getChangesList(widget) {
             factor = Math.round( factor * 100 + Number.EPSILON ) / 100;
             str = name+' '+factor+'x';
         } else {
-            let isMoney:boolean = i in {'bankLoan':1, 'maxBankLoan':1, 'cash':1, 'constructionRightsPrice':1, 'landPrice':1};
+            let isMoney:boolean = i in {'bankLoan':1, 'maxBankLoan':1, 'cash':1, 'constructionRightsPrice':1, 'landPrice':1, 'parkValue':1};
             let isBool:boolean = (typeof(c.from) === 'boolean' && typeof(c.to) === 'boolean');
 
             let from = c.from;
