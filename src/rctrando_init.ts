@@ -50,7 +50,7 @@ var settings = {
     rando_range: randoRanges.Medium,
     difficulty: difficulties.Medium,
     scenarioLength: scenarioLengths.Random,
-    num_years_cycle: randoCycles.Infrequent,
+    num_months_cycle: randoCycles.Infrequent,
     rando_ride_types: true,
     rando_park_flags: true,
     rando_park_values: true,

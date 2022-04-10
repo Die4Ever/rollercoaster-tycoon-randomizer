@@ -92,7 +92,7 @@ function startGameGui() {
         settings.rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
         settings.rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
         var cycle = window.findWidget('reroll-frequency');
-        settings.num_years_cycle = randoCycles[cycle['text']];
+        settings.num_months_cycle = randoCycles[cycle['text']];
         // we need to unpause the game in order for the next tick to run
         var wasPaused = UnpauseGame();
         runNextTick(function() {
@@ -178,6 +178,7 @@ function startGameGui() {
                 height: 26,
                 text: 'Start Game',
                 onClick: function() {
+                    enable_rando = true;
                     window.close();
                 }
             }]
@@ -199,16 +200,6 @@ function startGameGui() {
 function initMenuItem() {
     if (typeof ui !== 'undefined') {
         ui.registerMenuItem("RCTRando Changes", createChangesWindow);
-        /*ui.registerMenuItem("RCTRando Changes Custom Height", function() {
-            ui.showTextInput({
-                title: 'Choose height for Changes window',
-                description: 'Default is 350, game screen is ' + ui.height,
-                initialValue: '350',
-                callback: function(str) {
-                    createChangesWindow(parseInt(str));
-                }
-            });
-        } );*/
     }
 }
 
