@@ -126,7 +126,7 @@ function startGameGui() {
                 y: y++,
                 items: Object.keys(randoCycles),
                 selectedIndex: 2,
-                tooltip: 'How often to rerandomize the stats for ride types.'
+                tooltip: 'How often to rerandomize the stats for ride types. Build the Theme Park of Theseus.'
             }),
             NewCheckbox('rando-ride-types', 'Randomize Ride Types', y++, 'Randomizes values such as excitement, intensity, and runningCost'),
             NewCheckbox('rando-park-flags', 'Randomize Park Flags', y++, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
