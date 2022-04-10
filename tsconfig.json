@@ -5,5 +5,12 @@
         "target": "ES5",
         "removeComments": true
     },
-    "files": ["src/rctrando.ts"]
+    "files": [
+        "lib/openrct2.d.ts",
+        "src/rctrando_init.ts",
+        "src/base.ts",
+        "src/gui.ts",
+        "src/rctrando.ts",
+        "src/tests.ts"
+    ]
 }

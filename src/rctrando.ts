@@ -1,134 +1,12 @@
-/// <reference path="../lib/openrct2.d.ts" />
-/// <reference path="base.ts" />
-/// <reference path="gui.ts" />
-/// <reference path="tests.ts" />
-
-const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.4';
-
-console.log("              \n"+rando_name+" v"+rando_version
-    + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 46, recommended API version is 51'
-    + ', network.mode: '+network.mode+', context.mode: '+context.mode
-);
-
-function main() {
-    try {
-        if(context.mode != 'normal') {
-            return;
-        }
-        if(network.mode == 'client') {
-            console.log(network.mode);
-            var savedData = context.getParkStorage().getAll();
-            if(savedData && savedData.hasOwnProperty('seed')) {
-                runNextTick(_main);
-            } else {
-                // TODO: fix this hack
-                console.log('ERROR: savedData not found, you probably joined the game before RCT Randomizer initialized!');
-            }
-            return;
-        }
-        runNextTick(_main);
-    } catch(e) {
-        printException('error in _main', e);
-    }
-}
-
-registerPlugin({
-    name: rando_name,
-    version: rando_version,
-    authors: ['Die4Ever'],
-    type: 'remote',
-    licence: "GPL-3.0",
-    targetApiVersion: 51,
-    minApiVersion: 46,
-    main: main
-});
-
-//var difficulty = 0;
-var scenarioLength = 0;// 0 means random
-var rando_ride_types = true;
-var rando_park_flags = true;
-var rando_park_values = true;
-var rando_goals = true;
-
-var changes = {};
-
-function _main() {
-    var savedData;
-
-    if(debug)
-        run_tests();
-
-    console.log(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode);
-
-    try {
-        savedData = context.getParkStorage().getAll();
-        if(savedData)
-            console.log("restored savedData", JSON.stringify(savedData));
-    } catch(e) {
-        printException('error checking savedData: ', e);
-    }
-
-    if(savedData && savedData.hasOwnProperty('seed')) {
-        loadedGame(savedData);
-    }
-    else {
-        newGame();
-    }
-    console.log(rando_name+" v"+rando_version+" finished startup\n               ");
-}
-
-function loadedGame(savedData) {
-    setGlobalSeed(savedData.seed);
-    console.log("restored saved seed "+globalseed, JSON.stringify(savedData));
-    if(savedData.hasOwnProperty('difficulty'))
-        difficulty = savedData.difficulty;
-    if(savedData.hasOwnProperty('scenarioLength'))
-        scenarioLength = savedData.scenarioLength;
-    if(savedData.hasOwnProperty('rando_ride_types'))
-        rando_ride_types = savedData.rando_ride_types;
-    if(savedData.hasOwnProperty('rando_park_flags'))
-        rando_park_flags = savedData.rando_park_flags;
-    if(savedData.hasOwnProperty('rando_park_values'))
-        rando_park_values = savedData.rando_park_values;
-    if(savedData.hasOwnProperty('rando_goals'))
-        rando_goals = savedData.rando_goals;
-    if(savedData.hasOwnProperty('rando_changes'))
-        changes = savedData.rando_changes;
-    if(savedData.hasOwnProperty('rando_range'))
-        rando_range = savedData.rando_range;
-    //startGameGui();// just for testing
-    initMenuItem();
-    createChangesWindow();
-    SubscribeEvents();
-}
-
-function newGame() {
-    // use for headless? saves in your %USERPROFILE%\Documents\OpenRCT2\plugin.store.json
-    var nextSeed = context.sharedStorage.get('RCTRando.nextSeed');
-    console.log("nextSeed was", nextSeed);
-    if(nextSeed) {
-        setGlobalSeed(nextSeed);
-    } else {
-        setGlobalSeed(context.getRandom(1, 999999 + 1));
-    }
-    context.sharedStorage.set("RCTRando.nextSeed", null);
-    // pause game and open menu
-    startGameGui();
-}
 
 function initRando() {
     try {
         let storage = context.getParkStorage();
-        storage.set("seed", globalseed);
-        storage.set("difficulty", difficulty);
-        storage.set("scenarioLength", scenarioLength);
-        storage.set("rando_ride_types", rando_ride_types);
-        storage.set("rando_park_flags", rando_park_flags);
-        storage.set("rando_park_values", rando_park_values);
-        storage.set("rando_goals", rando_goals);
-        storage.set("rando_changes", changes);
-        storage.set("rando_range", rando_range);
+        settings['seed'] = globalseed;
+        for(let k in settings) {
+            if(settings.hasOwnProperty(k))
+                storage.set(k, settings[k]);
+        }
         console.log('just saved data', JSON.stringify(storage.getAll()));
     } catch(e) {
         printException('error saving seed: ', e);
@@ -136,8 +14,8 @@ function initRando() {
     console.log(rando_name+' v'+rando_version
         + ' starting with seed '+globalseed
         + ', api version '+context.apiVersion
-        + ', difficulty: '+difficulty
-        + ', scenarioLength: '+scenarioLength
+        + ', difficulty: '+settings.difficulty
+        + ', scenarioLength: '+settings.scenarioLength
     );
 
     try {
@@ -164,8 +42,8 @@ function AddChange(key, name, from, to, factor=null) {
     console.log('AddChange', key, JSON.stringify(obj));
     if(from === to && !factor) return;
 
-    changes[key] = obj;
-    context.getParkStorage().set("rando_changes", changes);
+    settings.rando_changes[key] = obj;
+    context.getParkStorage().set("rando_changes", settings.rando_changes);
 }
 
 function RandomizeParkFlag(name, difficulty) {
@@ -178,10 +56,10 @@ function RandomizeObjective(name, difficulty, scenarioLengthExp=1) {
     if(!scenario.objective[name]) return;
 
     const old = scenario.objective[name];
-    if(rando_goals) {
-        scenario.objective[name] = randomize(scenario.objective[name], difficulty) * (scenarioLength ** scenarioLengthExp);
+    if(settings.rando_goals) {
+        scenario.objective[name] = randomize(scenario.objective[name], difficulty) * (settings.scenarioLength ** scenarioLengthExp);
     } else {
-        scenario.objective[name] *= (scenarioLength ** scenarioLengthExp);
+        scenario.objective[name] *= (settings.scenarioLength ** scenarioLengthExp);
     }
     AddChange(name, 'Objective '+name, old, scenario.objective[name]);
 }
@@ -196,19 +74,19 @@ function RandomizeField(obj, name, difficulty) {
 
 function RandomizeScenario() {
     setLocalSeed('RandomizeScenarioLength');
-    if(Math.abs(scenarioLength) < 0.1) {
-        scenarioLength = rng(50, 300) / 100;
+    if(Math.abs(settings.scenarioLength) < 0.1) {
+        settings.scenarioLength = rng(50, 300) / 100;
     }
     
-    console.log('scenario.objective.year: ', scenario.objective.year, ', scenarioLength: '+scenarioLength);
+    console.log('scenario.objective.year: ', scenario.objective.year, ', scenarioLength: '+settings.scenarioLength);
     if(scenario.objective.year) {
         // ceil because it's nice to lean towards longer scenarios? need to make other things more difficult then
         const old = scenario.objective.year;
-        scenario.objective.year = Math.ceil(scenario.objective.year * scenarioLength);
+        scenario.objective.year = Math.ceil(scenario.objective.year * settings.scenarioLength);
         AddChange('objective.year', 'Objective Year', old, scenario.objective.year);
     } else {
         // if we fail to adjust the scenario length, then we need to treat it as 1 so that the difficulty scaling isn't ruined
-        scenarioLength = 1;
+        settings.scenarioLength = 1;
     }
 
     setLocalSeed('RandomizeScenarioGoals');
@@ -226,7 +104,7 @@ function RandomizeScenario() {
 function RandomizePark() {
     setLocalSeed('RandomizeParkFlags');
     
-    if(rando_park_flags) {
+    if(settings.rando_park_flags) {
         RandomizeParkFlag("difficultGuestGeneration", 1);
         RandomizeParkFlag("difficultParkRating", 1);
         RandomizeParkFlag("forbidHighConstruction", 1);
@@ -241,7 +119,7 @@ function RandomizePark() {
     }
 
     setLocalSeed('RandomizeParkValues');
-    if(rando_park_values) {
+    if(settings.rando_park_values) {
         RandomizeField(park, 'maxBankLoan', -1);
         RandomizeField(park, 'landPrice', 1);
         RandomizeField(park, 'constructionRightsPrice', 1);
@@ -260,7 +138,7 @@ function RandomizeClimate() {
 }
 
 function RandomizeRideTypes() {
-    if(!rando_ride_types)
+    if(!settings.rando_ride_types)
         return;
 
     for(var r in map.rides) {
@@ -281,14 +159,16 @@ function RandomizeRideTypeField(ride, name, difficulty) {
     ride[name] *= factor;
     let ride_type_name = ride.object.name;
     const key_name = 'ride:'+type+':'+name;
-    if( !changes[key_name] || changes[key_name].factor.toFixed(5) !== factor.toFixed(5) )
+    if( !settings.rando_changes[key_name] || settings.rando_changes[key_name].factor.toFixed(5) !== factor.toFixed(5) )
         AddChange(key_name, ride_type_name+' '+name, null, null, factor); // prefer not changing the name, don't record absolute values just the factor
 }
 
 function RandomizeRide(rideId) {
     let ride = map.getRide(rideId);
-    console.log('RandomizeRide '+ride.name+', type: '+ride.type+', classification: '+ride.classification);
-    setLocalSeed('RandomizeRide' + ride.type);
+    console.log('RandomizeRide '+ride.name+', type: '+ride.object.name+' ('+ride.type+')'
+        + ', classification: '+ride.classification+', date.yearsElapsed: '+date.yearsElapsed
+        + ', num_years_cycle: '+settings.num_years_cycle);
+    setLocalSeed('RandomizeRide ' + ride.type);
 
     if(ride.classification == 'ride') {
         RandomizeRideTypeField(ride, 'runningCost', 1);

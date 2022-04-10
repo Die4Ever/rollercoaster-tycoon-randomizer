@@ -1,11 +1,11 @@
 /// <reference path="base.ts" />
 
 function test_difficulty(goal, d) {
-    difficulty = goal;
+    settings.difficulty = goal;
     let currDifficulty = 1;
     let num = 1000;
 
-    console.log('                  \ntest_difficulty', goal, d, JSON.stringify(rando_range));
+    console.log('                  \ntest_difficulty', goal, d, JSON.stringify(settings.rando_range));
 
     let total = 0;
     for(var i=0; i<num; i++) {
@@ -38,8 +38,8 @@ function test_difficulty(goal, d) {
 function run_tests() {
     console.log('starting tests...');
     setGlobalSeed(25);
-    var oldRange = rando_range;
-    rando_range = randoRanges['Medium'];
+    var oldRange = settings.rando_range;
+    settings.rando_range = randoRanges['Medium'];
     for(var d = -0.6; d < 0.7; d += 0.6) {
         for(var i = -1; i <= 1; i += 1) {
             test_difficulty(d, i);
@@ -47,17 +47,16 @@ function run_tests() {
     }
 
     for(var r in randoRanges) {
-        rando_range = randoRanges[r];
+        settings.rando_range = randoRanges[r];
         console.log('            \nrun_tests range', r);
         test_difficulty(0, 0);
     }
 
-    rando_range = randoRanges['Extreme'];
+    settings.rando_range = randoRanges['Extreme'];
     test_difficulty(difficulties['Extreme'], 1);
     test_difficulty(difficulties['Extreme'], -1);
 
-    rando_range = oldRange;
-    let currDifficulty = 1;
-    difficulty = 1;
+    settings.rando_range = oldRange;
+    settings.difficulty = 1;
     console.log('finished tests');
 }

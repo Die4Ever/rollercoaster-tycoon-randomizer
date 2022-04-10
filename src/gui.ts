@@ -1,8 +1,8 @@
-var difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
+const difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
 // we need big numbers because of rounding issues, we call ceil so speedrun can be really low
-var scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};
-var randoRanges = { Low: 1.5, Medium: 2, High: 3, Extreme: 4 };
-rando_range = randoRanges['Medium'];
+const scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};
+const randoRanges = { Low: 1.5, Medium: 2, High: 3, Extreme: 4 };
+//settings.rando_range = randoRanges['Medium'];
 
 function NewWidget(widget) {
     var margin = 3;
@@ -141,15 +141,15 @@ function startGameGui() {
                 var s = window.findWidget('edit-seed');
                 setGlobalSeed(s['text']);
                 var d = window.findWidget('difficulty');
-                difficulty = difficulties[d['text']];
+                settings.difficulty = difficulties[d['text']];
                 var r = window.findWidget('range');
-                rando_range = randoRanges[r['text']];
+                settings.rando_range = randoRanges[r['text']];
                 var l = window.findWidget('length');
-                scenarioLength = scenarioLengths[l['text']];
-                rando_ride_types = (window.findWidget('rando-ride-types') as CheckboxWidget).isChecked;
-                rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
-                rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
-                rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
+                settings.scenarioLength = scenarioLengths[l['text']];
+                settings.rando_ride_types = (window.findWidget('rando-ride-types') as CheckboxWidget).isChecked;
+                settings.rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
+                settings.rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
+                settings.rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
                 // we need to unpause the game in order for the next tick to run
                 var wasPaused = UnpauseGame();
                 runNextTick(function() {
@@ -188,8 +188,8 @@ function numberWithCommas(x, isMoney:boolean = false) {
 function getChangesList(widget) {
     let ret = [];
     let rides = [];
-    for(var i in changes) {
-        let c = changes[i];
+    for(var i in settings.rando_changes) {
+        let c = settings.rando_changes[i];
         let str:string;
         let name = c.name;
 

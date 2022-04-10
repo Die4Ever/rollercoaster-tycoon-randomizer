@@ -1,7 +1,3 @@
-let debug = false;
-
-let difficulty = 0;
-let rando_range = 2;
 // ~~ forces JS to convert to int
 let globalseed = ~~0;
 let tseed = ~~0;
@@ -56,7 +52,7 @@ function clamp(number, min, max) {
 
 function GetDifficultyCurve(d) {
     if(d == 0) return 0.5;
-    var dist = Math.abs(difficulty - d);
+    var dist = Math.abs(settings.difficulty - d);
     return 1 - (dist / (dist + 1));
 }
 
@@ -90,7 +86,7 @@ function setLocalSeed(name) {
 function randomize(value, difficulty) {
     // difficulty > 0 means larger numbers increase difficulty, < 0 means decreases difficulty
     var min = 100.0;
-    var max = rando_range * 100.0;
+    var max = settings.rando_range * 100.0;
     var ret = rng(min, max) / 100.0;
     if(rng_bool())
         ret = 1 / ret;
