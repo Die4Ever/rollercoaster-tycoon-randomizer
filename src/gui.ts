@@ -2,7 +2,7 @@ const difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
 // we need big numbers because of rounding issues, we call ceil so speedrun can be really low
 const scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};
 const randoRanges = { Low: 1.5, Medium: 2, High: 3, Extreme: 4 };
-//settings.rando_range = randoRanges['Medium'];
+const randoCycles = { Never: 0, Infrequent: 80, 'Semi-Frequent': 40, Frequent: 24, Constant: 8 };// every 10 years, 5, 3, 1
 
 function NewWidget(widget) {
     var margin = 3;
@@ -121,6 +121,13 @@ function startGameGui() {
                 selectedIndex: 1,
                 tooltip: 'Longer scenario length will also scale up the goals so that difficulty is maintained.'
             }),
+            NewDropdown('Ride Type Stat Re-rolls:', {
+                name: 'reroll-frequency',
+                y: y++,
+                items: Object.keys(randoCycles),
+                selectedIndex: 2,
+                tooltip: 'How often to rerandomize the stats for ride types.'
+            }),
             NewCheckbox('rando-ride-types', 'Randomize Ride Types', y++, 'Randomizes values such as excitement, intensity, and runningCost'),
             NewCheckbox('rando-park-flags', 'Randomize Park Flags', y++, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
             NewCheckbox('rando-park-values', 'Randomize Park Values', y++, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
@@ -150,6 +157,8 @@ function startGameGui() {
                 settings.rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
                 settings.rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
                 settings.rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
+                var cycle = window.findWidget('reroll-frequency');
+                settings.num_years_cycle = randoCycles[cycle['text']];
                 // we need to unpause the game in order for the next tick to run
                 var wasPaused = UnpauseGame();
                 runNextTick(function() {

@@ -159,22 +159,36 @@ function RandomizeRideTypeField(ride, name, difficulty) {
     ride[name] *= factor;
     let ride_type_name = ride.object.name;
     const key_name = 'ride:'+type+':'+name;
-    if( !settings.rando_changes[key_name] || settings.rando_changes[key_name].factor.toFixed(5) !== factor.toFixed(5) )
+    if( !settings.rando_changes[key_name] || settings.rando_changes[key_name].factor.toFixed(5) !== factor.toFixed(5) ) {
+        let ret:boolean = settings.rando_changes[key_name];
         AddChange(key_name, ride_type_name+' '+name, null, null, factor); // prefer not changing the name, don't record absolute values just the factor
+        return ret;
+    }
+    return false;
 }
 
 function RandomizeRide(rideId) {
     let ride = map.getRide(rideId);
+
+    let cycle:number = Math.floor((ride.type + date.monthsElapsed) / settings.num_years_cycle);
+    setLocalSeed('RandomizeRide ' + ride.type + ' ' + cycle);
+
     console.log('RandomizeRide '+ride.name+', type: '+ride.object.name+' ('+ride.type+')'
         + ', classification: '+ride.classification+', date.yearsElapsed: '+date.yearsElapsed
-        + ', num_years_cycle: '+settings.num_years_cycle);
-    setLocalSeed('RandomizeRide ' + ride.type);
+        + ', num_years_cycle: '+settings.num_years_cycle+', cycle: '+cycle);
 
+    let changed:boolean = false;
     if(ride.classification == 'ride') {
-        RandomizeRideTypeField(ride, 'runningCost', 1);
-        RandomizeRideTypeField(ride, 'excitement', -1);
-        RandomizeRideTypeField(ride, 'intensity', 0);
-        RandomizeRideTypeField(ride, 'nausea', -1);
+        changed ||= RandomizeRideTypeField(ride, 'runningCost', 1);
+        changed ||= RandomizeRideTypeField(ride, 'excitement', -1);
+        changed ||= RandomizeRideTypeField(ride, 'intensity', 0);
+        changed ||= RandomizeRideTypeField(ride, 'nausea', -1);
+    }
+
+    if(changed) {
+        park.postMessage(
+            {type: 'attraction', text: ride.object.name + ' stats have been randomized', subject: rideId} as ParkMessageDesc
+        );
     }
 }
 

@@ -1,5 +1,5 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.4';
+const rando_version = '0.5 Alpha';
 let debug:boolean = false;
 
 console.log("              \n"+rando_name+" v"+rando_version
@@ -49,7 +49,7 @@ var settings = {
     rando_park_values: true,
     rando_goals: true,
     rando_changes: {},
-    num_years_cycle: 5
+    num_years_cycle: 40// 8 months per year in RCT, 5 years per cycle
 };
 
 function _main() {
