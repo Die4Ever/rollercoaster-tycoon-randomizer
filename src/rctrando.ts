@@ -23,8 +23,9 @@ function initRando() {
         RandomizePark();
         RandomizeMap();
         RandomizeClimate();
-        SubscribeEvents();
+        RandomizeRideTypes();
         RandomizeGuests();
+        SubscribeEvents();
     } catch(e) {
         printException('error in initRando(): ', e);
     }
@@ -34,7 +35,16 @@ function SubscribeEvents() {
     context.subscribe("guest.generation", function(id) {
         RandomizeGuest(map.getEntity(id.id));
     });
-    RandomizeRideTypes();
+
+    context.subscribe("ride.ratings.calculate", function(ratings) {
+        runNextTick(function() {
+            RandomizeRide(ratings.rideId);
+        });
+    });
+
+    context.subscribe("interval.day", function() {
+        UpdateNonexistentRides();
+    });
 }
 
 function AddChange(key, name, from, to, factor=null) {
@@ -138,57 +148,87 @@ function RandomizeClimate() {
 }
 
 function RandomizeRideTypes() {
-    if(!settings.rando_ride_types)
-        return;
-
     for(var r in map.rides) {
         RandomizeRide(map.rides[r].id);
     }
-
-    context.subscribe("ride.ratings.calculate", function(ratings) {
-        runNextTick(function() {
-            RandomizeRide(ratings.rideId);
-        });
-    });
 }
 
-function RandomizeRideTypeField(ride, name, difficulty) {
-    const type = ride.type;
-    const old = ride[name];
+function RandomizeRideTypeField(ride, rideTypeName, rideTypeId, name, difficulty) {
+    const type = rideTypeId;
     let factor = randomize(1, difficulty);
-    ride[name] *= factor;
-    let ride_type_name = ride.object.name;
+    if(ride)
+        ride[name] *= factor;
     const key_name = 'ride:'+type+':'+name;
     if( !settings.rando_changes[key_name] || settings.rando_changes[key_name].factor.toFixed(5) !== factor.toFixed(5) ) {
         let ret:boolean = settings.rando_changes[key_name];
-        AddChange(key_name, ride_type_name+' '+name, null, null, factor); // prefer not changing the name, don't record absolute values just the factor
+        AddChange(key_name, rideTypeName+' '+name, null, null, factor); // don't record absolute values just the factor
         return ret;
     }
     return false;
 }
 
 function RandomizeRide(rideId) {
+    if(!settings.rando_ride_types)
+        return;
     let ride = map.getRide(rideId);
+    RandomizeRideType(ride, ride.object.name, ride.type);
+}
 
-    let cycle:number = Math.floor((ride.type + date.monthsElapsed) / settings.num_years_cycle);
-    setLocalSeed('RandomizeRide ' + ride.type + ' ' + cycle);
-
-    console.log('RandomizeRide '+ride.name+', type: '+ride.object.name+' ('+ride.type+')'
-        + ', classification: '+ride.classification+', date.yearsElapsed: '+date.yearsElapsed
-        + ', num_years_cycle: '+settings.num_years_cycle+', cycle: '+cycle);
-
-    let changed:boolean = false;
-    if(ride.classification == 'ride') {
-        changed ||= RandomizeRideTypeField(ride, 'runningCost', 1);
-        changed ||= RandomizeRideTypeField(ride, 'excitement', -1);
-        changed ||= RandomizeRideTypeField(ride, 'intensity', 0);
-        changed ||= RandomizeRideTypeField(ride, 'nausea', -1);
+function RandomizeRideType(ride, rideTypeName, rideTypeId) {
+    setLocalSeed('RandomizeRide cycle ' + rideTypeId);
+    let cycle:number = 0;
+    if(settings.num_years_cycle) {
+        let rand_cycle = rng(0, settings.num_years_cycle * 1000);
+        cycle = Math.floor((rand_cycle + date.monthsElapsed) / settings.num_years_cycle);
     }
 
-    if(changed) {
+    setLocalSeed('RandomizeRide ' + rideTypeId + ' ' + cycle);
+
+    /*console.log('RandomizeRide type: '+rideTypeName+' ('+rideTypeId+')'
+        + ', date.yearsElapsed: '+date.yearsElapsed
+        + ', num_years_cycle: '+settings.num_years_cycle+', cycle: '+cycle);*/
+
+    let changed:boolean = false;
+    if(!ride || ride.classification == 'ride') {
+        changed ||= RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1);
+        changed ||= RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'excitement', -1);
+        changed ||= RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'intensity', 0);
+        changed ||= RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1);
+    }
+
+    if(changed && ride) {
+        let rideId = ride.id;
         park.postMessage(
-            {type: 'attraction', text: ride.object.name + ' stats have been randomized', subject: rideId} as ParkMessageDesc
+            {type: 'attraction', text: rideTypeName + ' stats have been randomized', subject: rideId} as ParkMessageDesc
         );
+    } else if(changed) {
+        park.postMessage(
+            {type: 'attraction', text: rideTypeName + ' stats have been randomized'} as ParkMessageDesc
+        );
+    }
+}
+
+function UpdateNonexistentRides() {
+    // existing rides will get randomized at their own time
+    var existingRideTypes = {};
+    for(var r in map.rides) {
+        let type = map.rides[r].type;
+        existingRideTypes[type] = 1;
+    }
+    
+    // now loop through changes array to show changes for ride types that are no longer in the park
+    for(var c in settings.rando_changes) {
+        let m = c.match(/ride:(\d+):(.+)/);
+        if(!m) continue;
+        let type:number = parseInt(m[1]);
+        let field = m[2];
+        if(existingRideTypes[type]) continue;
+        // only run each one once
+        existingRideTypes[type] = 1;
+
+        let change_name = settings.rando_changes[c].name;
+        let rideTypeName = change_name.replace(' '+field, '');
+        RandomizeRideType(null, rideTypeName, type);
     }
 }
 
@@ -200,5 +240,5 @@ function RandomizeGuests() {
 }
 
 function RandomizeGuest(guest) {
-    setLocalSeed('RandomizeGuest' + guest.id);
+    setLocalSeed('RandomizeGuest ' + guest.id);
 }

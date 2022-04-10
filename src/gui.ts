@@ -1,8 +1,3 @@
-const difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
-// we need big numbers because of rounding issues, we call ceil so speedrun can be really low
-const scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};
-const randoRanges = { Low: 1.5, Medium: 2, High: 3, Extreme: 4 };
-const randoCycles = { Never: 0, Infrequent: 80, 'Semi-Frequent': 40, Frequent: 24, Constant: 8 };// every 10 years, 5, 3, 1
 
 function NewWidget(widget) {
     var margin = 3;
@@ -71,6 +66,7 @@ function startGameGui() {
     console.log('startGameGui()', globalseed);
     var ww = 350;
     var wh = 350;
+    let enable_rando:boolean = true;
 
     if (typeof ui === 'undefined') {
         console.log('startGameGui() ui is undefined');
@@ -81,6 +77,34 @@ function startGameGui() {
     PauseGame();
 
     let y = 0;
+
+    var onStart = function(window) {
+        var s = window.findWidget('edit-seed');
+        setGlobalSeed(s['text']);
+        var d = window.findWidget('difficulty');
+        settings.difficulty = difficulties[d['text']];
+        var r = window.findWidget('range');
+        settings.rando_range = randoRanges[r['text']];
+        var l = window.findWidget('length');
+        settings.scenarioLength = scenarioLengths[l['text']];
+        settings.rando_ride_types = (window.findWidget('rando-ride-types') as CheckboxWidget).isChecked;
+        settings.rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
+        settings.rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
+        settings.rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
+        var cycle = window.findWidget('reroll-frequency');
+        settings.num_years_cycle = randoCycles[cycle['text']];
+        // we need to unpause the game in order for the next tick to run
+        var wasPaused = UnpauseGame();
+        runNextTick(function() {
+            initRando();
+            if(wasPaused.wasPaused) {
+                // we know the game is currently unpaused because we're inside a tick event
+                // so we don't need the fancy PauseGame function
+                context.executeAction('pausetoggle', {});
+            }
+            createChangesWindow();
+        });
+    };
 
     var window = ui.openWindow({
         classification: 'rando-settings',
@@ -125,7 +149,7 @@ function startGameGui() {
                 name: 'reroll-frequency',
                 y: y++,
                 items: Object.keys(randoCycles),
-                selectedIndex: 2,
+                selectedIndex: 1,
                 tooltip: 'How often to rerandomize the stats for ride types. Build the Theme Park of Theseus.'
             }),
             NewCheckbox('rando-ride-types', 'Randomize Ride Types', y++, 'Randomizes values such as excitement, intensity, and runningCost'),
@@ -134,44 +158,36 @@ function startGameGui() {
             NewCheckbox('rando-goals', 'Randomize Goals', y++, 'Even when disabled, goals will still be scaled by Scenario Length'),
             [{
                 type: 'button',
+                name: 'cancel-button',
+                x: ww - 90 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 90,
+                height: 26,
+                text: 'Disable Rando',
+                onClick: function() {
+                    enable_rando = false;
+                    window.close();
+                }
+            },
+            {
+                type: 'button',
                 name: 'ok-button',
                 x: ww - 90 - 6,
                 y: wh - 6 - 26,
                 width: 90,
                 height: 26,
                 text: 'Start Game',
-                onClick: function() { window.close(); }
+                onClick: function() {
+                    window.close();
+                }
             }]
         ),
         onClose: function() {
             try {
-                var s = window.findWidget('edit-seed');
-                setGlobalSeed(s['text']);
-                var d = window.findWidget('difficulty');
-                settings.difficulty = difficulties[d['text']];
-                var r = window.findWidget('range');
-                settings.rando_range = randoRanges[r['text']];
-                var l = window.findWidget('length');
-                settings.scenarioLength = scenarioLengths[l['text']];
-                settings.rando_ride_types = (window.findWidget('rando-ride-types') as CheckboxWidget).isChecked;
-                settings.rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
-                settings.rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
-                settings.rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
-                var cycle = window.findWidget('reroll-frequency');
-                settings.num_years_cycle = randoCycles[cycle['text']];
-                // we need to unpause the game in order for the next tick to run
-                var wasPaused = UnpauseGame();
-                runNextTick(function() {
-                    initRando();
-                    if(wasPaused.wasPaused) {
-                        // we know the game is currently unpaused because we're inside a tick event
-                        // so we don't need the fancy PauseGame function
-                        context.executeAction('pausetoggle', {});
-                    }
-                    createChangesWindow();
-                });
+                if(enable_rando)
+                    onStart(window);
             } catch(e) {
-                printException('error in GUI onClose(): ', e);
+                printException('error in GUI onClick(): ', e);
             }
         }
     });
@@ -183,6 +199,16 @@ function startGameGui() {
 function initMenuItem() {
     if (typeof ui !== 'undefined') {
         ui.registerMenuItem("RCTRando Changes", createChangesWindow);
+        /*ui.registerMenuItem("RCTRando Changes Custom Height", function() {
+            ui.showTextInput({
+                title: 'Choose height for Changes window',
+                description: 'Default is 350, game screen is ' + ui.height,
+                initialValue: '350',
+                callback: function(str) {
+                    createChangesWindow(parseInt(str));
+                }
+            });
+        } );*/
     }
 }
 
@@ -235,7 +261,7 @@ function getChangesList(widget) {
     rides.sort();
     ret.unshift('Seed: '+globalseed);
     if(rides.length > 0) {
-        ret.push('Ride Types:');
+        ret.push('==== Ride Types: ====');
         ret = ret.concat(rides);
     }
 
@@ -256,34 +282,48 @@ function getChangesList(widget) {
     return ret;
 }
 
-function createChangesWindow() {
-    var ww = 400;
-    var wh = 350;
-
+function createChangesWindow(window_height:number=350, window_width:number=400) {
+    let window:Window;
     let changes_list:ListViewWidget;
+    let paddingLeft = 7;
+    let paddingRight = 7;
+    let paddingTop = 16;
+    let paddingBottom = 7;
 
     let ticker = context.setInterval(function() {
         getChangesList(changes_list);
     }, 1000);
 
-    var window = ui.openWindow({
+    let changes_list_desc:Widget = {
+        type: 'listview',
+        name: 'changes-list',
+        x: paddingLeft,
+        y: paddingTop,
+        width: window_width - 1 - paddingLeft - paddingRight,
+        height: window_height - paddingTop - paddingBottom,
+        scrollbars: "vertical",
+        //isStriped: true,
+        items: getChangesList(null)
+    };
+
+    window = ui.openWindow({
         classification: 'rando-changes',
         title: "RollerCoaster Tycoon Randomizer v"+rando_version,
-        width: ww,
-        height: wh,
-        widgets: [{
-                type: 'listview',
-                name: 'changes-list',
-                x: 0,
-                y: 13,
-                width: ww-1,
-                height: wh-13,
-                scrollbars: "vertical",
-                isStriped: true,
-                items: getChangesList(null)
-        }],
+        width: window_width,
+        height: window_height,
+        minWidth: 100,
+        minHeight: 100,
+        maxWidth: 1000,
+        maxHeight: 5000,
+        widgets: [
+            changes_list_desc
+        ],
         onClose: function() {
             context.clearInterval(ticker);
+        },
+        onUpdate: function() {
+            changes_list.width = window.width - 1 - paddingLeft - paddingRight;
+            changes_list.height = window.height - paddingTop - paddingBottom;
         }
     });
 

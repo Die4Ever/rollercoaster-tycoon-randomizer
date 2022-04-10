@@ -1,5 +1,5 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.5 Alpha';
+const rando_version = '0.5 Beta';
 let debug:boolean = false;
 
 console.log("              \n"+rando_name+" v"+rando_version
@@ -40,16 +40,22 @@ registerPlugin({
     main: main
 });
 
+const difficulties = {Easy: -0.3, Medium: 0, Hard: 0.3, Extreme: 0.6};
+const scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};// we need big numbers because of rounding issues, we call ceil so speedrun can be really low
+const randoRanges = { Low: 1.5, Medium: 2, High: 3, Extreme: 4 };
+const randoCycles = { Never: 0, Infrequent: 80, 'Semi-Frequent': 40, Frequent: 24, 'Very Frequent': 8 };// 8 months per RCT year, every 10 years, 5, 3, 1
+
 var settings = {
-    rando_range: 2,
-    difficulty: 0,
-    scenarioLength: 0,// 0 means random
+    rando_version: rando_version,
+    rando_range: randoRanges.Medium,
+    difficulty: difficulties.Medium,
+    scenarioLength: scenarioLengths.Random,
+    num_years_cycle: randoCycles.Infrequent,
     rando_ride_types: true,
     rando_park_flags: true,
     rando_park_values: true,
     rando_goals: true,
-    rando_changes: {},
-    num_years_cycle: 40// 8 months per year in RCT, 5 years per cycle
+    rando_changes: {}
 };
 
 function _main() {
