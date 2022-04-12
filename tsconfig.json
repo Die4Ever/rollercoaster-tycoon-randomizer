@@ -11,6 +11,7 @@
         "src/base.ts",
         "src/gui.ts",
         "src/rctrando.ts",
-        "src/tests.ts"
+        "src/tests.ts",
+        "src/ridetypes.ts"
     ]
 }

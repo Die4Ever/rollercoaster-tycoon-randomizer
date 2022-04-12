@@ -37,6 +37,7 @@ function test_difficulty(goal, d) {
 
 function run_tests() {
     console.log('starting tests...');
+    console.log(RideType[1]);
     setGlobalSeed(25);
     var oldRange = settings.rando_range;
     settings.rando_range = randoRanges['Medium'];

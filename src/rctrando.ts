@@ -171,8 +171,7 @@ function RandomizeRide(rideId) {
     if(!settings.rando_ride_types)
         return;
     let ride = map.getRide(rideId);
-    // TODO: ride.object.name is the name of the vehicle not the ride type
-    RandomizeRideType(ride, ride.object.name, ride.type);
+    RandomizeRideType(ride, RideType[ride.type], ride.type);
 }
 
 function RandomizeRideType(ride, rideTypeName, rideTypeId) {
