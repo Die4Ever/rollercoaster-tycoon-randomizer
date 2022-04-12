@@ -201,11 +201,11 @@ function RandomizeRideType(ride, rideTypeName, rideTypeId) {
     if(changed && ride) {
         let rideId = ride.id;
         park.postMessage(
-            {type: 'attraction', text: rideTypeName + ' '+rideTypeId+' stats have been re-rolled', subject: rideId} as ParkMessageDesc
+            {type: 'attraction', text: rideTypeName + ' stats have been re-rolled', subject: rideId} as ParkMessageDesc
         );
     } else if(changed) {
         park.postMessage(
-            {type: 'attraction', text: rideTypeName + ' '+rideTypeId+' stats have been re-rolled'} as ParkMessageDesc
+            {type: 'attraction', text: rideTypeName + ' stats have been re-rolled'} as ParkMessageDesc
         );
     }
 }
