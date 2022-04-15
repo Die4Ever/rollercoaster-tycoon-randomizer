@@ -5,7 +5,7 @@ You'll need a development build of OpenRCT2 from https://openrct2.org/downloads/
 
 Copy the `rctrando.js` file into the OpenRCT2 plugin folder, which is usually `%USERPROFILE%\Documents\OpenRCT2\plugin\`
 
-Currently v0.5 randomizes:
+Currently v0.6 randomizes:
 * scenario goals
 * scenario length
 * park values such as starting cash, starting bank loan amount, maxBankLoan, landPrice
@@ -20,6 +20,6 @@ The Randomization Range option specifies how much values can be changed from the
 
 <img src="https://i.imgur.com/oEhD1Y4.png" alt="Settings Menu" width="500"/>
 
-<img src="https://i.imgur.com/xL7YPl1.png" alt="Changes List" width="600"/>
+<img src="https://i.imgur.com/SMsBbDk.png" alt="Changes List" width="600"/>
 
 Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR) or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM)

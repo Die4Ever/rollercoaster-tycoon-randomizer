@@ -1,5 +1,5 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.5';
+const rando_version = '0.6';
 let debug:boolean = false;
 
 console.log("              \n"+rando_name+" v"+rando_version

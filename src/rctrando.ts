@@ -37,6 +37,7 @@ function SubscribeEvents() {
     });
 
     context.subscribe("ride.ratings.calculate", function(ratings) {
+        // TODO: do I need to modify the values in ratings, or does this work fine because it happens next tick?
         runNextTick(function() {
             RandomizeRide(ratings.rideId);
         });
