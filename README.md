@@ -1,7 +1,7 @@
 # RollerCoaster Tycoon Randomizer
 RollerCoaster Tycoon Randomizer mod for RCT1 and RCT2 inside of [OpenRCT2](https://openrct2.org/).
 
-You'll need a development build of OpenRCT2 from https://openrct2.org/downloads/develop/latest
+You'll need OpenRCT2 v0.4.0 or later from https://openrct2.org/downloads/releases/latest
 
 Copy the `rctrando.js` file into the OpenRCT2 plugin folder, which is usually `%USERPROFILE%\Documents\OpenRCT2\plugin\`
 
