@@ -80,6 +80,8 @@ function _main() {
     else {
         newGame();
     }
+
+    init_crowdcontrol();
     console.log(rando_name+" v"+rando_version+" finished startup\n               ");
 }
 
