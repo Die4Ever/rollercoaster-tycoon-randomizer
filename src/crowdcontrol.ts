@@ -3,10 +3,10 @@ let cc_sock: Socket = null;
 let cc_good: boolean = false;
 
 function cc_onError(hadError: boolean) {
-    console.log('error in Crowd Control connection, attempting to reconnect');
+    console.log('error in Crowd Control connection, will keep trying...');
     if(cc_good) {
         park.postMessage(
-            {type: 'blank', text: 'error in Crowd Control connection, attempting to reconnect'} as ParkMessageDesc
+            {type: 'blank', text: 'error in Crowd Control connection, will keep trying...'} as ParkMessageDesc
         );
     }
     cc_good = false;
@@ -14,10 +14,10 @@ function cc_onError(hadError: boolean) {
 }
 
 function cc_onClose(hadError: boolean) {
-    console.log('Crowd Control connection closed, attempting to reconnect');
+    console.log('Crowd Control connection closed, will keep trying...');
     if(cc_good) {
         park.postMessage(
-            {type: 'blank', text: 'Crowd Control connection closed, attempting to reconnect'} as ParkMessageDesc
+            {type: 'blank', text: 'Crowd Control connection closed, will keep trying...'} as ParkMessageDesc
         );
     }
     cc_good = false;

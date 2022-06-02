@@ -192,6 +192,9 @@ function RandomizeRideType(ride, rideTypeName, rideTypeId) {
         changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'intensity', 0) || changed;
         changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1) || changed;
     }
+    else if(!ride || ride.classification != 'ride') {
+        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
+    }
 
     /*if(changed) {
         console.log('RandomizeRide type: '+rideTypeName+' ('+rideTypeId+')'
