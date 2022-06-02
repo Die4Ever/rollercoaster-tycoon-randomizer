@@ -161,6 +161,11 @@ function RandomizeRideTypeField(ride, rideTypeName, rideTypeId, name, difficulty
         ride[name] *= factor;
     const key_name = 'ride:'+type+':'+name;
     let old_change = settings.rando_changes[key_name];
+    if(!ride && !old_change) {
+        // when run generically with no specific ride, we're just updating the GUI
+        // don't add new values, just update existing ones, because the ride might not have all these properties (shops/stalls)
+        return false;
+    }
     if( !old_change || old_change.factor.toFixed(5) !== factor.toFixed(5) ) {
         AddChange(key_name, rideTypeName+' '+name, null, null, factor); // don't record absolute values just the factor
         return old_change as boolean;
