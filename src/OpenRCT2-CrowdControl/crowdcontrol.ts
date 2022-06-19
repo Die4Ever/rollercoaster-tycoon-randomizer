@@ -26,6 +26,12 @@ function cc_onClose(hadError: boolean) {
     cc_connect();
 }
 
+function cc_onExpectedClose(hadError: boolean) {
+    console.log('Crowd Control connection closed cc_onExpectedClose, will keep trying...');
+    cc_good = true;
+    cc_connect();
+}
+
 function cc_reconnect() {
     //console.log('Crowd Control reconnecting...');
     cc_connect();
@@ -54,9 +60,7 @@ function cc_onData(message: string) {
     try {
         let r: string = JSON.stringify(resp) + '\0';
         console.log(message, r.length, r);
-        cc_sock.end(r);
-        cc_good = true;
-        cc_reset_timeout();
+        cc_end(r);
     } catch(e) {
         printException('error sending Crowd Control response to: ' + message, e);
     }
@@ -68,19 +72,54 @@ function cc_reset_timeout() {
         cc_reconnect_interval = null;
     }
 
-    cc_reconnect_interval = context.setInterval(cc_reconnect, 15000);
+    //cc_reconnect_interval = context.setInterval(cc_end, 5000);
 }
 
-function cc_close(data?:string) {
+function cc_end(data?:string) {
     if(!cc_sock) return;
 
+    console.log('cc_end()');
     try {
-        cc_sock.off('error', cc_onError);
         cc_sock.off('close', cc_onClose);
-        cc_sock.end(data ? data : '{"id": 0, "status": 0}\0');
+        cc_sock.on('close', cc_onExpectedClose);
+    } catch(e) {
+        printException('error closing event handlers in cc_close', e);
+    }
+
+    try {
+        data = data ? data : '{"id": 0, "status": 0}\0';
+        console.log('cc_sock.end('+data+')');
+        cc_sock.end(data);
     } catch(e) {
         printException('error closing old Crowd Control connection ', e);
     }
+
+    try {
+        cc_sock.destroy(null);
+    } catch(e) {
+        printException('error destroying old Crowd Control connection ', e);
+    }
+
+    cc_reset_timeout();
+    cc_good = true;
+}
+
+function cc_destroy() {
+    if(!cc_sock) return;
+
+    console.log('cc_destroy()');
+    try {
+        cc_sock.off('close', cc_onClose);
+    } catch(e) {
+        printException('error closing event handlers in cc_close', e);
+    }
+
+    try {
+        cc_sock.off('close', cc_onExpectedClose);
+    } catch(e) {
+        printException('error closing event handlers in cc_close', e);
+    }
+
     try {
         cc_sock.destroy(null);
     } catch(e) {
@@ -101,7 +140,9 @@ function cc_connect() {
     }
 
     cc_reset_timeout();
-    cc_close();
+    cc_destroy();
+
+    console.log('cc_connect');
     cc_sock = network.createSocket();
 
     cc_sock.connect(43385, '127.0.0.1', function() {
@@ -205,14 +246,5 @@ function init_crowdcontrol() {
 }
 
 function cc_req(data) {
-    const Success = 0;
-    const Failed = 1;
-    const NotAvail = 2;
-    const TempFail = 3;
-
-    /*park.postMessage(
-        {type: 'blank', text: data.viewer + ' used ' + data.code} as ParkMessageDesc
-    );*/
-
     return { id: data.id, status: handle(data) };
 }
