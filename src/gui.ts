@@ -48,16 +48,16 @@ function NewDropdown(label, desc) {
     return [label, dropdown];
 }
 
-function NewCheckbox(name, text, y, tooltip) {
+function NewCheckbox(name:string, text:string, x:number, y:number, tooltip:string, checked?:boolean) {
     return NewWidget({
         type: 'checkbox',
         name: name,
         text: text,
-        x: 0.5,
+        x: x + 0.1,
         y: y,
         width: 1,
         tooltip: tooltip,
-        isChecked: true
+        isChecked: (checked === undefined) ? true : checked
     });
 }
 
@@ -91,8 +91,10 @@ function startGameGui() {
         settings.rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
         settings.rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
         settings.rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
+        settings.rando_crowdcontrol = (window.findWidget('rando-crowdcontrol') as CheckboxWidget).isChecked;
         var cycle = window.findWidget('reroll-frequency');
         settings.num_months_cycle = randoCycles[cycle['text']];
+        
         // we need to unpause the game in order for the next tick to run
         var wasPaused = UnpauseGame();
         runNextTick(function() {
@@ -152,10 +154,11 @@ function startGameGui() {
                 selectedIndex: 1,
                 tooltip: 'How often to rerandomize the stats for ride types. Build the Theme Park of Theseus.'
             }),
-            NewCheckbox('rando-ride-types', 'Randomize Ride Types', y++, 'Randomizes values such as excitement, intensity, and runningCost'),
-            NewCheckbox('rando-park-flags', 'Randomize Park Flags', y++, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
-            NewCheckbox('rando-park-values', 'Randomize Park Values', y++, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
-            NewCheckbox('rando-goals', 'Randomize Goals', y++, 'Even when disabled, goals will still be scaled by Scenario Length'),
+            NewCheckbox('rando-ride-types', 'Randomize Ride Types', 0, y, 'Randomizes values such as excitement, intensity, and runningCost'),
+            NewCheckbox('rando-park-flags', 'Randomize Park Flags', 1, y++, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
+            NewCheckbox('rando-park-values', 'Randomize Park Values', 0, y, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
+            NewCheckbox('rando-goals', 'Randomize Goals', 1, y++, 'Even when disabled, goals will still be scaled by Scenario Length'),
+            NewCheckbox('rando-crowdcontrol', 'Enable Crowd Control', 0, y++, 'Let your viewers mess with your game! Visit https://crowdcontrol.live/ for info', false),
             [{
                 type: 'button',
                 name: 'cancel-button',

@@ -66,6 +66,16 @@ function cc_connect() {
         context.clearInterval(cc_reconnect_interval);
         cc_reconnect_interval = null;
     }
+
+    if (network.mode == "server") {
+        //console.log("This is a server...");
+    } else if (network.mode == "client") {
+        //console.log("This is a client...");
+        return;
+    } else {
+        //console.log("This is single player...");
+    }
+
     cc_reconnect_interval = context.setInterval(cc_reconnect, 15000);
 
     if(cc_sock) { 

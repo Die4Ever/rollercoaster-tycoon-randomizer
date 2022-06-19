@@ -55,6 +55,7 @@ var settings = {
     rando_park_flags: true,
     rando_park_values: true,
     rando_goals: true,
+    rando_crowdcontrol: false,
     rando_changes: {}
 };
 
@@ -81,7 +82,6 @@ function _main() {
         newGame();
     }
 
-    init_crowdcontrol();
     console.log(rando_name+" v"+rando_version+" finished startup\n               ");
 }
 
@@ -96,6 +96,9 @@ function loadedGame(savedData) {
     initMenuItem();
     createChangesWindow();
     SubscribeEvents();
+    if(settings.rando_crowdcontrol) {
+        init_crowdcontrol();
+    }
 }
 
 function newGame() {

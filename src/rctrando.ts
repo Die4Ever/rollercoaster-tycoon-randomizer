@@ -26,6 +26,9 @@ function initRando() {
         RandomizeRideTypes();
         RandomizeGuests();
         SubscribeEvents();
+        if(settings.rando_crowdcontrol) {
+            init_crowdcontrol();
+        }
     } catch(e) {
         printException('error in initRando(): ', e);
     }
