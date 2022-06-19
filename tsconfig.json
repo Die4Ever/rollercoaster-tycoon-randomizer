@@ -13,6 +13,6 @@
         "src/rctrando.ts",
         "src/tests.ts",
         "src/ridetypes.ts",
-        "src/crowdcontrol.ts"
+        "src/OpenRCT2-CrowdControl/crowdcontrol.ts"
     ]
 }
