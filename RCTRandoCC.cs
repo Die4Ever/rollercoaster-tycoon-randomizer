@@ -51,7 +51,7 @@ public class RCTRando : SimpleTCPPack
             new Effect("Slow Chain Lifts", "slowchainlift", "rides"),
 
             new Effect("Peeps", "peeps", ItemKind.Folder),
-            //new Effect("Name Peep After Me", "peepnameafterdonator", "peeps"),
+            new Effect("Name Peep After Me", "peepnameafterdonator", "peeps"),
             new Effect("Recolor Peeps", "peeprecolor", "peeps"),
             new Effect("Feed Peeps", "peepfeed", "peeps"),
             new Effect("Make Peeps Hungry", "peepunfeed", "peeps"),

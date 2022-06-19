@@ -327,7 +327,7 @@ let handlers: { [key: string]: Handler } = {
     fastchainlift: new Handler(fastchainlifts),
     slowchainlift: new Handler(slowchainlifts),
 
-    //peepnameafterdonator: new Handler(peepnameafterdonator),
+    peepnameafterdonator: new Handler(peepnameafterdonator),
     peeprecolor: new Handler(peepRandomColor),
     peepfeed: new Handler(peepFull),
     peepunfeed: new Handler(peepHungry),

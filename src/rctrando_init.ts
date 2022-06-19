@@ -1,9 +1,9 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.6';
+const rando_version = '0.7 Alpha';
 let debug:boolean = false;
 
 console.log("              \n"+rando_name+" v"+rando_version
-    + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 46, recommended API version is 51'
+    + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 52, recommended API version is 52'
     + ', network.mode: '+network.mode+', context.mode: '+context.mode
 );
 
@@ -35,8 +35,8 @@ registerPlugin({
     authors: ['Die4Ever'],
     type: 'remote',
     licence: "GPL-3.0",
-    targetApiVersion: 51,
-    minApiVersion: 46,
+    targetApiVersion: 52,
+    minApiVersion: 52,
     main: main
 });
 

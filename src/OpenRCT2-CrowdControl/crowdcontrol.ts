@@ -55,18 +55,42 @@ function cc_onData(message: string) {
         let r: string = JSON.stringify(resp) + '\0';
         console.log(message, r.length, r);
         cc_sock.end(r);
-        cc_connect();
+        cc_good = true;
+        cc_reset_timeout();
     } catch(e) {
         printException('error sending Crowd Control response to: ' + message, e);
     }
 }
 
-function cc_connect() {
+function cc_reset_timeout() {
     if(cc_reconnect_interval !== null) {
         context.clearInterval(cc_reconnect_interval);
         cc_reconnect_interval = null;
     }
 
+    cc_reconnect_interval = context.setInterval(cc_reconnect, 15000);
+}
+
+function cc_close(data?:string) {
+    if(!cc_sock) return;
+
+    try {
+        cc_sock.off('error', cc_onError);
+        cc_sock.off('close', cc_onClose);
+        cc_sock.end(data ? data : '{"id": 0, "status": 0}\0');
+    } catch(e) {
+        printException('error closing old Crowd Control connection ', e);
+    }
+    try {
+        cc_sock.destroy(null);
+    } catch(e) {
+        printException('error destroying old Crowd Control connection ', e);
+    }
+
+    cc_sock = null;
+}
+
+function cc_connect() {
     if (network.mode == "server") {
         //console.log("This is a server...");
     } else if (network.mode == "client") {
@@ -76,15 +100,8 @@ function cc_connect() {
         //console.log("This is single player...");
     }
 
-    cc_reconnect_interval = context.setInterval(cc_reconnect, 15000);
-
-    if(cc_sock) { 
-        cc_sock.off('error', cc_onError);
-        cc_sock.off('close', cc_onClose);
-        cc_sock.end();
-        cc_sock.destroy(null);
-    }
-
+    cc_reset_timeout();
+    cc_close();
     cc_sock = network.createSocket();
 
     cc_sock.connect(43385, '127.0.0.1', function() {
@@ -107,37 +124,34 @@ function init_crowdcontrol() {
     cc_connect();
 
     //Handle renames as guests enter the park
-    /*context.subscribe("guest.generation", (e) => {
-        if (peepQueue.length > 0) {
-            const peep = map.getEntity(e);
-            if (peep != null && peep.type == "peep" && (peep as Peep).peepType == "guest") {
-                context.executeAction("guestsetname", {
-                    peep: peep.id,
-                    name: peepQueue[0]
-                }, noop);
+    context.subscribe("guest.generation", (e) => {
+        if (peepQueue.length == 0) return;
+        const guest = map.getEntity(e.id);
+        if (guest != null && guest.type == "guest") {
+            context.executeAction("guestsetname", {
+                peep: guest.id,
+                name: peepQueue[0]
+            }, noop);
 
-                park.postMessage({
-                    type: "peep",
-                    text: peepQueue[0] + " has entered the park!",
-                    subject: peep.id
-                });
+            park.postMessage({
+                type: "peep",
+                text: peepQueue[0] + " has entered the park!",
+                subject: guest.id
+            });
 
-                peepQueue.shift();
-            }
+            peepQueue.shift();
         }
-    });*/
+    });
 
     context.registerAction("guestSetColor", (args: any) => {
         return {};
     }, (args: any) => {
-        const peeps = map.getAllEntities("peep");
+        const guests = map.getAllEntities("guest");
         const color = args.color;
-        for (let i = 0; i < peeps.length; i++) {
-            const peep = peeps[i];
-            if (peep.peepType == "guest") {
-                (peep as Guest).tshirtColour = color;
-                (peep as Guest).trousersColour = color;
-            }
+        for (let i = 0; i < guests.length; i++) {
+            const guest:Guest = guests[i];
+            guest.tshirtColour = color;
+            guest.trousersColour = color;
         }
         return {};
     });
@@ -145,18 +159,16 @@ function init_crowdcontrol() {
     context.registerAction("guestAddMoney", (args: any) => {
         return {}
     }, (args: any) => {
-        const peeps = map.getAllEntities("peep");
-        for (let i = 0; i < peeps.length; i++) {
-            const peep = peeps[i];
-            if (peep.peepType == "guest") {
-                let cash = (peep as Guest).cash + args.money;
-                if (cash < 0) {
-                    cash = 0;
-                } else if (cash > 1000) {
-                    cash = 1000;
-                }
-                (peep as Guest).cash = cash;
+        const guests = map.getAllEntities("guest");
+        for (let i = 0; i < guests.length; i++) {
+            const guest:Guest = guests[i];
+            let cash = guest.cash + args.money;
+            if (cash < 0) {
+                cash = 0;
+            } else if (cash > 1000) {
+                cash = 1000;
             }
+            guest.cash = cash;
         }
         return {};
     });
