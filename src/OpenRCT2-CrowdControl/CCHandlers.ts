@@ -300,6 +300,18 @@ function closeallwindows(effect: CCEffect): CCStatus {
     return CCStatus.FAILED;
 }
 
+function rerollRides(effect: CCEffect): CCStatus {
+    settings.cycle_offset++;
+    rctMessage(`${effect.viewer} re-randomized your rides!`);
+    return CCStatus.SUCCESS;
+}
+
+function extendScenario(effect: CCEffect): CCStatus {
+    scenario.objective.year++;
+    rctMessage(`${effect.viewer} extended your scenario!`);
+    return CCStatus.SUCCESS;
+}
+
 let handlers: { [key: string]: Handler } = {
     give100: new Handler((effect: CCEffect) => addMoney(effect, 100)),
     give1000: new Handler((effect: CCEffect) => addMoney(effect, 1000)),
@@ -351,7 +363,10 @@ let handlers: { [key: string]: Handler } = {
     clearducks: new Handler(despawnducks),
 
     openrandomwindows: new Handler(spawnRandomWindows),
-    closeallwindows: new Handler(closeallwindows)
+    closeallwindows: new Handler(closeallwindows),
+
+    rerollrides: new Handler(rerollRides),
+    extendscenario: new Handler(extendScenario)
 };
 
 function handle(effect: CCEffect): CCStatus {

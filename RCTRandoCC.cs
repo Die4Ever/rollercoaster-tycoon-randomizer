@@ -49,6 +49,8 @@ public class RCTRando : SimpleTCPPack
             //new Effect("Break a Ride", "breakRide", "rides"),
             new Effect("Fast Chain Lifts", "fastchainlift", "rides"),
             new Effect("Slow Chain Lifts", "slowchainlift", "rides"),
+            
+            new Effect("Re-Randomize Rides", "rerollrides", "rides"),
 
             new Effect("Peeps", "peeps", ItemKind.Folder),
             new Effect("Name Peep After Me", "peepnameafterdonator", "peeps"),
@@ -76,7 +78,9 @@ public class RCTRando : SimpleTCPPack
             new Effect("Spawn Ducks", "spawnducks"),
             new Effect("Clear Ducks", "clearducks"),
             new Effect("Open Random Windows", "openrandomwindows"),
-            new Effect("Close All Windows", "closeallwindows")
+            new Effect("Close All Windows", "closeallwindows"),
+
+            new Effect("Extend Scenario Goal", "extendscenario")
         };
 
     //Slider ranges need to be defined

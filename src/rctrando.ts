@@ -190,7 +190,8 @@ function RandomizeRideType(ride, rideTypeName, rideTypeId) {
         let rand_cycle = rng(0, settings.num_months_cycle * 1000);
         cycle = Math.floor((rand_cycle + date.monthsElapsed) / settings.num_months_cycle);
     }
-
+    cycle += settings.cycle_offset;
+    
     setLocalSeed('RandomizeRide ' + rideTypeId + ' ' + cycle);
 
     let changed:boolean = false;
