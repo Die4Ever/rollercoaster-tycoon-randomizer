@@ -94,7 +94,7 @@ function startGameGui() {
         settings.rando_crowdcontrol = (window.findWidget('rando-crowdcontrol') as CheckboxWidget).isChecked;
         var cycle = window.findWidget('reroll-frequency');
         settings.num_months_cycle = randoCycles[cycle['text']];
-        
+
         // we need to unpause the game in order for the next tick to run
         var wasPaused = UnpauseGame();
         runNextTick(function() {
@@ -264,14 +264,15 @@ function getChangesList(widget) {
         widget.items = ret;
         return ret;
     }
-    var match = true;
+    var changed = false;
     for(var i in ret) {
         if(widget.items[i][0] !== ret[i]) {
-            match = false;
+            changed = true;
             break;
         }
     }
-    if(!match)
+
+    if(changed)
         widget.items = ret;
     return ret;
 }
@@ -307,7 +308,7 @@ function createChangesWindow(window_height:number=350, window_width:number=400) 
         height: window_height,
         minWidth: 100,
         minHeight: 100,
-        maxWidth: 1000,
+        maxWidth: 600,
         maxHeight: 5000,
         widgets: [
             changes_list_desc

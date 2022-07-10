@@ -41,8 +41,9 @@ function SubscribeEvents() {
 
     context.subscribe("ride.ratings.calculate", function(ratings) {
         // TODO: do I need to modify the values in ratings, or does this work fine because it happens next tick?
+        const isDummy:boolean = ratings.excitement <= 0;
         runNextTick(function() {
-            RandomizeRide(ratings.rideId);
+            RandomizeRide(ratings.rideId, isDummy);
         });
     });
 
@@ -91,7 +92,7 @@ function RandomizeScenario() {
     if(Math.abs(settings.scenarioLength) < 0.1) {
         settings.scenarioLength = rng(50, 300) / 100;
     }
-    
+
     console.log('scenario.objective.year: ', scenario.objective.year, ', scenarioLength: '+settings.scenarioLength);
     if(scenario.objective.year) {
         // ceil because it's nice to lean towards longer scenarios? need to make other things more difficult then
@@ -106,10 +107,10 @@ function RandomizeScenario() {
     setLocalSeed('RandomizeScenarioGoals');
 
     // the excitement goal doesn't get twice as easy when you have twice as much time, so we ** 0.3
-    RandomizeObjective('guests', 1);
+    RandomizeObjective('guests', 1, 0.9);
     RandomizeObjective('excitement', 1, 0.3);
-    RandomizeObjective('monthlyIncome', 1);
-    RandomizeObjective('parkValue', 1);
+    RandomizeObjective('monthlyIncome', 0.9);
+    RandomizeObjective('parkValue', 0.9);
 
     //console.log(scenario);
     console.log(scenario.objective);
@@ -117,11 +118,11 @@ function RandomizeScenario() {
 
 function RandomizePark() {
     setLocalSeed('RandomizeParkFlags');
-    
+
     if(settings.rando_park_flags) {
         RandomizeParkFlag("difficultGuestGeneration", 1);
         RandomizeParkFlag("difficultParkRating", 1);
-        RandomizeParkFlag("forbidHighConstruction", 1);
+        //RandomizeParkFlag("forbidHighConstruction", 1); // TODO: put this back in when OpenRCT2 lets me adjust the max height
         RandomizeParkFlag("forbidLandscapeChanges", 1);
         RandomizeParkFlag("forbidMarketingCampaigns", 1);
         RandomizeParkFlag("forbidTreeRemoval", 1);
@@ -157,9 +158,11 @@ function RandomizeRideTypes() {
     }
 }
 
-function RandomizeRideTypeField(ride, rideTypeName, rideTypeId, name, difficulty) {
+function RandomizeRideTypeField(ride, rideTypeName, rideTypeId, name, difficulty, wetdry=1) {
     const type = rideTypeId;
     let factor = randomize(1, difficulty);
+    const dry = 1 - wetdry;
+    factor = (factor * wetdry) + (1 * dry);
     if(ride)
         ride[name] *= factor;
     const key_name = 'ride:'+type+':'+name;
@@ -176,11 +179,11 @@ function RandomizeRideTypeField(ride, rideTypeName, rideTypeId, name, difficulty
     return false;
 }
 
-function RandomizeRide(rideId) {
+function RandomizeRide(rideId, isDummy=false) {
     if(!settings.rando_ride_types)
         return;
     let ride = map.getRide(rideId);
-    RandomizeRideType(ride, RideType[ride.type], ride.type);
+    RandomizeRideType(isDummy ? null : ride, RideType[ride.type], ride.type);
 }
 
 function RandomizeRideType(ride, rideTypeName, rideTypeId) {
@@ -191,15 +194,16 @@ function RandomizeRideType(ride, rideTypeName, rideTypeId) {
         cycle = Math.floor((rand_cycle + date.monthsElapsed) / settings.num_months_cycle);
     }
     cycle += settings.cycle_offset;
-    
+
     setLocalSeed('RandomizeRide ' + rideTypeId + ' ' + cycle);
 
     let changed:boolean = false;
+    let isIntense:boolean = true;// need a list of rides that aren't intense so they get a larger range
     if(!ride || ride.classification == 'ride') {
         changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
         changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'excitement', -1) || changed;
-        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'intensity', 0) || changed;
-        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1) || changed;
+        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'intensity', 0, isIntense ? 0.5 : 1.0) || changed;
+        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1, 0.7) || changed;
     }
     else if(!ride || ride.classification != 'ride') {
         changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
@@ -230,7 +234,7 @@ function UpdateNonexistentRides() {
         let type = map.rides[r].type;
         existingRideTypes[type] = 1;
     }
-    
+
     // now loop through changes array to show changes for ride types that are no longer in the park
     for(var c in settings.rando_changes) {
         let m = c.match(/ride:(\d+):(.+)/);
