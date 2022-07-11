@@ -1,6 +1,9 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
 const rando_version = '0.7 Alpha';
 let debug:boolean = false;
+let rando_enabled:boolean = true;
+let initedMenuItems:boolean = false;
+let subscriptions = []
 
 console.log("              \n"+rando_name+" v"+rando_version
     + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 52, recommended API version is 52'
@@ -56,6 +59,7 @@ var settings = {
     rando_park_flags: true,
     rando_park_values: true,
     rando_goals: true,
+    rando_scouting: true,
     rando_crowdcontrol: false,
     rando_changes: {}
 };
@@ -66,7 +70,8 @@ function _main() {
     if(debug)
         run_tests();
 
-    console.log(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode);
+    rando_enabled = context.sharedStorage.get('RCTRando.enabled');
+    console.log(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode+", enabled: "+rando_enabled);
 
     try {
         savedData = context.getParkStorage().getAll();
@@ -94,7 +99,11 @@ function loadedGame(savedData) {
             settings[k] = savedData[k];
     }
     //startGameGui();// just for testing
-    initMenuItem();
+    initMenuItems();
+    if(rando_enabled===false) {
+        return;
+    }
+    rando_enabled = true;
     createChangesWindow();
     SubscribeEvents();
     if(settings.rando_crowdcontrol) {
@@ -112,6 +121,23 @@ function newGame() {
         setGlobalSeed(context.getRandom(1, 999999 + 1));
     }
     context.sharedStorage.set("RCTRando.nextSeed", null);
+
+    if(rando_enabled===false) {
+        initMenuItems();
+        return;
+    }
+    rando_enabled = true;
     // pause game and open menu
     startGameGui();
+}
+
+function EnableDisableRando(enabled:boolean) {
+    rando_enabled = enabled;
+    console.log(rando_enabled ? 'Enabling' : 'Disabling');
+    context.sharedStorage.set('RCTRando.enabled', rando_enabled);
+    if(rando_enabled) {
+        main();
+    } else {
+        UnSubscribeEvents();
+    }
 }

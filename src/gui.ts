@@ -66,7 +66,6 @@ function startGameGui() {
     console.log('startGameGui()', globalseed);
     var ww = 350;
     var wh = 350;
-    let enable_rando:boolean = true;
 
     if (typeof ui === 'undefined') {
         console.log('startGameGui() ui is undefined');
@@ -91,7 +90,7 @@ function startGameGui() {
         settings.rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
         settings.rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
         settings.rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
-        settings.rando_crowdcontrol = (window.findWidget('rando-crowdcontrol') as CheckboxWidget).isChecked;
+        //settings.rando_crowdcontrol = (window.findWidget('rando-crowdcontrol') as CheckboxWidget).isChecked;
         var cycle = window.findWidget('reroll-frequency');
         settings.num_months_cycle = randoCycles[cycle['text']];
 
@@ -158,7 +157,8 @@ function startGameGui() {
             NewCheckbox('rando-park-flags', 'Randomize Park Flags', 1, y++, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
             NewCheckbox('rando-park-values', 'Randomize Park Values', 0, y, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
             NewCheckbox('rando-goals', 'Randomize Goals', 1, y++, 'Even when disabled, goals will still be scaled by Scenario Length'),
-            NewCheckbox('rando-crowdcontrol', 'Enable Crowd Control', 0, y++, 'Let your viewers mess with your game! Visit https://crowdcontrol.live/ for info', false),
+            //NewCheckbox('rando-scouting', 'Free Scouting', 1, y++, 'Enable this to get ride type stats added to the changes window before placing a track'),
+            //NewCheckbox('rando-crowdcontrol', 'Enable Crowd Control', 0, y++, 'Let your viewers mess with your game! Visit https://crowdcontrol.live/ for info', false),
             [{
                 type: 'button',
                 name: 'cancel-button',
@@ -168,8 +168,9 @@ function startGameGui() {
                 height: 26,
                 text: 'Disable Rando',
                 onClick: function() {
-                    enable_rando = false;
+                    rando_enabled = false;
                     window.close();
+                    EnableDisableRando(false);
                 }
             },
             {
@@ -181,14 +182,15 @@ function startGameGui() {
                 height: 26,
                 text: 'Start Game',
                 onClick: function() {
-                    enable_rando = true;
+                    rando_enabled = true;
                     window.close();
                 }
             }]
         ),
         onClose: function() {
             try {
-                if(enable_rando)
+                context.sharedStorage.set('RCTRando.enabled', rando_enabled);
+                if(rando_enabled)
                     onStart(window);
             } catch(e) {
                 printException('error in GUI onClick(): ', e);
@@ -196,13 +198,16 @@ function startGameGui() {
         }
     });
 
-    initMenuItem();
+    initMenuItems();
     return window;
 }
 
-function initMenuItem() {
+function initMenuItems() {
+    if(initedMenuItems) return;
     if (typeof ui !== 'undefined') {
         ui.registerMenuItem("RCTRando Changes", createChangesWindow);
+        ui.registerMenuItem("RCTRando Options", createOptionsWindow);
+        initedMenuItems = true;
     }
 }
 
@@ -350,4 +355,26 @@ function createChangesWindow(window_height:number=350, window_width:number=400) 
 
     changes_list = window.findWidget('changes-list') as ListViewWidget;
     resize_button = window.findWidget('fix-size-button') as ButtonWidget;
+}
+
+function createOptionsWindow() {
+    let window:Window;
+    let randoEnabled:CheckboxWidget;
+    const window_height:number = 80;
+    const window_width:number = 180;
+
+    let randoEnabledDesc:CheckboxWidget = NewCheckbox('rando-enabled', 'Enable Randomizer', 0, 0, 'Enable or Disable the Randomizer plugin.', rando_enabled);
+    randoEnabledDesc.onChange = EnableDisableRando;
+
+    window = ui.openWindow({
+        classification: 'rando-options',
+        title: "RollerCoaster Tycoon Randomizer v"+rando_version,
+        width: window_width,
+        height: window_height,
+        widgets: [
+            randoEnabledDesc,
+        ]
+    });
+
+    randoEnabled = window.findWidget('rando-enabled') as CheckboxWidget;
 }

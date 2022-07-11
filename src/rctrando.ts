@@ -35,21 +35,31 @@ function initRando() {
 }
 
 function SubscribeEvents() {
-    context.subscribe("guest.generation", function(id) {
+    let s = context.subscribe("guest.generation", function(id) {
         RandomizeGuest(map.getEntity(id.id));
     });
+    subscriptions.push(s);
 
-    context.subscribe("ride.ratings.calculate", function(ratings) {
+    s = context.subscribe("ride.ratings.calculate", function(ratings) {
         // TODO: do I need to modify the values in ratings, or does this work fine because it happens next tick?
         const isDummy:boolean = ratings.excitement <= 0;
         runNextTick(function() {
             RandomizeRide(ratings.rideId, isDummy);
         });
     });
+    subscriptions.push(s);
 
-    context.subscribe("interval.day", function() {
+    s = context.subscribe("interval.day", function() {
         UpdateNonexistentRides();
     });
+    subscriptions.push(s);
+}
+
+function UnSubscribeEvents() {
+    for(let i in subscriptions) {
+        subscriptions[i].dispose();
+    }
+    subscriptions = [];
 }
 
 function AddChange(key, name, from, to, factor=null) {
@@ -167,7 +177,7 @@ function RandomizeRideTypeField(ride, rideTypeName, rideTypeId, name, difficulty
         ride[name] *= factor;
     const key_name = 'ride:'+type+':'+name;
     let old_change = settings.rando_changes[key_name];
-    if(!ride && !old_change) {
+    if(!settings.rando_scouting && !ride && !old_change) {
         // when run generically with no specific ride, we're just updating the GUI
         // don't add new values, just update existing ones, because the ride might not have all these properties (shops/stalls)
         return false;
