@@ -280,6 +280,7 @@ function getChangesList(widget) {
 function createChangesWindow(window_height:number=350, window_width:number=400) {
     let window:Window;
     let changes_list:ListViewWidget;
+    let resize_button:ButtonWidget;
     let paddingLeft = 7;
     let paddingRight = 7;
     let paddingTop = 16;
@@ -306,12 +307,27 @@ function createChangesWindow(window_height:number=350, window_width:number=400) 
         title: "RollerCoaster Tycoon Randomizer v"+rando_version,
         width: window_width,
         height: window_height,
-        minWidth: 100,
-        minHeight: 100,
+        minWidth: 80,
+        minHeight: 30,
         maxWidth: 600,
         maxHeight: 5000,
         widgets: [
-            changes_list_desc
+            changes_list_desc,
+            {
+                type: 'button',
+                name: 'fix-size-button',
+                x: paddingLeft,
+                y: 15,
+                width: 50,
+                height: 14,
+                text: 'Resize',
+                isVisible: false,
+                onClick: function() {
+                    window.width = window_width;
+                    window.height = window_height;
+                    resize_button.isVisible = false;
+                }
+            }
         ],
         onClose: function() {
             context.clearInterval(ticker);
@@ -319,8 +335,19 @@ function createChangesWindow(window_height:number=350, window_width:number=400) 
         onUpdate: function() {
             changes_list.width = window.width - 1 - paddingLeft - paddingRight;
             changes_list.height = window.height - paddingTop - paddingBottom;
+
+            if(changes_list.height < 100 && changes_list.scrollbars == 'vertical') {
+                changes_list.isVisible=false;
+                changes_list.scrollbars = 'none';
+                resize_button.isVisible = true;
+            } else if(changes_list.height > 100 && changes_list.scrollbars == 'none') {
+                resize_button.isVisible = false;
+                changes_list.isVisible=true;
+                changes_list.scrollbars = 'vertical';
+            }
         }
     });
 
     changes_list = window.findWidget('changes-list') as ListViewWidget;
+    resize_button = window.findWidget('fix-size-button') as ButtonWidget;
 }

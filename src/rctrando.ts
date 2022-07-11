@@ -198,7 +198,7 @@ function RandomizeRideType(ride, rideTypeName, rideTypeId) {
     setLocalSeed('RandomizeRide ' + rideTypeId + ' ' + cycle);
 
     let changed:boolean = false;
-    let isIntense:boolean = true;// need a list of rides that aren't intense so they get a larger range
+    let isIntense:boolean = true;// TODO: need a list of rides that aren't intense so they get a larger range
     if(!ride || ride.classification == 'ride') {
         changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
         changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'excitement', -1) || changed;
