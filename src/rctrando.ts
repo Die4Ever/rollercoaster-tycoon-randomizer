@@ -193,10 +193,10 @@ function RandomizeRide(rideId, isDummy=false) {
     if(!settings.rando_ride_types)
         return;
     let ride = map.getRide(rideId);
-    RandomizeRideType(isDummy ? null : ride, RideType[ride.type], ride.type);
+    RandomizeRideType(ride, RideType[ride.type], ride.type, isDummy);
 }
 
-function RandomizeRideType(ride, rideTypeName, rideTypeId) {
+function RandomizeRideType(ride, rideTypeName, rideTypeId, isDummy:boolean=false) {
     setLocalSeed('RandomizeRide cycle ' + rideTypeId);
     let cycle:number = 0;
     if(settings.num_months_cycle) {
@@ -210,10 +210,11 @@ function RandomizeRideType(ride, rideTypeName, rideTypeId) {
     let changed:boolean = false;
     let isIntense:boolean = true;// TODO: need a list of rides that aren't intense so they get a larger range
     if(!ride || ride.classification == 'ride') {
-        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
-        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'excitement', -1) || changed;
-        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'intensity', 0, isIntense ? 0.5 : 1.0) || changed;
-        changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1, 0.7) || changed;
+        const tride = isDummy ? null : ride;
+        changed = RandomizeRideTypeField(tride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
+        changed = RandomizeRideTypeField(tride, rideTypeName, rideTypeId, 'excitement', -1) || changed;
+        changed = RandomizeRideTypeField(tride, rideTypeName, rideTypeId, 'intensity', 0, isIntense ? 0.5 : 1.0) || changed;
+        changed = RandomizeRideTypeField(tride, rideTypeName, rideTypeId, 'nausea', -1, 0.7) || changed;
     }
     else if(!ride || ride.classification != 'ride') {
         changed = RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;

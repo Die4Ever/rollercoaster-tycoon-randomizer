@@ -5,7 +5,7 @@ You'll need OpenRCT2 v0.4.0 or later from https://openrct2.org/downloads
 
 Download the `rctrando.js` file from [the releases page](https://github.com/Die4Ever/rollercoaster-tycoon-randomizer/releases) and copy it into the OpenRCT2 plugin folder, which is usually `%USERPROFILE%\Documents\OpenRCT2\plugin\`
 
-Currently v0.6 randomizes:
+Currently randomizes:
 * scenario goals
 * scenario length
 * park values such as starting cash, starting bank loan amount, maxBankLoan, landPrice
