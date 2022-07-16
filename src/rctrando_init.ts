@@ -1,5 +1,5 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.7 Beta';
+const rando_version = '0.7';
 let debug:boolean = false;
 let rando_enabled:boolean = true;
 let initedMenuItems:boolean = false;
