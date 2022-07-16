@@ -1,16 +1,6 @@
 
 function initRando() {
-    try {
-        let storage = context.getParkStorage();
-        settings['seed'] = globalseed;
-        for(let k in settings) {
-            if(settings.hasOwnProperty(k))
-                storage.set(k, settings[k]);
-        }
-        console.log('just saved data', JSON.stringify(storage.getAll()));
-    } catch(e) {
-        printException('error saving seed: ', e);
-    }
+    SaveSettings();
     console.log(rando_name+' v'+rando_version
         + ' starting with seed '+globalseed
         + ', api version '+context.apiVersion
@@ -31,6 +21,20 @@ function initRando() {
         }
     } catch(e) {
         printException('error in initRando(): ', e);
+    }
+}
+
+function SaveSettings() {
+    try {
+        let storage = context.getParkStorage();
+        settings['seed'] = globalseed;
+        for(let k in settings) {
+            if(settings.hasOwnProperty(k))
+                storage.set(k, settings[k]);
+        }
+        console.log('just saved data', JSON.stringify(storage.getAll()));
+    } catch(e) {
+        printException('error saving settings: ', e);
     }
 }
 

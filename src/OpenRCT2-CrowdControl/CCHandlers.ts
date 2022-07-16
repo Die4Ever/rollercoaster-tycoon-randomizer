@@ -302,6 +302,7 @@ function closeallwindows(effect: CCEffect): CCStatus {
 
 function rerollRides(effect: CCEffect): CCStatus {
     settings.cycle_offset++;
+    SaveSettings();
     rctMessage(`${effect.viewer} re-randomized your rides!`);
     return CCStatus.SUCCESS;
 }
