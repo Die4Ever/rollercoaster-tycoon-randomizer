@@ -1,6 +1,5 @@
 ﻿/// <reference path="../../lib/openrct2.d.ts" />
 /// <reference path="CCTypes.ts" />
-/// <reference path="CCUtils.ts" />
 /// <reference path="CCAds.ts" />
 
 function noop(result: GameActionResult): void { }
@@ -69,19 +68,19 @@ function despawnducks(effect: CCEffect): CCStatus {
 }
 
 function goBackOneMonth(effect: CCEffect): CCStatus {
-    const monthsElapsed = date.monthProgress - 1;
+    const monthsElapsed = date.monthsElapsed - 1;
     if (monthsElapsed < 0) {
-        return CCStatus.RETRY;
+        return CCStatus.FAILED;
     }
-    const year = Math.floor(monthsElapsed / 8);
-    const month = monthsElapsed % 8;
+    const year = Math.floor(monthsElapsed / 8) + 1;
+    const month = monthsElapsed % 8 + 1;
     context.executeAction("parksetdate", {
-        year: year + 1,
-        month: month + 1,
+        year: year,
+        month: month,
         day: date.day
     }, noop);
 
-    rctMessage(`${effect.viewer} forced the date to ${formatDate(date.day, month + 1, year + 1)}`);
+    rctMessage(`${effect.viewer} forced the date to ${formatDate(date.day, month, year)}`);
     return CCStatus.SUCCESS;
 }
 
