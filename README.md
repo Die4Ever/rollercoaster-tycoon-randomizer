@@ -18,8 +18,10 @@ Currently randomizes:
 
 The Randomization Range option specifies how much values can be changed from their original. Low will have a narrow range so the values are close to their originals, while Extreme can give much wider variety. This is mostly separate from difficulty, but Extreme can give unpredictable results.
 
-<img src="https://i.imgur.com/oEhD1Y4.png" alt="Settings Menu" width="500"/>
+We also have an option for [Crowd Control](https://crowdcontrol.live/) to allow your streaming viewers to troll you or help you!
 
-<img src="https://i.imgur.com/SMsBbDk.png" alt="Changes List" width="600"/>
+<img src="https://user-images.githubusercontent.com/30947252/181834752-c2b9653d-9178-4a98-a82e-290f39ca5d22.png" alt="Settings Menu" width="500"/>
+
+<img src="https://user-images.githubusercontent.com/30947252/181834760-0bd41a28-e9a2-4102-8604-3317c1d4d7d4.png" alt="Changes List" width="600"/>
 
 Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR) or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM)
