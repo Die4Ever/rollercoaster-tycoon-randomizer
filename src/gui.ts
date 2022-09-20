@@ -98,7 +98,7 @@ function startGameGui() {
         var wasPaused = UnpauseGame();
         runNextTick(function() {
             initRando();
-            if(wasPaused.wasPaused) {
+            if(wasPaused.wasPaused && global_settings.auto_pause) {
                 // we know the game is currently unpaused because we're inside a tick event
                 // so we don't need the fancy PauseGame function
                 context.executeAction('pausetoggle', {});
@@ -168,9 +168,8 @@ function startGameGui() {
                 height: 26,
                 text: 'Disable Rando',
                 onClick: function() {
-                    rando_enabled = false;
-                    window.close();
                     EnableDisableRando(false);
+                    window.close();
                 }
             },
             {
@@ -182,15 +181,13 @@ function startGameGui() {
                 height: 26,
                 text: 'Start Game',
                 onClick: function() {
-                    rando_enabled = true;
                     window.close();
                 }
             }]
         ),
         onClose: function() {
             try {
-                context.sharedStorage.set('RCTRando.enabled', rando_enabled);
-                if(rando_enabled)
+                if(global_settings.enabled)
                     onStart(window);
             } catch(e) {
                 printException('error in GUI onClick(): ', e);
@@ -363,8 +360,20 @@ function createOptionsWindow() {
     const window_height:number = 80;
     const window_width:number = 180;
 
-    let randoEnabledDesc:CheckboxWidget = NewCheckbox('rando-enabled', 'Enable Randomizer', 0, 0, 'Enable or Disable the Randomizer plugin.', rando_enabled);
+    let randoEnabledDesc:CheckboxWidget = NewCheckbox('rando-enabled', 'Enable Randomizer', 0, 0, 'Enable or Disable the Randomizer plugin.', global_settings.enabled);
     randoEnabledDesc.onChange = EnableDisableRando;
+
+    let autoPauseDesc:CheckboxWidget = NewCheckbox('auto-pause', 'Auto Pause', 0, 0, 'Automatically pause the game at the start so you can read the changes list.', global_settings.auto_pause);
+    autoPauseDesc.onChange = function(checked:boolean) {
+        global_settings.auto_pause = checked;
+        SaveGlobalSettings();
+    };
+
+    let reuseSeedDesc:CheckboxWidget = NewCheckbox('reuse-seed', 'Reuse Seed', 0, 0, 'Reuse the previously used seed by default.', global_settings.reuse_seed);
+    reuseSeedDesc.onChange = function(checked:boolean) {
+        global_settings.reuse_seed = checked;
+        SaveGlobalSettings();
+    };
 
     window = ui.openWindow({
         classification: 'rando-options',
@@ -372,9 +381,7 @@ function createOptionsWindow() {
         width: window_width,
         height: window_height,
         widgets: [
-            randoEnabledDesc,
+            randoEnabledDesc, autoPauseDesc, reuseSeedDesc
         ]
     });
-
-    randoEnabled = window.findWidget('rando-enabled') as CheckboxWidget;
 }

@@ -27,12 +27,15 @@ function initRando() {
 function SaveSettings() {
     try {
         let storage = context.getParkStorage();
+        settings['version'] = rando_version;
         settings['seed'] = globalseed;
         for(let k in settings) {
             if(settings.hasOwnProperty(k))
                 storage.set(k, settings[k]);
         }
         console.log('just saved data', JSON.stringify(storage.getAll()));
+
+        context.sharedStorage.set('RCTRando.previous_settings', settings);
     } catch(e) {
         printException('error saving settings: ', e);
     }

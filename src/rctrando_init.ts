@@ -1,14 +1,26 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.8';
+const rando_version = '0.9 Alpha';
 let debug:boolean = false;
-let rando_enabled:boolean = true;
+
+var global_settings = {
+    enabled: true,
+    auto_pause: true,
+    reuse_seed: false
+};
 let initedMenuItems:boolean = false;
 let subscriptions = []
 
+const minApiVersion = 59;
+const targetApiVersion = 59;
 console.log("              \n"+rando_name+" v"+rando_version
-    + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is 52, recommended API version is 52'
+    + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is '+minApiVersion+', recommended API version is '+targetApiVersion
     + ', network.mode: '+network.mode+', context.mode: '+context.mode
 );
+
+if(context.apiVersion < minApiVersion && typeof ui !== 'undefined') {
+    // show an error dialog?
+    //ui.showError('', 'You need to update OpenRCT2 for RCTRandomizer!');
+}
 
 function main() {
     try {
@@ -38,8 +50,8 @@ registerPlugin({
     authors: ['Die4Ever'],
     type: 'remote',
     licence: "GPL-3.0",
-    targetApiVersion: 52,
-    minApiVersion: 52,
+    targetApiVersion: targetApiVersion,
+    minApiVersion: minApiVersion,
     main: main
 });
 
@@ -70,8 +82,8 @@ function _main() {
     if(debug)
         run_tests();
 
-    rando_enabled = context.sharedStorage.get('RCTRando.enabled');
-    console.log(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode+", enabled: "+rando_enabled);
+    global_settings = context.sharedStorage.get('RCTRando.global_settings', global_settings);
+    console.log(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode+", enabled: "+global_settings.enabled);
 
     try {
         savedData = context.getParkStorage().getAll();
@@ -100,10 +112,10 @@ function loadedGame(savedData) {
     }
     //startGameGui();// just for testing
     initMenuItems();
-    if(rando_enabled===false) {
+    if(global_settings.enabled===false) {
         return;
     }
-    rando_enabled = true;
+    global_settings.enabled = true;
     createChangesWindow();
     SubscribeEvents();
     if(settings.rando_crowdcontrol) {
@@ -119,25 +131,42 @@ function newGame() {
         setGlobalSeed(nextSeed);
     } else {
         setGlobalSeed(context.getRandom(1, 999999 + 1));
+
+        if(global_settings.reuse_seed) {
+        }
     }
     context.sharedStorage.set("RCTRando.nextSeed", null);
 
-    if(rando_enabled===false) {
+    if(global_settings.enabled===false) {
         initMenuItems();
         return;
     }
-    rando_enabled = true;
+    global_settings.enabled = true;
     // pause game and open menu
     startGameGui();
 }
 
+function SaveGlobalSettings() {
+    context.sharedStorage.set('RCTRando.global_settings', global_settings);
+}
+
 function EnableDisableRando(enabled:boolean) {
-    rando_enabled = enabled;
-    console.log(rando_enabled ? 'Enabling' : 'Disabling');
-    context.sharedStorage.set('RCTRando.enabled', rando_enabled);
-    if(rando_enabled) {
+    global_settings.enabled = enabled;
+    console.log(global_settings.enabled ? 'Enabling' : 'Disabling');
+    SaveGlobalSettings();
+    if(global_settings.enabled) {
         main();
     } else {
         UnSubscribeEvents();
     }
+}
+
+function EnableDisableAutoPause(enabled:boolean) {
+    global_settings.auto_pause = enabled;
+    SaveGlobalSettings();
+}
+
+function EnableDisableReuseSeed(enabled:boolean) {
+    global_settings.reuse_seed = enabled;
+    SaveGlobalSettings();
 }
