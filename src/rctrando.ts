@@ -1,3 +1,4 @@
+var modules:ModuleBase[] = [];
 
 function initRando() {
     SaveSettings();
