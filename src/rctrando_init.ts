@@ -29,7 +29,7 @@ function main() {
         }
         if(network.mode == 'client') {
             console.log(network.mode);
-            var savedData = context.getParkStorage().getAll();
+            var savedData = context.getParkStorage().get('RCTRando.settings');
             if(savedData && savedData.hasOwnProperty('seed')) {
                 runNextTick(_main);
             } else {
@@ -72,8 +72,7 @@ var settings = {
     rando_park_values: true,
     rando_goals: true,
     rando_scouting: true,
-    rando_crowdcontrol: false,
-    rando_changes: {}
+    rando_crowdcontrol: false
 };
 
 function _main() {
@@ -86,7 +85,7 @@ function _main() {
     console.log(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode+", enabled: "+global_settings.enabled);
 
     try {
-        savedData = context.getParkStorage().getAll();
+        savedData = context.getParkStorage().get('RCTRando.settings');
         if(savedData)
             console.log("restored savedData", JSON.stringify(savedData));
     } catch(e) {
@@ -107,7 +106,7 @@ function loadedGame(savedData) {
     setGlobalSeed(savedData.seed);
     console.log("restored saved seed "+globalseed, JSON.stringify(savedData));
     for(let k in savedData) {
-        if(savedData.hasOwnProperty(k))
+        if(savedData.hasOwnProperty(k) && settings.hasOwnProperty(k))
             settings[k] = savedData[k];
     }
     //startGameGui();// just for testing

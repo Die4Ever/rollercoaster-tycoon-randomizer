@@ -18,11 +18,11 @@ class RCTRPark extends ModuleBase {
 
         setLocalSeed('RandomizeParkValues');
         if(settings.rando_park_values) {
-            RandomizeField(park, 'maxBankLoan', -1);
-            RandomizeField(park, 'landPrice', 1);
-            RandomizeField(park, 'constructionRightsPrice', 1);
-            RandomizeField(park, 'cash', -1);
-            RandomizeField(park, 'bankLoan', 1);
+            this.RandomizeField(park, 'maxBankLoan', -1);
+            this.RandomizeField(park, 'landPrice', 1);
+            this.RandomizeField(park, 'constructionRightsPrice', 1);
+            this.RandomizeField(park, 'cash', -1);
+            this.RandomizeField(park, 'bankLoan', 1);
         }
     }
 }
@@ -32,5 +32,5 @@ registerModule(new RCTRPark());
 function RandomizeParkFlag(name, difficulty) {
     var val = park.getFlag(name);
     park.setFlag(name, RngBoolWithDifficulty(difficulty));
-    AddChange(name, name, val, park.getFlag(name));
+    this.AddChange(name, name, val, park.getFlag(name));
 }

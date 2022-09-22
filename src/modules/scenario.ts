@@ -10,7 +10,7 @@ class RCTRScenario extends ModuleBase {
             // ceil because it's nice to lean towards longer scenarios? need to make other things more difficult then
             const old = scenario.objective.year;
             scenario.objective.year = Math.ceil(scenario.objective.year * settings.scenarioLength);
-            AddChange('objective.year', 'Objective Year', old, scenario.objective.year);
+            this.AddChange('objective.year', 'Objective Year', old, scenario.objective.year);
         } else {
             // if we fail to adjust the scenario length, then we need to treat it as 1 so that the difficulty scaling isn't ruined
             settings.scenarioLength = 1;
@@ -40,5 +40,5 @@ function RandomizeObjective(name, difficulty, scenarioLengthExp=1) {
     } else {
         scenario.objective[name] *= (settings.scenarioLength ** scenarioLengthExp);
     }
-    AddChange(name, 'Objective '+name, old, scenario.objective[name]);
+    this.AddChange(name, 'Objective '+name, old, scenario.objective[name]);
 }

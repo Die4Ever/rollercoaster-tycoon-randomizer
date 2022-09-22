@@ -216,43 +216,54 @@ function numberWithCommas(x, isMoney:boolean = false) {
     return parts.join(".");
 }
 
+function getChangeText(change):string {
+    let str:string;
+    let name = change.name;
+
+    if(change.factor) {
+        let factor = change.factor;
+        factor = Math.round( factor * 100 + Number.EPSILON ) / 100;
+        str = name+' '+factor+'x';
+    } else {
+        let isMoney:boolean = name in {'bankLoan':1, 'maxBankLoan':1, 'cash':1, 'constructionRightsPrice':1, 'landPrice':1, 'parkValue':1};
+        let isBool:boolean = (typeof(change.from) === 'boolean' && typeof(change.to) === 'boolean');
+
+        let from = change.from;
+        let to = change.to;
+        if(isMoney) {
+            from /= 10;
+            to /= 10;
+        }
+        from = numberWithCommas(from, isMoney);
+        to = numberWithCommas(to, isMoney);
+
+        if(isBool && to)
+            str = name+' enabled';
+        else if(isBool)
+            str = name+' disabled';
+        else
+            str = name+' changed from '+from+' to '+to;
+    }
+
+    return str;
+}
+
 function getChangesList(widget) {
     let ret = [];
     let rides = [];
-    for(var i in settings.rando_changes) {
-        let c = settings.rando_changes[i];
-        let str:string;
-        let name = c.name;
 
-        if(c.factor) {
-            let factor = c.factor;
-            factor = Math.round( factor * 100 + Number.EPSILON ) / 100;
-            str = name+' '+factor+'x';
-        } else {
-            let isMoney:boolean = i in {'bankLoan':1, 'maxBankLoan':1, 'cash':1, 'constructionRightsPrice':1, 'landPrice':1, 'parkValue':1};
-            let isBool:boolean = (typeof(c.from) === 'boolean' && typeof(c.to) === 'boolean');
-
-            let from = c.from;
-            let to = c.to;
-            if(isMoney) {
-                from /= 10;
-                to /= 10;
-            }
-            from = numberWithCommas(from, isMoney);
-            to = numberWithCommas(to, isMoney);
-
-            if(isBool && to)
-                str = name+' enabled';
-            else if(isBool)
-                str = name+' disabled';
+    for(let i=0; i<modules.length; i++) {
+        const m = modules[i];
+        for(let k in m.settings.changes) {
+            let change = m.settings.changes[k];
+            let str = getChangeText(change);
+            if(k.startsWith('ride:'))
+                rides.push(str);
             else
-                str = name+' changed from '+from+' to '+to;
+                ret.push(str);
         }
-        if(i.startsWith('ride:'))
-            rides.push(str);
-        else
-            ret.push(str);
     }
+
     ret.sort();
     rides.sort();
     ret.unshift('Seed: '+globalseed);
@@ -267,7 +278,7 @@ function getChangesList(widget) {
         return ret;
     }
     var changed = false;
-    for(var i in ret) {
+    for(let i in ret) {
         if(widget.items[i][0] !== ret[i]) {
             changed = true;
             break;
