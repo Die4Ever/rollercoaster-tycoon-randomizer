@@ -10,7 +10,7 @@ var global_settings = {
 let initedMenuItems:boolean = false;
 let subscriptions = []
 
-const minApiVersion = 59;
+const minApiVersion = 50;
 const targetApiVersion = 59;
 console.log("              \n"+rando_name+" v"+rando_version
     + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is '+minApiVersion+', recommended API version is '+targetApiVersion
@@ -117,7 +117,7 @@ function loadedGame(savedData) {
     }
     global_settings.enabled = true;
     createChangesWindow();
-    SubscribeEvents();
+    AnyEntry();
     if(settings.rando_crowdcontrol) {
         init_crowdcontrol();
     }

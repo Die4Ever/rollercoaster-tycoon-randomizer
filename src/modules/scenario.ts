@@ -28,3 +28,17 @@ class RCTRScenario extends ModuleBase {
         console.log(scenario.objective);
     }
 }
+
+registerModule(new RCTRScenario());
+
+function RandomizeObjective(name, difficulty, scenarioLengthExp=1) {
+    if(!scenario.objective[name]) return;
+
+    const old = scenario.objective[name];
+    if(settings.rando_goals) {
+        scenario.objective[name] = randomize(scenario.objective[name], difficulty) * (settings.scenarioLength ** scenarioLengthExp);
+    } else {
+        scenario.objective[name] *= (settings.scenarioLength ** scenarioLengthExp);
+    }
+    AddChange(name, 'Objective '+name, old, scenario.objective[name]);
+}

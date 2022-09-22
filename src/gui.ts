@@ -129,7 +129,7 @@ function startGameGui() {
                 name: 'difficulty',
                 y: y++,
                 items: Object.keys(difficulties),
-                selectedIndex: 1,
+                selectedIndex: 0,
                 tooltip: 'Choose a difficulty for the randomization'
             }),
             NewDropdown('Randomization Range:', {
@@ -154,7 +154,7 @@ function startGameGui() {
                 tooltip: 'How often to rerandomize the stats for ride types. Build the Theme Park of Theseus.'
             }),
             NewCheckbox('rando-ride-types', 'Randomize Ride Types', 0, y, 'Randomizes values such as excitement, intensity, and runningCost'),
-            NewCheckbox('rando-park-flags', 'Randomize Park Flags', 1, y++, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides'),
+            NewCheckbox('rando-park-flags', 'Randomize Park Rules', 1, y++, 'Randomizes flags such as forbidMarketingCampaigns and preferMoreIntenseRides', false),
             NewCheckbox('rando-park-values', 'Randomize Park Values', 0, y, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice'),
             NewCheckbox('rando-goals', 'Randomize Goals', 1, y++, 'Even when disabled, goals will still be scaled by Scenario Length'),
             //NewCheckbox('rando-scouting', 'Free Scouting', 1, y++, 'Enable this to get ride type stats added to the changes window before placing a track'),

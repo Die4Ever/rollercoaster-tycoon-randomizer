@@ -26,3 +26,11 @@ class RCTRPark extends ModuleBase {
         }
     }
 }
+
+registerModule(new RCTRPark());
+
+function RandomizeParkFlag(name, difficulty) {
+    var val = park.getFlag(name);
+    park.setFlag(name, RngBoolWithDifficulty(difficulty));
+    AddChange(name, name, val, park.getFlag(name));
+}

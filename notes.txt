@@ -1,6 +1,6 @@
 Ride type names:
 https://github.com/ltsSmitty/OpenRCT-Ride-Painter/blob/main/src/helpers/RideType.ts
-https://github.com/OpenRCT2/OpenRCT2/blob/develop/src/openrct2/ride/Ride.h#L485 
+https://github.com/OpenRCT2/OpenRCT2/blob/develop/src/openrct2/ride/Ride.h#L485
 
 
 https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/openrct2.d.ts#L20
@@ -8,6 +8,33 @@ https://github.com/OpenRCT2/OpenRCT2/issues/16795
 https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/scripting.md
 https://github.com/OpenRCT2/OpenRCT2/tree/develop/src/openrct2/scripting
 Allow plugins to call change map size game action https://github.com/OpenRCT2/OpenRCT2/commit/83c347218b491b7b0a3bd74ab0839ddff2fe5b36
+
+
+==== some old code, more stuff to randomize ====
+let s = context.subscribe("guest.generation", function(id) {
+        RandomizeGuest(map.getEntity(id.id));
+    });
+
+function RandomizeMap() {
+    setLocalSeed('RandomizeMap');
+}
+
+function RandomizeClimate() {
+    setLocalSeed('RandomizeClimate');
+   // TODO: need setClimate function binding
+}
+
+function RandomizeGuests() {
+    var guests = map.getAllEntities('guest');
+    for(var i in guests) {
+        RandomizeGuest(guests[i]);
+    }
+}
+
+function RandomizeGuest(guest) {
+    setLocalSeed('RandomizeGuest ' + guest.id);
+}
+========================
 
 
 console.log(park);
@@ -77,7 +104,7 @@ console.log(scenario);
         completedCompanyValue: null,
         companyValueRecord: 0
     }
-    
+
     type ScenarioObjectiveType =
         "none" |
         "guestsBy" |

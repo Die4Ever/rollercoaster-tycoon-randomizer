@@ -158,7 +158,7 @@ function UnpauseGame() {
     return ifPaused(() => { context.executeAction('pausetoggle', {}); }, null);
 }
 
-function printException(msg, e) {
+function printException(msg: string, e) {
     console.log('===========\nERROR:')
     try {
         console.log(e.stack);
