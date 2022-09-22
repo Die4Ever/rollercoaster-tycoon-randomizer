@@ -55,7 +55,7 @@ registerPlugin({
     main: main
 });
 
-const difficulties = {Easy: -0.3, Medium: 0, Hard: 0.2, Extreme: 0.4};
+const difficulties = {'Very Easy': -0.5, Easy: -0.3, Medium: 0, Hard: 0.2, Extreme: 0.4};
 const scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};// we need big numbers because of rounding issues, we call ceil so speedrun can be really low
 const randoRanges = { Low: 1.3, Medium: 1.5, High: 2, Extreme: 3 };
 const randoCycles = { Never: 0, Infrequent: 80, 'Semi-Frequent': 40, Frequent: 24, 'Very Frequent': 16, 'Extremely Frequent': 8 };// 8 months per RCT year, every 10 years, 5, 3, 1

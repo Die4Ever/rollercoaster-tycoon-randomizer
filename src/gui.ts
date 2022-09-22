@@ -129,7 +129,7 @@ function startGameGui() {
                 name: 'difficulty',
                 y: y++,
                 items: Object.keys(difficulties),
-                selectedIndex: 0,
+                selectedIndex: 1,
                 tooltip: 'Choose a difficulty for the randomization'
             }),
             NewDropdown('Randomization Range:', {
