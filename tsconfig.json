@@ -9,7 +9,7 @@
         "lib/openrct2.d.ts",
         "src/rctrando_init.ts",
         "src/base.ts",
-        "src/gui.ts",
+        "src/gui/*.ts",
         "src/rctrando.ts",
         "src/tests.ts",
         "src/ridetypes.ts",

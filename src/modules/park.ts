@@ -3,17 +3,17 @@ class RCTRPark extends ModuleBase {
         setLocalSeed('RandomizeParkFlags');
 
         if(settings.rando_park_flags) {
-            RandomizeParkFlag("difficultGuestGeneration", 1);
-            RandomizeParkFlag("difficultParkRating", 1);
-            //RandomizeParkFlag("forbidHighConstruction", 1); // TODO: put this back in when OpenRCT2 lets me adjust the max height
-            RandomizeParkFlag("forbidLandscapeChanges", 1);
-            RandomizeParkFlag("forbidMarketingCampaigns", 1);
-            RandomizeParkFlag("forbidTreeRemoval", 1);
-            RandomizeParkFlag("freeParkEntry", 1);
-            RandomizeParkFlag("preferMoreIntenseRides", 1);
-            RandomizeParkFlag("preferLessIntenseRides", -1);
-            RandomizeParkFlag("unlockAllPrices", -1);// I think this allows the player to always set entry fees and ride fees?
-            //RandomizeParkFlag("noMoney", -1);// too easy?
+            this.RandomizeParkFlag("difficultGuestGeneration", 1);
+            this.RandomizeParkFlag("difficultParkRating", 1);
+            //this.RandomizeParkFlag("forbidHighConstruction", 1); // TODO: put this back in when OpenRCT2 lets me adjust the max height
+            //this.RandomizeParkFlag("forbidLandscapeChanges", 1); // TODO: put this behind a difficulty option?
+            this.RandomizeParkFlag("forbidMarketingCampaigns", 1);
+            //this.RandomizeParkFlag("forbidTreeRemoval", 1); // TODO: put this behind a difficulty option?
+            this.RandomizeParkFlag("freeParkEntry", 1);
+            this.RandomizeParkFlag("preferMoreIntenseRides", 1);
+            this.RandomizeParkFlag("preferLessIntenseRides", -1);
+            this.RandomizeParkFlag("unlockAllPrices", -1);// I think this allows the player to always set entry fees and ride fees?
+            //this.RandomizeParkFlag("noMoney", -1);// too easy?
         }
 
         setLocalSeed('RandomizeParkValues');
@@ -25,12 +25,12 @@ class RCTRPark extends ModuleBase {
             this.RandomizeField(park, 'bankLoan', 1);
         }
     }
+
+    RandomizeParkFlag(name, difficulty) {
+        var val = park.getFlag(name);
+        park.setFlag(name, RngBoolWithDifficulty(difficulty));
+        this.AddChange(name, name, val, park.getFlag(name));
+    }
 }
 
 registerModule(new RCTRPark());
-
-function RandomizeParkFlag(name, difficulty) {
-    var val = park.getFlag(name);
-    park.setFlag(name, RngBoolWithDifficulty(difficulty));
-    this.AddChange(name, name, val, park.getFlag(name));
-}

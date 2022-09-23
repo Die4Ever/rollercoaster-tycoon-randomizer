@@ -10,8 +10,8 @@ var global_settings = {
 let initedMenuItems:boolean = false;
 let subscriptions = []
 
-const minApiVersion = 50;
-const targetApiVersion = 59;
+const minApiVersion = 60;
+const targetApiVersion = 60;
 console.log("              \n"+rando_name+" v"+rando_version
     + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is '+minApiVersion+', recommended API version is '+targetApiVersion
     + ', network.mode: '+network.mode+', context.mode: '+context.mode
