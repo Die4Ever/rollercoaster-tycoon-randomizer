@@ -2,10 +2,13 @@ const rando_name = 'RollerCoaster Tycoon Randomizer';
 const rando_version = '0.9 Alpha';
 
 const bDebug:boolean = false;
-let debug = function(...args){};
-if(bDebug)
-    debug = console.log;
-let info = console.log;
+function debug(message?: any, ...optionalParams: any[]): void {
+    if(bDebug)
+        console.log(message, optionalParams);
+}
+function info(message?: any, ...optionalParams: any[]): void {
+    console.log(message, optionalParams);
+}
 
 var global_settings = {
     enabled: true,
