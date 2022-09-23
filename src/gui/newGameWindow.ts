@@ -1,11 +1,11 @@
 
 function startGameGui() {
-    console.log('startGameGui()', globalseed);
+    info('startGameGui()', globalseed);
     var ww = 350;
     var wh = 350;
 
     if (typeof ui === 'undefined') {
-        console.log('startGameGui() ui is undefined');
+        info('startGameGui() ui is undefined');
         initRando();
         return;
     }

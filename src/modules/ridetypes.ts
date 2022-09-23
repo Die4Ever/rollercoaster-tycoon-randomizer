@@ -6,7 +6,7 @@ class RCTRRideTypes extends ModuleBase {
     }
 
     AnyEntry(): void {
-        let self = this;
+        const self = this;
         self.SubscribeEvent("ride.ratings.calculate", function(ratings) {
             // TODO: do I need to modify the values in ratings, or does this work fine because it happens next tick?
             const isDummy:boolean = ratings.excitement <= 0;
@@ -73,7 +73,7 @@ class RCTRRideTypes extends ModuleBase {
         }
 
         /*if(changed) {
-            console.log('RandomizeRide type: '+rideTypeName+' ('+rideTypeId+')'
+            info('RandomizeRide type: '+rideTypeName+' ('+rideTypeId+')'
             + ', date.monthsElapsed: '+date.monthsElapsed
             + ', num_months_cycle: '+settings.num_months_cycle+', cycle: '+cycle, ride);
         }*/

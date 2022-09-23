@@ -22,10 +22,10 @@ abstract class ModuleBase {
     }
 
     FirstEntry() {
-        console.log(this.constructor.name, 'empty FirstEntry() function');
+        info(this.constructor.name, 'empty FirstEntry() function');
     }
     AnyEntry() {
-        console.log(this.constructor.name, 'empty AnyEntry() function');
+        info(this.constructor.name, 'empty AnyEntry() function');
     }
 
     // settings and savestate management would be good here, need constructor
@@ -44,7 +44,7 @@ abstract class ModuleBase {
 
     AddChange(key, name, from, to, factor=null) {
         var obj = {name: name, from: from, to: to, factor: factor};
-        console.log(this.constructor.name, 'AddChange', key, JSON.stringify(obj));
+        info(this.constructor.name, 'AddChange', key, JSON.stringify(obj));
         if(from === to && !factor) return;
 
         this.settings.changes[key] = obj;
@@ -63,11 +63,11 @@ abstract class ModuleBase {
 var modules:ModuleBase[] = [];
 
 function registerModule(module:ModuleBase) {
-    console.log("registerModule", module.constructor.name);
+    info("registerModule", module.constructor.name);
     for(var i=0; i<modules.length; i++) {
         const m = modules[i];
         if(m.constructor.name === module.constructor.name) {
-            console.log("registerModule already found", module.constructor.name);
+            info("registerModule already found", module.constructor.name);
             return;
         }
     }
@@ -78,7 +78,7 @@ function LoadSettings() {
     for(var i=0; i<modules.length; i++) {
         const m = modules[i];
         try {
-            console.log('LoadConfigs(): ', m.constructor.name);
+            info('LoadConfigs(): ', m.constructor.name);
             m.LoadSettings();
         } catch(e) {
             printException('error in LoadConfigs(): ' + m.constructor.name, e);
@@ -92,7 +92,7 @@ function FirstEntry() {
     for(var i=0; i<modules.length; i++) {
         const m = modules[i];
         try {
-            console.log('FirstEntry(): ', m.constructor.name, m.settings.enabled);
+            info('FirstEntry(): ', m.constructor.name, m.settings.enabled);
             if(!m.settings.enabled) continue;
             setLocalSeed(m.constructor.name+' FirstEntry');
             m.FirstEntry();
@@ -110,7 +110,7 @@ function AnyEntry(bLoadSettings:boolean=true) {
     for(var i=0; i<modules.length; i++) {
         const m = modules[i];
         try {
-            console.log('AnyEntry(): ', m.constructor.name, m.settings.enabled);
+            info('AnyEntry(): ', m.constructor.name, m.settings.enabled);
             if(!m.settings.enabled) continue;
             setLocalSeed(m.constructor.name+' AnyEntry');
             m.AnyEntry();
@@ -124,7 +124,7 @@ function UnSubscribeEvents() {
     for(var i=0; i<modules.length; i++) {
         const m = modules[i];
         try {
-            console.log('UnSubscribeEvents(): ', m.constructor.name);
+            info('UnSubscribeEvents(): ', m.constructor.name);
             m.UnSubscribeEvents();
         } catch(e) {
             printException('error in UnSubscribeEvents(): ', m.constructor.name);

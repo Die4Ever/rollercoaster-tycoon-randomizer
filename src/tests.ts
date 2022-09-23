@@ -5,19 +5,19 @@ function test_difficulty(goal, d) {
     let currDifficulty = 1;
     let num = 1000;
 
-    console.log('                  \ntest_difficulty', goal, d, JSON.stringify(settings.rando_range));
+    info('                  \ntest_difficulty', goal, d, JSON.stringify(settings.rando_range));
 
     let total = 0;
     for(var i=0; i<num; i++) {
         total += GetDifficultyCurve(d);
     }
-    console.log("difficulty "+goal+", "+d+", avg: "+ (total/num));
+    info("difficulty "+goal+", "+d+", avg: "+ (total/num));
 
     total = 0;
     for(var i=0; i<num; i++) {
         total += Number(RngBoolWithDifficulty(d));
     }
-    console.log("    RngBoolWithDifficulty difficulty "+goal+", "+d+", avg: "+ (total/num));
+    info("    RngBoolWithDifficulty difficulty "+goal+", "+d+", avg: "+ (total/num));
 
     let min = 1;
     let max = 1;
@@ -32,12 +32,12 @@ function test_difficulty(goal, d) {
         if(v < 1) lows++;
         total += v;
     }
-    console.log("    randomize difficulty "+goal+", "+d+", avg: "+ (total/num)+', min: '+min+', max: '+max+', lows: '+lows+', highs: '+highs);
+    info("    randomize difficulty "+goal+", "+d+", avg: "+ (total/num)+', min: '+min+', max: '+max+', lows: '+lows+', highs: '+highs);
 }
 
 function run_tests() {
-    console.log('starting tests...');
-    console.log(RideType[1]);
+    info('starting tests...');
+    info(RideType[1]);
     setGlobalSeed(25);
     var oldRange = settings.rando_range;
     settings.rando_range = randoRanges['Medium'];
@@ -49,7 +49,7 @@ function run_tests() {
 
     for(var r in randoRanges) {
         settings.rando_range = randoRanges[r];
-        console.log('            \nrun_tests range', r);
+        info('            \nrun_tests range', r);
         test_difficulty(0, 0);
     }
 
@@ -59,5 +59,5 @@ function run_tests() {
 
     settings.rando_range = oldRange;
     settings.difficulty = 1;
-    console.log('finished tests');
+    info('finished tests');
 }

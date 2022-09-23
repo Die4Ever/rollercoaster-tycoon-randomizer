@@ -9,12 +9,11 @@
         "lib/openrct2.d.ts",
         "src/rctrando_init.ts",
         "src/base.ts",
-        "src/gui/*.ts",
         "src/rctrando.ts",
         "src/tests.ts",
         "src/ridetypes.ts",
         "src/OpenRCT2-CrowdControl/crowdcontrol.ts",
-        "src/moduleBase.ts",
-        "src/modules/*.ts"
+        "src/modules/*.ts",
+        "src/gui/*.ts"
     ]
 }

@@ -5,7 +5,7 @@ let cc_good: boolean = false;
 let cc_reconnect_interval: number = null;
 
 function cc_onError(hadError: boolean) {
-    console.log('error in Crowd Control connection, will keep trying...');
+    info('error in Crowd Control connection, will keep trying...');
     if(cc_good) {
         park.postMessage(
             {type: 'blank', text: 'error in Crowd Control connection, will keep trying...'} as ParkMessageDesc
@@ -16,7 +16,7 @@ function cc_onError(hadError: boolean) {
 }
 
 function cc_onClose(hadError: boolean) {
-    console.log('Crowd Control connection closed, will keep trying...');
+    info('Crowd Control connection closed, will keep trying...');
     if(cc_good) {
         park.postMessage(
             {type: 'blank', text: 'Crowd Control connection closed, will keep trying...'} as ParkMessageDesc
@@ -27,13 +27,13 @@ function cc_onClose(hadError: boolean) {
 }
 
 function cc_onExpectedClose(hadError: boolean) {
-    console.log('Crowd Control connection closed cc_onExpectedClose, will keep trying...');
+    info('Crowd Control connection closed cc_onExpectedClose, will keep trying...');
     cc_good = true;
     cc_connect();
 }
 
 function cc_reconnect() {
-    //console.log('Crowd Control reconnecting...');
+    //info('Crowd Control reconnecting...');
     cc_connect();
 }
 
@@ -46,7 +46,7 @@ function cc_onData(message: string) {
         while(message[message.length-1] == '\0')
             message = message.substring(0, message.length-1);
         data = JSON.parse(message);
-        console.log("Crowd Control received data: ", data);
+        info("Crowd Control received data: ", data);
     } catch(e) {
         printException('error parsing Crowd Control request JSON: ' + message, e);
     }
@@ -59,7 +59,7 @@ function cc_onData(message: string) {
 
     try {
         let r: string = JSON.stringify(resp) + '\0';
-        console.log(message, r.length, r);
+        info(message, r.length, r);
         cc_end(r);
     } catch(e) {
         printException('error sending Crowd Control response to: ' + message, e);
@@ -78,7 +78,7 @@ function cc_reset_timeout() {
 function cc_end(data?:string) {
     if(!cc_sock) return;
 
-    console.log('cc_end()');
+    info('cc_end()');
     try {
         cc_sock.off('close', cc_onClose);
         cc_sock.on('close', cc_onExpectedClose);
@@ -88,7 +88,7 @@ function cc_end(data?:string) {
 
     try {
         data = data ? data : '{"id": 0, "status": 0}\0';
-        console.log('cc_sock.end('+data+')');
+        info('cc_sock.end('+data+')');
         cc_sock.end(data);
     } catch(e) {
         printException('error closing old Crowd Control connection ', e);
@@ -107,7 +107,7 @@ function cc_end(data?:string) {
 function cc_destroy() {
     if(!cc_sock) return;
 
-    console.log('cc_destroy()');
+    info('cc_destroy()');
     try {
         cc_sock.off('close', cc_onClose);
     } catch(e) {
@@ -131,23 +131,23 @@ function cc_destroy() {
 
 function cc_connect() {
     if (network.mode == "server") {
-        //console.log("This is a server...");
+        //info("This is a server...");
     } else if (network.mode == "client") {
-        //console.log("This is a client...");
+        //info("This is a client...");
         return;
     } else {
-        //console.log("This is single player...");
+        //info("This is single player...");
     }
 
     cc_reset_timeout();
     cc_destroy();
 
-    console.log('cc_connect');
+    info('cc_connect');
     cc_sock = network.createSocket();
 
     cc_sock.connect(43385, '127.0.0.1', function() {
         if(!cc_good) {
-            console.log('Crowd Control connected!');
+            info('Crowd Control connected!');
             park.postMessage(
                 {type: 'blank', text: 'Crowd Control connected!'} as ParkMessageDesc
             );

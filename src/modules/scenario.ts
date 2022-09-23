@@ -5,7 +5,7 @@ class RCTRScenario extends ModuleBase {
             settings.scenarioLength = rng(50, 300) / 100;
         }
 
-        console.log('scenario.objective.year: ', scenario.objective.year, ', scenarioLength: '+settings.scenarioLength);
+        info('scenario.objective.year: ', scenario.objective.year, ', scenarioLength: '+settings.scenarioLength);
         if(scenario.objective.year) {
             // ceil because it's nice to lean towards longer scenarios? need to make other things more difficult then
             const old = scenario.objective.year;
@@ -24,8 +24,8 @@ class RCTRScenario extends ModuleBase {
         this.RandomizeObjective('monthlyIncome', 0.9);
         this.RandomizeObjective('parkValue', 0.9);
 
-        //console.log(scenario);
-        console.log(scenario.objective);
+        //info(scenario);
+        info(scenario.objective);
     }
 
     RandomizeObjective(name, difficulty, scenarioLengthExp=1) {

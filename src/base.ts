@@ -11,7 +11,7 @@ function rng(min:number, max:number) {
         tseed = ~~(-tseed);
     var ret = (tseed >>> 8) % (1 + max - min);
     ret += min;
-    //console.log("rng("+min+", "+max+") "+tseed+", "+ret);
+    //info("rng("+min+", "+max+") "+tseed+", "+ret);
     return ret;
 }
 
@@ -63,14 +63,14 @@ function RngBoolWithDifficulty(d) {
     var adjust = GetDifficultyCurve(d);
     adjust = adjust * 2;
     mid *= adjust;
-    //console.log('RngBoolWithDifficulty, adjust: '+adjust+', mid: '+mid);
+    //info('RngBoolWithDifficulty, adjust: '+adjust+', mid: '+mid);
 
     return val < mid;
 }
 
 function setGlobalSeed(newSeed) {
     // use this to set the seed for the whole game
-    console.log('setGlobalSeed from '+globalseed+' to '+newSeed);
+    info('setGlobalSeed from '+globalseed+' to '+newSeed);
     globalseed = ~~newSeed;
     tseed = ~~newSeed;
 }
@@ -92,7 +92,7 @@ function randomize(value, difficulty) {
         ret = 1 / ret;
     let difficulty_curve = GetDifficultyCurve(difficulty) * 2;
     ret *= value * difficulty_curve;
-    //console.log('randomize('+value+', '+difficulty+'): '+ret, difficulty_curve);
+    //info('randomize('+value+', '+difficulty+'): '+ret, difficulty_curve);
     return ret;
 }
 
@@ -159,15 +159,15 @@ function UnpauseGame() {
 }
 
 function printException(msg: string, e) {
-    console.log('===========\nERROR:')
+    info('===========\nERROR:')
     try {
-        console.log(e.stack);
-        console.log(msg, e.name, e.message);
+        info(e.stack);
+        info(msg, e.name, e.message);
     } catch(e2) {
-        console.log('error in printException', msg, e, e2);
-        console.log('types: ', msg.constructor.name, e.constructor.name, e2.constructor.name);
+        info('error in printException', msg, e, e2);
+        info('types: ', msg.constructor.name, e.constructor.name, e2.constructor.name);
     }
-    console.log('===========');
+    info('===========');
 }
 
 // February shouldn't be shown, it's just padding

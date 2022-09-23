@@ -37,7 +37,7 @@ function RandomizeGuest(guest) {
 ========================
 
 
-console.log(park);
+info(park);
     {
         cash: 100000,
         rating: 500,
@@ -84,7 +84,7 @@ console.log(park);
 
 
 
-console.log(scenario);
+info(scenario);
     {
         name: 'Crazy Castle',
         details: 'You have inherited a large castle - Your job is to convert it into a small theme park.',
@@ -121,7 +121,7 @@ console.log(scenario);
 
 
 
-console.log(map);
+info(map);
     {
         size: { x: 100, y: 100 },
        numRides: 0,
@@ -137,7 +137,7 @@ console.log(map);
 
 
 https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/openrct2.d.ts#L1366
-console.log('RandomizeGuest:', guest);
+info('RandomizeGuest:', guest);
     RandomizeGuest': {
         tshirtColour: 25,
         trousersColour: 23,
@@ -178,7 +178,7 @@ console.log('RandomizeGuest:', guest);
 
 
 
-console.log(ride);
+info(ride);
         { id: 3, $
     object:
     { description: 'Large swinging pirate ship',
@@ -466,7 +466,7 @@ console.log(ride);
 
 
 
-console.log('action.execute', event);
+info('action.execute', event);
 {
             action: 'trackplace',
             args: {
@@ -498,7 +498,7 @@ console.log('action.execute', event);
         }
 
 
-        console.log('ride.ratings.calculate', ratings);
+        info('ride.ratings.calculate', ratings);
         { 0:
             { rideId: 2,
             excitement: 121,
@@ -508,7 +508,7 @@ console.log('action.execute', event);
 
 
 
-console.log(climate);
+info(climate);
     {
         type: 'warm',
         current: {
