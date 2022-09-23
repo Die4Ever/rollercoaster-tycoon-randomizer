@@ -1,6 +1,11 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
 const rando_version = '0.9 Alpha';
-let debug:boolean = false;
+
+const bDebug:boolean = false;
+let debug = function(...args){};
+if(bDebug)
+    debug = console.log;
+let info = console.log;
 
 var global_settings = {
     enabled: true,
@@ -12,7 +17,7 @@ let subscriptions = []
 
 const minApiVersion = 60;
 const targetApiVersion = 60;
-console.log("              \n"+rando_name+" v"+rando_version
+info("              \n"+rando_name+" v"+rando_version
     + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is '+minApiVersion+', recommended API version is '+targetApiVersion
     + ', network.mode: '+network.mode+', context.mode: '+context.mode
 );
@@ -28,13 +33,13 @@ function main() {
             return;
         }
         if(network.mode == 'client') {
-            console.log(network.mode);
+            info(network.mode);
             var savedData = context.getParkStorage().get('RCTRando.settings');
             if(savedData && savedData.hasOwnProperty('seed')) {
                 runNextTick(_main);
             } else {
                 // TODO: fix this hack
-                console.log('ERROR: savedData not found, you probably joined the game before RCT Randomizer initialized!');
+                info('ERROR: savedData not found, you probably joined the game before RCT Randomizer initialized!');
             }
             return;
         }
@@ -78,16 +83,16 @@ var settings = {
 function _main() {
     var savedData;
 
-    if(debug)
+    if(bDebug)
         run_tests();
 
     global_settings = context.sharedStorage.get('RCTRando.global_settings', global_settings);
-    console.log(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode+", enabled: "+global_settings.enabled);
+    info(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode+", enabled: "+global_settings.enabled);
 
     try {
         savedData = context.getParkStorage().get('RCTRando.settings');
         if(savedData)
-            console.log("restored savedData", JSON.stringify(savedData));
+            info("restored savedData", JSON.stringify(savedData));
     } catch(e) {
         printException('error checking savedData: ', e);
     }
@@ -99,12 +104,12 @@ function _main() {
         newGame();
     }
 
-    console.log(rando_name+" v"+rando_version+" finished startup\n               ");
+    info(rando_name+" v"+rando_version+" finished startup\n               ");
 }
 
 function loadedGame(savedData) {
     setGlobalSeed(savedData.seed);
-    console.log("restored saved seed "+globalseed, JSON.stringify(savedData));
+    info("restored saved seed "+globalseed, JSON.stringify(savedData));
     for(let k in savedData) {
         settings[k] = savedData[k];
     }
@@ -124,7 +129,7 @@ function loadedGame(savedData) {
 function newGame() {
     // use for headless? saves in your %USERPROFILE%\Documents\OpenRCT2\plugin.store.json
     var nextSeed = context.sharedStorage.get('RCTRando.nextSeed');
-    console.log("nextSeed was", nextSeed);
+    info("nextSeed was", nextSeed);
     if(nextSeed) {
         setGlobalSeed(nextSeed);
     } else {
@@ -150,7 +155,7 @@ function SaveGlobalSettings() {
 
 function EnableDisableRando(enabled:boolean) {
     global_settings.enabled = enabled;
-    console.log(global_settings.enabled ? 'Enabling' : 'Disabling');
+    info(global_settings.enabled ? 'Enabling' : 'Disabling');
     SaveGlobalSettings();
     if(global_settings.enabled) {
         main();
