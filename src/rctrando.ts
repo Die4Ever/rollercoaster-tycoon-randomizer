@@ -10,7 +10,6 @@ function initRando() {
 
     try {
         FirstEntry();
-        AnyEntry();
         if(settings.rando_crowdcontrol) {
             init_crowdcontrol();
         }

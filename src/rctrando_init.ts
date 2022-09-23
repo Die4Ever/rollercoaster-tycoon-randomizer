@@ -106,8 +106,7 @@ function loadedGame(savedData) {
     setGlobalSeed(savedData.seed);
     console.log("restored saved seed "+globalseed, JSON.stringify(savedData));
     for(let k in savedData) {
-        if(savedData.hasOwnProperty(k) && settings.hasOwnProperty(k))
-            settings[k] = savedData[k];
+        settings[k] = savedData[k];
     }
     //startGameGui();// just for testing
     initMenuItems();

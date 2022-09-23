@@ -8,8 +8,25 @@ abstract class ModuleBase {
         this.settings = {enabled:true, changes:{}};
     }
 
-    FirstEntry() {}
-    AnyEntry() {}
+    LoadSettings() {
+        if(!settings[this.constructor.name]) {
+            this.SaveSettings();
+            return;
+        };
+        this.settings = settings[this.constructor.name];
+    }
+
+    SaveSettings() {
+        settings[this.constructor.name] = this.settings;
+        SaveSettings();
+    }
+
+    FirstEntry() {
+        console.log(this.constructor.name, 'empty FirstEntry() function');
+    }
+    AnyEntry() {
+        console.log(this.constructor.name, 'empty AnyEntry() function');
+    }
 
     // settings and savestate management would be good here, need constructor
 
@@ -31,8 +48,7 @@ abstract class ModuleBase {
         if(from === to && !factor) return;
 
         this.settings.changes[key] = obj;
-        settings[this.constructor.name] = this.settings;
-        SaveSettings();
+        this.SaveSettings();
     }
 
     RandomizeField(obj:Object, name:string, difficulty:number) {
@@ -58,7 +74,21 @@ function registerModule(module:ModuleBase) {
     modules.push(module);
 }
 
+function LoadSettings() {
+    for(var i=0; i<modules.length; i++) {
+        const m = modules[i];
+        try {
+            console.log('LoadConfigs(): ', m.constructor.name);
+            m.LoadSettings();
+        } catch(e) {
+            printException('error in LoadConfigs(): ' + m.constructor.name, e);
+        }
+    }
+}
+
 function FirstEntry() {
+    LoadSettings();
+
     for(var i=0; i<modules.length; i++) {
         const m = modules[i];
         try {
@@ -70,9 +100,13 @@ function FirstEntry() {
             printException('error in FirstEntry(): ' + m.constructor.name, e);
         }
     }
+
+    AnyEntry(false);
 }
 
-function AnyEntry() {
+function AnyEntry(bLoadSettings:boolean=true) {
+    if(bLoadSettings) LoadSettings();
+
     for(var i=0; i<modules.length; i++) {
         const m = modules[i];
         try {
