@@ -24,4 +24,6 @@ We also have an option for [Crowd Control](https://crowdcontrol.live/) to allow 
 
 <img src="https://user-images.githubusercontent.com/30947252/181834760-0bd41a28-e9a2-4102-8604-3317c1d4d7d4.png" alt="Changes List" width="600"/>
 
+https://youtu.be/IeLoyNDq_7A?t=411
+
 Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR) or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM)
