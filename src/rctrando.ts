@@ -1,4 +1,77 @@
 
+function loadedGame(savedData) {
+    setGlobalSeed(savedData.seed);
+    info("restored saved seed "+globalseed, JSON.stringify(savedData));
+    for(let k in savedData) {
+        settings[k] = savedData[k];
+    }
+    //startGameGui();// just for testing
+    initMenuItems();
+    if(global_settings.enabled===false) {
+        return;
+    }
+    global_settings.enabled = true;
+    createChangesWindow();
+    AnyEntry();
+    if(settings.rando_crowdcontrol) {
+        init_crowdcontrol();
+    }
+}
+
+function newGame() {
+    // use for headless? saves in your %USERPROFILE%\Documents\OpenRCT2\plugin.store.json
+    var nextSeed = context.sharedStorage.get('RCTRando.nextSeed');
+    info("nextSeed was", nextSeed);
+    if(nextSeed) {
+        setGlobalSeed(nextSeed);
+    } else {
+        setGlobalSeed(context.getRandom(1, 999999 + 1));
+
+        if(global_settings.reuse_seed && global_settings.last_used_settings['seed']) {
+            setGlobalSeed(global_settings.last_used_settings['seed']);
+        }
+    }
+    context.sharedStorage.set("RCTRando.nextSeed", null);
+
+    if(global_settings.enabled===false) {
+        initMenuItems();
+        return;
+    }
+    global_settings.enabled = true;
+    if(global_settings.reuse_settings) {
+        for(var k in global_settings.last_used_settings) {
+            settings[k] = global_settings.last_used_settings[k];
+        }
+    }
+    // pause game and open menu
+    startGameGui();
+}
+
+function SaveGlobalSettings() {
+    context.sharedStorage.set('RCTRando.global_settings', global_settings);
+}
+
+function EnableDisableRando(enabled:boolean) {
+    global_settings.enabled = enabled;
+    info(global_settings.enabled ? 'Enabling' : 'Disabling');
+    SaveGlobalSettings();
+    if(global_settings.enabled) {
+        main();
+    } else {
+        UnSubscribeEvents();
+    }
+}
+
+function EnableDisableAutoPause(enabled:boolean) {
+    global_settings.auto_pause = enabled;
+    SaveGlobalSettings();
+}
+
+function EnableDisableReuseSeed(enabled:boolean) {
+    global_settings.reuse_seed = enabled;
+    SaveGlobalSettings();
+}
+
 // called after new game window
 function initRando() {
     global_settings.last_used_settings = settings;
