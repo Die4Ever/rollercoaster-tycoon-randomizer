@@ -18,16 +18,16 @@ var global_settings = {
 let initedMenuItems:boolean = false;
 let subscriptions = []
 
-const minApiVersion = 60;
-const targetApiVersion = 60;
+const minApiVersion = 52;// or 60?
+const targetApiVersion = 64;
 info("              \n"+rando_name+" v"+rando_version
     + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is '+minApiVersion+', recommended API version is '+targetApiVersion
     + ', network.mode: '+network.mode+', context.mode: '+context.mode
 );
 
-if(context.apiVersion < minApiVersion && typeof ui !== 'undefined') {
+if(context.apiVersion < targetApiVersion && typeof ui !== 'undefined') {
     // show an error dialog?
-    //ui.showError('', 'You need to update OpenRCT2 for RCTRandomizer!');
+    ui.showError('You need to update OpenRCT2', 'for RCTRandomizer!');
 }
 
 function main() {
