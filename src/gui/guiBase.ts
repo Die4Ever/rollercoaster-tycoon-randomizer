@@ -80,24 +80,29 @@ function numberWithCommas(x, isMoney:boolean = false) {
 
 function createOptionsWindow() {
     let window:Window;
-    let randoEnabled:CheckboxWidget;
-    const window_height:number = 80;
-    const window_width:number = 180;
+    const window_height:number = 180;
+    const window_width:number = 250;
 
-    let randoEnabledDesc:CheckboxWidget = NewCheckbox('rando-enabled', 'Enable Randomizer', 0, 0, 'Enable or Disable the Randomizer plugin.', global_settings.enabled);
+    let randoEnabledDesc:CheckboxDesc = NewCheckbox('rando-enabled', 'Enable Randomizer', 0, 1, 'Enable or Disable the Randomizer plugin.', global_settings.enabled);
     randoEnabledDesc.onChange = EnableDisableRando;
 
-    let autoPauseDesc:CheckboxWidget = NewCheckbox('auto-pause', 'Auto Pause', 0, 0, 'Automatically pause the game at the start so you can read the changes list.', global_settings.auto_pause);
+    let autoPauseDesc:CheckboxDesc = NewCheckbox('auto-pause', 'Auto Pause', 0, 2, 'Automatically pause the game at the start so you can read the changes list.', global_settings.auto_pause);
     autoPauseDesc.onChange = function(checked:boolean) {
         global_settings.auto_pause = checked;
         SaveGlobalSettings();
     };
 
-    let reuseSeedDesc:CheckboxWidget = NewCheckbox('reuse-seed', 'Reuse Seed', 0, 0, 'Reuse the previously used seed by default.', global_settings.reuse_seed);
+    let reuseSeedDesc:CheckboxDesc = NewCheckbox('reuse-seed', 'Reuse Seed', 0, 3, 'Reuse the previously used seed by default.', global_settings.reuse_seed);
     reuseSeedDesc.onChange = function(checked:boolean) {
         global_settings.reuse_seed = checked;
         SaveGlobalSettings();
     };
+
+    /*TODO: let reuseSettingsDesc:CheckboxDesc = NewCheckbox('reuse-settings', 'Reuse Settings', 0, 3, 'Reuse the previously used settings by default.', global_settings.reuse_settings);
+    reuseSeedDesc.onChange = function(checked:boolean) {
+        global_settings.reuse_settings = checked;
+        SaveGlobalSettings();
+    };*/
 
     window = ui.openWindow({
         classification: 'rando-options',
@@ -105,6 +110,12 @@ function createOptionsWindow() {
         width: window_width,
         height: window_height,
         widgets: [
+            NewLabel('https://discord.gg/jjfKT9nYDR', {
+                name: 'url',
+                y: 0,
+                width: 1.3,
+                tooltip: 'Join the Discord!'
+            }),
             randoEnabledDesc, autoPauseDesc, reuseSeedDesc
         ]
     });

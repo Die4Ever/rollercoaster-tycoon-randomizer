@@ -86,7 +86,7 @@ function createChangesWindow(window_height:number=350, window_width:number=400) 
         getChangesList(changes_list);
     }, 1000);
 
-    let changes_list_desc:Widget = {
+    let changes_list_desc:WidgetDesc = {
         type: 'listview',
         name: 'changes-list',
         x: paddingLeft,
