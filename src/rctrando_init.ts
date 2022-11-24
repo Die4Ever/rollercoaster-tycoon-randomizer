@@ -13,7 +13,9 @@ function info(message?: any, ...optionalParams: any[]): void {
 var global_settings = {
     enabled: true,
     auto_pause: true,
-    reuse_seed: false
+    reuse_seed: false,
+    reuse_settings: true,
+    last_used_settings: {}
 };
 let initedMenuItems:boolean = false;
 let subscriptions = []
@@ -89,7 +91,15 @@ function _main() {
     if(bDebug)
         run_tests();
 
-    global_settings = context.sharedStorage.get('RCTRando.global_settings', global_settings);
+    try {
+        var temp_global_settings = context.sharedStorage.get('RCTRando.global_settings', global_settings);
+        for(let k in temp_global_settings) {
+            global_settings[k] = temp_global_settings[k];
+        }
+    } catch(e) {
+        printException('error loading global_settings: ', e);
+    }
+
     info(rando_name+" v"+rando_version+" starting, network.mode: "+network.mode+", enabled: "+global_settings.enabled);
 
     try {
@@ -138,7 +148,8 @@ function newGame() {
     } else {
         setGlobalSeed(context.getRandom(1, 999999 + 1));
 
-        if(global_settings.reuse_seed) {
+        if(global_settings.reuse_seed && global_settings.last_used_settings['seed']) {
+            setGlobalSeed(global_settings.last_used_settings['seed']);
         }
     }
     context.sharedStorage.set("RCTRando.nextSeed", null);
@@ -148,6 +159,11 @@ function newGame() {
         return;
     }
     global_settings.enabled = true;
+    if(global_settings.reuse_settings) {
+        for(var k in global_settings.last_used_settings) {
+            settings[k] = global_settings.last_used_settings[k];
+        }
+    }
     // pause game and open menu
     startGameGui();
 }

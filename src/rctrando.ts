@@ -1,5 +1,9 @@
 
+// called after new game window
 function initRando() {
+    global_settings.last_used_settings = settings;
+    global_settings.last_used_settings['seed'] = globalseed;
+    SaveGlobalSettings();
     SaveSettings();
     info(rando_name+' v'+rando_version
         + ' starting with seed '+globalseed
@@ -24,8 +28,6 @@ function SaveSettings() {
         settings['seed'] = globalseed;
         context.getParkStorage().set('RCTRando.settings', settings);
         debug('just saved data', JSON.stringify(settings));
-
-        context.sharedStorage.set('RCTRando.previous_settings', settings);
     } catch(e) {
         printException('error saving settings: ', e);
     }

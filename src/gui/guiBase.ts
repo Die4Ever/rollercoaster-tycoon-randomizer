@@ -48,6 +48,23 @@ function NewDropdown(label, desc) {
     return [label, dropdown];
 }
 
+function GetSelectedIndex(items, value) {
+    var keys = Object.keys(items);
+    var closest = 0;
+    var closest_dist = 99999999;
+    for(var i = 0; i < keys.length; i++) {
+        var v = items[keys[i]];
+        if(v == value) return i;
+
+        var dist = Math.abs(v - value);
+        if( dist < closest_dist ) {
+            closest = i;
+            closest_dist = dist;
+        }
+    }
+    return closest;
+}
+
 function NewCheckbox(name:string, text:string, x:number, y:number, tooltip:string, checked?:boolean) {
     return NewWidget({
         type: 'checkbox',
@@ -80,7 +97,7 @@ function numberWithCommas(x, isMoney:boolean = false) {
 
 function createOptionsWindow() {
     let window:Window;
-    const window_height:number = 180;
+    const window_height:number = 200;
     const window_width:number = 250;
 
     let randoEnabledDesc:CheckboxDesc = NewCheckbox('rando-enabled', 'Enable Randomizer', 0, 1, 'Enable or Disable the Randomizer plugin.', global_settings.enabled);
@@ -98,11 +115,11 @@ function createOptionsWindow() {
         SaveGlobalSettings();
     };
 
-    /*TODO: let reuseSettingsDesc:CheckboxDesc = NewCheckbox('reuse-settings', 'Reuse Settings', 0, 3, 'Reuse the previously used settings by default.', global_settings.reuse_settings);
+    let reuseSettingsDesc:CheckboxDesc = NewCheckbox('reuse-settings', 'Reuse Settings', 0, 4, 'Reuse the previously used settings by default.', global_settings.reuse_settings);
     reuseSeedDesc.onChange = function(checked:boolean) {
         global_settings.reuse_settings = checked;
         SaveGlobalSettings();
-    };*/
+    };
 
     window = ui.openWindow({
         classification: 'rando-options',
@@ -116,7 +133,7 @@ function createOptionsWindow() {
                 width: 1.3,
                 tooltip: 'Join the Discord!'
             }),
-            randoEnabledDesc, autoPauseDesc, reuseSeedDesc
+            randoEnabledDesc, autoPauseDesc, reuseSeedDesc, reuseSettingsDesc
         ]
     });
 }
