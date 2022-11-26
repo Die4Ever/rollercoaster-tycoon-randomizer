@@ -41,11 +41,18 @@ class RCTRRideTypes extends ModuleBase {
         return false;
     }
 
+    GetRideTypeName(id: number): string {
+        if(!RideType[id]) {
+            return id.toString();
+        }
+        return RideType[id];
+    }
+
     RandomizeRide(rideId, isDummy=false) {
         if(!settings.rando_ride_types)
             return;
         let ride = map.getRide(rideId);
-        this.RandomizeRideType(ride, RideType[ride.type], ride.type, isDummy);
+        this.RandomizeRideType(ride, this.GetRideTypeName(ride.type), ride.type, isDummy);
     }
 
     RandomizeRideType(ride, rideTypeName, rideTypeId, isDummy:boolean=false) {

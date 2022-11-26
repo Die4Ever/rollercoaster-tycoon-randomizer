@@ -40,6 +40,7 @@ function newGame() {
     global_settings.enabled = true;
     if(global_settings.reuse_settings) {
         for(var k in global_settings.last_used_settings) {
+            if(k==='seed' || k==='rando_version' || k==='version' || k==='changes') continue;
             settings[k] = global_settings.last_used_settings[k];
         }
     }
@@ -97,7 +98,7 @@ function initRando() {
 
 function SaveSettings() {
     try {
-        settings['version'] = rando_version;
+        settings['rando_version'] = rando_version;
         settings['seed'] = globalseed;
         context.getParkStorage().set('RCTRando.settings', settings);
         debug('just saved data', JSON.stringify(settings));

@@ -93,6 +93,9 @@ function FirstEntry() {
         const m = modules[i];
         try {
             info('FirstEntry(): ', m.constructor.name, m.settings.enabled);
+            // we don't retain the changes lists on new games
+            m.settings['changes'] = {};
+            m.SaveSettings();
             if(!m.settings.enabled) continue;
             setLocalSeed(m.constructor.name+' FirstEntry');
             m.FirstEntry();

@@ -1,5 +1,5 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.9 Alpha';
+const rando_version = '0.9 Beta';
 
 const bDebug:boolean = false;
 function debug(message?: any, ...optionalParams: any[]): void {
@@ -11,6 +11,7 @@ function info(message?: any, ...optionalParams: any[]): void {
 }
 
 var global_settings = {
+    rando_version: rando_version,
     enabled: true,
     auto_pause: true,
     reuse_seed: false,
@@ -65,7 +66,7 @@ registerPlugin({
     main: main
 });
 
-const difficulties = {'Very Easy': -0.5, Easy: -0.3, Medium: 0, Hard: 0.2, Extreme: 0.4};
+const difficulties = {'Very Easy': -0.7, Easy: -0.4, Medium: -0.1, Hard: 0.2, Extreme: 0.4};
 const scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};// we need big numbers because of rounding issues, we call ceil so speedrun can be really low
 const randoRanges = { Low: 1.3, Medium: 1.5, High: 2, Extreme: 3 };
 const randoCycles = { Never: 0, Infrequent: 80, 'Semi-Frequent': 40, Frequent: 24, 'Very Frequent': 16, 'Extremely Frequent': 8 };// 8 months per RCT year, every 10 years, 5, 3, 1
@@ -73,7 +74,7 @@ const randoCycles = { Never: 0, Infrequent: 80, 'Semi-Frequent': 40, Frequent: 2
 var settings = {
     rando_version: rando_version,
     rando_range: randoRanges.Medium,
-    difficulty: difficulties.Medium,
+    difficulty: difficulties.Easy,
     scenarioLength: scenarioLengths.Random,
     num_months_cycle: randoCycles.Infrequent,
     cycle_offset: 0,
@@ -93,8 +94,10 @@ function _main() {
 
     try {
         var temp_global_settings = context.sharedStorage.get('RCTRando.global_settings', global_settings);
-        for(let k in temp_global_settings) {
-            global_settings[k] = temp_global_settings[k];
+        if(temp_global_settings['rando_version'] == rando_version) {
+            for(let k in temp_global_settings) {
+                global_settings[k] = temp_global_settings[k];
+            }
         }
     } catch(e) {
         printException('error loading global_settings: ', e);

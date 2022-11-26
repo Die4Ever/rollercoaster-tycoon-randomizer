@@ -116,7 +116,7 @@ function createOptionsWindow() {
     };
 
     let reuseSettingsDesc:CheckboxDesc = NewCheckbox('reuse-settings', 'Reuse Settings', 0, 4, 'Reuse the previously used settings by default.', global_settings.reuse_settings);
-    reuseSeedDesc.onChange = function(checked:boolean) {
+    reuseSettingsDesc.onChange = function(checked:boolean) {
         global_settings.reuse_settings = checked;
         SaveGlobalSettings();
     };

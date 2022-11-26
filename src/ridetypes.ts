@@ -98,5 +98,7 @@ enum RideType {
     "Spinning Wild Mouse",
     "Classic Mini Roller Coaster",
     "Hybrid Coaster",
-    "Single Rail Roller Coaster"
+    "Single Rail Roller Coaster",
+    "98 ",
+    "Classic Wooden Roller Coaster"
 }
