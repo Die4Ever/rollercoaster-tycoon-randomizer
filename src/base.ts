@@ -121,6 +121,10 @@ function crc32(str) {
     return (crc ^ (-1)) >>> 0;
 };
 
+function DeepCopy(o) {
+    return JSON.parse(JSON.stringify(o));
+}
+
 // game state can't be modified outside of synchronized functions, and tick is one of them
 function runNextTick(func) {
     let sub = context.subscribe('interval.tick', function(args) {

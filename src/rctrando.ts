@@ -39,9 +39,10 @@ function newGame() {
     }
     global_settings.enabled = true;
     if(global_settings.reuse_settings) {
-        for(var k in global_settings.last_used_settings) {
+        var last = DeepCopy(global_settings.last_used_settings);
+        for(var k in last) {
             if(k==='seed' || k==='rando_version' || k==='version' || k==='changes') continue;
-            settings[k] = global_settings.last_used_settings[k];
+            settings[k] = last[k];
         }
     }
     // pause game and open menu
@@ -75,7 +76,7 @@ function EnableDisableReuseSeed(enabled:boolean) {
 
 // called after new game window
 function initRando() {
-    global_settings.last_used_settings = settings;
+    global_settings.last_used_settings = DeepCopy(settings);
     global_settings.last_used_settings['seed'] = globalseed;
     SaveGlobalSettings();
     SaveSettings();
