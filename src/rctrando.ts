@@ -13,9 +13,6 @@ function loadedGame(savedData) {
     global_settings.enabled = true;
     createChangesWindow();
     AnyEntry();
-    if(settings.rando_crowdcontrol) {
-        init_crowdcontrol();
-    }
 }
 
 function newGame() {
@@ -89,9 +86,6 @@ function initRando() {
 
     try {
         FirstEntry();
-        if(settings.rando_crowdcontrol) {
-            init_crowdcontrol();
-        }
     } catch(e) {
         printException('error in initRando(): ', e);
     }

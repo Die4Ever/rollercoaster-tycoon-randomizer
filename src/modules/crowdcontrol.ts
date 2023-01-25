@@ -1,4 +1,15 @@
-/// <reference path="CCHandlers.ts" />
+/// <reference path="../OpenRCT2-CrowdControl/CCHandlers.ts" />
+/// <reference path="moduleBase.ts" />
+
+class RCTRCrowdControl extends ModuleBase {
+    AnyEntry(): void {
+        if(settings.rando_crowdcontrol) {
+            init_crowdcontrol();
+        }
+    }
+}
+
+registerModule(new RCTRCrowdControl());
 
 let cc_sock: Socket = null;
 let cc_good: boolean = false;
