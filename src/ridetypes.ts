@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
 // eslint-disable-next-line import/prefer-default-export
+// from https://github.com/ltsSmitty/OpenRCT-Ride-Painter/blob/main/src/helpers/RideType.ts
+// https://github.com/OpenRCT2/OpenRCT2/blob/develop/src/openrct2/ride/Ride.h#L503
 enum RideType {
     "Spiral Roller Coaster", // 0
     "Stand Up Roller Coaster",
@@ -99,6 +101,6 @@ enum RideType {
     "Classic Mini Roller Coaster",
     "Hybrid Coaster",
     "Single Rail Roller Coaster",
-    "98 ",
+    "Alpine Roller Coaster",
     "Classic Wooden Roller Coaster"
 }
