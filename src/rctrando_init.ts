@@ -22,7 +22,7 @@ let initedMenuItems:boolean = false;
 let subscriptions = []
 
 const minApiVersion = 52;// or 60?
-const targetApiVersion = 64;
+const targetApiVersion = 65;// v0.4.3
 info("              \n"+rando_name+" v"+rando_version
     + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is '+minApiVersion+', recommended API version is '+targetApiVersion
     + ', network.mode: '+network.mode+', context.mode: '+context.mode
