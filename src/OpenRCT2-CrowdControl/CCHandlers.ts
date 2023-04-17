@@ -12,11 +12,13 @@ function rctMessage(text: string, type: ParkMessageType = "money") {
 }
 
 function cheat(cheat: Cheat, p1: number = 0, p2: number = 0) {
-    context.executeAction("setcheataction", {
+    context.executeAction("setcheat", {
         type: cheat,
         param1: p1,
         param2: p2
-    }, noop);
+    } as CheatSetArgs, function(result: GameActionResult) {
+        console.log('setcheat(', cheat, p1, p2, ') result:', result);
+    });
 }
 
 class Handler {
