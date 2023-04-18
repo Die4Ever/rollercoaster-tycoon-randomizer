@@ -17,7 +17,7 @@ function cheat(cheat: Cheat, p1: number = 0, p2: number = 0) {
         param1: p1,
         param2: p2
     } as CheatSetArgs, function(result: GameActionResult) {
-        console.log('setcheat(', cheat, p1, p2, ') result:', result);
+        info('setcheat(', cheat, p1, p2, ') result:', result);
     });
 }
 
@@ -326,15 +326,15 @@ let handlers: { [key: string]: Handler } = {
     forcewin: new Handler(forcewin),
 
     forceweatherrandom: new Handler((effect: CCEffect) => forceWeather(effect)),
-    forceweather0: new Handler((effect: CCEffect) => forceWeather(effect, 0)),
-    forceweather1: new Handler((effect: CCEffect) => forceWeather(effect, 1)),
-    forceweather2: new Handler((effect: CCEffect) => forceWeather(effect, 2)),
-    forceweather3: new Handler((effect: CCEffect) => forceWeather(effect, 3)),
-    forceweather4: new Handler((effect: CCEffect) => forceWeather(effect, 4)),
-    forceweather5: new Handler((effect: CCEffect) => forceWeather(effect, 5)),
-    forceweather6: new Handler((effect: CCEffect) => forceWeather(effect, 6)),
-    forceweather7: new Handler((effect: CCEffect) => forceWeather(effect, 7)),
-    forceweather8: new Handler((effect: CCEffect) => forceWeather(effect, 8)),
+    forceweather0: new Handler((effect: CCEffect) => forceWeather(effect, 0)),//Make it Sunny
+    forceweather1: new Handler((effect: CCEffect) => forceWeather(effect, 1)),//Make it Partly Cloudy
+    forceweather2: new Handler((effect: CCEffect) => forceWeather(effect, 2)),//Make it Cloudy
+    forceweather3: new Handler((effect: CCEffect) => forceWeather(effect, 3)),//Make it Rain
+    forceweather4: new Handler((effect: CCEffect) => forceWeather(effect, 4)),//Make it Really Rain
+    forceweather5: new Handler((effect: CCEffect) => forceWeather(effect, 5)),//Make it Storm
+    forceweather6: new Handler((effect: CCEffect) => forceWeather(effect, 6)),//Make it Snow
+    forceweather7: new Handler((effect: CCEffect) => forceWeather(effect, 7)),//Make it Really Snow
+    forceweather8: new Handler((effect: CCEffect) => forceWeather(effect, 8)),//Make it Blizzard
     freezeweather: new Handler(freezeweather, unfreezeweather),
 
     fixallrides: new Handler(fixallrides),

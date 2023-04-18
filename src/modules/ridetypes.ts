@@ -25,7 +25,10 @@ class RCTRRideTypes extends ModuleBase {
             return;
         const isDummy:boolean = ratings.excitement <= 0;
         const tride = isDummy ? null : ratings;
+        ratings.runningCost = ride.runningCost;// just pretend this is a ride object lol
         this.RandomizeRideTypeStats(ratings.rideId, tride, ride.type, ride.classification);
+        if(ratings.runningCost > 0)
+            ride.runningCost = ratings.runningCost;
     }
 
     RandomizeRide(ride) {
@@ -45,10 +48,6 @@ class RCTRRideTypes extends ModuleBase {
             let ride = map.rides[r];
             let type = ride.type;
             existingRideTypes[type] = 1;
-
-            // there doesn't seem to be an event for updating runningCost, so just run it here every day
-            this.SetRideTypeSeed(ride.type, 'runningCost');
-            //this.RandomizeRideTypeField(ride, this.GetRideTypeName(ride.type), ride.type, 'runningCost', 1);
         }
 
         // now loop through changes array to show changes for ride types that are no longer in the park
@@ -80,8 +79,10 @@ class RCTRRideTypes extends ModuleBase {
             changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1, 0.7) || changed;
         }
 
-        this.SetRideTypeSeed(rideTypeId, 'runningCost');
-        //changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
+        if(ride && ride.runningCost > 0) {
+            this.SetRideTypeSeed(rideTypeId, 'runningCost');
+            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
+        }
 
         /*if(changed) {
             info('RandomizeRide type: '+rideTypeName+' ('+rideTypeId+')'

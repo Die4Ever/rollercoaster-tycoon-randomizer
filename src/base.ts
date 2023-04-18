@@ -4,7 +4,7 @@ let tseed = ~~0;
 const gen2 = ~~2147483643;
 const gen1 = ~~(gen2/2);
 
-// works with integers
+// works with integers, min and max are both inclusive
 function rng(min:number, max:number) {
     tseed = ~~(gen1 * tseed * 5 + gen2 + (tseed/5) * 3);
     if(tseed < 0)

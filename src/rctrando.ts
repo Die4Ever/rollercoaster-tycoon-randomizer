@@ -38,7 +38,7 @@ function newGame() {
     if(global_settings.reuse_settings) {
         var last = DeepCopy(global_settings.last_used_settings);
         for(var k in last) {
-            if(k==='seed' || k==='rando_version' || k==='version' || k==='changes') continue;
+            if(k==='seed' || k==='rando_version' || k==='version' || k==='changes' || k==='transient') continue;
             settings[k] = last[k];
         }
     }

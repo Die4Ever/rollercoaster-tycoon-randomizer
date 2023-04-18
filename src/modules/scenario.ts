@@ -23,6 +23,7 @@ class RCTRScenario extends ModuleBase {
         this.RandomizeObjective('excitement', 1, 0.3);
         this.RandomizeObjective('monthlyIncome', 0.9);
         this.RandomizeObjective('parkValue', 0.9);
+        this.RandomizeObjective('length', 0.5);
 
         //info(scenario);
         info(scenario.objective);
