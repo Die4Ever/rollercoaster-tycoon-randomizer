@@ -48,7 +48,7 @@ class RCTRRideTypes extends ModuleBase {
 
             // there doesn't seem to be an event for updating runningCost, so just run it here every day
             this.SetRideTypeSeed(ride.type, 'runningCost');
-            this.RandomizeRideTypeField(ride, this.GetRideTypeName(ride.type), ride.type, 'runningCost', 1);
+            //this.RandomizeRideTypeField(ride, this.GetRideTypeName(ride.type), ride.type, 'runningCost', 1);
         }
 
         // now loop through changes array to show changes for ride types that are no longer in the park
@@ -81,7 +81,7 @@ class RCTRRideTypes extends ModuleBase {
         }
 
         this.SetRideTypeSeed(rideTypeId, 'runningCost');
-        changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
+        //changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
 
         /*if(changed) {
             info('RandomizeRide type: '+rideTypeName+' ('+rideTypeId+')'
