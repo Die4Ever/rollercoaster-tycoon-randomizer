@@ -12,13 +12,23 @@ function rctMessage(text: string, type: ParkMessageType = "money") {
 }
 
 function cheat(cheat: Cheat, p1: number = 0, p2: number = 0) {
-    context.executeAction("setcheat", {
-        type: cheat,
-        param1: p1,
-        param2: p2
-    } as CheatSetArgs, function(result: GameActionResult) {
-        info('setcheat(', cheat, p1, p2, ') result:', result);
-    });
+    if(context.apiVersion >= 74) {
+        context.executeAction("cheatset", {
+            type: cheat,
+            param1: p1,
+            param2: p2
+        } as CheatSetArgs, function(result: GameActionResult) {
+            info('cheatset(', cheat, p1, p2, ') result:', result);
+        });
+    } else {
+        context.executeAction("setcheat", {
+            type: cheat,
+            param1: p1,
+            param2: p2
+        } as CheatSetArgs, function(result: GameActionResult) {
+            info('setcheat(', cheat, p1, p2, ') result:', result);
+        });
+    }
 }
 
 class Handler {
