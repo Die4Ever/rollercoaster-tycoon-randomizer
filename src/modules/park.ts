@@ -8,11 +8,11 @@ class RCTRPark extends ModuleBase {
             //this.RandomizeParkFlag("forbidHighConstruction", 1); // TODO: put this back in when OpenRCT2 lets me adjust the max height
             //this.RandomizeParkFlag("forbidLandscapeChanges", 1); // TODO: put this behind a difficulty option?
             this.RandomizeParkFlag("forbidMarketingCampaigns", 1);
-            //this.RandomizeParkFlag("forbidTreeRemoval", 1); // TODO: put this behind a difficulty option?
+            //this.RandomizeParkFlag("forbidTreeRemoval", 1); // TODO: put this behind a difficulty option? or only on certain dates?
             this.RandomizeParkFlag("freeParkEntry", 1);
             this.RandomizeParkFlag("preferMoreIntenseRides", 1);
-            this.RandomizeParkFlag("preferLessIntenseRides", -1);
-            this.RandomizeParkFlag("unlockAllPrices", -1);// I think this allows the player to always set entry fees and ride fees?
+            this.RandomizeParkFlag("preferLessIntenseRides", -1);// TODO: maybe make these mutually exclusive? like roll a d3
+            this.RandomizeParkFlag("unlockAllPrices", -1);// I think this allows the player to always set entry fees and ride fees? should be mutually exclusive with freeParkEntry or just remove this?
             //this.RandomizeParkFlag("noMoney", -1);// too easy?
         }
 
