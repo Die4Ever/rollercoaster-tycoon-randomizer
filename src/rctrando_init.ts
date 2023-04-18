@@ -83,6 +83,7 @@ var settings = {
     rando_park_values: true,
     rando_goals: true,
     rando_scouting: true,
+    rando_research: true,
     rando_crowdcontrol: false
 };
 

@@ -29,6 +29,7 @@ function startGameGui() {
         settings.rando_park_flags = (window.findWidget('rando-park-flags') as CheckboxWidget).isChecked;
         settings.rando_park_values = (window.findWidget('rando-park-values') as CheckboxWidget).isChecked;
         settings.rando_goals = (window.findWidget('rando-goals') as CheckboxWidget).isChecked;
+        //settings.rando_research = (window.findWidget('rando-research') as CheckboxWidget).isChecked;
         settings.rando_crowdcontrol = (window.findWidget('rando-crowdcontrol') as CheckboxWidget).isChecked;
         var cycle = window.findWidget('reroll-frequency');
         settings.num_months_cycle = randoCycles[cycle['text']];
@@ -97,6 +98,7 @@ function startGameGui() {
             NewCheckbox('rando-park-values', 'Randomize Park Values', 0, y, 'Randomizes values such as starting cash, starting bank loan amount, maxBankLoan, and landPrice', settings.rando_park_values),
             NewCheckbox('rando-goals', 'Randomize Goals', 1, y++, 'Even when disabled, goals will still be scaled by Scenario Length', settings.rando_goals),
             //NewCheckbox('rando-scouting', 'Free Scouting', 1, y++, 'Enable this to get ride type stats added to the changes window before placing a track', settings.rando_scouting),
+            //NewCheckbox('rando-research', 'Shuffle Research Order', 0, y++, 'Shuffles the order of things that get researched.', settings.rando_research),
             NewCheckbox('rando-crowdcontrol', 'Enable Crowd Control', 0, y++, 'Let your viewers mess with your game! Visit https://crowdcontrol.live/ for info', settings.rando_crowdcontrol),
             [{
                 type: 'button',
