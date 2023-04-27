@@ -26,6 +26,13 @@ class RCTRPark extends ModuleBase {
         }
     }
 
+    /*AnyEntry(): void {
+        const self = this;
+        self.SubscribeEvent("interval.day", function() {// random events on certain dates?
+            info('date: ', date.year, date.month, date.day);
+        });
+    }*/
+
     RandomizeParkFlag(name, difficulty) {
         var val = park.getFlag(name);
         park.setFlag(name, RngBoolWithDifficulty(difficulty));
