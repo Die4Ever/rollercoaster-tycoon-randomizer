@@ -22,7 +22,7 @@ let initedMenuItems:boolean = false;
 let subscriptions = []
 
 const minApiVersion = 52;// or 60?
-const targetApiVersion = 75;// research order feature, after v0.4.4
+const targetApiVersion = 77;// v0.4.5
 info("              \n"+rando_name+" v"+rando_version
     + ", OpenRCT2 API version "+context.apiVersion+', minimum required API version is '+minApiVersion+', recommended API version is '+targetApiVersion
     + ', network.mode: '+network.mode+', context.mode: '+context.mode

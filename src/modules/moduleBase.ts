@@ -45,7 +45,6 @@ abstract class ModuleBase {
     AddChange(key, name, from, to, factor=null) {
         var obj = {name: name, from: from, to: to, factor: factor};
         info(this.constructor.name, 'AddChange', key, JSON.stringify(obj));
-        if(from === to && !factor) return;
 
         this.settings.changes[key] = obj;
         this.SaveSettings();
@@ -55,8 +54,11 @@ abstract class ModuleBase {
         if(!obj[name]) return;
 
         const old = obj[name];
-        obj[name] = randomize(obj[name], difficulty);
-        this.AddChange(name, name, old, obj[name]);
+        let newVal = randomize(obj[name], difficulty);
+        if(old != newVal) {
+            obj[name] = newVal;
+            this.AddChange(name, name, old, obj[name]);
+        }
     }
 }
 

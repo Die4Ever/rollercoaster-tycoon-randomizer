@@ -17,15 +17,18 @@ function getChangeText(change):string {
             from /= 10;
             to /= 10;
         }
-        from = numberWithCommas(from, isMoney);
-        to = numberWithCommas(to, isMoney);
 
         if(isBool && to)
             str = name+' enabled';
         else if(isBool)
             str = name+' disabled';
-        else
+        else if(from || to) {
+            from = numberWithCommas(from, isMoney);
+            to = numberWithCommas(to, isMoney);
             str = name+' changed from '+from+' to '+to;
+        }
+        else
+            str = name;
     }
 
     return str;

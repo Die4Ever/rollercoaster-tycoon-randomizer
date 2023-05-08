@@ -5,14 +5,21 @@ class RCTRResearch extends ModuleBase {
 
         setLocalSeed('ShuffleResearch');
 
-        let uninventedItems = [];//park.research.uninventedItems;// TODO: also change inventedItems? bring items in that normally are never in the scenario? or just randomly remove some?
-        for(let i=0; i<uninventedItems.length; i++) {
-            let a = uninventedItems[i];
-            let slot = rng(0, uninventedItems.length - 1);
-            uninventedItems[i] = uninventedItems[slot];
-            uninventedItems[slot] = a;
+        const origNumResearched = park.research.inventedItems.length;
+        let numResearched = origNumResearched;
+        // difficulty is -0.7 for Very Easy and 0.4 for Extreme
+        numResearched -= Math.round(settings.difficulty/2 * numResearched);
+        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
+        for(let i=0; i<researchItems.length; i++) {
+            let a = researchItems[i];
+            let slot = rng(0, researchItems.length - 1);
+            researchItems[i] = researchItems[slot];
+            researchItems[slot] = a;
         }
-        info('uninventedItems: ', uninventedItems);
+        park.research.inventedItems = researchItems.slice(0, numResearched);
+        park.research.uninventedItems = researchItems.slice(numResearched);
+        this.AddChange('ShuffledResearch', 'Shuffled research items', null, null, null);
+        this.AddChange('NumInventedItems', 'Invented items', origNumResearched, numResearched);
     }
 }
 
