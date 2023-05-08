@@ -10,6 +10,7 @@ Currently randomizes:
 * Scenario length
 * Park values such as starting cash, starting bank loan amount, maxBankLoan, landPrice
 * Park flags such as difficultGuestGeneration, forbidMarketingCampaigns, and preferMoreIntenseRides
+* Research order
 * The base stats of each ride type
     * runningCost, excitement, intensity, and nausea
 * Ride Type Stat Re-rolls
@@ -20,9 +21,11 @@ The Randomization Range option specifies how much values can be changed from the
 
 We also have an option for [Crowd Control](https://crowdcontrol.live/) to allow your streaming viewers to troll you or help you!
 
-<img src="https://user-images.githubusercontent.com/30947252/181834752-c2b9653d-9178-4a98-a82e-290f39ca5d22.png" alt="Settings Menu" width="500"/>
+<img src="https://user-images.githubusercontent.com/30947252/236901941-511dd2f0-53fa-41bc-8830-f5bf8d87adbe.png" alt="Settings Menu" width="500"/>
 
-<img src="https://user-images.githubusercontent.com/30947252/181834760-0bd41a28-e9a2-4102-8604-3317c1d4d7d4.png" alt="Changes List" width="600"/>
+<img src="https://user-images.githubusercontent.com/30947252/236902455-c8cd7829-2055-434d-8d08-1b50c58e70dc.png" alt="Menus are in the map icon" width="300"/>
+
+<img src="https://user-images.githubusercontent.com/30947252/236901996-cf68386e-40d2-4ffd-bbc0-f525c904850f.png" alt="Changes List" width="600"/>
 
 [Here is a video of Marcel Vos explaining the Randomizer plugin.](https://youtu.be/IeLoyNDq_7A?t=411)
 
