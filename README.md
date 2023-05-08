@@ -29,4 +29,4 @@ We also have an option for [Crowd Control](https://crowdcontrol.live/) to allow 
 
 [Here is a video of Marcel Vos explaining the Randomizer plugin.](https://youtu.be/IeLoyNDq_7A?t=411)
 
-Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR) or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM)
+Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR), or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM), or [on Mastodon @Die4ever@mastodon.gamedev.place](https://mastodon.gamedev.place/@Die4ever).

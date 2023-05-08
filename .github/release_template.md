@@ -12,4 +12,4 @@ View [the full README here](https://github.com/Die4Ever/rollercoaster-tycoon-ran
 
 *
 
-Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR) or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM)
+Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR), or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM), or [on Mastodon @Die4ever@mastodon.gamedev.place](https://mastodon.gamedev.place/@Die4ever).
