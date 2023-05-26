@@ -30,7 +30,7 @@ abstract class ModuleBase {
 
     // settings and savestate management would be good here, need constructor
 
-    SubscribeEvent(event: HookType, callback: Function) {
+    protected SubscribeEvent(event: HookType, callback: Function) {
         let s = context.subscribe(event, callback);
         this.subscriptions.push(s);
     }
@@ -42,7 +42,7 @@ abstract class ModuleBase {
         this.subscriptions = [];
     }
 
-    AddChange(key, name, from, to, factor=null) {
+    protected AddChange(key, name, from, to, factor=null) {
         var obj = {name: name, from: from, to: to, factor: factor};
         info(this.constructor.name, 'AddChange', key, JSON.stringify(obj));
 
@@ -50,7 +50,7 @@ abstract class ModuleBase {
         this.SaveSettings();
     }
 
-    RandomizeField(obj:Object, name:string, difficulty:number) {
+    protected RandomizeField(obj:Object, name:string, difficulty:number) {
         if(!obj[name]) return;
 
         const old = obj[name];
