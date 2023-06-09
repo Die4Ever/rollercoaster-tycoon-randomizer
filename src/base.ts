@@ -127,14 +127,17 @@ function DeepCopy(o) {
 
 // game state can't be modified outside of synchronized functions, and tick is one of them
 function runNextTick(func) {
-    //use executeAction instead?
-    context.executeAction('RCTRandoExec', {}, function(a) {
-        try {
-            func();
-        } catch(e) {
-            printException('error in runNextTick', e);
-        }
-    });
+    try {
+        context.executeAction('RCTRandoExec', {}, function(a) {
+            try {
+                func();
+            } catch(e) {
+                printException('error in runNextTick', e);
+            }
+        });
+    } catch(e) {
+        printException('error in runNextTick executing action', e);
+    }
 }
 
 function ifPaused(whenPaused: () => void, whenUnpaused: () => void) {

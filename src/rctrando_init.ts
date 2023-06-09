@@ -35,6 +35,11 @@ if(context.apiVersion < targetApiVersion && typeof ui !== 'undefined') {
 
 function main() {
     try {
+        context.registerAction('RCTRandoExec',
+            (args) => {return {};},
+            (args) => {return {};}
+        );
+
         if(context.mode != 'normal') {
             return;
         }
