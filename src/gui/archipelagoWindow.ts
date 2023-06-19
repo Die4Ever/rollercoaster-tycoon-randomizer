@@ -132,53 +132,121 @@ function archipelagoLocations(){
         title: "Welcome to the Unlock shop!",
         width: ww,
         height: wh,
-        tabs: [{
-            image: 50,
-            widgets: [].concat(
-                [
-                {
-                    type: 'label',
-                    name: 'Locked-Location-Label',
-                    x: 125,
-                    y: 50,
-                    width: 100,
-                    height: 26,
-                    text: 'Locked Checks',
-                    tooltip: 'Buying these will help somebody in the multiworld!'
-                },
-                {
-                    type: 'listview',
-                    name: 'locked-location-list',
-                    x: 25,
-                    y: 75,
-                    width: 300,
-                    height: 200,
-                    isStriped: true,
-                    items: 
+        tabs: 
+        [
+            {
+                image: {frameBase: 80101,frameCount: 8,frameDuration: 4},
+                widgets: [].concat
+                (
                     [
-                        "dank item 1", "Listview item 2", "Listview item 3"
-                    ],
-                    onClick: (item: number, column: number) => console.log(`Clicked item ${item} in column ${column} in listview`)
-                },
-                {
-                    type: 'button',
-                    name: 'debug-button',
-                    x: 125,
-                    y: 300,
-                    width: 100,
-                    height: 26,
-                    text: 'Colbys Debug Button. No Touchy!',
-                    onClick: function() {
-                        console.log(map.getAllEntities('car')[1]);
-                        // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
-                        //     console.log(map.getEntity(i));//load data for the entity;
-                        
-                    }
-                }]
-            )
-        }
-            
-            ]
+                        {
+                            type: 'label',
+                            name: 'Locked-Location-Label',
+                            x: 125,
+                            y: 50,
+                            width: 100,
+                            height: 26,
+                            text: 'Locked Checks',
+                            tooltip: 'Buying these will help somebody in the multiworld!'
+                        },
+                        {
+                            type: 'listview',
+                            name: 'locked-location-list',
+                            x: 25,
+                            y: 75,
+                            width: 300,
+                            height: 200,
+                            isStriped: true,
+                            items: 
+                            [
+                                "$500","     Unlock Something for Somebody!", "$2500","     Unlock Something for Minecraft d00ds!", "$4000 + 1 Coaster of 7.00 Excitement","     Unlock progressive-automation for Larissa!"
+                            ],
+                            onClick: (item: number, column: number) => console.log(`Clicked item ${item} in column ${column} in listview`)
+                        },
+                        {
+                            type: 'button',
+                            name: 'debug-button',
+                            x: 125,
+                            y: 300,
+                            width: 100,
+                            height: 26,
+                            text: 'Colbys Debug Button. No Touchy!',
+                            onClick: function() {
+                                console.log(map.getAllEntities('car')[1]);
+                                // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
+                                //     console.log(map.getEntity(i));//load data for the entity;
+                                
+                            }
+                        }
+                    ]
+                )
+            },
+            {
+                image: {frameBase: 5442,frameCount: 16,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+                        {
+                            type: 'label',
+                            name: 'Unlocked-Location-Label',
+                            x: 125,
+                            y: 50,
+                            width: 100,
+                            height: 26,
+                            text: 'Unlocked Checks',
+                            tooltip: 'Thank you for your purchases! No refunds!'
+                        },
+                        {
+                            type: 'listview',
+                            name: 'unlocked-location-list',
+                            x: 25,
+                            y: 75,
+                            width: 300,
+                            height: 200,
+                            isStriped: true,
+                            items: 
+                            [
+                                "dank item 1", "Listview item 2", "Listview item 3"
+                            ]
+                            //onClick: (item: number, column: number) => console.log(`Clicked item ${item} in column ${column} in listview`)
+                        },
+                        {
+                            type: 'button',
+                            name: 'debug-button',
+                            x: 125,
+                            y: 300,
+                            width: 100,
+                            height: 26,
+                            text: 'Colbys Debug Button. No Touchy!',
+                            onClick: function() {
+                                console.log(map.getAllEntities('car')[1]);
+                                // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
+                                //     console.log(map.getEntity(i));//load data for the entity;
+                                
+                            }
+                        }
+                    ]
+                )
+            },
+            {
+                image: {frameBase: 80264,frameCount: 15,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+                        {
+                            type: 'label',
+                            name: 'Scenario-Goal',
+                            x: 125,
+                            y: 50,
+                            width: 100,
+                            height: 26,
+                            text: 'Scenario Goal',
+                            tooltip: 'Go forth, and beat Archipelago!'
+                        }
+                    ]
+                )
+            }
+        ]
     });
     return window;
 }
