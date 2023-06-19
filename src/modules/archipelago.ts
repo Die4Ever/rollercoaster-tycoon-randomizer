@@ -3,6 +3,8 @@
 
 class RCTRArchipelago extends ModuleBase {
     FirstEntry(): void {
+        if(!settings.rando_archipelago)
+            return;
         info("Module to handle connecting and communicating with Archipelago");
         //Disable standard research by resetting research status to 0 and funding to none every in game day
         this.SubscribeEvent("interval.day",this.SetArchipelagoResearch);
@@ -12,9 +14,16 @@ class RCTRArchipelago extends ModuleBase {
         return;
     }
 
+    AnyEntry(): void {
+        if (!settings.rando_archipelago)
+            return;
+        ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
+        ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
+    }
+
     SetArchipelagoResearch(): void {
         context.executeAction("parksetresearchfunding", {priorities: 0, fundingAmount: 0}, noop);//Set Funding to 0 and unselect every focus
-        park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0.
+        park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0. 
     }
 
     RemoveItems(): void{
@@ -94,7 +103,7 @@ class RCTRArchipelago extends ModuleBase {
         for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
             var entity = map.getEntity(i);//load data for the entity
             if (entity && entity.type === 'guest') {//if we're looking at a guest, do this. Honestly, don't know why 3 &'s though
-                entity.toilet = 255;//Everybody *really* needs to pee
+                entity.toilet = 255;//Everybody *really* needs to pee 
             }
         }
     }
@@ -116,7 +125,7 @@ class RCTRArchipelago extends ModuleBase {
                     [
                         {
                             type: 'listview',
-                            name: 'changes-list',
+                            name: 'rain-check',
                             x: 25,
                             y: 35,
                             width: 350,

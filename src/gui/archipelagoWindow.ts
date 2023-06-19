@@ -34,8 +34,8 @@ function archipelagoGui(){
                 context.executeAction('pausetoggle', {});
             }
         createChangesWindow();
-        ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu
-        ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy!
+        //ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
+        //ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy!
         console.log("And it's going to work perfectly")
         });
     }
@@ -128,42 +128,57 @@ function archipelagoLocations(){
     let y = 0;
 
     var window = ui.openWindow({
-        classification: 'debug-window',
-        title: "Debug Window. You should never see this!",
+        classification: 'archipelago-locations',
+        title: "Welcome to the Unlock shop!",
         width: ww,
         height: wh,
-        widgets: [].concat(
-            [
-            {
-                type: 'button',
-                name: 'debug-button',
-                x: 5,
-                y: 90,
-                width: 390,
-                height: 126,
-                text: 'Colbys Debug Button. No Touchy!',
-                onClick: function() {
-                    console.log(map.getAllEntities('car')[1]);
-                    // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
-                    //     console.log(map.getEntity(i));//load data for the entity;
-                    
-                }
-            },
-            {
-                type: 'button',
-                name: 'debug-button2',
-                x: ww - 90 - 88 - 6,
-                y: wh - 6 - 66,
-                width: 90,
-                height: 26,
-                text: 'Anudda Debugga',
-                onClick: function() {
-                    var BathroomTrap = GetModule("RCTRArchipelago");
-                    if(BathroomTrap)
-                    BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
+        tabs: [{
+            image: 50,
+            widgets: [].concat(
+                [
+                {
+                    type: 'label',
+                    name: 'Locked-Location-Label',
+                    x: 125,
+                    y: 50,
+                    width: 100,
+                    height: 26,
+                    text: 'Locked Checks',
+                    tooltip: 'Buying these will help somebody in the multiworld!'
+                },
+                {
+                    type: 'listview',
+                    name: 'locked-location-list',
+                    x: 25,
+                    y: 75,
+                    width: 300,
+                    height: 200,
+                    isStriped: true,
+                    items: 
+                    [
+                        "dank item 1", "Listview item 2", "Listview item 3"
+                    ],
+                    onClick: (item: number, column: number) => console.log(`Clicked item ${item} in column ${column} in listview`)
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button',
+                    x: 125,
+                    y: 300,
+                    width: 100,
+                    height: 26,
+                    text: 'Colbys Debug Button. No Touchy!',
+                    onClick: function() {
+                        console.log(map.getAllEntities('car')[1]);
+                        // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
+                        //     console.log(map.getEntity(i));//load data for the entity;
+                        
                     }
-            }]
-        )
+                }]
+            )
+        }
+            
+            ]
     });
     return window;
 }

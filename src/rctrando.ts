@@ -11,7 +11,7 @@ function loadedGame(savedData) {
         return;
     }
     global_settings.enabled = true;
-    createChangesWindow();
+    //createChangesWindow(); FUTURE COLBY: UNCOMMENT THIS LINE!
     AnyEntry();
 }
 
