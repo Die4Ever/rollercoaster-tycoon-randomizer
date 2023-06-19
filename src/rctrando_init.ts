@@ -89,7 +89,10 @@ var settings = {
     rando_goals: true,
     rando_scouting: true,
     rando_research: true,
-    rando_crowdcontrol: false
+    rando_crowdcontrol: false,
+    rando_archipelago: false,
+    archipelago_deathlink: false,
+    archipelago_deathlink_timeout: false
 };
 
 function _main() {

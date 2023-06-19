@@ -42,6 +42,8 @@ function newGame() {
             settings[k] = last[k];
         }
     }
+    // if Archipelago was enabled, disable that until the user selects it
+    settings.rando_archipelago = false;
     // pause game and open menu
     startGameGui();
 }

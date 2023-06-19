@@ -17,6 +17,9 @@ function startGameGui() {
     let y = 0;
 
     var onStart = function(window) {
+        if(settings.rando_archipelago === true) {
+            return;
+        }
         var s = window.findWidget('edit-seed');
         setGlobalSeed(s['text']);
         var d = window.findWidget('difficulty');
@@ -122,6 +125,22 @@ function startGameGui() {
                 height: 26,
                 text: 'Start Game',
                 onClick: function() {
+                    window.close();
+                }
+            },
+            {
+                type: 'button',
+                name: 'archipelago-button',
+                x: ww - 90 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Archipelago',
+                tooltip: 'Prepares this park to connect to a game of Archipelago',
+                onClick: function() {
+                    console.log("At this point, the user should have a pop up telling them to grab the .json file.");
+                    archipelagoGui();
+                    settings.rando_archipelago = true;
                     window.close();
                 }
             }]
