@@ -22,6 +22,7 @@ function archipelagoGui(){
         //TODO: Get DeathLink toggle from Archipelago
         settings.archipelago_deathlink = true; //Change this line once actual Archipelago code is implemented
         settings.archipelago_deathlink_timeout = false;
+        //TODO: Get Locations list from Archipelago
         //Until these are implemented, we're going to stick with default values, which should be good enough for debugging
         
         // we need to unpause the game in order for the next tick to run
@@ -51,6 +52,12 @@ function archipelagoGui(){
                 y: y++,
                 width: 2,
                 tooltip: 'For more information, visit archipelago.gg/tutorial'
+            }),
+            NewEdit('Server Address:', {
+                name: 'server-address',
+                y: y++,
+                text: '',
+                tooltip: 'Enter the server address and port (e.g. archipelago.gg:53055)'
             }),
             NewEdit('Slot Name:', {
                 name: 'slot-name',
@@ -88,6 +95,7 @@ function archipelagoGui(){
                 height: 26,
                 text: 'Connect to Server',
                 onClick: function() {
+                    //TODO: Create function connecting to the Archipelago server
                     window.close();
                 }
             },
@@ -103,20 +111,10 @@ function archipelagoGui(){
                 onClick: function() {
                     onStart();
                     console.log("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");
+                    window.close();
                 }
             },
-            {
-                type: 'button',
-                name: 'debug-button',
-                x: ww - 90 - 88 - 6,
-                y: wh - 6 - 26,
-                width: 90,
-                height: 26,
-                text: 'Colbys Debug Button. No Touchy!',
-                onClick: function() {
-                    console.log(park.research.uninventedItems[0]);
-                }
-            }]
+            ]
         )
     });
     return window;
@@ -135,7 +133,7 @@ function archipelagoLocations(){
         tabs: 
         [
             {
-                image: {frameBase: 80101,frameCount: 8,frameDuration: 4},
+                image: {frameBase: 80246,frameCount: 14,frameDuration: 4},
                 widgets: [].concat
                 (
                     [
@@ -229,7 +227,7 @@ function archipelagoLocations(){
                 )
             },
             {
-                image: {frameBase: 80264,frameCount: 15,frameDuration: 4},
+                image: {frameBase: 80276,frameCount: 15,frameDuration: 4},
                 widgets: [].concat
                 (
                     [
@@ -287,9 +285,13 @@ function archipelagoDebug(){
                 height: 26,
                 text: 'Anudda Debugga',
                 onClick: function() {
-                    var BathroomTrap = GetModule("RCTRArchipelago");
-                    if(BathroomTrap)
-                    BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
+
+                    archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"}];
+                    archipelago_locked_locations = [{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 3,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
+                    ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+                    // var BathroomTrap = GetModule("RCTRArchipelago");
+                    // if(BathroomTrap)
+                    // BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
                     }
             }]
         )

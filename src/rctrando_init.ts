@@ -21,6 +21,11 @@ var global_settings = {
 let initedMenuItems:boolean = false;
 let subscriptions = []
 
+//Lists for Archipelago
+var archipelago_locked_locations = {}; // List of 3 objects: Location ID, Item, and Receiving Player
+var archipelago_unlocked_locations = {};
+var archipelago_location_prices = {}; // List of Location ID's and the requirements to unlock them
+
 const minApiVersion = 52;// or 60?
 const targetApiVersion = 77;// v0.4.5
 info("              \n"+rando_name+" v"+rando_version

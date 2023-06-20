@@ -47,6 +47,8 @@ class RCTRArchipelago extends ModuleBase {
             case "ride":
                 this.AddRide(item);
                 break;
+            case "stall":
+                this.AddRide(item);
             default:
                 console.log("Colby is bad at his job, please inform him of this");
         }
@@ -102,7 +104,7 @@ class RCTRArchipelago extends ModuleBase {
     BathroomTrap(): void{
         for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
             var entity = map.getEntity(i);//load data for the entity
-            if (entity && entity.type === 'guest') {//if we're looking at a guest, do this. Honestly, don't know why 3 &'s though
+            if (entity && entity.type === 'guest') {//if we're looking at a guest, do this
                 entity.toilet = 255;//Everybody *really* needs to pee 
             }
         }
