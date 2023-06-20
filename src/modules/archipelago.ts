@@ -116,7 +116,7 @@ class RCTRArchipelago extends ModuleBase {
             return;
         }
         if (map.getAllEntities("car").length == 0){//If there's nothing to explode, give the user a pass
-            console.log("Rain check");//TODO: Create popup informing user they have a pass... this time
+            console.log("Rain check");
             var window = ui.openWindow({
                 classification: 'rain-check',
                 title: "Official Archipelago Rain Check",
@@ -150,7 +150,6 @@ class RCTRArchipelago extends ModuleBase {
                 )
             });
             return window;
-            return;
         }
         var r = Math.floor(Math.random() * map.getAllEntities('car').length);//Pick a car at random. It seems to only pick the first car of the train though...
         var timeOut = 0;//Set a time out in case nothing's moving
