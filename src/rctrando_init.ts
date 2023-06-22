@@ -22,9 +22,9 @@ let initedMenuItems:boolean = false;
 let subscriptions = []
 
 //Lists for Archipelago
-var archipelago_locked_locations = {}; // List of 3 objects: Location ID, Item, and Receiving Player
-var archipelago_unlocked_locations = {};
-var archipelago_location_prices = {}; // List of Location ID's and the requirements to unlock them
+var archipelago_locked_locations = []; // List of 3 objects: Location ID, Item, and Receiving Player
+var archipelago_unlocked_locations = [];
+var archipelago_location_prices = []; // List of Location ID's and the requirements to unlock them
 
 const minApiVersion = 52;// or 60?
 const targetApiVersion = 77;// v0.4.5
@@ -80,6 +80,7 @@ const difficulties = {'Very Easy': -0.7, Easy: -0.4, Medium: -0.1, Hard: 0.2, Ex
 const scenarioLengths = {Speedrun: 0.2, Random: 0, Normal: 1, Long: 2, Marathon: 3};// we need big numbers because of rounding issues, we call ceil so speedrun can be really low
 const randoRanges = { Low: 1.3, Medium: 1.5, High: 2, Extreme: 3 };
 const randoCycles = { Never: 0, Infrequent: 80, 'Semi-Frequent': 40, Frequent: 24, 'Very Frequent': 16, 'Extremely Frequent': 8 };// 8 months per RCT year, every 10 years, 5, 3, 1
+const locationInfo = {None: 'None', Recipient: 'Recipient', Full: 'Full' }
 
 var settings = {
     rando_version: rando_version,
@@ -97,7 +98,8 @@ var settings = {
     rando_crowdcontrol: false,
     rando_archipelago: false,
     archipelago_deathlink: false,
-    archipelago_deathlink_timeout: false
+    archipelago_deathlink_timeout: false,
+    archipelago_location_information: locationInfo.None
 };
 
 function _main() {

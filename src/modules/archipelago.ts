@@ -179,6 +179,42 @@ class RCTRArchipelago extends ModuleBase {
             console.log("Death Link Timeout has not expired. Cancelling Death Link signal. Note: Multiple cars crashing will attempt to send multiple signals")
         }
     }
+
+    CreateLockedList(): any{
+        //console.log(archipelago_location_prices[archipelago_locked_locations[0].LocationID].RidePrereq.length);
+        var locked = [];
+        var location = archipelago_locked_locations;
+        var prices = archipelago_location_prices;
+        for(var i = 0; i < location.length; i++){//Loop through every locked location
+            if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
+                locked.push("Instead of cash, you must sacrafice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+            }
+            else{//Set up the string denoting the price
+                var cost =context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) / 10);//Cash price
+                if(prices[location[i].LocationID].RidePrereq.length != 0) {//Handle prerequisites 
+                    cost = cost.concat(" + " + prices[location[i].LocationID].RidePrereq[0].toString() + " " + prices[location[i].LocationID].RidePrereq[1] + "(s)" 
+                    + ((prices[location[i].LocationID].RidePrereq[2] != 0) ? (", (> " + prices[location[i].LocationID].RidePrereq[2] + " excitement)") : "") 
+                    + ((prices[location[i].LocationID].RidePrereq[3] != 0) ? (", (> " + prices[location[i].LocationID].RidePrereq[3] + " intensity)") : "")
+                    + ((prices[location[i].LocationID].RidePrereq[4] != 0) ? (", (> " + prices[location[i].LocationID].RidePrereq[4] + " nausea)") : "")
+                    + ((prices[location[i].LocationID].RidePrereq[5] != 0) ? (", (> " + context.formatString("{LENGTH}", prices[location[i].LocationID].RidePrereq[5]) + ")") : ""));
+    //                for(var j = 2; j < (archipelago_location_prices[archipelago_locked_locations[i].LocationID].Prereqs).length() - 2; j++){
+    //                }
+                }
+                locked.push(cost);
+            }
+            switch(settings.archipelago_location_information){
+                case 'None':
+                    locked.push("          Unlocks something for somebody!")
+                    break;
+                case 'Recipient':
+                    locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                    break;
+                case 'Full':
+                    locked.push("          Unlocks " + archipelago_locked_locations[i].Item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+            }
+        }
+        return locked;
+    }
 }
 
 if(context.apiVersion >= 75)
