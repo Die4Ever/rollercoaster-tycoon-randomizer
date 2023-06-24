@@ -3,11 +3,12 @@
 
 class RCTRArchipelago extends ModuleBase {
     FirstEntry(): void {
+        var self = this;
         if(!settings.rando_archipelago)
             return;
         info("Module to handle connecting and communicating with Archipelago");
         //Disable standard research by resetting research status to 0 and funding to none every in game day
-        this.SubscribeEvent("interval.day",this.SetArchipelagoResearch);
+        self.SubscribeEvent("interval.day", ()=>{this.SetArchipelagoResearch();});
         this.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         if (settings.archipelago_deathlink)
         context.subscribe('vehicle.crash',this.SendDeathLink);
@@ -60,7 +61,7 @@ class RCTRArchipelago extends ModuleBase {
 
         console.log(ride);
         try{
-            if(ride == undefined){
+            if(!ride){
                 console.log("If you see this, there has been a serious error");
                 return;
             }
@@ -86,12 +87,13 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     ActivateTrap(trap): void{
+        var self = this;
         switch(trap){
             case "FoodPoison":
-                this.PoisonTrap();
+                self.PoisonTrap();
                 break;
             case "Bathroom":
-                this.BathroomTrap();
+                self.BathroomTrap();
                 break;
         }
     }
@@ -102,11 +104,9 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     BathroomTrap(): void{
-        for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
-            var entity = map.getEntity(i);//load data for the entity
-            if (entity && entity.type === 'guest') {//if we're looking at a guest, do this
-                entity.toilet = 255;//Everybody *really* needs to pee 
-            }
+        var guests = map.getAllEntities("guest");
+        for (var i=0; i<guests.length; i++) {
+        guests[i].toilet = 255;
         }
     }
 
@@ -190,15 +190,19 @@ class RCTRArchipelago extends ModuleBase {
                 locked.push("Instead of cash, you must sacrafice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
             }
             else{//Set up the string denoting the price
+                var prereqs = prices[location[i].LocationID].RidePrereq;
                 var cost =context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) / 10);//Cash price
-                if(prices[location[i].LocationID].RidePrereq.length != 0) {//Handle prerequisites 
-                    cost = cost.concat(" + " + prices[location[i].LocationID].RidePrereq[0].toString() + " " + prices[location[i].LocationID].RidePrereq[1] + "(s)" 
-                    + ((prices[location[i].LocationID].RidePrereq[2] != 0) ? (", (> " + prices[location[i].LocationID].RidePrereq[2] + " excitement)") : "") 
-                    + ((prices[location[i].LocationID].RidePrereq[3] != 0) ? (", (> " + prices[location[i].LocationID].RidePrereq[3] + " intensity)") : "")
-                    + ((prices[location[i].LocationID].RidePrereq[4] != 0) ? (", (> " + prices[location[i].LocationID].RidePrereq[4] + " nausea)") : "")
-                    + ((prices[location[i].LocationID].RidePrereq[5] != 0) ? (", (> " + context.formatString("{LENGTH}", prices[location[i].LocationID].RidePrereq[5]) + ")") : ""));
-    //                for(var j = 2; j < (archipelago_location_prices[archipelago_locked_locations[i].LocationID].Prereqs).length() - 2; j++){
-    //                }
+                if(prereqs.length != 0) {//Handle prerequisites 
+                    cost += " + " + prereqs[0].toString() + " ";
+                    cost += prereqs[1] + "(s)";
+                    if(prereqs[2] != 0)//Check for excitement requirement
+                        cost += ', (> ' + prereqs[2] + ' excitement)';
+                    if(prereqs[3] != 0)//Check for intensity requirement
+                        cost += ', (> ' + prereqs[3] + ' intensity)';
+                    if(prereqs[4] != 0)//Check for nausea requirement
+                        cost += ', (> ' + prereqs[4] + ' nausea)';
+                    if(prereqs[5] != 0)//Check for length requirement
+                        cost += ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')';
                 }
                 locked.push(cost);
             }

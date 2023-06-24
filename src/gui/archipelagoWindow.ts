@@ -305,9 +305,9 @@ function archipelagoDebug(){
                     archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
                     archipelago_location_prices = [{LocationID: 0, Price: 50000, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 250000, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 250000, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 600000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 400000, Lives: 0, RidePrereq: [2, "rollercoaster",0,0,0,0]},{LocationID: 5, Price: 400000, Lives: 0, RidePrereq: [3, "Looping Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: [21, "Dodgems",0,0,0,0]},{LocationID: 7, Price: 1000000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
-                    // var BathroomTrap = GetModule("RCTRArchipelago");
-                    // if(BathroomTrap)
-                    // BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
+                    var BathroomTrap = GetModule("RCTRArchipelago");
+                    if(BathroomTrap)
+                    BathroomTrap.BathroomTrap();//({cause: "Curtis was run over by a train", source: "Curtis"});
                     }
             }]
         )
