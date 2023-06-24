@@ -181,43 +181,91 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     CreateLockedList(): any{
-        //console.log(archipelago_location_prices[archipelago_locked_locations[0].LocationID].RidePrereq.length);
+        var self = this;
         var locked = [];
         var location = archipelago_locked_locations;
         var prices = archipelago_location_prices;
         for(var i = 0; i < location.length; i++){//Loop through every locked location
-            if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
-                locked.push("Instead of cash, you must sacrafice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
-            }
-            else{//Set up the string denoting the price
-                var prereqs = prices[location[i].LocationID].RidePrereq;
-                var cost =context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) / 10);//Cash price
-                if(prereqs.length != 0) {//Handle prerequisites 
-                    cost += " + " + prereqs[0].toString() + " ";
-                    cost += prereqs[1] + "(s)";
-                    if(prereqs[2] != 0)//Check for excitement requirement
-                        cost += ', (> ' + prereqs[2] + ' excitement)';
-                    if(prereqs[3] != 0)//Check for intensity requirement
-                        cost += ', (> ' + prereqs[3] + ' intensity)';
-                    if(prereqs[4] != 0)//Check for nausea requirement
-                        cost += ', (> ' + prereqs[4] + ' nausea)';
-                    if(prereqs[5] != 0)//Check for length requirement
-                        cost += ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')';
+            if (self.IsVisible(location[i].LocationID)){
+                if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
+                    locked.push("Instead of cash, you must sacrafice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                 }
-                locked.push(cost);
-            }
-            switch(settings.archipelago_location_information){
-                case 'None':
-                    locked.push("          Unlocks something for somebody!")
-                    break;
-                case 'Recipient':
-                    locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
-                    break;
-                case 'Full':
-                    locked.push("          Unlocks " + archipelago_locked_locations[i].Item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                else{//Set up the string denoting the price
+                    var prereqs = prices[location[i].LocationID].RidePrereq;
+                    var cost =context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) / 10);//Cash price
+                    if(prereqs.length != 0) {//Handle prerequisites 
+                        cost += " + " + prereqs[0].toString() + " ";
+                        cost += prereqs[1] + "(s)";
+                        if(prereqs[2] != 0)//Check for excitement requirement
+                            cost += ', (> ' + prereqs[2] + ' excitement)';
+                        if(prereqs[3] != 0)//Check for intensity requirement
+                            cost += ', (> ' + prereqs[3] + ' intensity)';
+                        if(prereqs[4] != 0)//Check for nausea requirement
+                            cost += ', (> ' + prereqs[4] + ' nausea)';
+                        if(prereqs[5] != 0)//Check for length requirement
+                            cost += ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')';
+                    }
+                    locked.push(cost);
+                }
+                switch(settings.archipelago_location_information){
+                    case 'None':
+                        locked.push("          Unlocks something for somebody!")
+                        break;
+                    case 'Recipient':
+                        locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                        break;
+                    case 'Full':
+                        locked.push("          Unlocks " + archipelago_locked_locations[i].Item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                }
             }
         }
         return locked;
+    }
+
+    IsVisible(LockedID): boolean{
+        var CheckID = 0;
+        switch(LockedID){
+            case 0:
+                return true;
+                break;
+            case 1:
+            case 2:
+                CheckID = 0;
+                break;
+            case 3:
+            case 4:
+                CheckID = 1;
+                break;
+            case 5:
+            case 6:
+                CheckID = 2;
+                break;
+            case 7:
+            case 8:
+                CheckID = 3;
+                break;
+            case 9:
+            case 10:
+                CheckID = 4;
+                break;
+            case 11:
+            case 12:
+                CheckID = 5;
+                break;
+            case 13:
+            case 14:
+                CheckID = 6;
+                break;
+            default:
+                CheckID = LockedID - 8;
+            break;
+        }
+        for(var i = 0; i < archipelago_unlocked_locations.length; i++){
+            if (CheckID == archipelago_unlocked_locations[i].LocationID)
+            return true;
+        }
+        
+        return false;
     }
 }
 
