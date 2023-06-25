@@ -73,11 +73,10 @@ class RCTRArchipelago extends ModuleBase {
         let researchedItems = park.research.inventedItems;
         console.log(ride);
         for(let i=0; i<unresearchedItems.length; i++) {
-            if (unresearchedItems[i].rideType == ride){
-                researchedItems.push(unresearchedItems[i]);
-                unresearchedItems.splice(i,1);
-                console.log(unresearchedItems[i].rideType);
-                park.research.uninventedItems = unresearchedItems;
+            if (unresearchedItems[i].rideType == ride){//Check if the ride type matches
+                researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
+                unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
+                park.research.uninventedItems = unresearchedItems;//Save the researched items list
                 park.research.inventedItems = researchedItems;
                 return;
             }
@@ -180,6 +179,37 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
+    CreateUnlockedList(): any{
+        var self = this;
+        var unlocked = [];
+        var location = archipelago_unlocked_locations;
+        var prices = archipelago_location_prices;
+        for(var i = 0; i < location.length; i++){//Loop through every locked location
+            unlocked.push("Unlocked " + archipelago_unlocked_locations[i].Item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
+            if (prices[location[i].LocationID].Price == 0){//If the price is 0, paid with blood instead of cash
+                unlocked.push("          Instead of cash, you sacraficed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+            }
+            else{//Set up the string denoting the price
+                var prereqs = prices[location[i].LocationID].RidePrereq;
+                var cost = "          " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                if(prereqs.length != 0) {//Handle prerequisites 
+                    cost += " + " + prereqs[0].toString() + " ";
+                    cost += prereqs[1] + "(s)";
+                    if(prereqs[2] != 0)//Check for excitement requirement
+                        cost += ', (> ' + prereqs[2] + ' excitement)';
+                    if(prereqs[3] != 0)//Check for intensity requirement
+                        cost += ', (> ' + prereqs[3] + ' intensity)';
+                    if(prereqs[4] != 0)//Check for nausea requirement
+                        cost += ', (> ' + prereqs[4] + ' nausea)';
+                    if(prereqs[5] != 0)//Check for length requirement
+                        cost += ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')';
+                }
+                unlocked.push(cost);
+            }
+        }
+        return unlocked;
+    }
+
     CreateLockedList(): any{
         var self = this;
         var locked = [];
@@ -192,7 +222,8 @@ class RCTRArchipelago extends ModuleBase {
                 }
                 else{//Set up the string denoting the price
                     var prereqs = prices[location[i].LocationID].RidePrereq;
-                    var cost =context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) / 10);//Cash price
+                    
+                    var cost =context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                     if(prereqs.length != 0) {//Handle prerequisites 
                         cost += " + " + prereqs[0].toString() + " ";
                         cost += prereqs[1] + "(s)";
@@ -223,8 +254,8 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     IsVisible(LockedID): boolean{
-        var CheckID = 0;
-        switch(LockedID){
+        var CheckID = 0; //We want to limit the locations shown until the correct previous locations have been unlocked
+        switch(LockedID){//These unlocks form a tree, with 2 branching nodes until item 6. All further nodes have only 1 branch
             case 0:
                 return true;
                 break;
@@ -266,6 +297,18 @@ class RCTRArchipelago extends ModuleBase {
         }
         
         return false;
+    }
+
+    PurchaseItem(item: number): any{
+        var self = this;
+        let Locked = archipelago_locked_locations;
+        let Unlocked = archipelago_unlocked_locations;
+        Unlocked.push(Locked[item]);
+        Locked.splice(item,1);
+        archipelago_locked_locations = Locked;
+        archipelago_unlocked_locations = Unlocked;
+        ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+        return;
     }
 }
 

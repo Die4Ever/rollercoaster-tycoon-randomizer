@@ -159,7 +159,7 @@ function archipelagoLocations(){
                             isStriped: true,
                             items: Archipelago.CreateLockedList(),
                             scrollbars: 'none',
-                            onClick: (item: number, column: number) => console.log(`Clicked item ${item} in column ${column} in listview`)
+                            onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)//console.log(`Clicked item ${item} in listview`)
                         },
                         {
                             type: 'button',
@@ -170,7 +170,8 @@ function archipelagoLocations(){
                             height: 26,
                             text: 'Colbys Debug Button. No Touchy!',
                             onClick: function() {
-                                console.log(map.getAllEntities('car')[1]);
+                                console.log("dangit");
+                                //console.log(map.getAllEntities('car')[1]);
                                 // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
                                 //     console.log(map.getEntity(i));//load data for the entity;
                                 
@@ -199,14 +200,10 @@ function archipelagoLocations(){
                             name: 'unlocked-location-list',
                             x: 25,
                             y: 75,
-                            width: 300,
+                            width: 650,
                             height: 200,
                             isStriped: true,
-                            items: 
-                            [
-                                "dank item 1", "Listview item 2", "Listview item 3"
-                            ]
-                            //onClick: (item: number, column: number) => console.log(`Clicked item ${item} in column ${column} in listview`)
+                            items: Archipelago.CreateUnlockedList();
                         },
                         {
                             type: 'button',
@@ -270,25 +267,7 @@ function archipelagoDebug(){
                 height: 126,
                 text: 'Colbys Debug Button. No Touchy!',
                 onClick: function() {
-                var x = undefined;
-                var y = 0;
-                var z = 1;
-
-                if (x != 0 || null)
-                console.log("Bad!");
-                console.log(x);
-
-
-                if (y != 0 || null)
-                console.log("Also bad!");
-                console.log(y);
-
-                if (z != 0 || null)
-                console.log("Good!");
-                console.log(z);
-                    // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
-                    //     console.log(map.getEntity(i));//load data for the entity;
-                    
+                console.log(archipelago_locked_locations);
                 }
             },
             {
@@ -303,7 +282,7 @@ function archipelagoDebug(){
                     settings.archipelago_location_information = 'Full';
                     archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
                     archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
-                    archipelago_location_prices = [{LocationID: 0, Price: 50000, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 250000, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 250000, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 600000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 400000, Lives: 0, RidePrereq: [2, "rollercoaster",0,0,0,0]},{LocationID: 5, Price: 400000, Lives: 0, RidePrereq: [3, "Looping Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: [21, "Dodgems",0,0,0,0]},{LocationID: 7, Price: 1000000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
+                    archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: [2, "Miniature Railroad",4,0,0,2000]}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "rollercoaster",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: [21, "Dodgems",0,0,0,0]},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var BathroomTrap = GetModule("RCTRArchipelago");
                     if(BathroomTrap)
