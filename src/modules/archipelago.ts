@@ -305,25 +305,56 @@ class RCTRArchipelago extends ModuleBase {
         let Unlocked = archipelago_unlocked_locations;
         let Prices = archipelago_location_prices;
         let LocationID = Locked[item].LocationID;
-        let Prereqs = Locked[item].Prereqs;
+        let Prereqs = Prices[LocationID].RidePrereq;
         if(Prices[LocationID].Price <= park.cash || Prices[LocationID].Price == 0){//Check if player has enough cash or if the price is 0.
             if(Prices[LocationID].Lives <= park.guests){//Check if the player has enough guests to sacrifice
                 var NumQualifiedRides = 0;
-                var NumQualifiedExcitement = 0;
-                var NumQualifiedIntensity = 0;
-                var NumQualifiedNausea = 0;
-                var NumQualifiedLength = 0;
+                var object = Prices[LocationID]
+                var ride = RideType[Prices[LocationID].RidePrereq[1]];
+
                 for(var i = 0; i < map.numRides; i++){
-                    var ride = RideType[Prices[LocationID].RidePrereq[1]];
+                    var QualifiedExcitement = false;
+                    var QualifiedIntensity = false;
+                    var QualifiedNausea = false;
+                    var QualifiedLength = false;
+                    var elligible = false;
                     if(ride){
-                        console.log("Success!");
+                        if (ride == map.rides[i].type){
+                        elligible = true;
+                        }
                     }
-                    else
-                    console.log("Failure");
+
+                    if (ObjectCategory[Prices[LocationID].RidePrereq[1]]){
+                        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
+                        for(var j = 0; j < researchItems.length; j++){
+                            if(researchItems[j].rideType == map.rides[i].type){
+                                if(researchItems[j].category == Prices[LocationID].RidePrereq[1]){
+                                    elligible = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (elligible){
+                        QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
+                        if (map.rides[i].excitement >= (Prereqs[2] * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                            QualifiedExcitement = true;
+                        }
+                        if (map.rides[i].intensity >= (Prereqs[3] * 100)){
+                            QualifiedIntensity = true;
+                        }
+                        if (map.rides[i].nausea >= (Prereqs[4] * 100)){
+                            QualifiedNausea = true;
+                        }
+                    }
+
+                    if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
+                        console.log("Good!");
+                        NumQualifiedRides += 1;
+                    }
                 }
-                
-                console.log(Prices[LocationID].Lives);
-                if(Prices[LocationID].Lives != 0){
+                if(!Prereqs.length || NumQualifiedRides >= Prereqs[0]){
+                    if(Prices[LocationID].Lives != 0){
                     var doomed = Math.floor(Prices[LocationID].Lives * 1.5);
                         if(doomed < map.getAllEntities("guest").length){
                             for(var i = 0; i < doomed; i++){
@@ -336,13 +367,17 @@ class RCTRArchipelago extends ModuleBase {
                             }
                         }
                     }
-                park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
-                Unlocked.push(Locked[item]);
-                Locked.splice(item,1);
-                archipelago_locked_locations = Locked;
-                archipelago_unlocked_locations = Unlocked;
-                ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
-                ui.getWindow("archipelago-locations").findWidget("locked-location-list").items = self.CreateLockedList();
+                    park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
+                    Unlocked.push(Locked[item]);
+                    Locked.splice(item,1);
+                    archipelago_locked_locations = Locked;
+                    archipelago_unlocked_locations = Unlocked;
+                    ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+                    ui.getWindow("archipelago-locations").findWidget("locked-location-list").items = self.CreateLockedList();
+                }
+                else{
+                    ui.showError("Prerequisites not met", "One or more of the prerequisites for this unlock have not been fulfilled");
+                }
             }
             else{
                 ui.showError("Not Enough Guests...", "The Gods are unpleased with your puny sacrifice. Obtain more guests and try again.")
