@@ -127,123 +127,133 @@ function archipelagoLocations(){
 
     var Archipelago = GetModule("RCTRArchipelago");
 
-    var window = ui.openWindow({
-        classification: 'archipelago-locations',
-        title: "Welcome to the Unlock Shop!",
-        width: ww,
-        height: wh,
-        tabs: 
-        [
-            {
-                image: {frameBase: 80246,frameCount: 14,frameDuration: 4},
-                widgets: [].concat
-                (
-                    [
-                        {
-                            type: 'label',
-                            name: 'Locked-Location-Label',
-                            x: 250,
-                            y: 50,
-                            width: 100,
-                            height: 26,
-                            text: 'Locked Checks',
-                            tooltip: 'Buying these will help somebody in the multiworld!'
-                        },
-                        {
-                            type: 'listview',
-                            name: 'locked-location-list',
-                            x: 25,
-                            y: 75,
-                            width: 650,
-                            height: 200,
-                            isStriped: true,
-                            items: Archipelago.CreateLockedList(),
-                            scrollbars: 'none',
-                            onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)//console.log(`Clicked item ${item} in listview`)
-                        },
-                        {
-                            type: 'button',
-                            name: 'debug-button',
-                            x: 300,
-                            y: 300,
-                            width: 100,
-                            height: 26,
-                            text: 'Colbys Debug Button. No Touchy!',
-                            onClick: function() {
-                                console.log("dangit");
-                                //console.log(map.getAllEntities('car')[1]);
-                                // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
-                                //     console.log(map.getEntity(i));//load data for the entity;
-                                
-                            }
-                        }
-                    ]
-                )
+    if(!ui.getWindow("archipelago-locations")){
+        var window = ui.openWindow({
+            classification: 'archipelago-locations',
+            title: "Welcome to the Unlock Shop!",
+            width: ww,
+            height: wh,
+            onTabChange: () => {
+                if (ui.getWindow("archipelago-locations").tabIndex == 0){
+                    ui.getWindow("archipelago-locations").findWidget("locked-location-list").items = Archipelago.CreateLockedList();
+                }
+                else {
+                    ui.getWindow("archipelago-locations").findWidget("unlocked-location-list").items = Archipelago.CreateUnlockedList();
+                }
             },
-            {
-                image: {frameBase: 5442,frameCount: 16,frameDuration: 4},
-                widgets: [].concat
-                (
-                    [
-                        {
-                            type: 'label',
-                            name: 'Unlocked-Location-Label',
-                            x: 125,
-                            y: 50,
-                            width: 100,
-                            height: 26,
-                            text: 'Unlocked Checks',
-                            tooltip: 'Thank you for your purchases! No refunds!'
-                        },
-                        {
-                            type: 'listview',
-                            name: 'unlocked-location-list',
-                            x: 25,
-                            y: 75,
-                            width: 650,
-                            height: 200,
-                            isStriped: true,
-                            items: Archipelago.CreateUnlockedList();
-                        },
-                        {
-                            type: 'button',
-                            name: 'debug-button',
-                            x: 125,
-                            y: 300,
-                            width: 100,
-                            height: 26,
-                            text: 'Colbys Debug Button. No Touchy!',
-                            onClick: function() {
-                                console.log(map.getAllEntities('car')[1]);
-                                // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
-                                //     console.log(map.getEntity(i));//load data for the entity;
-                                
+            tabs: 
+            [
+                {
+                    image: {frameBase: 80246,frameCount: 14,frameDuration: 4},
+                    widgets: [].concat
+                    (
+                        [
+                            {
+                                type: 'label',
+                                name: 'Locked-Location-Label',
+                                x: 250,
+                                y: 50,
+                                width: 100,
+                                height: 26,
+                                text: 'Locked Checks',
+                                tooltip: 'Buying these will help somebody in the multiworld!'
+                            },
+                            {
+                                type: 'listview',
+                                name: 'locked-location-list',
+                                x: 25,
+                                y: 75,
+                                width: 650,
+                                height: 200,
+                                isStriped: true,
+                                items: Archipelago.CreateLockedList(),
+                                scrollbars: 'none',
+                                onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)//console.log(`Clicked item ${item} in listview`)
+                            },
+                            {
+                                type: 'button',
+                                name: 'debug-button',
+                                x: 300,
+                                y: 300,
+                                width: 100,
+                                height: 26,
+                                text: 'Colbys Debug Button. No Touchy!',
+                                onClick: function() {
+                                    console.log("dangit");
+                                    //console.log(map.getAllEntities('car')[1]);
+                                    // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
+                                    //     console.log(map.getEntity(i));//load data for the entity;
+                                    
+                                }
                             }
-                        }
-                    ]
-                )
-            },
-            {
-                image: {frameBase: 80276,frameCount: 15,frameDuration: 4},
-                widgets: [].concat
-                (
-                    [
-                        {
-                            type: 'label',
-                            name: 'Scenario-Goal',
-                            x: 125,
-                            y: 50,
-                            width: 100,
-                            height: 26,
-                            text: 'Scenario Goal',
-                            tooltip: 'Go forth, and beat Archipelago!'
-                        }
-                    ]
-                )
-            }
-        ]
-    });
-    return window;
+                        ]
+                    )
+                },
+                {
+                    image: {frameBase: 5442,frameCount: 16,frameDuration: 4},
+                    widgets: [].concat
+                    (
+                        [
+                            {
+                                type: 'label',
+                                name: 'Unlocked-Location-Label',
+                                x: 125,
+                                y: 50,
+                                width: 100,
+                                height: 26,
+                                text: 'Unlocked Checks',
+                                tooltip: 'Thank you for your purchases! No refunds!'
+                            },
+                            {
+                                type: 'listview',
+                                name: 'unlocked-location-list',
+                                x: 25,
+                                y: 75,
+                                width: 650,
+                                height: 200,
+                                isStriped: true,
+                                items: Archipelago.CreateUnlockedList();
+                            },
+                            {
+                                type: 'button',
+                                name: 'debug-button',
+                                x: 125,
+                                y: 300,
+                                width: 100,
+                                height: 26,
+                                text: 'Colbys Debug Button. No Touchy!',
+                                onClick: function() {
+                                    console.log(map.getAllEntities('car')[1]);
+                                     for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
+                                         console.log(map.getEntity(i));}//load data for the entity;
+                                    
+                                }
+                            }
+                        ]
+                    )
+                },
+                {
+                    image: {frameBase: 80276,frameCount: 15,frameDuration: 4},
+                    widgets: [].concat
+                    (
+                        [
+                            {
+                                type: 'label',
+                                name: 'Scenario-Goal',
+                                x: 125,
+                                y: 50,
+                                width: 100,
+                                height: 26,
+                                text: 'Scenario Goal',
+                                tooltip: 'Go forth, and beat Archipelago!'
+                            }
+                        ]
+                    )
+                }
+            ]
+        });
+        return window;
+    }
 }
 
 function archipelagoDebug(){
@@ -267,7 +277,13 @@ function archipelagoDebug(){
                 height: 126,
                 text: 'Colbys Debug Button. No Touchy!',
                 onClick: function() {
-                console.log(archipelago_locked_locations);
+                    park.cash = 10000000;
+                    var i = "Monorail";
+                    console.log(RideType["rollercoaster"]);
+                    //console.log(RideType[i]);
+                    //console.log(park.research.inventedItems[0]);
+                    //console.log(map.rides[0]);
+                    //console.log(RideType["Looping Roller Coaster"].rideType);
                 }
             },
             {
@@ -282,11 +298,11 @@ function archipelagoDebug(){
                     settings.archipelago_location_information = 'Full';
                     archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
                     archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
-                    archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: [2, "Miniature Railroad",4,0,0,2000]}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "rollercoaster",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: [21, "Dodgems",0,0,0,0]},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
+                    archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: [2, "Miniature Railroad",4,0,0,2000]}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "rollercoaster",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var BathroomTrap = GetModule("RCTRArchipelago");
-                    if(BathroomTrap)
-                    BathroomTrap.BathroomTrap();//({cause: "Curtis was run over by a train", source: "Curtis"});
+                    //if(BathroomTrap)
+                    //BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
                     }
             }]
         )

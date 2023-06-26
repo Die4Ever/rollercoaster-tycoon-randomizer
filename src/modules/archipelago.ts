@@ -303,11 +303,55 @@ class RCTRArchipelago extends ModuleBase {
         var self = this;
         let Locked = archipelago_locked_locations;
         let Unlocked = archipelago_unlocked_locations;
-        Unlocked.push(Locked[item]);
-        Locked.splice(item,1);
-        archipelago_locked_locations = Locked;
-        archipelago_unlocked_locations = Unlocked;
-        ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+        let Prices = archipelago_location_prices;
+        let LocationID = Locked[item].LocationID;
+        let Prereqs = Locked[item].Prereqs;
+        if(Prices[LocationID].Price <= park.cash || Prices[LocationID].Price == 0){//Check if player has enough cash or if the price is 0.
+            if(Prices[LocationID].Lives <= park.guests){//Check if the player has enough guests to sacrifice
+                var NumQualifiedRides = 0;
+                var NumQualifiedExcitement = 0;
+                var NumQualifiedIntensity = 0;
+                var NumQualifiedNausea = 0;
+                var NumQualifiedLength = 0;
+                for(var i = 0; i < map.numRides; i++){
+                    var ride = RideType[Prices[LocationID].RidePrereq[1]];
+                    if(ride){
+                        console.log("Success!");
+                    }
+                    else
+                    console.log("Failure");
+                }
+                
+                console.log(Prices[LocationID].Lives);
+                if(Prices[LocationID].Lives != 0){
+                    var doomed = Math.floor(Prices[LocationID].Lives * 1.5);
+                        if(doomed < map.getAllEntities("guest").length){
+                            for(var i = 0; i < doomed; i++){
+                                map.getAllEntities("guest")[i].setFlag("explode", true);
+                            }
+                        }
+                        else{
+                            for(var i = 0; i < map.getAllEntities("guest").length; i++){
+                                map.getAllEntities("guest")[i].setFlag("explode", true);                            
+                            }
+                        }
+                    }
+                park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
+                Unlocked.push(Locked[item]);
+                Locked.splice(item,1);
+                archipelago_locked_locations = Locked;
+                archipelago_unlocked_locations = Unlocked;
+                ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+                ui.getWindow("archipelago-locations").findWidget("locked-location-list").items = self.CreateLockedList();
+            }
+            else{
+                ui.showError("Not Enough Guests...", "The Gods are unpleased with your puny sacrifice. Obtain more guests and try again.")
+            }
+        }
+        else{
+            ui.showError("Not Enough Cash...", "You do not have enough money to buy this!")
+        }
+        
         return;
     }
 }
