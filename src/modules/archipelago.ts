@@ -318,17 +318,17 @@ class RCTRArchipelago extends ModuleBase {
                     var QualifiedNausea = false;
                     var QualifiedLength = false;
                     var elligible = false;
-                    if(ride){
-                        if (ride == map.rides[i].type){
+                    if(ride){//See if there's a prereq that's a specific ride
+                        if (ride == map.rides[i].type){//If the rides match, they're elligible
                         elligible = true;
                         }
                     }
 
-                    if (ObjectCategory[Prices[LocationID].RidePrereq[1]]){
-                        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
+                    if (ObjectCategory[object.RidePrereq[1]]){//See if there's a prereq that's a category
+                        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
                         for(var j = 0; j < researchItems.length; j++){
-                            if(researchItems[j].rideType == map.rides[i].type){
-                                if(researchItems[j].category == Prices[LocationID].RidePrereq[1]){
+                            if(researchItems[j].rideType == map.rides[i].type){//If the items match...
+                                if(researchItems[j].category == Prices[LocationID].RidePrereq[1]){//Check if the categories match
                                     elligible = true;
                                 }
                             }
@@ -349,14 +349,13 @@ class RCTRArchipelago extends ModuleBase {
                     }
 
                     if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
-                        console.log("Good!");
                         NumQualifiedRides += 1;
                     }
                 }
                 if(!Prereqs.length || NumQualifiedRides >= Prereqs[0]){
-                    if(Prices[LocationID].Lives != 0){
-                    var doomed = Math.floor(Prices[LocationID].Lives * 1.5);
-                        if(doomed < map.getAllEntities("guest").length){
+                    if(Prices[LocationID].Lives != 0){//Code to explode guests
+                    var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
+                        if(doomed < map.getAllEntities("guest").length){//Explode either the doomed amount, or every guest in the park, whichever is less
                             for(var i = 0; i < doomed; i++){
                                 map.getAllEntities("guest")[i].setFlag("explode", true);
                             }
