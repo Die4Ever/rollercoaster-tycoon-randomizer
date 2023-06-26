@@ -357,7 +357,7 @@ class RCTRArchipelago extends ModuleBase {
                     var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
                         if(doomed < map.getAllEntities("guest").length){//Explode either the doomed amount, or every guest in the park, whichever is less
                             for(var i = 0; i < doomed; i++){
-                                map.getAllEntities("guest")[i].setFlag("explode", true);
+                                map.getAllEntities("guest")[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
                             }
                         }
                         else{
