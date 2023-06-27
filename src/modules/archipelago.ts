@@ -253,6 +253,37 @@ class RCTRArchipelago extends ModuleBase {
         return locked;
     }
 
+    CreateObjectiveList(): any{
+        var self = this;
+        var objective = [];
+        if (archipelago_objectives.Guests){
+            objective.push("Guests:");
+            objective.push("          " + archipelago_objectives.Guests.toString());
+        }
+        if (archipelago_objectives.ParkValue){
+            objective.push("Park Value:");
+            objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ParkValue) * 10));//Multiply by 10 to get in-game amount
+        }
+        if (archipelago_objectives.RollerCoasters){
+            objective.push("Roller Coasters:");
+            objective.push("          " + archipelago_objectives.Guests.toString());
+        }
+        if (archipelago_objectives.RideIncome){
+            objective.push("Ride Income:");
+            objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.RideIncome) * 10));
+        }
+        if (archipelago_objectives.ShopIncome){
+            objective.push("Shop Income:");
+            objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ShopIncome) * 10));
+        }
+        if (archipelago_objectives.ParkRating){
+            objective.push("Park Rating:");
+            objective.push("          " + archipelago_objectives.ParkRating.toString());
+        }
+        
+        return objective;
+    }
+
     IsVisible(LockedID): boolean{
         var CheckID = 0; //We want to limit the locations shown until the correct previous locations have been unlocked
         switch(LockedID){//These unlocks form a tree, with 2 branching nodes until item 6. All further nodes have only 1 branch
@@ -388,6 +419,8 @@ class RCTRArchipelago extends ModuleBase {
         
         return;
     }
+
+    
 }
 
 if(context.apiVersion >= 75)

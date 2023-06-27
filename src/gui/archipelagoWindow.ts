@@ -25,6 +25,7 @@ function archipelagoGui(){
         //TODO: Get Locations list from Archipelago
         //Until these are implemented, we're going to stick with default values, which should be good enough for debugging
         
+        scenario.objective.type = "haveFun";
         // we need to unpause the game in order for the next tick to run
         var wasPaused = UnpauseGame();
         runNextTick(function() {
@@ -35,8 +36,6 @@ function archipelagoGui(){
                 context.executeAction('pausetoggle', {});
             }
         createChangesWindow();
-        //ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
-        //ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy!
         console.log("And it's going to work perfectly")
         });
     }
@@ -137,8 +136,11 @@ function archipelagoLocations(){
                 if (ui.getWindow("archipelago-locations").tabIndex == 0){
                     ui.getWindow("archipelago-locations").findWidget("locked-location-list").items = Archipelago.CreateLockedList();
                 }
-                else {
+                else if (ui.getWindow("archipelago-locations").tabIndex == 1){
                     ui.getWindow("archipelago-locations").findWidget("unlocked-location-list").items = Archipelago.CreateUnlockedList();
+                }
+                else{
+                    ui.getWindow("archipelago-locations").findWidget("objective-list").items = Archipelago.CreateObjectiveList();
                 }
             },
             tabs: 
@@ -237,15 +239,27 @@ function archipelagoLocations(){
                     widgets: [].concat
                     (
                         [
+                            
                             {
                                 type: 'label',
-                                name: 'Scenario-Goal',
-                                x: 125,
-                                y: 50,
-                                width: 100,
-                                height: 26,
-                                text: 'Scenario Goal',
-                                tooltip: 'Go forth, and beat Archipelago!'
+                                name: 'Goal',
+                                x: 45,
+                                y: 60,
+                                width: 1000,
+                                height: 56,
+                                text: "Your goal, should you choose to accept it, is to build a grand theme park featuring - at minimum - the following attributes:",
+                                tooltip: 'If you have deathlink on... good luck'
+                            },
+                            {
+                                type: 'listview',
+                                name: 'objective-list',
+                                x: 25,
+                                y: 75,
+                                width: 650,
+                                height: 200,
+                                isStriped: true,
+                                scrollbars: 'none',
+                                items: Archipelago.CreateObjectiveList();
                             }
                         ]
                     )
@@ -281,7 +295,7 @@ function archipelagoDebug(){
                     var i = "Monorail";
                     //console.log(RideType["rollercoaster"]);
                     //console.log(RideType[i]);
-                    console.log(park.research.inventedItems[0]);
+                    console.log(scenario.objective.type);// = "none";
                     //console.log(map.rides[0]);
                     //console.log(RideType["Looping Roller Coaster"].rideType);
                 }
@@ -299,6 +313,7 @@ function archipelagoDebug(){
                     archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
                     archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
                     archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: [2, "Miniature Railroad",4,0,0,2000]}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
+                    archipelago_objectives = {Guests: 5000, ParkValue: 1000000, RollerCoasters: [0,0,0,0,0], RideIncome: 20000, ShopIncome: 8000, ParkRating: 700};
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var BathroomTrap = GetModule("RCTRArchipelago");
                     //if(BathroomTrap)
