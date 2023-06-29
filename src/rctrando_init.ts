@@ -25,7 +25,7 @@ let subscriptions = []
 var archipelago_locked_locations = []; // List of 3 objects: Location ID, Item, and Receiving Player
 var archipelago_unlocked_locations = [];
 var archipelago_location_prices = []; // List of Location ID's and the requirements to unlock them
-var archipelago_objectives = {Guests: 0, ParkValue: 0, RollerCoasters: [0,0,0,0,0], RideIncome: 0, ShopIncome: 0, ParkRating: 0};
+var archipelago_objectives = {Guests: [0, false], ParkValue: [0, false], RollerCoasters: [0,0,0,0,0,false], RideIncome: [0, false], ShopIncome: [0, false], ParkRating: [0, false], LoanPaidOff: [true, false]};
 
 const minApiVersion = 52;// or 60?
 const targetApiVersion = 77;// v0.4.5

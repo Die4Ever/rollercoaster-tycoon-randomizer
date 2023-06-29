@@ -8,16 +8,18 @@ class RCTRArchipelago extends ModuleBase {
             return;
         info("Module to handle connecting and communicating with Archipelago");
         //Disable standard research by resetting research status to 0 and funding to none every in game day
-        self.SubscribeEvent("interval.day", ()=>{this.SetArchipelagoResearch();});
-        this.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
+        self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives()});
+        self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         if (settings.archipelago_deathlink)
-        context.subscribe('vehicle.crash',this.SendDeathLink);
+        context.subscribe('vehicle.crash',self.SendDeathLink);
         return;
     }
 
     AnyEntry(): void {
+        var self = this;
         if (!settings.rando_archipelago)
             return;
+        self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives();});
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
     }
@@ -258,30 +260,149 @@ class RCTRArchipelago extends ModuleBase {
         var objective = [];
         if (archipelago_objectives.Guests){
             objective.push("Guests:");
-            objective.push("          " + archipelago_objectives.Guests.toString());
+            objective.push("          " + archipelago_objectives.Guests[0].toString());
         }
-        if (archipelago_objectives.ParkValue){
+        if (archipelago_objectives.ParkValue[0]){
             objective.push("Park Value:");
-            objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ParkValue) * 10));//Multiply by 10 to get in-game amount
+            objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ParkValue[0]) * 10));//Multiply by 10 to get in-game amount
         }
-        if (archipelago_objectives.RollerCoasters){
+        var RollerCoaster = archipelago_objectives.RollerCoasters;
+        if (RollerCoaster[0]){
             objective.push("Roller Coasters:");
-            objective.push("          " + archipelago_objectives.Guests.toString());
+            var Line = "          " + RollerCoaster[0];
+            console.log(RollerCoaster[1]);
+            if(RollerCoaster[1]){
+                Line += " (> " + RollerCoaster[1] + " Excitement)";
+            }
+            if(RollerCoaster[2]){
+                Line += " (> " + RollerCoaster[2] + " Intensity)";
+            }
+            if(RollerCoaster[3]){
+                Line += " (> " + RollerCoaster[3] + " Nausea)";
+            }
+            objective.push(Line);
         }
-        if (archipelago_objectives.RideIncome){
-            objective.push("Ride Income:");
-            objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.RideIncome) * 10));
-        }
-        if (archipelago_objectives.ShopIncome){
-            objective.push("Shop Income:");
-            objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ShopIncome) * 10));
-        }
-        if (archipelago_objectives.ParkRating){
+        // if (archipelago_objectives.RideIncome[0]){
+        //     objective.push("Ride Income:");
+        //     objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.RideIncome[0]) * 10));
+        // }
+        // if (archipelago_objectives.ShopIncome[0]){
+        //     objective.push("Shop Income:");
+        //     objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ShopIncome[0]) * 10));
+        // }
+        if (archipelago_objectives.ParkRating[0]){
             objective.push("Park Rating:");
-            objective.push("          " + archipelago_objectives.ParkRating.toString());
+            objective.push("          " + archipelago_objectives.ParkRating[0].toString());
+        }
+        if (archipelago_objectives.LoanPaidOff[0]){
+            objective.push("Repaid Loan:");
+            objective.push("          Check your bank statement.");
         }
         
         return objective;
+    }
+
+    CheckObjectives(): any{
+        var self = this;
+        if (park.guests >= archipelago_objectives.Guests[0]){
+            archipelago_objectives.Guests[1] = true;
+        }
+        else{
+            archipelago_objectives.Guests[1] = false;
+        }
+
+        if (park.value >= (archipelago_objectives.ParkValue[0]/10)){
+            archipelago_objectives.ParkValue[1] = true;
+        }
+        else{
+            archipelago_objectives.ParkValue[1] = false;
+        }
+
+        var NumQualifiedRides = 0;
+        for(var i = 0; i < map.numRides; i++){
+            var QualifiedExcitement = false;
+            var QualifiedIntensity = false;
+            var QualifiedNausea = false;
+            var QualifiedLength = false;
+            var elligible = false;
+            let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
+            for(var j = 0; j < researchItems.length; j++){
+                if(researchItems[j].rideType == map.rides[i].type){//If the items match...
+                    if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
+                        elligible = true;
+                        console.log(map.rides[i].name);
+                    }
+                }
+            }
+            if (elligible){
+                QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
+                if (map.rides[i].excitement >= (archipelago_objectives.RollerCoasters[2] * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                    QualifiedExcitement = true;
+                }
+                if (map.rides[i].intensity >= (archipelago_objectives.RollerCoasters[3] * 100)){
+                    QualifiedIntensity = true;
+                }
+                if (map.rides[i].nausea >= (archipelago_objectives.RollerCoasters[4] * 100)){
+                    QualifiedNausea = true;
+                }
+            }
+
+            if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
+                NumQualifiedRides += 1;
+            }
+        }
+        console.log(NumQualifiedRides);
+        console.log(archipelago_objectives.RollerCoasters[0]);
+        if (NumQualifiedRides >= archipelago_objectives.RollerCoasters[0])
+            archipelago_objectives.RollerCoasters[6] = true;
+        //TODO: Wait for monthly ride and shop income to become visible to the API
+        archipelago_objectives.RideIncome[1] = true;
+        archipelago_objectives.ShopIncome[1] = true;
+
+
+        if (park.rating >= (archipelago_objectives.ParkRating[0])){
+            archipelago_objectives.ParkRating[1] = true;
+        }
+        else{
+            archipelago_objectives.ParkRating[1] = false;
+        }
+
+        if (archipelago_objectives.LoanPaidOff[0] == true)//Check if Loans are enabled
+        {
+            if (park.bankLoan <= 0){//Check if loan is paid off
+                archipelago_objectives.LoanPaidOff[1] = true;
+            }
+            else{
+                archipelago_objectives.LoanPaidOff[1] = false;
+            }
+        }
+        else {//If loans are not enabled, set the condition for winning to true
+            archipelago_objectives.LoanPaidOff[1] = true;
+        }
+
+        //Check if all conditions are met
+        if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true && 
+            archipelago_objectives.RollerCoasters[6] == true && archipelago_objectives.RideIncome[1] == true && 
+            archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true && 
+            archipelago_objectives.LoanPaidOff[1] == true){
+            scenario.objective.type = "repayLoanAndParkValue";//Hacky way to force win the scenario 
+            park.bankLoan = 0;
+            scenario.objective.parkValue = 0;
+            self.ResetObjective(0);
+            
+        }
+        
+    }
+
+    ResetObjective(counter: number): any{
+        var self = this;
+        if(counter >= 2){
+            scenario.objective.type = "haveFun";
+        }
+        else{
+            counter += 1;
+            self.SubscribeEvent("interval.day", ()=>{self.ResetObjective(counter);});
+        }
     }
 
     IsVisible(LockedID): boolean{
@@ -337,7 +458,7 @@ class RCTRArchipelago extends ModuleBase {
         let Prices = archipelago_location_prices;
         let LocationID = Locked[item].LocationID;
         let Prereqs = Prices[LocationID].RidePrereq;
-        if(Prices[LocationID].Price <= park.cash || Prices[LocationID].Price == 0){//Check if player has enough cash or if the price is 0.
+        if(Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0){//Check if player has enough cash or if the price is 0.
             if(Prices[LocationID].Lives <= park.guests){//Check if the player has enough guests to sacrifice
                 var NumQualifiedRides = 0;
                 var object = Prices[LocationID]
