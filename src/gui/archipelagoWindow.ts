@@ -294,7 +294,7 @@ function archipelagoDebug(){
                     var i = "Monorail";
                     //console.log(RideType["rollercoaster"]);
                     //console.log(RideType[i]);
-                    console.log(park.research.inventedItems[0]);
+                    console.log(scenario.status);                    
                     //park.setFlag("scenarioCompleteNameInput",true);
                     //console.log(map.rides[0]);
                     //console.log(RideType["Looping Roller Coaster"].rideType);
@@ -312,8 +312,10 @@ function archipelagoDebug(){
                     settings.archipelago_location_information = 'Full';
                     archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
                     archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
-                    archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: [2, "Miniature Railroad",4,0,0,2000]}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
+                    archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
                     archipelago_objectives = {Guests: [300, false], ParkValue: [0, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false]};
+                    context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
+                    context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var BathroomTrap = GetModule("RCTRArchipelago");
                     //if(BathroomTrap)

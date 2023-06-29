@@ -19,6 +19,12 @@ class RCTRArchipelago extends ModuleBase {
         var self = this;
         if (!settings.rando_archipelago)
             return;
+        //Load saved progress
+        archipelago_locked_locations = context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations');
+        archipelago_unlocked_locations = context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations');
+        archipelago_location_prices = context.getParkStorage().get('RCTRando.ArchipelagoLocationPrices');
+        archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
+
         self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives();});
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
@@ -304,6 +310,9 @@ class RCTRArchipelago extends ModuleBase {
 
     CheckObjectives(): any{
         var self = this;
+        if (scenario.status == "completed"){
+            return;
+        }
         if (park.guests >= archipelago_objectives.Guests[0]){
             archipelago_objectives.Guests[1] = true;
         }
@@ -330,7 +339,6 @@ class RCTRArchipelago extends ModuleBase {
                 if(researchItems[j].rideType == map.rides[i].type){//If the items match...
                     if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
                         elligible = true;
-                        console.log(map.rides[i].name);
                     }
                 }
             }
@@ -351,8 +359,6 @@ class RCTRArchipelago extends ModuleBase {
                 NumQualifiedRides += 1;
             }
         }
-        console.log(NumQualifiedRides);
-        console.log(archipelago_objectives.RollerCoasters[0]);
         if (NumQualifiedRides >= archipelago_objectives.RollerCoasters[0])
             archipelago_objectives.RollerCoasters[6] = true;
         //TODO: Wait for monthly ride and shop income to become visible to the API
@@ -385,24 +391,10 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives.RollerCoasters[6] == true && archipelago_objectives.RideIncome[1] == true && 
             archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true && 
             archipelago_objectives.LoanPaidOff[1] == true){
-            scenario.objective.type = "repayLoanAndParkValue";//Hacky way to force win the scenario 
-            park.bankLoan = 0;
-            scenario.objective.parkValue = 0;
-            self.ResetObjective(0);
+            context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
             
         }
         
-    }
-
-    ResetObjective(counter: number): any{
-        var self = this;
-        if(counter >= 2){
-            scenario.objective.type = "haveFun";
-        }
-        else{
-            counter += 1;
-            self.SubscribeEvent("interval.day", ()=>{self.ResetObjective(counter);});
-        }
     }
 
     IsVisible(LockedID): boolean{
