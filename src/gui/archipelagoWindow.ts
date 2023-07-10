@@ -36,7 +36,6 @@ function archipelagoGui(){
                 context.executeAction('pausetoggle', {});
             }
         createChangesWindow();
-        console.log("And it's going to work perfectly")
         });
     }
 

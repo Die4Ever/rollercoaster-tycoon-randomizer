@@ -69,7 +69,6 @@ class RCTRArchipelago extends ModuleBase {
     AddRide(ride): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items. 
 
-        console.log(ride);
         try{
             if(!ride){
                 console.log("If you see this, there has been a serious error");
@@ -81,7 +80,6 @@ class RCTRArchipelago extends ModuleBase {
         }
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
-        console.log(ride);
         for(let i=0; i<unresearchedItems.length; i++) {
             if (unresearchedItems[i].rideType == ride){//Check if the ride type matches
                 researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
@@ -120,6 +118,7 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string}): any{
+        var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
         if (settings.archipelago_deathlink_timeout == true){//If the timeout hasn't expired, don't force another coaster to crash
             console.log("Death Link Timeout has not expired. Ignoring Death Link signal")
             return;
