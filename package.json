@@ -16,8 +16,5 @@
     "devDependencies": {
         "typescript": "^4.9.5",
         "uglify-js": "^3.15.3"
-    },
-    "dependencies": {
-        "tsc": "^2.0.4"
     }
 }
