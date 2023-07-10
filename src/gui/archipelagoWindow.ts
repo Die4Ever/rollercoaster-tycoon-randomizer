@@ -124,7 +124,7 @@ function archipelagoLocations(){
     var wh = 350;
     let y = 0;
 
-    var Archipelago = GetModule("RCTRArchipelago");
+    var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
 
     if(!ui.getWindow("archipelago-locations")){
         var window = ui.openWindow({
@@ -143,7 +143,7 @@ function archipelagoLocations(){
                     ui.getWindow("archipelago-locations").findWidget("objective-list").items = Archipelago.CreateObjectiveList();
                 }
             },
-            tabs: 
+            tabs:
             [
                 {
                     image: {frameBase: 80246,frameCount: 14,frameDuration: 4},
@@ -185,7 +185,7 @@ function archipelagoLocations(){
                                     //console.log(map.getAllEntities('car')[1]);
                                     // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
                                     //     console.log(map.getEntity(i));//load data for the entity;
-                                    
+
                                 }
                             }
                         ]
@@ -227,7 +227,7 @@ function archipelagoLocations(){
                                 onClick: function() {
                                     scenario.objective.type = "haveFun";
 
-                                    
+
                                 }
                             }
                         ]
@@ -238,7 +238,7 @@ function archipelagoLocations(){
                     widgets: [].concat
                     (
                         [
-                            
+
                             {
                                 type: 'label',
                                 name: 'Goal',
@@ -294,7 +294,7 @@ function archipelagoDebug(){
                     var i = "Monorail";
                     //console.log(RideType["rollercoaster"]);
                     //console.log(RideType[i]);
-                    console.log(scenario.status);                    
+                    console.log(scenario.status);
                     //park.setFlag("scenarioCompleteNameInput",true);
                     //console.log(map.rides[0]);
                     //console.log(RideType["Looping Roller Coaster"].rideType);

@@ -99,11 +99,11 @@ def connectarch():
             arch = socket.create_connection((args.archaddr, archport))
             print("Connected to Archipelago at ", args.archaddr, archport)
             break
-        except:
+        except Exception as e:
             if args.verbose:
                 print(traceback.format_exc())
             print('error connecting to Archipelago', e)
-            time.sleep(0.1)
+            time.sleep(1)
     arch.setblocking(0)
 
 
@@ -132,7 +132,7 @@ def connectgame():
             if args.verbose:
                 print(traceback.format_exc())
             print('error connecting to game', e)
-            time.sleep(0.1)
+            time.sleep(1)
 
     game.setblocking(0)
     try:
