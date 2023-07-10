@@ -28,6 +28,8 @@ class RCTRArchipelago extends ModuleBase {
         self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives();});
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
+        if (settings.archipelago_deathlink)
+        context.subscribe('vehicle.crash',self.SendDeathLink);
     }
 
     SetArchipelagoResearch(): void {
