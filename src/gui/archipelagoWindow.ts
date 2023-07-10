@@ -1,3 +1,5 @@
+/// <reference path="../../lib/openrct2.d.ts" />
+
 
 function archipelagoGui(){
     var ww = 350;
@@ -132,14 +134,15 @@ function archipelagoLocations(){
             width: ww,
             height: wh,
             onTabChange: () => {
-                if (ui.getWindow("archipelago-locations").tabIndex == 0){
-                    ui.getWindow("archipelago-locations").findWidget("locked-location-list").items = Archipelago.CreateLockedList();
+                var currentWindow = ui.getWindow("archipelago-locations");
+                if (currentWindow.tabIndex == 0){
+                    currentWindow.findWidget<ListViewWidget>("locked-location-list").items = Archipelago.CreateLockedList();
                 }
-                else if (ui.getWindow("archipelago-locations").tabIndex == 1){
-                    ui.getWindow("archipelago-locations").findWidget("unlocked-location-list").items = Archipelago.CreateUnlockedList();
+                else if (currentWindow.tabIndex == 1){
+                    currentWindow.findWidget<ListViewWidget>("unlocked-location-list").items = Archipelago.CreateUnlockedList();
                 }
                 else{
-                    ui.getWindow("archipelago-locations").findWidget("objective-list").items = Archipelago.CreateObjectiveList();
+                    currentWindow.findWidget<ListViewWidget>("objective-list").items = Archipelago.CreateObjectiveList();
                 }
             },
             tabs:
@@ -169,7 +172,7 @@ function archipelagoLocations(){
                                 isStriped: true,
                                 items: Archipelago.CreateLockedList(),
                                 scrollbars: 'none',
-                                onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)//console.log(`Clicked item ${item} in listview`)
+                                onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)
                             },
                             {
                                 type: 'button',
@@ -213,7 +216,7 @@ function archipelagoLocations(){
                                 width: 650,
                                 height: 200,
                                 isStriped: true,
-                                items: Archipelago.CreateUnlockedList();
+                                items: Archipelago.CreateUnlockedList()
                             },
                             {
                                 type: 'button',
@@ -257,7 +260,7 @@ function archipelagoLocations(){
                                 height: 200,
                                 isStriped: true,
                                 scrollbars: 'none',
-                                items: Archipelago.CreateObjectiveList();
+                                items: Archipelago.CreateObjectiveList()
                             }
                         ]
                     )
@@ -289,17 +292,17 @@ function archipelagoDebug(){
                 height: 126,
                 text: 'Colbys Debug Button. No Touchy!',
                 onClick: function() {
-                    ac_good = true;
-                    ac_onError(true);
 
                     // park.cash = 10000;
                     // var i = "Monorail";
                     //console.log(RideType["rollercoaster"]);
                     //console.log(RideType[i]);
-                    console.log(scenario.status);
+                    // console.log(scenario.status);
                     //park.setFlag("scenarioCompleteNameInput",true);
                     //console.log(map.rides[0]);
                     //console.log(RideType["Looping Roller Coaster"].rideType);
+                    var BathroomTrap = GetModule("RCTRArchipelago");
+                    (BathroomTrap as RCTRArchipelago).AddRide(RideType["Merry Go Round"]);
                 }
             },
             {
@@ -320,6 +323,7 @@ function archipelagoDebug(){
                     context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var BathroomTrap = GetModule("RCTRArchipelago");
+                    (BathroomTrap as RCTRArchipelago).AddRide("Swinging Ship");
                     // if(BathroomTrap)
                     // BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
                     }

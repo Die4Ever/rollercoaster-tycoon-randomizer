@@ -81,7 +81,7 @@ class RCTRArchipelago extends ModuleBase {
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
         for(let i=0; i<unresearchedItems.length; i++) {
-            if (unresearchedItems[i].rideType == ride){//Check if the ride type matches
+            if (((unresearchedItems[i] as RideResearchItem).rideType) == ride){//Check if the ride type matches
                 researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
                 unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
                 park.research.uninventedItems = unresearchedItems;//Save the researched items list
@@ -118,7 +118,7 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string}): any{
-        var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
+        var self = this;
         if (settings.archipelago_deathlink_timeout == true){//If the timeout hasn't expired, don't force another coaster to crash
             console.log("Death Link Timeout has not expired. Ignoring Death Link signal")
             return;
@@ -167,7 +167,7 @@ class RCTRArchipelago extends ModuleBase {
             if (timeOut > 400){//If we can't find this in 400 tries, wait 5 seconds and try again
                 var archipelago = GetModule("RCTRArchipelago");
                 if(archipelago)
-                    context.setTimeout(function() {archipelago.ReceiveDeathLink()}, 5000);
+                    context.setTimeout(function() {self.ReceiveDeathLink(DeathLinkPacket)}, 5000);
                 return;
             }
         }
@@ -271,7 +271,7 @@ class RCTRArchipelago extends ModuleBase {
         }
         if (archipelago_objectives.ParkValue[0]){
             objective.push("Park Value:");
-            objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ParkValue[0]) * 10));//Multiply by 10 to get in-game amount
+            objective.push("          " + context.formatString("{CURRENCY2DP}",  Number(archipelago_objectives.ParkValue[0]) * 10));//Multiply by 10 to get in-game amount
         }
         var RollerCoaster = archipelago_objectives.RollerCoasters;
         if (RollerCoaster[0]){
@@ -314,14 +314,14 @@ class RCTRArchipelago extends ModuleBase {
         if (scenario.status == "completed"){
             return;
         }
-        if (park.guests >= archipelago_objectives.Guests[0]){
+        if (park.guests >= Number(archipelago_objectives.Guests[0])){
             archipelago_objectives.Guests[1] = true;
         }
         else{
             archipelago_objectives.Guests[1] = false;
         }
 
-        if (park.value >= (archipelago_objectives.ParkValue[0]/10)){
+        if (park.value >= (Number(archipelago_objectives.ParkValue[0])/10)){
             archipelago_objectives.ParkValue[1] = true;
         }
         else{
@@ -337,7 +337,7 @@ class RCTRArchipelago extends ModuleBase {
             var elligible = false;
             let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
             for(var j = 0; j < researchItems.length; j++){
-                if(researchItems[j].rideType == map.rides[i].type){//If the items match...
+                if((researchItems[j] as RideResearchItem).rideType == map.rides[i].type){//If the items match...
                     if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
                         elligible = true;
                     }
@@ -345,13 +345,13 @@ class RCTRArchipelago extends ModuleBase {
             }
             if (elligible){
                 QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                if (map.rides[i].excitement >= (archipelago_objectives.RollerCoasters[2] * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
                     QualifiedExcitement = true;
                 }
-                if (map.rides[i].intensity >= (archipelago_objectives.RollerCoasters[3] * 100)){
+                if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
                     QualifiedIntensity = true;
                 }
-                if (map.rides[i].nausea >= (archipelago_objectives.RollerCoasters[4] * 100)){
+                if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[4]) * 100)){
                     QualifiedNausea = true;
                 }
             }
@@ -360,14 +360,14 @@ class RCTRArchipelago extends ModuleBase {
                 NumQualifiedRides += 1;
             }
         }
-        if (NumQualifiedRides >= archipelago_objectives.RollerCoasters[0])
+        if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0]))
             archipelago_objectives.RollerCoasters[6] = true;
         //TODO: Wait for monthly ride and shop income to become visible to the API
         archipelago_objectives.RideIncome[1] = true;
         archipelago_objectives.ShopIncome[1] = true;
 
 
-        if (park.rating >= (archipelago_objectives.ParkRating[0])){
+        if (park.rating >= Number(archipelago_objectives.ParkRating[0])){
             archipelago_objectives.ParkRating[1] = true;
         }
         else{
@@ -464,7 +464,7 @@ class RCTRArchipelago extends ModuleBase {
                     var QualifiedLength = false;
                     var elligible = false;
                     if(ride){//See if there's a prereq that's a specific ride
-                        if (ride == map.rides[i].type){//If the rides match, they're elligible
+                        if (Number(ride) == map.rides[i].type){//If the rides match, they're elligible
                         elligible = true;
                         }
                     }
@@ -472,7 +472,7 @@ class RCTRArchipelago extends ModuleBase {
                     if (ObjectCategory[object.RidePrereq[1]]){//See if there's a prereq that's a category
                         let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
                         for(var j = 0; j < researchItems.length; j++){
-                            if(researchItems[j].rideType == map.rides[i].type){//If the items match...
+                            if((researchItems[j] as RideResearchItem).rideType == map.rides[i].type){//If the items match...
                                 if(researchItems[j].category == Prices[LocationID].RidePrereq[1]){//Check if the categories match
                                     elligible = true;
                                 }
@@ -517,7 +517,8 @@ class RCTRArchipelago extends ModuleBase {
                     archipelago_locked_locations = Locked;
                     archipelago_unlocked_locations = Unlocked;
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
-                    ui.getWindow("archipelago-locations").findWidget("locked-location-list").items = self.CreateLockedList();
+                    var lockedWindow = ui.getWindow("archipelago-locations");
+                    lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();
                 }
                 else{
                     ui.showError("Prerequisites not met", "One or more of the prerequisites for this unlock have not been fulfilled");
