@@ -290,8 +290,11 @@ function archipelagoDebug(){
                 height: 126,
                 text: 'Colbys Debug Button. No Touchy!',
                 onClick: function() {
-                    park.cash = 10000;
-                    var i = "Monorail";
+                    ac_good = true;
+                    ac_onError(true);
+
+                    // park.cash = 10000;
+                    // var i = "Monorail";
                     //console.log(RideType["rollercoaster"]);
                     //console.log(RideType[i]);
                     console.log(scenario.status);
@@ -318,8 +321,8 @@ function archipelagoDebug(){
                     context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var BathroomTrap = GetModule("RCTRArchipelago");
-                    //if(BathroomTrap)
-                    //BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
+                    // if(BathroomTrap)
+                    // BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
                     }
             }]
         )
