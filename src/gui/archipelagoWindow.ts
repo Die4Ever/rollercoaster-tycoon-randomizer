@@ -301,8 +301,10 @@ function archipelagoDebug(){
                     //park.setFlag("scenarioCompleteNameInput",true);
                     //console.log(map.rides[0]);
                     //console.log(RideType["Looping Roller Coaster"].rideType);
-                    var BathroomTrap = GetModule("RCTRArchipelago");
-                    (BathroomTrap as RCTRArchipelago).AddRide(RideType["Merry Go Round"]);
+                    var BathroomTrap = GetModule("RCTRArchipelagoConnection");
+                    (BathroomTrap as RCTRArchipelagoConnection).connect();
+                    // init_archipelago_connection();
+                    
                 }
             },
             {
