@@ -25,7 +25,7 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_location_prices = context.getParkStorage().get('RCTRando.ArchipelagoLocationPrices');
         archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
 
-        self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives();});
+        self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives(); self.SetNames();});
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
         if (settings.archipelago_deathlink)
@@ -53,15 +53,27 @@ class RCTRArchipelago extends ModuleBase {
         this.AddChange('NumInventedItems', 'Invented items', origNumResearched, numResearched);
     }
     
-    ReceiveArchipelagoItem(category, item): void{
-        switch(category){
-            case "ride":
-                this.AddRide(item);
-                break;
-            case "stall":
-                this.AddRide(item);
-            default:
-                console.log("Colby is bad at his job, please inform him of this");
+    ReceiveArchipelagoItem(item): void{
+        var self = this;
+        for(let i = 0; i < item.length; i++){
+            var category = "item";
+            if(item[i].flags = 0b100)
+            category = "trap";
+            if(RideType[i])
+            category = "ride";
+            switch(category){
+                case "ride":
+                    self.AddRide(item[i]);
+                    break;
+                case "stall":
+                    self.AddRide(item[i]);
+                    break;
+                case "trap":
+                    self.ActivateTrap(item[i]);
+                    break;
+                default:
+                    console.log("Colby is bad at his job, please inform him of this");
+            }
         }
         return;
     }
@@ -185,6 +197,29 @@ class RCTRArchipelago extends ModuleBase {
         }
         else {
             console.log("Death Link Timeout has not expired. Cancelling Death Link signal. Note: Multiple cars crashing will attempt to send multiple signals")
+        }
+    }
+
+    SetNames(): any{
+        //Generates guests with the names of the Archipelago players
+        if(context.getParkStorage().get("RCTRando.ArchipelagoPlayers")){
+            let guests = map.getAllEntities("guest");
+            let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
+            for(let i=0; i<(archipelagoPlayers.length); i++){
+                console.log(i);
+                var inPark = false;
+                for(let j=0; j<(guests.length); j++){
+                    if(archipelagoPlayers[i] == (guests[j].name)){
+                    inPark = true;
+                    break;
+                    }
+                }
+                if(!inPark){
+                    if(guests.length >= archipelagoPlayers.length){
+                        guests[i].name = archipelagoPlayers[i];
+                    }
+                }
+            }
         }
     }
 
