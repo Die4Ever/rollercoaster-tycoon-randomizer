@@ -100,7 +100,9 @@ var settings = {
     rando_archipelago: false,
     archipelago_deathlink: false,
     archipelago_deathlink_timeout: false,
-    archipelago_location_information: locationInfo.None
+    archipelago_location_information: locationInfo.None,
+    archipelago_park_message_chat: false,
+    archipelago_network_chat: true
 };
 
 function _main() {

@@ -144,8 +144,11 @@ function archipelagoLocations(){
                 else if (currentWindow.tabIndex == 1){
                     currentWindow.findWidget<ListViewWidget>("unlocked-location-list").items = Archipelago.CreateUnlockedList();
                 }
-                else{
+                else if (currentWindow.tabIndex == 2){
                     currentWindow.findWidget<ListViewWidget>("objective-list").items = Archipelago.CreateObjectiveList();
+                }
+                else{
+                    currentWindow.findWidget<ListViewWidget>("message-list").items = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
                 }
             },
             tabs:
@@ -267,6 +270,51 @@ function archipelagoLocations(){
                             }
                         ]
                     )
+                },
+                {
+                    image: {frameBase: 80055,frameCount: 8,frameDuration: 4},
+                    widgets: [].concat
+                    (
+                        [
+                            {
+                                type: 'label',
+                                name: 'Message-Log-Label',
+                                x: 250,
+                                y: 50,
+                                width: 100,
+                                height: 26,
+                                text: 'Message Log',
+                                tooltip: "Y'all's sure do talk a lot, don't you?"
+                            },
+                            {
+                                type: 'listview',
+                                name: 'message-list',
+                                x: 25,
+                                y: 75,
+                                width: 650,
+                                height: 200,
+                                isStriped: false,
+                                items: context.getParkStorage().get("RCTRando.MessageLog") as Array<any>,
+                                scrollbars: 'both'
+                            },
+                            {
+                                type: 'button',
+                                name: 'debug-button',
+                                x: 300,
+                                y: 300,
+                                width: 100,
+                                height: 26,
+                                text: 'Colbys Debug Button. No Touchy!',
+                                onClick: function() {
+                                    console.log("dangit");
+                                    //console.log(map.getAllEntities('car')[1]);
+                                    // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
+                                    //     console.log(map.getEntity(i));//load data for the entity;
+
+                                }
+                            }
+                        ]
+                    )
                 }
             ]
         });
@@ -292,7 +340,7 @@ function archipelagoDebug(){
                 x: 5,
                 y: 90,
                 width: 390,
-                height: 126,
+                height: 63,
                 text: 'Colbys Debug Button. No Touchy!',
                 onClick: function() {
                     network.sendMessage("data.data.text");
@@ -306,6 +354,64 @@ function archipelagoDebug(){
                     //park.setFlag("scenarioCompleteNameInput",true);
                     //console.log(map.rides[0]);
                     //console.log(RideType["Looping Roller Coaster"].rideType);
+                    settings.archipelago_park_message_chat = true;
+                    var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                    ac_req({"cmd":"PrintJSON","data":[{"text":"1","type":"player_id"},{"text":" found their "},{"text":"69696969","player":1,"flags":1,"type":"item_id"},{"text":" ("},{"text":"69696969","player":1,"type":"location_id"},{"text":")"}],"type":"ItemSend","receiving":1,"item":{"item":69696969,"location":69696969,"player":1,"flags":1,"class":"NetworkItem"}})
+                    // console.log(context.getParkStorage().get('RCTRando.nuttin'));
+                    // (BathroomTrap as RCTRArchipelagoConnection).connect();
+                    // init_archipelago_connection();
+                    
+                }
+            },
+            {
+                type: 'button',
+                name: 'debug-button2',
+                x: 5,
+                y: 130,
+                width: 390,
+                height: 63,
+                text: 'Also Colbys Debug Button. No Touchy!',
+                onClick: function() {
+                    network.sendMessage("data.data.text");
+                    // console.log(RideType["Merry Go Round"]);
+                    
+                    // park.cash = 10000;
+                    // var i = "Monorail";
+                    //console.log(RideType["rollercoaster"]);
+                    //console.log(RideType[i]);
+                    // console.log(scenario.status);
+                    //park.setFlag("scenarioCompleteNameInput",true);
+                    //console.log(map.rides[0]);
+                    //console.log(RideType["Looping Roller Coaster"].rideType);
+                    var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                    ac_req({"cmd":"DataPackage","data":{"games":{"Archipelago":{"item_name_groups":{"Everything":["Nothing"]},"item_name_to_id":{"Nothing":-1},"location_name_groups":{"Everywhere":["Cheat Console","Server"]},"location_name_to_id":{"Cheat Console":-1,"Server":-2},"version":1,"checksum":"32560d5fd274791bed711fccd4fb6bd40bb3f0ff"},"Clique":{"item_name_to_id":{"Feeling of Satisfaction":69696969,"Button Activation":69696968},"location_name_to_id":{"The Big Red Button":69696969,"The Item on the Desk":69696968},"version":2,"checksum":"05e4bd164edae6ebc351670c527b67a5166b7bef"}}}})
+                    // console.log(context.getParkStorage().get('RCTRando.nuttin'));
+                    // (BathroomTrap as RCTRArchipelagoConnection).connect();
+                    // init_archipelago_connection();
+                    
+                }
+            },
+            {
+                type: 'button',
+                name: 'debug-button',
+                x: 5,
+                y: 190,
+                width: 390,
+                height: 63,
+                text: 'Button. No Touchy!',
+                onClick: function() {
+                    network.sendMessage("data.data.text");
+                    // console.log(RideType["Merry Go Round"]);
+                    
+                    // park.cash = 10000;
+                    // var i = "Monorail";
+                    //console.log(RideType["rollercoaster"]);
+                    //console.log(RideType[i]);
+                    // console.log(scenario.status);
+                    //park.setFlag("scenarioCompleteNameInput",true);
+                    //console.log(map.rides[0]);
+                    //console.log(RideType["Looping Roller Coaster"].rideType);
+                    settings.archipelago_park_message_chat = true;
                     var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                     ac_req({"cmd":"Connected","team":0,"slot":2,"players":[{"team":0,"slot":1,"alias":"Cool1","name":"Cool1","class":"NetworkPlayer"},{"team":0,"slot":2,"alias":"Test","name":"Test","class":"NetworkPlayer"}],"missing_locations":[81000,81001,81002,81003,81004,81005,81006,81007,81008,81009,81010,81011,81012,81013,81014,81015,81016,81017,81018,81019,81020,81021,81022,81023,81024],"checked_locations":[],"slot_info":{"1":{"name":"Cool1","game":"Clique","type":1,"group_members":[],"class":"NetworkSlot"},"2":{"name":"Test","game":"ChecksFinder","type":1,"group_members":[],"class":"NetworkSlot"}},"hint_points":0,"slot_data":{"world_seed":3098991349,"seed_name":"31784654339393198182","player_name":"Test","player_id":2,"client_version":7,"race":false}})
                     // console.log(context.getParkStorage().get('RCTRando.nuttin'));
@@ -316,7 +422,7 @@ function archipelagoDebug(){
             },
             {
                 type: 'button',
-                name: 'debug-button2',
+                name: 'debug-button4',
                 x: ww - 90 - 88 - 6,
                 y: wh - 6 - 66,
                 width: 90,
