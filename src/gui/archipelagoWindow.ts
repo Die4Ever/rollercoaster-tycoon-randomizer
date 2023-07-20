@@ -129,6 +129,7 @@ function archipelagoLocations(){
     let y = 0;
 
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
+    var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
 
     if(!ui.getWindow("archipelago-locations")){
         var window = ui.openWindow({
@@ -149,6 +150,8 @@ function archipelagoLocations(){
                 }
                 else{
                     currentWindow.findWidget<ListViewWidget>("message-list").items = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
+                    currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = settings.archipelago_park_message_chat;
+                    currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = settings.archipelago_network_chat;
                 }
             },
             tabs:
@@ -294,23 +297,40 @@ function archipelagoLocations(){
                                 width: 650,
                                 height: 200,
                                 isStriped: false,
-                                items: context.getParkStorage().get("RCTRando.MessageLog") as Array<any>,
-                                scrollbars: 'both'
+                                items: (messageLog ? messageLog : []),
+                                scrollbars: 'both',
+                                columns:[{width: 1400}]
                             },
                             {
-                                type: 'button',
-                                name: 'debug-button',
-                                x: 300,
-                                y: 300,
-                                width: 100,
-                                height: 26,
-                                text: 'Colbys Debug Button. No Touchy!',
-                                onClick: function() {
-                                    console.log("dangit");
-                                    //console.log(map.getAllEntities('car')[1]);
-                                    // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
-                                    //     console.log(map.getEntity(i));//load data for the entity;
-
+                                type: 'checkbox',
+                                name: 'park-message-toggle',
+                                text: 'Print Archipelago Chat to Park Messages',
+                                x: 100,
+                                y: 310,
+                                width: 10,
+                                height: 10,
+                                tooltip: 'Prints Archipelago chats and messages as in game notifications. If your group is chatty, this could be annoying',
+                                isChecked: settings.archipelago_park_message_chat,
+                                onChange: function(isChecked) {
+                                    var currentWindow = ui.getWindow("archipelago-locations");
+                                    settings.archipelago_park_message_chat = isChecked;
+                                    currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = isChecked;
+                                }
+                            },
+                            {
+                                type: 'checkbox',
+                                name: 'network-chat-toggle',
+                                text: "Print Archipelago Chat to Network Messages",
+                                x: 400,
+                                y: 310,
+                                width: 10,
+                                height: 10,
+                                tooltip: 'Prints Archipelago chats and messages as network chats. This will not work in single player mode',
+                                isChecked: settings.archipelago_network_chat,
+                                onChange: function(isChecked) {
+                                    var currentWindow = ui.getWindow("archipelago-locations");
+                                    settings.archipelago_network_chat = isChecked;
+                                    currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = isChecked;
                                 }
                             }
                         ]
@@ -354,7 +374,6 @@ function archipelagoDebug(){
                     //park.setFlag("scenarioCompleteNameInput",true);
                     //console.log(map.rides[0]);
                     //console.log(RideType["Looping Roller Coaster"].rideType);
-                    settings.archipelago_park_message_chat = true;
                     var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                     ac_req({"cmd":"PrintJSON","data":[{"text":"1","type":"player_id"},{"text":" found their "},{"text":"69696969","player":1,"flags":1,"type":"item_id"},{"text":" ("},{"text":"69696969","player":1,"type":"location_id"},{"text":")"}],"type":"ItemSend","receiving":1,"item":{"item":69696969,"location":69696969,"player":1,"flags":1,"class":"NetworkItem"}})
                     // console.log(context.getParkStorage().get('RCTRando.nuttin'));

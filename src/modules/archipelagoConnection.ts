@@ -79,6 +79,9 @@ function archipelago_print_message(message) {
     else
     messageLog = [message];
     context.getParkStorage().set("RCTRando.MessageLog", messageLog);
+    var lockedWindow = ui.getWindow("archipelago-locations");
+    if(lockedWindow)
+    lockedWindow.findWidget<ListViewWidget>("message-list").items = messageLog;
     if(settings.archipelago_park_message_chat){
         park.postMessage(
             {type: 'blank', text: message} as ParkMessageDesc

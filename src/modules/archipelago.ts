@@ -206,7 +206,6 @@ class RCTRArchipelago extends ModuleBase {
             let guests = map.getAllEntities("guest");
             let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
             for(let i=0; i<(archipelagoPlayers.length); i++){
-                console.log(i);
                 var inPark = false;
                 for(let j=0; j<(guests.length); j++){
                     if(archipelagoPlayers[i] == (guests[j].name)){
