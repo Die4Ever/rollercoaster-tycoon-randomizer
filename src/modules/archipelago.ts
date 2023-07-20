@@ -362,40 +362,49 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives.ParkValue[1] = false;
         }
 
+        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
         var NumQualifiedRides = 0;
         for(var i = 0; i < map.numRides; i++){
+            var ride = map.rides[i].type;
             var QualifiedExcitement = false;
             var QualifiedIntensity = false;
             var QualifiedNausea = false;
             var QualifiedLength = false;
             var elligible = false;
-            let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
-            for(var j = 0; j < researchItems.length; j++){
-                if((researchItems[j] as RideResearchItem).rideType == map.rides[i].type){//If the items match...
-                    if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
-                        elligible = true;
+            if (!(ride == 28 || ride == 30 || ride == 32)){
+                for(var j = 0; j < researchItems.length; j++){
+                    if((researchItems[j] as RideResearchItem).rideType == ride){//If the items match...
+                        if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
+                            elligible = true;
+                            break;
+                        }
+                    }
+                }
+                if (elligible){
+                    QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
+                    if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                        QualifiedExcitement = true;
+                    }
+                    if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
+                        QualifiedIntensity = true;
+                    }
+                    if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[4]) * 100)){
+                        QualifiedNausea = true;
+                    }
+
+                    if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
+                        NumQualifiedRides += 1;
+                    }
+
+                    if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0])){
+                        archipelago_objectives.RollerCoasters[6] = true;
+                        break;
                     }
                 }
             }
-            if (elligible){
-                QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
-                    QualifiedExcitement = true;
-                }
-                if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
-                    QualifiedIntensity = true;
-                }
-                if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[4]) * 100)){
-                    QualifiedNausea = true;
-                }
-            }
 
-            if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
-                NumQualifiedRides += 1;
-            }
         }
-        if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0]))
-            archipelago_objectives.RollerCoasters[6] = true;
+        
         //TODO: Wait for monthly ride and shop income to become visible to the API
         archipelago_objectives.RideIncome[1] = true;
         archipelago_objectives.ShopIncome[1] = true;

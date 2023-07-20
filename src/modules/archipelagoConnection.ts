@@ -32,11 +32,37 @@ function ac_req(data) {
             context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
             console.log(archipelagoPlayers);
             Archipelago.SetNames();
+            context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
             break;
+
+        case "ConnectionRefused"://Packet stating an error has occured in connecting to the Archipelago game
+            var errorMessage = "Archipelago Refused the connection with the following error(s):";
+            for(let i = 0; i < data.errors.length; i++){
+                errorMessage += data.errors[i];
+            }
+            archipelago_print_message(errorMessage);
 
         case "PrintJSON"://Packet with data to print to the screen
             archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
             switch(data.type){
+                case "ItemSend":
+                    var itemMessage = archipelagoPlayers[(data.data[0].text) - 1];
+                    itemMessage += data.data[1].text;
+                    itemMessage += data.data[2].text;
+                    itemMessage += "You know what? Future Colby will figure out the rest when the actual Archipelago connection is working";
+                    archipelago_print_message(itemMessage);
+                    break;
+
+                case "ItemCheat":
+                    var cheatMessage = "Colby will write out code to figure out how cheats work when he gets the proxy client";
+                    archipelago_print_message(cheatMessage);
+                    break;
+
+                case "Hint":
+                    var hintMessage = "Colby has a lot to do when he gets the proxy";
+                    archipelago_print_message(hintMessage);
+                    break;
+
                 case "Goal":
                     archipelago_print_message(data.data[0].text);
                     let guests = map.getAllEntities("guest");
@@ -47,21 +73,42 @@ function ac_req(data) {
                         }
                     }
                     break;
-                case "ItemSend":
-                    
-                    var message = archipelagoPlayers[(data.data[0].text) - 1];
-                    message += data.data[1].text;
-                    message += data.data[2].text;
-                    message += "You know what? Future Colby will figure out the rest when the actual Archipelago connection is working";
-                    archipelago_print_message(message);
-                    break;
+                
                 default:
                     archipelago_print_message(data.data[0].text);
             }
             break;
+
+        case "DataPacket":
+            var item_name_to_id = [];
+            var location_name_to_id = [];
+            for (let i = 0; i < data.data.length; i++){//Might be wrong. Take a look future Colby.
+                item_name_to_id.push(data.data[i].games[1].item_name_to_id);
+                location_name_to_id.push(data.data[i].games[i].location_name_to_id);
+            }
+            context.getParkStorage().set("RCTRando.ArchipelagoItemNameToID",item_name_to_id);
+            context.getParkStorage().set("RCTRando.ArchipelagoLocationNameToID",location_name_to_id);
+            break;
+
+        case "InvalidPacket":
+            console.log("Invalid Packet Error: " + data.type);
+            console.log(data.text);
+            break;
+
         case "ReceivedItems":
             Archipelago.ReceiveArchipelagoItem(data.list);
             break;
+
+        case "LocationInfo":
+            for(let i = 0; i < data.locations.length; i++){
+                var locationMessage = "Your ";
+                locationMessage += data.locations[i].item;
+                locationMessage += " is at "
+                locationMessage += data.locations[i].player;
+                locationMessage += "'s ";
+                locationMessage += data.locations[i].location;
+                archipelago_print_message(locationMessage);
+            }
     }
     return;
 }
