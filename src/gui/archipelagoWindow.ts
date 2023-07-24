@@ -403,6 +403,7 @@ function archipelagoDebug(){
                     //console.log(map.rides[0]);
                     //console.log(RideType["Looping Roller Coaster"].rideType);
                     var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                    // context.executeAction('TestAction', (null));
                     ac_req({"cmd":"Bounced","tags":["DeathLink"],"data":{"time":1690148379.2967014,"source":"Colby","cause":"Colby is out of usable Pokémon! Colby blacked out!"}})
                     // console.log(context.getParkStorage().get('RCTRando.nuttin'));
                     // (BathroomTrap as RCTRArchipelagoConnection).connect();
@@ -432,6 +433,7 @@ function archipelagoDebug(){
                     //console.log(RideType["Looping Roller Coaster"].rideType);
                     // settings.archipelago_park_message_chat = true;
                     var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                    // context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide());
                     // ac_req({"cmd":"Connected","team":0,"slot":2,"players":[{"team":0,"slot":1,"alias":"Cool1","name":"Cool1","class":"NetworkPlayer"},{"team":0,"slot":2,"alias":"Test","name":"Test","class":"NetworkPlayer"}],"missing_locations":[81000,81001,81002,81003,81004,81005,81006,81007,81008,81009,81010,81011,81012,81013,81014,81015,81016,81017,81018,81019,81020,81021,81022,81023,81024],"checked_locations":[],"slot_info":{"1":{"name":"Cool1","game":"Clique","type":1,"group_members":[],"class":"NetworkSlot"},"2":{"name":"Test","game":"ChecksFinder","type":1,"group_members":[],"class":"NetworkSlot"}},"hint_points":0,"slot_data":{"world_seed":3098991349,"seed_name":"31784654339393198182","player_name":"Test","player_id":2,"client_version":7,"race":false}})
                     // console.log(context.getParkStorage().get('RCTRando.nuttin'));
                     // (BathroomTrap as RCTRArchipelagoConnection).connect();
@@ -464,4 +466,8 @@ function archipelagoDebug(){
         )
     });
     return window;
+}
+
+function test(){
+    console.log("At least I got this far");
 }
