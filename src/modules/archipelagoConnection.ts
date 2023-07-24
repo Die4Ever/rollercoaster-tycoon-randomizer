@@ -49,6 +49,7 @@ function ac_req(data) {
                     var itemMessage = archipelagoPlayers[(data.data[0].text) - 1];
                     itemMessage += data.data[1].text;
                     itemMessage += data.data[2].text;
+                    itemMessage += data.data[3].text;
                     itemMessage += "You know what? Future Colby will figure out the rest when the actual Archipelago connection is working";
                     archipelago_print_message(itemMessage);
                     break;
@@ -88,6 +89,18 @@ function ac_req(data) {
             }
             context.getParkStorage().set("RCTRando.ArchipelagoItemNameToID",item_name_to_id);
             context.getParkStorage().set("RCTRando.ArchipelagoLocationNameToID",location_name_to_id);
+            break;
+
+        case "Bounced":
+            for(let i = 0; i < data.tags.length; i++){
+                if(data.tags[i] == "DeathLink"){
+                    const cause = data.data.cause;
+                    const source = data.data.source;
+                    Archipelago.ReceiveDeathLink({cause, source});
+                    archipelago_print_message(cause);
+                    break;
+                }
+            }
             break;
 
         case "InvalidPacket":

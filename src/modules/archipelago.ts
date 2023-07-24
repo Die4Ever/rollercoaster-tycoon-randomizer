@@ -171,21 +171,29 @@ class RCTRArchipelago extends ModuleBase {
             });
             return window;
         }
-        var r = Math.floor(Math.random() * map.getAllEntities('car').length);//Pick a car at random. It seems to only pick the first car of the train though...
-        var timeOut = 0;//Set a time out in case nothing's moving
-        while(map.getAllEntities('car')[r].status != 'travelling'){//Do random checks until something is found that's moving
-            r = Math.floor(Math.random() * map.getAllEntities('car').length);
-            timeOut++;
-            if (timeOut > 400){//If we can't find this in 400 tries, wait 5 seconds and try again
+        var explodeRide = function(){
+            var self = this;
+            var car = map.getAllEntities('car');
+            var movingCar = [];
+            for (let i = 0; i < car.length; i++){
+                if(car[i].status == 'travelling'){
+                    movingCar.push(car[i]);
+                }
+            }
+            if (!movingCar.length){//If there are no moving cars, wait 5 seconds and try again
                 var archipelago = GetModule("RCTRArchipelago");
                 if(archipelago)
                     context.setTimeout(function() {self.ReceiveDeathLink(DeathLinkPacket)}, 5000);
                 return;
             }
+            var r = Math.floor(Math.random() * movingCar.length);//Pick a car at random. It seems to only pick the first car of the train though...
+            // console.log(movingCar[r]);
+            settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
+            movingCar[r].status = "crashed";//Crash the ride!
+            // console.log(movingCar[r]);
+            context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
         }
-        settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
-        map.getAllEntities('car')[r].status = "crashed";//Crash the ride!
-        context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
+        runNextTick(explodeRide);
     }
 
     SendDeathLink(): any{
