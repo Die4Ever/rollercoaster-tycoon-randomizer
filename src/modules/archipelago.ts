@@ -135,7 +135,7 @@ class RCTRArchipelago extends ModuleBase {
             console.log("Death Link Timeout has not expired. Ignoring Death Link signal")
             return;
         }
-        if (map.getAllEntities("car").length == 0){//If there's nothing to explode, give the user a pass
+        if (!map.getAllEntities("car").length){//If there's nothing to explode, give the user a pass
             console.log("Rain check");
             var window = ui.openWindow({
                 classification: 'rain-check',
@@ -153,7 +153,7 @@ class RCTRArchipelago extends ModuleBase {
                             width: 350,
                             height: 200,
                             isStriped: true,
-                            items: ["The service requested is currently unavaliable. We apologize ", "for any inconvenience. This RAIN CHECK entitiles you to the", "manual service listed. When available, please crash a roller ", "coaster at your convenience."," ", "Todays date: " + (date.month + 3) + '-' + date.day + '-' + 'Year ' + date.year, "Service: Ride Crash", "Quantity: 1",' ', 'Sender: ' + DeathLinkPacket.source, 'Cause of Death: ' + ((DeathLinkPacket.cause.length == 0) ? "Unlisted" : DeathLinkPacket.cause)]
+                            items: ["The service requested is currently unavaliable. We apologize ", "for any inconvenience. This RAIN CHECK entitiles you to the", "manual service listed. When available, please crash a roller ", "coaster at your convenience."," ", "Todays date: " + (date.month + 3) + '-' + date.day + '-' + 'Year ' + date.year, "Service: Ride Crash", "Quantity: 1",' ', 'Sender: ' + DeathLinkPacket.source, 'Cause of Death: ' + ((!DeathLinkPacket.cause) ? "Unlisted" : DeathLinkPacket.cause)]
                         },
                         {
                             type: 'button',
@@ -186,14 +186,15 @@ class RCTRArchipelago extends ModuleBase {
                     context.setTimeout(function() {self.ReceiveDeathLink(DeathLinkPacket)}, 5000);
                 return;
             }
-            var r = Math.floor(Math.random() * movingCar.length);//Pick a car at random. It seems to only pick the first car of the train though...
+            var r = context.getRandom(0, movingCar.length + 1);//Pick a car at random. It seems to only pick the first car of the train though...
+            console.log(r);
             // console.log(movingCar[r]);
             settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
             movingCar[r].status = "crashed";//Crash the ride!
             // console.log(movingCar[r]);
             context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
         }
-        runNextTick(explodeRide);
+        context.executeAction('ExplodeRide', DeathLinkPacket);
     }
 
     SendDeathLink(): any{
@@ -587,6 +588,36 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     
+}
+
+context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide(args));
+
+
+function explodeRide(args){
+    console.log(args);
+    const cause = args.args.cause;
+    const source = args.args.source;
+    const DeathLinkPacket = {cause, source};
+    console.log(DeathLinkPacket);
+    var self = this;
+    var car = map.getAllEntities('car');
+    var movingCar = [];
+    for (let i = 0; i < car.length; i++){
+        if(car[i].status == 'travelling'){
+            movingCar.push(car[i]);
+        }
+    }
+    if (!movingCar.length){//If there are no moving cars, wait 5 seconds and try again
+        var archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
+        if(archipelago)
+            context.setTimeout(function() {archipelago.ReceiveDeathLink(DeathLinkPacket)}, 5000);
+        return {};
+    }
+    var r = context.getRandom(0, movingCar.length);//Pick a car at random. It seems to only pick the first car of the train though...
+    settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
+    movingCar[r].status = "crashed";//Crash the ride!
+    context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
+    return {};
 }
 
 if(context.apiVersion >= 75)
