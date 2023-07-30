@@ -102,7 +102,8 @@ var settings = {
     archipelago_deathlink_timeout: false,
     archipelago_location_information: locationInfo.None,
     archipelago_park_message_chat: false,
-    archipelago_network_chat: true
+    archipelago_network_chat: true,
+    archipelago_rule_locations: true
 };
 
 function _main() {

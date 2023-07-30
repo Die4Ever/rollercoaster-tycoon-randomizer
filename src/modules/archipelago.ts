@@ -4,14 +4,27 @@
 class RCTRArchipelago extends ModuleBase {
     FirstEntry(): void {
         var self = this;
+        info("Module to handle connecting and communicating with Archipelago");
         if(!settings.rando_archipelago)
             return;
-        info("Module to handle connecting and communicating with Archipelago");
         //Disable standard research by resetting research status to 0 and funding to none every in game day
-        self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives()});
+        // self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives()});
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
-        if (settings.archipelago_deathlink)
-        context.subscribe('vehicle.crash',self.SendDeathLink);
+        // if (settings.archipelago_deathlink)
+        // context.subscribe('vehicle.crash',self.SendDeathLink);
+        if (settings.archipelago_rule_locations){
+            var setRules = function(){
+                park.setFlag("difficultGuestGeneration", true);
+                park.setFlag("difficultParkRating", true);
+                park.setFlag("forbidHighConstruction", true);
+                park.setFlag("forbidLandscapeChanges", true);
+                park.setFlag("forbidMarketingCampaigns", true);
+                park.setFlag("forbidTreeRemoval", true);
+            }
+            console.log("Fish delish dish");
+            runNextTick(setRules);
+        }
+
         return;
     }
 
@@ -30,6 +43,14 @@ class RCTRArchipelago extends ModuleBase {
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
         if (settings.archipelago_deathlink)
         context.subscribe('vehicle.crash',self.SendDeathLink);
+
+        //Set up actions for multiplayer
+        try{
+            context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide(args));
+        }
+        catch(e){
+            console.log("Error:" + e)
+        }
     }
 
     SetArchipelagoResearch(): void {
@@ -59,20 +80,24 @@ class RCTRArchipelago extends ModuleBase {
             var category = "item";
             if(item[i].flags = 0b100)
             category = "trap";
-            if(RideType[i])
+            if(RideType[item[i].item])
             category = "ride";
+
             switch(category){
                 case "ride":
-                    self.AddRide(item[i]);
+                    self.AddRide(item[i].item);
                     break;
                 case "stall":
-                    self.AddRide(item[i]);
+                    self.AddRide(item[i].item);
                     break;
                 case "trap":
-                    self.ActivateTrap(item[i]);
+                    self.ActivateTrap(item[i].item);
+                    break;
+                case "rule":
+                    self.ReleaseRule(item[i].item);
                     break;
                 default:
-                    console.log("Colby is bad at his job, please inform him of this");
+                    console.log("Error in ReceiveArchipelagoItem: category not found");
             }
         }
         return;
@@ -127,6 +152,47 @@ class RCTRArchipelago extends ModuleBase {
         for (var i=0; i<guests.length; i++) {
         guests[i].toilet = 255;
         }
+    }
+
+    ReleaseRule(rule): void{//Function that ends enforcement of detrimental park modifiers
+        var releaseRule = function(rule){
+            switch(rule){
+                case "difficultGuestGeneration":
+                    park.postMessage(
+                        {type: 'award', text: "Congradulations! " + park.name + " has been recognized as an Archipelago historic site! Expect to see a permanent increase in visitors."} as ParkMessageDesc);
+                    park.setFlag("difficultGuestGeneration", false);
+                    break;
+
+                case "difficultParkRating":
+                    park.postMessage(
+                        {type: 'peep', text: "Breaking news! The park ratings council has been overthrown in a military backed coup! The new leader has promised easier park ratings for the rest of this game!"} as ParkMessageDesc);
+                    park.setFlag("difficultParkRating", false);
+                    break;
+                case "forbidHighConstruction":
+                    park.postMessage(
+                        {type: 'peep', text: "Wait a second, airplanes don't exist in Roller Coaster Tycoon. Why are limiting construction height? Let's go ahead and fix that now."} as ParkMessageDesc);
+                    park.setFlag("forbidHighConstruction", false);
+                    break;
+                case "forbidLandscapeChanges":
+                    park.postMessage(
+                        {type: "chart", text: "IMPORTANT GOVERNMENT ANNOUNCEMENT: ALL UNEXPLODED ORDINANCE FROM THE GREAT TYCOON WAR HAS BEEN CLEARED FROM THIS SITE. " + park.name + " MAY RESUME LANDSCAPING OPERATIONS."} as ParkMessageDesc);
+                    park.setFlag("forbidLandscapeChanges", false);
+                    break;
+                case "forbidMarketingCampaigns":
+                    park.postMessage(
+                        {type: 'money', text: "Inspector. The ministry of information has approved your application for promotion in all state media. You may now submit marketing campaigns. Glory to Arstotzka"} as ParkMessageDesc);
+                    park.setFlag("forbidMarketingCampaigns", false);
+                    break;
+                case "forbidTreeRemoval":
+                    park.postMessage(
+                        {type: 'blank', text: "Upon further research, it would appear that the endangered trees in your park are in fact, invasive species. You may now chop them down."} as ParkMessageDesc);
+                    park.setFlag("forbidTreeRemoval", false);
+                    break;
+                default:
+                    console.log("Error in ReleaseRule: no rule found");
+            }
+        }
+        runNextTick(releaseRule(rule));
     }
 
     ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string}): any{
@@ -390,7 +456,7 @@ class RCTRArchipelago extends ModuleBase {
                     }
                 }
                 if (elligible){
-                    QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
+                    QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby 
                     if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
                         QualifiedExcitement = true;
                     }
@@ -515,7 +581,7 @@ class RCTRArchipelago extends ModuleBase {
                     var QualifiedNausea = false;
                     var QualifiedLength = false;
                     var elligible = false;
-                    if(ride){//See if there's a prereq that's a specific ride
+                    if(ride){//See if there's a prereq that's a specific ride 
                         if (Number(ride) == map.rides[i].type){//If the rides match, they're elligible
                         elligible = true;
                         }
@@ -590,8 +656,6 @@ class RCTRArchipelago extends ModuleBase {
     
 }
 
-context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide(args));
-
 
 function explodeRide(args){
     console.log(args);
@@ -619,6 +683,7 @@ function explodeRide(args){
     context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
     return {};
 }
+
 
 if(context.apiVersion >= 75)
     registerModule(new RCTRArchipelago());
