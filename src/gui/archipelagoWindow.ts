@@ -302,12 +302,41 @@ function archipelagoLocations(){
                                 columns:[{width: 1400}]
                             },
                             {
+                                type: 'textbox',
+                                name: 'chatbox',
+                                text: 'Type your message here!',
+                                maxLength: 999,
+                                x: 25,
+                                y: 275,
+                                width: 650,
+                                height: 20,
+                                tooltip: "You know, not every game lets you type in-game. All I'm saying is that we're better than Ocarina of Time because of this.",
+                            },
+                            {
+                                type: 'button',
+                                name: 'send-chat-button',
+                                x: 25,
+                                y: 300,
+                                width: 100,
+                                height: 26,
+                                text: 'Send Message!',
+                                tooltip: 'The shortcut to this button is alt-F4',
+                                onClick: function() {
+                                    var currentWindow = ui.getWindow("archipelago-locations");
+                                    var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
+                                    if (!message)
+                                    return;
+                                    archipelago_print_message(message);
+                                    currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
+                                }
+                            },
+                            {
                                 type: 'checkbox',
                                 name: 'park-message-toggle',
                                 text: 'Print Archipelago Chat to Park Messages',
-                                x: 100,
+                                x: 400,
                                 y: 310,
-                                width: 10,
+                                width: 240,
                                 height: 10,
                                 tooltip: 'Prints Archipelago chats and messages as in game notifications. If your group is chatty, this could be annoying',
                                 isChecked: settings.archipelago_park_message_chat,
@@ -322,8 +351,8 @@ function archipelagoLocations(){
                                 name: 'network-chat-toggle',
                                 text: "Print Archipelago Chat to Network Messages",
                                 x: 400,
-                                y: 310,
-                                width: 10,
+                                y: 330,
+                                width: 220,
                                 height: 10,
                                 tooltip: 'Prints Archipelago chats and messages as network chats. This will not work in single player mode',
                                 isChecked: settings.archipelago_network_chat,
