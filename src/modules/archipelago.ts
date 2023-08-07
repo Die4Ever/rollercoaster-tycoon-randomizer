@@ -2,7 +2,7 @@
 
 
 class RCTRArchipelago extends ModuleBase {
-    FirstEntry(): void {
+    FirstEntry(): void {//Loads on startup. Something in my code calls it as well
         var self = this;
         info("Module to handle connecting and communicating with Archipelago");
         if(!settings.rando_archipelago)
@@ -12,7 +12,7 @@ class RCTRArchipelago extends ModuleBase {
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         // if (settings.archipelago_deathlink)
         // context.subscribe('vehicle.crash',self.SendDeathLink);
-        if (settings.archipelago_rule_locations){
+        if (settings.archipelago_rule_locations){//Setting rules for Archipelago, dictated by the YAML
             var setRules = function(){
                 park.setFlag("difficultGuestGeneration", true);
                 park.setFlag("difficultParkRating", true);
@@ -21,27 +21,27 @@ class RCTRArchipelago extends ModuleBase {
                 park.setFlag("forbidMarketingCampaigns", true);
                 park.setFlag("forbidTreeRemoval", true);
             }
-            console.log("Fish delish dish");
-            runNextTick(setRules);
+            runNextTick(setRules);//Mutates the game context, so it has to be run on a tick event
         }
 
         return;
     }
 
-    AnyEntry(): void {
+    AnyEntry(): void {//Loads on save file load and refreshing the code
         var self = this;
-        if (!settings.rando_archipelago)
+        if (!settings.rando_archipelago)//Don't P*ck with the game if we're not playing Archipelago
             return;
         //Load saved progress
         archipelago_locked_locations = context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations');
         archipelago_unlocked_locations = context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations');
         archipelago_location_prices = context.getParkStorage().get('RCTRando.ArchipelagoLocationPrices');
         archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
-
+        //Set up daily events
         self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives(); self.SetNames();});
+        //Add menu items
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
-        if (settings.archipelago_deathlink)
+        if (settings.archipelago_deathlink)//Enable deathlink checks if deathlink is enabled
         context.subscribe('vehicle.crash',self.SendDeathLink);
 
         //Set up actions for multiplayer
@@ -62,7 +62,7 @@ class RCTRArchipelago extends ModuleBase {
         const origNumResearched = park.research.inventedItems.length;
         let numResearched = 0;
         let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
-        for(let i=0; i<researchItems.length; i++) {
+        for(let i=0; i<researchItems.length; i++) {//We still randomize the items since finding multiple copies will unlock different vehicles
             let a = researchItems[i];
             let slot = rng(0, researchItems.length - 1);
             researchItems[i] = researchItems[slot];
@@ -82,10 +82,15 @@ class RCTRArchipelago extends ModuleBase {
             category = "trap";
             if(RideType[item[i].item])
             category = "ride";
+            //This one is gonna go forever...
+            if(item[i].item ===  "difficultGuestGeneration" || "difficultParkRating" || "forbidHighConstruction" || "forbidLandscapeChanges" || "forbidMarketingCampaigns" || "forbidTreeRemoval")
+            category = "rule";
+            if (item[i].item === "scenery")
+            category = "scenery";
 
             switch(category){
                 case "ride":
-                    self.AddRide(item[i].item);
+                    self.AddRide(RideType[item[i].item]);
                     break;
                 case "stall":
                     self.AddRide(item[i].item);
@@ -96,6 +101,9 @@ class RCTRArchipelago extends ModuleBase {
                 case "rule":
                     self.ReleaseRule(item[i].item);
                     break;
+                case "scenery":
+                    self.AddScenery();
+                    break;
                 default:
                     console.log("Error in ReceiveArchipelagoItem: category not found");
             }
@@ -105,28 +113,35 @@ class RCTRArchipelago extends ModuleBase {
 
     AddRide(ride): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items. 
-
-        try{
-            if(!ride){
-                console.log("If you see this, there has been a serious error");
-                return;
-            }
-        }
-        catch{
-            console.log("If you see this, at least the try catch check worked")
-        }
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
         for(let i=0; i<unresearchedItems.length; i++) {
             if (((unresearchedItems[i] as RideResearchItem).rideType) == ride){//Check if the ride type matches
                 researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
                 unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
-                park.research.uninventedItems = unresearchedItems;//Save the researched items list
                 park.research.inventedItems = researchedItems;
+                park.research.uninventedItems = unresearchedItems;//Save the researched items list
                 return;
             }
         }
-        console.log("Error: ride not in uninvented items")
+        console.log("Error in AddRide: ride not in uninvented items")
+        return;
+    }
+
+    AddScenery(): void{
+        //Creates function that moves the next scenery to Invented items. 
+        let unresearchedItems = park.research.uninventedItems;
+        let researchedItems = park.research.inventedItems;
+        for(let i=0; i<unresearchedItems.length; i++) {
+            if (((unresearchedItems[i]).type) == "scenery"){//Check if the ride type matches
+                researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
+                unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
+                park.research.inventedItems = researchedItems;
+                park.research.uninventedItems = unresearchedItems;//Save the researched items list
+                return;
+            }
+        }
+        console.log("Error in AddScenery: No more scenery to unlock")
         return;
     }
 
