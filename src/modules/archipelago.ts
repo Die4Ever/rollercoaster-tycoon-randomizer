@@ -2,7 +2,7 @@
 
 
 class RCTRArchipelago extends ModuleBase {
-    FirstEntry(): void {//Loads on startup. Something in my code calls it as well
+    FirstEntry(): void {//Loads on park starting for first time. Something in my code calls it as well
         var self = this;
         info("Module to handle connecting and communicating with Archipelago");
         if(!settings.rando_archipelago)
@@ -22,6 +22,18 @@ class RCTRArchipelago extends ModuleBase {
                 park.setFlag("forbidTreeRemoval", true);
             }
             runNextTick(setRules);//Mutates the game context, so it has to be run on a tick event
+        }
+        if (settings.archipelago_purchase_land_checks){
+            var enableLandChecks = function(){
+                park.landPrice = 2000;//$200/per tile
+            }
+            runNextTick(enableLandChecks);
+        }
+        if (settings.archipelago_purchase_rights_checks){
+            var enableRightsChecks = function(){
+                park.constructionRightsPrice = 2000;
+            }
+            runNextTick(enableRightsChecks);
         }
 
         return;
@@ -77,17 +89,30 @@ class RCTRArchipelago extends ModuleBase {
     ReceiveArchipelagoItem(item): void{
         var self = this;
         for(let i = 0; i < item.length; i++){
-            var category = "item";
+            var category = "item"; //Any item with the 0b100 flag is always a trap
             if(item[i].flags = 0b100)
             category = "trap";
-            if(RideType[item[i].item])
+            if(RideType[item[i].item])//Any item that fits a ride type is a ride
             category = "ride";
-            //This one is gonna go forever...
-            if(item[i].item ===  "difficultGuestGeneration" || "difficultParkRating" || "forbidHighConstruction" || "forbidLandscapeChanges" || "forbidMarketingCampaigns" || "forbidTreeRemoval")
-            category = "rule";
-            if (item[i].item === "scenery")
-            category = "scenery";
-
+            if(category == "item"){//Check the actual item if none of the above works out
+                switch(item[i].item){
+                    case "scenery":
+                        category = "scenery";
+                        break;
+                    case "Land Discount":
+                    case "Construction Rights Discount":
+                        category = "discount";
+                        break;
+                    case "difficultGuestGeneration":
+                    case "difficultParkRating":
+                    case "forbidHighConstruction":
+                    case "forbidLandscapeChanges":
+                    case "forbidMarketingCampaigns":
+                    case "forbidTreeRemoval":
+                        category = "rule";
+                }
+            }
+            
             switch(category){
                 case "ride":
                     self.AddRide(RideType[item[i].item]);
@@ -103,6 +128,9 @@ class RCTRArchipelago extends ModuleBase {
                     break;
                 case "scenery":
                     self.AddScenery();
+                    break;
+                case "discount":
+                    self.GrantDiscount(item[i].item);
                     break;
                 default:
                     console.log("Error in ReceiveArchipelagoItem: category not found");
@@ -133,9 +161,9 @@ class RCTRArchipelago extends ModuleBase {
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
         for(let i=0; i<unresearchedItems.length; i++) {
-            if (((unresearchedItems[i]).type) == "scenery"){//Check if the ride type matches
-                researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
-                unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
+            if (((unresearchedItems[i]).type) == "scenery"){//Check if the object is scenery
+                researchedItems.push(unresearchedItems[i]);//Add the scenery to researched items
+                unresearchedItems.splice(i,1);          //Remove the scenery from unresearched items
                 park.research.inventedItems = researchedItems;
                 park.research.uninventedItems = unresearchedItems;//Save the researched items list
                 return;
@@ -208,6 +236,27 @@ class RCTRArchipelago extends ModuleBase {
             }
         }
         runNextTick(releaseRule(rule));
+    }
+
+    GrantDiscount(type): any{
+        if (type == "Land Discount"){
+            if(settings.archipelago_current_land_checks >= settings.archipelago_max_land_checks){
+                console.log("Error in GrantDiscount: current land checks greater than max land checks")
+                return;
+            }
+            settings.archipelago_current_land_checks++;
+            park.landPrice = Math.floor(2000 - (2000 * (settings.archipelago_current_land_checks/settings.archipelago_max_land_checks)));
+            park.postMessage("Speech increased to " + (settings.archipelago_current_land_checks + settings.archipelago_current_rights_checks) + ". New land price is: " + context.formatString("{CURRENCY2DP}",  park.landPrice));//Cash price)
+        }
+        if (type == "Construction Rights Discount"){
+            if(settings.archipelago_current_rights_checks >= settings.archipelago_max_rights_checks){
+                console.log("Error in GrantDiscount: current construction rights checks greater than max construction rights checks")
+                return;
+            }
+            settings.archipelago_current_rights_checks++;
+            park.constructionRightsPrice = Math.floor(2000 - (2000 * (settings.archipelago_current_rights_checks/settings.archipelago_max_rights_checks)));
+            park.postMessage("Speech increased to " + (settings.archipelago_current_land_checks + settings.archipelago_current_rights_checks) + ". New construction rights price is: " + context.formatString("{CURRENCY2DP}",  park.constructionRightsPrice));
+        }
     }
 
     ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string}): any{

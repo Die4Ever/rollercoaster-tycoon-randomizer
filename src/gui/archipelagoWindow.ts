@@ -406,7 +406,9 @@ function archipelagoDebug(){
                     var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                     // console.log(park.research.inventedItems[0]);
                     // BathroomTrap.AddRide(RideType["Wooden Roller Coaster"]);
-                    BathroomTrap.AddScenery();
+                    // BathroomTrap.AddScenery();
+                    BathroomTrap.GrantDiscount("Land Discount");
+                    // park.landPrice = 2000.50;
                     //ac_req({"cmd":"PrintJSON","data":[{"text":"1","type":"player_id"},{"text":" found their "},{"text":"69696969","player":1,"flags":1,"type":"item_id"},{"text":" ("},{"text":"69696969","player":1,"type":"location_id"},{"text":")"}],"type":"ItemSend","receiving":1,"item":{"item":69696969,"location":69696969,"player":1,"flags":1,"class":"NetworkItem"}})
                     // console.log(context.getParkStorage().get('RCTRando.nuttin'));
                     // (BathroomTrap as RCTRArchipelagoConnection).connect();
