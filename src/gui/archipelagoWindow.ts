@@ -361,7 +361,7 @@ function archipelagoLocations(){
                                     settings.archipelago_network_chat = isChecked;
                                     currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = isChecked;
                                 }
-                            }
+                            },
                         ]
                     )
                 }
@@ -383,122 +383,190 @@ function archipelagoDebug(){
         height: wh,
         widgets: [].concat(
             [
-            {
-                type: 'button',
-                name: 'debug-button',
-                x: 5,
-                y: 90,
-                width: 390,
-                height: 63,
-                text: 'Colbys Debug Button. No Touchy!',
-                onClick: function() {
-                    // network.sendMessage("data.data.text");
-                    // console.log(RideType["Merry Go Round"]);
-                    
-                    // park.cash = 10000;
-                    // var i = "Monorail";
-                    //console.log(RideType["rollercoaster"]);
-                    //console.log(RideType[i]);
-                    // console.log(scenario.status);
-                    //park.setFlag("scenarioCompleteNameInput",true);
-                    //console.log(map.rides[0]);
-                    //console.log(RideType["Looping Roller Coaster"].rideType);
-                    var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                    // console.log(park.research.inventedItems[0]);
-                    // BathroomTrap.AddRide(RideType["Wooden Roller Coaster"]);
-                    // BathroomTrap.AddScenery();
-                    BathroomTrap.GrantDiscount("Land Discount");
-                    // park.landPrice = 2000.50;
-                    //ac_req({"cmd":"PrintJSON","data":[{"text":"1","type":"player_id"},{"text":" found their "},{"text":"69696969","player":1,"flags":1,"type":"item_id"},{"text":" ("},{"text":"69696969","player":1,"type":"location_id"},{"text":")"}],"type":"ItemSend","receiving":1,"item":{"item":69696969,"location":69696969,"player":1,"flags":1,"class":"NetworkItem"}})
-                    // console.log(context.getParkStorage().get('RCTRando.nuttin'));
-                    // (BathroomTrap as RCTRArchipelagoConnection).connect();
-                    // init_archipelago_connection();
-                    
-                }
-            },
-            {
-                type: 'button',
-                name: 'debug-button2',
-                x: 5,
-                y: 130,
-                width: 390,
-                height: 63,
-                text: 'Also Colbys Debug Button. No Touchy!',
-                onClick: function() {
-                    // network.sendMessage("data.data.text");
-                    // console.log(RideType["Merry Go Round"]);
-                    
-                    // park.cash = 10000;
-                    // var i = "Monorail";
-                    //console.log(RideType["rollercoaster"]);
-                    //console.log(RideType[i]);
-                    // console.log(scenario.status);
-                    //park.setFlag("scenarioCompleteNameInput",true);
-                    //console.log(map.rides[0]);
-                    //console.log(RideType["Looping Roller Coaster"].rideType);
-                    var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                    // context.executeAction('TestAction', (null));
-                    ac_req({"cmd":"Bounced","tags":["DeathLink"],"data":{"time":1690148379.2967014,"source":"Colby","cause":"Colby is out of usable Pokémon! Colby blacked out!"}})
-                    // console.log(context.getParkStorage().get('RCTRando.nuttin'));
-                    // (BathroomTrap as RCTRArchipelagoConnection).connect();
-                    // init_archipelago_connection();
-                    
-                }
-            },
-            {
-                type: 'button',
-                name: 'debug-button3',
-                x: 5,
-                y: 190,
-                width: 390,
-                height: 63,
-                text: 'Button. No Touchy!',
-                onClick: function() {
-                    // network.sendMessage("data.data.text");
-                    // console.log(RideType["Merry Go Round"]);
-                    
-                    // park.cash = 10000;
-                    // var i = "Monorail";
-                    //console.log(RideType["rollercoaster"]);
-                    //console.log(RideType[i]);
-                    // console.log(scenario.status);
-                    //park.setFlag("scenarioCompleteNameInput",true);
-                    //console.log(map.rides[0]);
-                    //console.log(RideType["Looping Roller Coaster"].rideType);
-                    // settings.archipelago_park_message_chat = true;
-                    var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                    // BathroomTrap.ReleaseRule("forbidTreeRemoval");
-                    park.setFlag("difficultGuestGeneration", false);
-                    // context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide());
-                    // ac_req({"cmd":"Connected","team":0,"slot":2,"players":[{"team":0,"slot":1,"alias":"Cool1","name":"Cool1","class":"NetworkPlayer"},{"team":0,"slot":2,"alias":"Test","name":"Test","class":"NetworkPlayer"}],"missing_locations":[81000,81001,81002,81003,81004,81005,81006,81007,81008,81009,81010,81011,81012,81013,81014,81015,81016,81017,81018,81019,81020,81021,81022,81023,81024],"checked_locations":[],"slot_info":{"1":{"name":"Cool1","game":"Clique","type":1,"group_members":[],"class":"NetworkSlot"},"2":{"name":"Test","game":"ChecksFinder","type":1,"group_members":[],"class":"NetworkSlot"}},"hint_points":0,"slot_data":{"world_seed":3098991349,"seed_name":"31784654339393198182","player_name":"Test","player_id":2,"client_version":7,"race":false}})
-                    // console.log(context.getParkStorage().get('RCTRando.nuttin'));
-                    // (BathroomTrap as RCTRArchipelagoConnection).connect();
-                    // init_archipelago_connection();
-                    
-                }
-            },
-            {
-                type: 'button',
-                name: 'debug-button4',
-                x: ww - 90 - 88 - 6,
-                y: wh - 6 - 66,
-                width: 90,
-                height: 26,
-                text: 'Anudda Debugga',
-                onClick: function() {
-                    settings.archipelago_location_information = 'Full';
-                    archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
-                    archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
-                    archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
-                    archipelago_objectives = {Guests: [300, false], ParkValue: [0, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false]};
-                    context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
-                    context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
-                    ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
-                    // var BathroomTrap = GetModule("RCTRArchipelago");
-                    // if(BathroomTrap)
-                    // BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
+                {
+                    type: 'button',
+                    name: 'debug-button',
+                    x: 5,
+                    y: 50,
+                    width: 200,
+                    height: 25,
+                    text: 'AddRide (Merry Go Round)',
+                    onClick: function() {
+                        // network.sendMessage("data.data.text");
+                        // console.log(RideType["Merry Go Round"]);
+                        
+                        // park.cash = 10000;
+                        // var i = "Monorail";
+                        //console.log(RideType["rollercoaster"]);
+                        //console.log(RideType[i]);
+                        // console.log(scenario.status);
+                        //park.setFlag("scenarioCompleteNameInput",true);
+                        //console.log(map.rides[0]);
+                        //console.log(RideType["Looping Roller Coaster"].rideType);
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        // context.executeAction("landsetrights",{x1:1,y1:1,x2:2,y2:2,setting:4,ownership:7}, () => console.log("I'm so good at this."));
+                        // console.log(park.research.inventedItems[0]);
+                        BathroomTrap.AddRide(RideType["Merry Go Round"]);
+                        // BathroomTrap.AddScenery();
+                        // BathroomTrap.GrantDiscount("Land Discount");
+                        // park.landPrice = 2000.50;
+                        //ac_req({"cmd":"PrintJSON","data":[{"text":"1","type":"player_id"},{"text":" found their "},{"text":"69696969","player":1,"flags":1,"type":"item_id"},{"text":" ("},{"text":"69696969","player":1,"type":"location_id"},{"text":")"}],"type":"ItemSend","receiving":1,"item":{"item":69696969,"location":69696969,"player":1,"flags":1,"class":"NetworkItem"}})
+                        // console.log(context.getParkStorage().get('RCTRando.nuttin'));
+                        // (BathroomTrap as RCTRArchipelagoConnection).connect();
+                        // init_archipelago_connection();
+                        
                     }
-            }]
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button2',
+                    x: 5,
+                    y: 80,
+                    width: 200,
+                    height: 25,
+                    text: 'Receive DeathLink',
+                    onClick: function() {
+                        // network.sendMessage("data.data.text");
+                        // console.log(RideType["Merry Go Round"]);
+                        
+                        // park.cash = 10000;
+                        // var i = "Monorail";
+                        //console.log(RideType["rollercoaster"]);
+                        //console.log(RideType[i]);
+                        // console.log(scenario.status);
+                        //park.setFlag("scenarioCompleteNameInput",true);
+                        //console.log(map.rides[0]);
+                        //console.log(RideType["Looping Roller Coaster"].rideType);
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        // context.executeAction('TestAction', (null));
+                        ac_req({"cmd":"Bounced","tags":["DeathLink"],"data":{"time":1690148379.2967014,"source":"Colby","cause":"Colby is out of usable Pokémon! Colby blacked out!"}})
+                        // console.log(context.getParkStorage().get('RCTRando.nuttin'));
+                        // (BathroomTrap as RCTRArchipelagoConnection).connect();
+                        // init_archipelago_connection();
+                        
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button3',
+                    x: 5,
+                    y: 110,
+                    width: 200,
+                    height: 25,
+                    text: 'Connected to Archipelago',
+                    onClick: function() {
+                        // network.sendMessage("data.data.text");
+                        // console.log(RideType["Merry Go Round"]);
+                        
+                        // park.cash = 10000;
+                        // var i = "Monorail";
+                        //console.log(RideType["rollercoaster"]);
+                        //console.log(RideType[i]);
+                        // console.log(scenario.status);
+                        //park.setFlag("scenarioCompleteNameInput",true);
+                        //console.log(map.rides[0]);
+                        //console.log(RideType["Looping Roller Coaster"].rideType);
+                        // settings.archipelago_park_message_chat = true;
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        // BathroomTrap.ReleaseRule("forbidTreeRemoval");
+                        // park.setFlag("difficultGuestGeneration", false);
+                        // context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide());
+                        ac_req({"cmd":"Connected","team":0,"slot":2,"players":[{"team":0,"slot":1,"alias":"Cool1","name":"Cool1","class":"NetworkPlayer"},{"team":0,"slot":2,"alias":"Test","name":"Test","class":"NetworkPlayer"}],"missing_locations":[81000,81001,81002,81003,81004,81005,81006,81007,81008,81009,81010,81011,81012,81013,81014,81015,81016,81017,81018,81019,81020,81021,81022,81023,81024],"checked_locations":[],"slot_info":{"1":{"name":"Cool1","game":"Clique","type":1,"group_members":[],"class":"NetworkSlot"},"2":{"name":"Test","game":"ChecksFinder","type":1,"group_members":[],"class":"NetworkSlot"}},"hint_points":0,"slot_data":{"world_seed":3098991349,"seed_name":"31784654339393198182","player_name":"Test","player_id":2,"client_version":7,"race":false}})
+                        // console.log(context.getParkStorage().get('RCTRando.nuttin'));
+                        // (BathroomTrap as RCTRArchipelagoConnection).connect();
+                        // init_archipelago_connection();
+                        
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button4',
+                    x: 5,
+                    y: 20,
+                    width: 200,
+                    height: 25,
+                    text: 'Set Game State',
+                    onClick: function() {
+                        settings.archipelago_location_information = 'Full';
+                        archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
+                        archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
+                        archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
+                        archipelago_objectives = {Guests: [300, false], ParkValue: [0, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false]};
+                        context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
+                        context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
+                        ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+                        // var BathroomTrap = GetModule("RCTRArchipelago");
+                        // if(BathroomTrap)
+                        // BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
+                        }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button5',
+                    x: 5,
+                    y: 140,
+                    width: 200,
+                    height: 25,
+                    text: 'Archipelago Player Completed Goal',
+                    onClick: function() {
+                        // network.sendMessage("data.data.text");
+                        // console.log(RideType["Merry Go Round"]);
+                        
+                        // park.cash = 10000;
+                        // var i = "Monorail";
+                        //console.log(RideType["rollercoaster"]);
+                        //console.log(RideType[i]);
+                        // console.log(scenario.status);
+                        //park.setFlag("scenarioCompleteNameInput",true);
+                        //console.log(map.rides[0]);
+                        //console.log(RideType["Looping Roller Coaster"].rideType);
+                        // settings.archipelago_park_message_chat = true;
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        // BathroomTrap.ReleaseRule("forbidTreeRemoval");
+                        // park.setFlag("difficultGuestGeneration", false);
+                        // context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide());
+                        ac_req({"cmd":"PrintJSON","data":[{"text":"Cool1 (Team #1) has completed their goal."}],"type":"Goal","team":0,"slot":1})
+                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers"))
+                        // console.log(context.getParkStorage().get('RCTRando.nuttin'));
+                        // (BathroomTrap as RCTRArchipelagoConnection).connect();
+                        // init_archipelago_connection();
+                        
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button6',
+                    x: 5,
+                    y: 140,
+                    width: 200,
+                    height: 25,
+                    text: 'Release Rule',
+                    onClick: function() {
+                        // network.sendMessage("data.data.text");
+                        // console.log(RideType["Merry Go Round"]);
+                        
+                        // park.cash = 10000;
+                        // var i = "Monorail";
+                        //console.log(RideType["rollercoaster"]);
+                        //console.log(RideType[i]);
+                        // console.log(scenario.status);
+                        //park.setFlag("scenarioCompleteNameInput",true);
+                        //console.log(map.rides[0]);
+                        //console.log(RideType["Looping Roller Coaster"].rideType);
+                        // settings.archipelago_park_message_chat = true;
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.ReleaseRule("forbidTreeRemoval");
+                        // park.setFlag("difficultGuestGeneration", false);
+                        // context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide());
+                        // ac_req({"cmd":"PrintJSON","data":[{"text":"Cool1 (Team #1) has completed their goal."}],"type":"Goal","team":0,"slot":1})
+                        // console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers"))
+                        // console.log(context.getParkStorage().get('RCTRando.nuttin'));
+                        // (BathroomTrap as RCTRArchipelagoConnection).connect();
+                        // init_archipelago_connection();
+                        
+                    }
+                }
+           ]
         )
     });
     return window;

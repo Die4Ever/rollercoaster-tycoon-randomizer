@@ -21,6 +21,10 @@ function ac_req(data) {
     console.log(data);
     var archipelagoPlayers = [];
     switch(data.cmd){
+        case "RoomInfo":
+            settings.archipelago_current_time = data.time;
+            archipelago_send_message("Connect",{password: 8, name: "Colby"});
+            break;
         case "Connected"://Packet stating player is connected to the Archipelago game
             archipelagoPlayers = [];
             console.log(data.players.length);
@@ -68,7 +72,7 @@ function ac_req(data) {
                     archipelago_print_message(data.data[0].text);
                     let guests = map.getAllEntities("guest");
                     for(let i=0; i<(guests.length); i++){
-                        if(guests[i].name == archipelagoPlayers[data.slot]){
+                        if(guests[i].name == archipelagoPlayers[data.slot - 1]){
                             guests[i].setFlag("joy", true);
                             break;
                         }
@@ -154,4 +158,42 @@ function archipelago_print_message(message) {
 
     // var lockedWindow = ui.getWindow("archipelago-locations");
     // lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();
+}
+
+function archipelago_send_message(type, message?) {
+    switch(type){//Gotta fill these in as we improve crud
+        case "Connect":
+            console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (settings.archipelago_deathlink) ? ["DeathLink"] : [], slot_data: true});
+            break;
+        case "ConnectUpdate":
+            console.log({cmd: "ConnectUpdate", tags: (settings.archipelago_deathlink) ? ["DeathLink"] : []})
+        case "Sync":
+            console.log({cmd: "Synch"});
+            break;
+        case "LocationChecks":
+            var checks = [];//List of unlocked locations
+            for (let i = 0; i < message.length; i++){
+                checks.push(message[i].LocationID + 2000000);//OpenRCT2 has reserved the item ID space starting at 2000000
+            }
+            console.log({cmd: "LocationChecks", locations: checks});
+            break;
+        // case "LocationScouts":
+        //     break;
+        case "StatusUpdate":
+            console.log({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
+            break;
+        case "Say":
+            console.log({cmd: "Say", text: message});
+            break;
+        case "GetDataPackage":
+            break;
+        case "Bounce":
+            break;
+        case "Get":
+            break;
+        case "Set":
+            break;
+        case "SetNotify":
+            break;
+    }
 }

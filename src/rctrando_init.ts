@@ -101,7 +101,7 @@ var settings = {
     archipelago_deathlink: false,
     archipelago_deathlink_timeout: false,
     archipelago_location_information: locationInfo.None,
-    archipelago_park_message_chat: false,
+    archipelago_park_message_chat: true,
     archipelago_network_chat: true,
     archipelago_rule_locations: true,
     archipelago_purchase_land_checks: true,
@@ -109,7 +109,8 @@ var settings = {
     archipelago_current_land_checks: 0,
     archipelago_purchase_rights_checks: true,
     archipelago_max_rights_checks: 20,
-    archipelago_current_rights_checks: 0
+    archipelago_current_rights_checks: 0,
+    archipelago_current_time: 0
 };
 
 function _main() {

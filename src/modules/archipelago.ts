@@ -55,6 +55,7 @@ class RCTRArchipelago extends ModuleBase {
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
         if (settings.archipelago_deathlink)//Enable deathlink checks if deathlink is enabled
         context.subscribe('vehicle.crash',self.SendDeathLink);
+        context.setInterval(() => {settings.archipelago_current_time += 1;}, 1);//updates the time for Archipelago syncronization
 
         //Set up actions for multiplayer
         try{
@@ -301,29 +302,29 @@ class RCTRArchipelago extends ModuleBase {
             });
             return window;
         }
-        var explodeRide = function(){
-            var self = this;
-            var car = map.getAllEntities('car');
-            var movingCar = [];
-            for (let i = 0; i < car.length; i++){
-                if(car[i].status == 'travelling'){
-                    movingCar.push(car[i]);
-                }
-            }
-            if (!movingCar.length){//If there are no moving cars, wait 5 seconds and try again
-                var archipelago = GetModule("RCTRArchipelago");
-                if(archipelago)
-                    context.setTimeout(function() {self.ReceiveDeathLink(DeathLinkPacket)}, 5000);
-                return;
-            }
-            var r = context.getRandom(0, movingCar.length + 1);//Pick a car at random. It seems to only pick the first car of the train though...
-            console.log(r);
-            // console.log(movingCar[r]);
-            settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
-            movingCar[r].status = "crashed";//Crash the ride!
-            // console.log(movingCar[r]);
-            context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
-        }
+        // var explodeRide = function(){
+        //     var self = this;
+        //     var car = map.getAllEntities('car');
+        //     var movingCar = [];
+        //     for (let i = 0; i < car.length; i++){
+        //         if(car[i].status == 'travelling'){
+        //             movingCar.push(car[i]);
+        //         }
+        //     }
+        //     if (!movingCar.length){//If there are no moving cars, wait 5 seconds and try again
+        //         var archipelago = GetModule("RCTRArchipelago");
+        //         if(archipelago)
+        //             context.setTimeout(function() {self.ReceiveDeathLink(DeathLinkPacket)}, 5000);
+        //         return;
+        //     }
+        //     var r = context.getRandom(0, movingCar.length + 1);//Pick a car at random. It seems to only pick the first car of the train though...
+        //     console.log(r);
+        //     // console.log(movingCar[r]);
+        //     settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
+        //     movingCar[r].status = "crashed";//Crash the ride!
+        //     // console.log(movingCar[r]);
+        //     context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
+        // }
         context.executeAction('ExplodeRide', DeathLinkPacket);
     }
 
@@ -429,6 +430,7 @@ class RCTRArchipelago extends ModuleBase {
                         break;
                     case 'Full':
                         locked.push("          Unlocks " + archipelago_locked_locations[i].Item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                        break;
                 }
             }
         }
@@ -716,6 +718,7 @@ class RCTRArchipelago extends ModuleBase {
         
         return;
     }
+
 
     
 }
