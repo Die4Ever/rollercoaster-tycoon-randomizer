@@ -54,7 +54,7 @@ class RCTRArchipelago extends ModuleBase {
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
         if (settings.archipelago_deathlink)//Enable deathlink checks if deathlink is enabled
-        context.subscribe('vehicle.crash',self.SendDeathLink);
+        self.SubscribeEvent('vehicle.crash',e => self.SendDeathLink(e.id));
         context.setInterval(() => {settings.archipelago_current_time += 1;}, 1);//updates the time for Archipelago syncronization
 
         //Set up actions for multiplayer
@@ -328,12 +328,23 @@ class RCTRArchipelago extends ModuleBase {
         context.executeAction('ExplodeRide', DeathLinkPacket);
     }
 
-    SendDeathLink(): any{
+    SendDeathLink(vehicleID): any{
         if(settings.archipelago_deathlink_timeout == false) {
             settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
             context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
             console.log("We're off to kill the Wizard!");
-            //TODO: Send signal to Archipelago to activate deathlink
+            var cars = map.getAllEntities("car");
+            for(let i = 0; i < cars.length; i++){
+                if(cars[i].id == vehicleID){
+                    var rideID = cars[i].ride;
+                    var ride = map.rides[rideID].name;
+                    console.log("vehicleID:" + vehicleID);
+                    console.log(rideID);
+                    console.log(ride);
+                    archipelago_send_message("Bounce",{ride: ride, tag: "DeathLink"});
+                    break;
+                }
+            }
         }
         else {
             console.log("Death Link Timeout has not expired. Cancelling Death Link signal. Note: Multiple cars crashing will attempt to send multiple signals")

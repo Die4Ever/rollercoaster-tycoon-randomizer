@@ -362,7 +362,7 @@ function archipelagoLocations(){
                                     settings.archipelago_network_chat = isChecked;
                                     currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = isChecked;
                                 }
-                            },
+                            }
                         ]
                     )
                 }
@@ -609,28 +609,20 @@ function archipelagoDebug(){
                     height: 25,
                     text: '"Grant Discount(Construction Rights)"',
                     onClick: function() {
-                        // network.sendMessage("data.data.text");
-                        // console.log(RideType["Merry Go Round"]);
-                        
-                        // park.cash = 10000;
-                        // var i = "Monorail";
-                        //console.log(RideType["rollercoaster"]);
-                        //console.log(RideType[i]);
-                        // console.log(scenario.status);
-                        //park.setFlag("scenarioCompleteNameInput",true);
-                        //console.log(map.rides[0]);
-                        //console.log(RideType["Looping Roller Coaster"].rideType);
-                        // settings.archipelago_park_message_chat = true;
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.GrantDiscount("Construction Rights Discount");
-                        // park.setFlag("difficultGuestGeneration", false);
-                        // context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide());
-                        // ac_req({"cmd":"PrintJSON","data":[{"text":"Cool1 (Team #1) has completed their goal."}],"type":"Goal","team":0,"slot":1})
-                        // console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers"))
-                        // console.log(context.getParkStorage().get('RCTRando.nuttin'));
-                        // (BathroomTrap as RCTRArchipelagoConnection).connect();
-                        // init_archipelago_connection();
-                        
+                        BathroomTrap.GrantDiscount("Construction Rights Discount");                   
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button9',
+                    x: 5,
+                    y: 260,
+                    width: 200,
+                    height: 25,
+                    text: '"Display all cars"',
+                    onClick: function() {
+                        console.log(map.getAllEntities("car"));                
                     }
                 }
            ]
