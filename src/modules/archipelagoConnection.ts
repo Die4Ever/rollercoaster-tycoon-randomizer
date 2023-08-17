@@ -188,6 +188,9 @@ function archipelago_send_message(type, message?) {
         case "GetDataPackage":
             break;
         case "Bounce":
+            if(message.tags == "DeathLink"){
+                console.log({cmd: "Bounce", data: {time: 0, cause: message.ride + " has crashed!", source: message.ride}})
+            }
             break;
         case "Get":
             break;

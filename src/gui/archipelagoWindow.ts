@@ -327,6 +327,7 @@ function archipelagoLocations(){
                                     if (!message)
                                     return;
                                     archipelago_print_message(message);
+                                    archipelago_send_message("Say", message);
                                     currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
                                 }
                             },
