@@ -344,7 +344,7 @@ function archipelagoLocations(){
                                 onChange: function(isChecked) {
                                     var currentWindow = ui.getWindow("archipelago-locations");
                                     settings.archipelago_park_message_chat = isChecked;
-                                    currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = isChecked;
+                                    // currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = isChecked;
                                 }
                             },
                             {
@@ -623,6 +623,18 @@ function archipelagoDebug(){
                     text: '"Display all cars"',
                     onClick: function() {
                         console.log(map.getAllEntities("car"));                
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button10',
+                    x: 5,
+                    y: 290,
+                    width: 200,
+                    height: 25,
+                    text: 'Colbys Decision',
+                    onClick: function() {
+                        console.log(settings.archipelago_park_message_chat);
                     }
                 }
            ]

@@ -379,7 +379,7 @@ class RCTRArchipelago extends ModuleBase {
         var location = archipelago_unlocked_locations;
         var prices = archipelago_location_prices;
         for(var i = 0; i < location.length; i++){//Loop through every locked location
-            unlocked.push("Unlocked " + archipelago_unlocked_locations[i].Item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
+            unlocked.push("[" + location[i].LocationID + "] " + "Unlocked " + archipelago_unlocked_locations[i].Item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
             if (prices[location[i].LocationID].Price == 0){//If the price is 0, paid with blood instead of cash
                 unlocked.push("          Instead of cash, you sacraficed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
             }
@@ -412,12 +412,12 @@ class RCTRArchipelago extends ModuleBase {
         for(var i = 0; i < location.length; i++){//Loop through every locked location
             if (self.IsVisible(location[i].LocationID)){
                 if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
-                    locked.push("Instead of cash, you must sacrafice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                    locked.push("[" + location[i].LocationID + "] " + "Instead of cash, you must sacrafice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                 }
                 else{//Set up the string denoting the price
                     var prereqs = prices[location[i].LocationID].RidePrereq;
                     
-                    var cost =context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                    var cost = "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                     if(prereqs.length != 0) {//Handle prerequisites 
                         cost += " + " + prereqs[0].toString() + " ";
                         cost += prereqs[1] + "(s)";
@@ -463,7 +463,6 @@ class RCTRArchipelago extends ModuleBase {
         if (RollerCoaster[0]){
             objective.push("Roller Coasters:");
             var Line = "          " + RollerCoaster[0];
-            console.log(RollerCoaster[1]);
             if(RollerCoaster[1]){
                 Line += " (> " + RollerCoaster[1] + " Excitement)";
             }
