@@ -22,15 +22,13 @@ function archipelagoGui(){
         //Crowd control has a lot of options that would most likely break Archipelago. We're going to disable both at once until further notice.
         //TODO: Get reroll frequency from Archipelago
         //TODO: Get DeathLink toggle from Archipelago
-        settings.archipelago_deathlink = true; //Change this line once actual Archipelago code is implemented
-        settings.archipelago_deathlink_timeout = false;
+        archipelago_settings.deathlink = true; //Change this line once actual Archipelago code is implemented
+        archipelago_settings.deathlink_timeout = false;
         //TODO: Get Locations list from Archipelago
         //Until these are implemented, we're going to stick with default values, which should be good enough for debugging
         //We're going to track the objectives ourselves instead
         scenario.objective.type = "haveFun";
-        //Subscribe to necessary events
-        let Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
-        context.subscribe("interval.day", ()=>{Archipelago.SetArchipelagoResearch(); Archipelago.CheckObjectives(); Archipelago.SetNames();});
+        saveArchipelagoProgress();//Save the settings to our Archipelago tracker
         // we need to unpause the game in order for the next tick to run
         var wasPaused = UnpauseGame();
         runNextTick(function() {
@@ -150,8 +148,8 @@ function archipelagoLocations(){
                 }
                 else{
                     currentWindow.findWidget<ListViewWidget>("message-list").items = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
-                    currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = settings.archipelago_park_message_chat;
-                    currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = settings.archipelago_network_chat;
+                    currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = archipelago_settings.park_message_chat;
+                    currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = archipelago_settings.network_chat;
                 }
             },
             tabs:
@@ -340,11 +338,11 @@ function archipelagoLocations(){
                                 width: 240,
                                 height: 10,
                                 tooltip: 'Prints Archipelago chats and messages as in game notifications. If your group is chatty, this could be annoying',
-                                isChecked: settings.archipelago_park_message_chat,
+                                isChecked: archipelago_settings.park_message_chat,
                                 onChange: function(isChecked) {
                                     var currentWindow = ui.getWindow("archipelago-locations");
-                                    settings.archipelago_park_message_chat = isChecked;
-                                    // currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = isChecked;
+                                    archipelago_settings.park_message_chat = isChecked;
+                                    saveArchipelagoProgress();
                                 }
                             },
                             {
@@ -356,11 +354,11 @@ function archipelagoLocations(){
                                 width: 220,
                                 height: 10,
                                 tooltip: 'Prints Archipelago chats and messages as network chats. This will not work in single player mode',
-                                isChecked: settings.archipelago_network_chat,
+                                isChecked: archipelago_settings.network_chat,
                                 onChange: function(isChecked) {
                                     var currentWindow = ui.getWindow("archipelago-locations");
-                                    settings.archipelago_network_chat = isChecked;
-                                    currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = isChecked;
+                                    archipelago_settings.network_chat = isChecked;
+                                    saveArchipelagoProgress();
                                 }
                             }
                         ]
@@ -488,7 +486,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Set Game State',
                     onClick: function() {
-                        settings.archipelago_location_information = 'Full';
+                        archipelago_settings.location_information = 'Full';
                         archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
                         archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
                         archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
@@ -496,9 +494,6 @@ function archipelagoDebug(){
                         context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
                         context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
                         ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
-                        // var BathroomTrap = GetModule("RCTRArchipelago");
-                        // if(BathroomTrap)
-                        // BathroomTrap.ReceiveDeathLink({cause: "Curtis was run over by a train", source: "Curtis"});
                         }
                 },
                 {
@@ -510,18 +505,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Archipelago Player Completed Goal',
                     onClick: function() {
-                        // network.sendMessage("data.data.text");
-                        // console.log(RideType["Merry Go Round"]);
-                        
-                        // park.cash = 10000;
-                        // var i = "Monorail";
-                        //console.log(RideType["rollercoaster"]);
-                        //console.log(RideType[i]);
-                        // console.log(scenario.status);
-                        //park.setFlag("scenarioCompleteNameInput",true);
-                        //console.log(map.rides[0]);
-                        //console.log(RideType["Looping Roller Coaster"].rideType);
-                        // settings.archipelago_park_message_chat = true;
+
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.ReleaseRule("forbidTreeRemoval");
                         // park.setFlag("difficultGuestGeneration", false);
@@ -634,7 +618,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Decision',
                     onClick: function() {
-                        console.log(settings.archipelago_park_message_chat);
+                        console.log(archipelago_settings);
                     }
                 }
            ]
@@ -643,6 +627,7 @@ function archipelagoDebug(){
     return window;
 }
 
-function test(){
-    console.log("At least I got this far");
+function test(player, type, result){
+    if(type == "ridecreate")
+    console.log("Player: " + player + "\nType: " + type + "\nResult: " + result);
 }

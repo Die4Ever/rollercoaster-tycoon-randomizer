@@ -22,7 +22,7 @@ function ac_req(data) {
     var archipelagoPlayers = [];
     switch(data.cmd){
         case "RoomInfo":
-            settings.archipelago_current_time = data.time;
+            archipelago_settings.current_time = data.time;
             archipelago_send_message("Connect",{password: 8, name: "Colby"});
             break;
         case "Connected"://Packet stating player is connected to the Archipelago game
@@ -146,12 +146,12 @@ function archipelago_print_message(message) {
     var lockedWindow = ui.getWindow("archipelago-locations");
     if(lockedWindow)
     lockedWindow.findWidget<ListViewWidget>("message-list").items = messageLog;
-    if(settings.archipelago_park_message_chat){
+    if(archipelago_settings.park_message_chat){
         park.postMessage(
             {type: 'blank', text: message} as ParkMessageDesc
         );
     }
-    if(settings.archipelago_network_chat){
+    if(archipelago_settings.network_chat){
         network.sendMessage(message);
 
     }
@@ -163,10 +163,10 @@ function archipelago_print_message(message) {
 function archipelago_send_message(type, message?) {
     switch(type){//Gotta fill these in as we improve crud
         case "Connect":
-            console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (settings.archipelago_deathlink) ? ["DeathLink"] : [], slot_data: true});
+            console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
             break;
         case "ConnectUpdate":
-            console.log({cmd: "ConnectUpdate", tags: (settings.archipelago_deathlink) ? ["DeathLink"] : []})
+            console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
         case "Sync":
             console.log({cmd: "Synch"});
             break;
@@ -189,7 +189,7 @@ function archipelago_send_message(type, message?) {
             break;
         case "Bounce":
             if(message.tag == "DeathLink"){
-                console.log({cmd: "Bounce", data: {time: 0, cause: message.ride + " has crashed!", source: message.ride}})
+                console.log({cmd: "Bounce", data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: "Colby"}})
             }
             break;
         case "Get":

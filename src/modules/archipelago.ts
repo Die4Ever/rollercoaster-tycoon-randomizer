@@ -12,7 +12,7 @@ class RCTRArchipelago extends ModuleBase {
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         // if (settings.archipelago_deathlink)
         // context.subscribe('vehicle.crash',self.SendDeathLink);
-        if (settings.archipelago_rule_locations){//Setting rules for Archipelago, dictated by the YAML
+        if (archipelago_settings.rule_locations){//Setting rules for Archipelago, dictated by the YAML
             var setRules = function(){
                 park.setFlag("difficultGuestGeneration", true);
                 park.setFlag("difficultParkRating", true);
@@ -23,13 +23,13 @@ class RCTRArchipelago extends ModuleBase {
             }
             runNextTick(setRules);//Mutates the game context, so it has to be run on a tick event
         }
-        if (settings.archipelago_purchase_land_checks){
+        if (archipelago_settings.purchase_land_checks){
             var enableLandChecks = function(){
                 park.landPrice = 2000;//$200/per tile
             }
             runNextTick(enableLandChecks);
         }
-        if (settings.archipelago_purchase_rights_checks){
+        if (archipelago_settings.purchase_rights_checks){
             var enableRightsChecks = function(){
                 park.constructionRightsPrice = 2000;
             }
@@ -48,14 +48,17 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_unlocked_locations = context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations');
         archipelago_location_prices = context.getParkStorage().get('RCTRando.ArchipelagoLocationPrices');
         archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
+        archipelago_settings = context.getParkStorage().get('RCTRando.ArchipelagoSettings');
         //Set up daily events
         self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives(); self.SetNames();});
         //Add menu items
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
+        if (bDebug)
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
-        if (settings.archipelago_deathlink)//Enable deathlink checks if deathlink is enabled
+        if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
         self.SubscribeEvent('vehicle.crash',e => self.SendDeathLink(e.id));
-        context.setInterval(() => {settings.archipelago_current_time += 1;}, 1);//updates the time for Archipelago syncronization
+        context.subscribe('action.execute',e => self.logRide(e.player, e.action, e.result));
+        archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
 
         //Set up actions for multiplayer
         try{
@@ -69,6 +72,12 @@ class RCTRArchipelago extends ModuleBase {
     SetArchipelagoResearch(): void {
         context.executeAction("parksetresearchfunding", {priorities: 0, fundingAmount: 0}, noop);//Set Funding to 0 and unselect every focus
         park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0. 
+    }
+
+    logRide(player, action, result): void {
+        if(action == "ridecreate"){
+            console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
+        }
     }
 
     RemoveItems(): void{
@@ -241,28 +250,30 @@ class RCTRArchipelago extends ModuleBase {
 
     GrantDiscount(type): any{
         if (type == "Land Discount"){
-            if(settings.archipelago_current_land_checks >= settings.archipelago_max_land_checks){
+            if(archipelago_settings.current_land_checks >= archipelago_settings.max_land_checks){
                 console.log("Error in GrantDiscount: current land checks greater than max land checks")
                 return;
             }
-            settings.archipelago_current_land_checks++;
-            park.landPrice = Math.floor(2000 - (2000 * (settings.archipelago_current_land_checks/settings.archipelago_max_land_checks)));
-            park.postMessage("Speech increased to " + (settings.archipelago_current_land_checks + settings.archipelago_current_rights_checks) + ". New land price is: " + context.formatString("{CURRENCY2DP}",  park.landPrice));//Cash price)
+            archipelago_settings.current_land_checks++;
+            park.landPrice = Math.floor(2000 - (2000 * (archipelago_settings.current_land_checks/archipelago_settings.max_land_checks)));
+            park.postMessage("Speech increased to " + (archipelago_settings.current_land_checks + archipelago_settings.current_rights_checks) + ". New land price is: " + context.formatString("{CURRENCY2DP}",  park.landPrice));//Cash price)
+            saveArchipelagoProgress();
         }
         if (type == "Construction Rights Discount"){
-            if(settings.archipelago_current_rights_checks >= settings.archipelago_max_rights_checks){
+            if(archipelago_settings.current_rights_checks >= archipelago_settings.max_rights_checks){
                 console.log("Error in GrantDiscount: current construction rights checks greater than max construction rights checks")
                 return;
             }
-            settings.archipelago_current_rights_checks++;
-            park.constructionRightsPrice = Math.floor(2000 - (2000 * (settings.archipelago_current_rights_checks/settings.archipelago_max_rights_checks)));
-            park.postMessage("Speech increased to " + (settings.archipelago_current_land_checks + settings.archipelago_current_rights_checks) + ". New construction rights price is: " + context.formatString("{CURRENCY2DP}",  park.constructionRightsPrice));
+            archipelago_settings.current_rights_checks++;
+            park.constructionRightsPrice = Math.floor(2000 - (2000 * (archipelago_settings.current_rights_checks/archipelago_settings.max_rights_checks)));
+            park.postMessage("Speech increased to " + (archipelago_settings.current_land_checks + archipelago_settings.current_rights_checks) + ". New construction rights price is: " + context.formatString("{CURRENCY2DP}",  park.constructionRightsPrice));
+            saveArchipelagoProgress();
         }
     }
 
     ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string}): any{
         var self = this;
-        if (settings.archipelago_deathlink_timeout == true){//If the timeout hasn't expired, don't force another coaster to crash
+        if (archipelago_settings.deathlink_timeout == true){//If the timeout hasn't expired, don't force another coaster to crash
             console.log("Death Link Timeout has not expired. Ignoring Death Link signal")
             return;
         }
@@ -302,36 +313,13 @@ class RCTRArchipelago extends ModuleBase {
             });
             return window;
         }
-        // var explodeRide = function(){
-        //     var self = this;
-        //     var car = map.getAllEntities('car');
-        //     var movingCar = [];
-        //     for (let i = 0; i < car.length; i++){
-        //         if(car[i].status == 'travelling'){
-        //             movingCar.push(car[i]);
-        //         }
-        //     }
-        //     if (!movingCar.length){//If there are no moving cars, wait 5 seconds and try again
-        //         var archipelago = GetModule("RCTRArchipelago");
-        //         if(archipelago)
-        //             context.setTimeout(function() {self.ReceiveDeathLink(DeathLinkPacket)}, 5000);
-        //         return;
-        //     }
-        //     var r = context.getRandom(0, movingCar.length + 1);//Pick a car at random. It seems to only pick the first car of the train though...
-        //     console.log(r);
-        //     // console.log(movingCar[r]);
-        //     settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
-        //     movingCar[r].status = "crashed";//Crash the ride!
-        //     // console.log(movingCar[r]);
-        //     context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
-        // }
         context.executeAction('ExplodeRide', DeathLinkPacket);
     }
 
     SendDeathLink(vehicleID): any{
-        if(settings.archipelago_deathlink_timeout == false) {
-            settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
-            context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
+        if(archipelago_settings.deathlink_timeout == false) {
+            archipelago_settings.deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
+            context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
             console.log("We're off to kill the Wizard!");
             var cars = map.getAllEntities("car");
             for(let i = 0; i < cars.length; i++){
@@ -432,7 +420,7 @@ class RCTRArchipelago extends ModuleBase {
                     }
                     locked.push(cost);
                 }
-                switch(settings.archipelago_location_information){
+                switch(archipelago_settings.location_information){
                     case 'None':
                         locked.push("          Unlocks something for somebody!")
                         break;
@@ -755,12 +743,15 @@ function explodeRide(args){
         return {};
     }
     var r = context.getRandom(0, movingCar.length);//Pick a car at random. It seems to only pick the first car of the train though...
-    settings.archipelago_deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
+    archipelago_settings.deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
     movingCar[r].status = "crashed";//Crash the ride!
-    context.setTimeout(() => {settings.archipelago_deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
+    context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
     return {};
 }
 
+function saveArchipelagoProgress(){
+    context.getParkStorage().set('RCTRando.ArchipelagoSettings', archipelago_settings);
+}
 
 if(context.apiVersion >= 75)
     registerModule(new RCTRArchipelago());
