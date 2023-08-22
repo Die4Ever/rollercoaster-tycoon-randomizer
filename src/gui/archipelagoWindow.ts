@@ -620,6 +620,20 @@ function archipelagoDebug(){
                     onClick: function() {
                         console.log(archipelago_settings);
                     }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button11',
+                    x: 5,
+                    y: 320,
+                    width: 200,
+                    height: 25,
+                    text: 'Furry Trap',
+                    onClick: function() {
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        archipelago_print_message("Curtis found Colbys Furry Convention Trap!");
+                        BathroomTrap.FurryTrap();
+                    }
                 }
            ]
         )

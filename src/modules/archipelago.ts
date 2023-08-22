@@ -35,7 +35,7 @@ class RCTRArchipelago extends ModuleBase {
             }
             runNextTick(enableRightsChecks);
         }
-
+        saveArchipelagoProgress();
         return;
     }
 
@@ -207,6 +207,18 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
+    FurryTrap(): void{
+        var furry_number = Math.ceil(park.guests * .2);
+        if(furry_number < 25)
+        furry_number = 25;
+        if(furry_number > 300)
+        furry_number = 300;
+        for(let i = 0; i < furry_number; i++){
+            var furry_type = Math.floor(Math.random() * 3);
+            context.executeAction("staffhire",{autoPosition: true, staffType: 3, entertainerType: furry_type, staffOrders: 0} as StaffHireArgs);
+        }
+    }
+
     ReleaseRule(rule): void{//Function that ends enforcement of detrimental park modifiers
         var releaseRule = function(rule){
             switch(rule){
@@ -369,7 +381,7 @@ class RCTRArchipelago extends ModuleBase {
         for(var i = 0; i < location.length; i++){//Loop through every locked location
             unlocked.push("[" + location[i].LocationID + "] " + "Unlocked " + archipelago_unlocked_locations[i].Item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
             if (prices[location[i].LocationID].Price == 0){//If the price is 0, paid with blood instead of cash
-                unlocked.push("          Instead of cash, you sacraficed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                unlocked.push("          Instead of cash, you sacrificed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
             }
             else{//Set up the string denoting the price
                 var prereqs = prices[location[i].LocationID].RidePrereq;
@@ -400,7 +412,7 @@ class RCTRArchipelago extends ModuleBase {
         for(var i = 0; i < location.length; i++){//Loop through every locked location
             if (self.IsVisible(location[i].LocationID)){
                 if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
-                    locked.push("[" + location[i].LocationID + "] " + "Instead of cash, you must sacrafice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                    locked.push("[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                 }
                 else{//Set up the string denoting the price
                     var prereqs = prices[location[i].LocationID].RidePrereq;
