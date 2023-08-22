@@ -371,7 +371,7 @@ function archipelagoLocations(){
 }
 
 function archipelagoDebug(){
-    var ww = 350;
+    var ww = 450;
     var wh = 350;
     let y = 0;
 
@@ -632,7 +632,35 @@ function archipelagoDebug(){
                     onClick: function() {
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         archipelago_print_message("Curtis found Colbys Furry Convention Trap!");
-                        BathroomTrap.FurryTrap();
+                        BathroomTrap.FurryConventionTrap();
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button12',
+                    x: 210,
+                    y: 20,
+                    width: 200,
+                    height: 25,
+                    text: 'Spam Trap',
+                    onClick: function() {
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        archipelago_print_message("Dustin found Colbys Spam Mail Trap!");
+                        BathroomTrap.SpamTrap();
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button13',
+                    x: 210,
+                    y: 50,
+                    width: 200,
+                    height: 25,
+                    text: 'Bathroom Trap',
+                    onClick: function() {
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        archipelago_print_message("Ty found Colby's Bathroom Trap!");
+                        BathroomTrap.BathroomTrap();
                     }
                 }
            ]

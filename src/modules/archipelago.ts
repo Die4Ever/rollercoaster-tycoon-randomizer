@@ -207,7 +207,7 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    FurryTrap(): void{
+    FurryConventionTrap(): void{
         var furry_number = Math.ceil(park.guests * .2);
         if(furry_number < 25)
         furry_number = 25;
@@ -216,6 +216,12 @@ class RCTRArchipelago extends ModuleBase {
         for(let i = 0; i < furry_number; i++){
             var furry_type = Math.floor(Math.random() * 3);
             context.executeAction("staffhire",{autoPosition: true, staffType: 3, entertainerType: furry_type, staffOrders: 0} as StaffHireArgs);
+        }
+    }
+
+    SpamTrap(): void{
+        for(let i = 0; i < 10; i++){
+            showRandomAd();
         }
     }
 
