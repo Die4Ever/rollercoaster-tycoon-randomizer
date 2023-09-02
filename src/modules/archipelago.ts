@@ -58,6 +58,7 @@ class RCTRArchipelago extends ModuleBase {
         if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
         self.SubscribeEvent('vehicle.crash',e => self.SendDeathLink(e.id));
         context.subscribe('action.execute',e => self.logRide(e.player, e.action, e.result));
+        context.subscribe('interval.tick', e => self.CheckMonopoly());
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
 
         //Set up actions for multiplayer
@@ -67,6 +68,17 @@ class RCTRArchipelago extends ModuleBase {
         catch(e){
             console.log("Error:" + e)
         }
+
+        if(bDebug){
+            archipelago_settings.location_information = 'Full';
+                        archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
+                        archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
+                        archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
+                        archipelago_objectives = {Guests: [300, false], ParkValue: [0, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
+                        context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
+                        context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
+                        ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+        }
     }
 
     SetArchipelagoResearch(): void {
@@ -74,7 +86,7 @@ class RCTRArchipelago extends ModuleBase {
         park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0. 
     }
 
-    logRide(player, action, result): void {
+    logRide(player, action, result): void {//This will eventually be used to identify who built a ride for Deathlink to identify the culprit
         if(action == "ridecreate"){
             console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
         }
@@ -192,6 +204,12 @@ class RCTRArchipelago extends ModuleBase {
             case "Bathroom":
                 self.BathroomTrap();
                 break;
+            case "FurryConvention":
+                self.FurryConventionTrap();
+                break;
+            case "Spam":
+                self.SpamTrap();
+                break;
         }
     }
 
@@ -286,6 +304,45 @@ class RCTRArchipelago extends ModuleBase {
             park.constructionRightsPrice = Math.floor(2000 - (2000 * (archipelago_settings.current_rights_checks/archipelago_settings.max_rights_checks)));
             park.postMessage("Speech increased to " + (archipelago_settings.current_land_checks + archipelago_settings.current_rights_checks) + ". New construction rights price is: " + context.formatString("{CURRENCY2DP}",  park.constructionRightsPrice));
             saveArchipelagoProgress();
+        }
+    }
+
+    SetPurchasableTiles(): any{
+        var x = map.size.x;//Gets the size of the map
+        var y = map.size.y;
+        for(let i = 0; i < x; i++){
+            for(let j = 0; j < y; j++){
+                var tile = map.getTile(i,j).elements;
+                for(let k = 0; k < tile.length; k++){
+                    if(tile[k].type == "surface"){
+                        var surface = tile[k] as SurfaceElement;
+                        var tile_ownership = surface.hasOwnership;
+                        var tile_construction_rights = surface.hasConstructionRights;
+                        if((!tile_ownership) && (!tile_construction_rights)){
+                            var has_footpath = false;
+                            var elligible = true;
+                            for(let l = 0; l < tile.length; l++){
+                                if(tile[l].type == "footpath"){
+                                    has_footpath = true;
+                                    if(!(tile[l].baseHeight == surface.baseHeight))
+                                    elligible = false;
+                                }
+                                if(tile[l].type == "entrance")
+                                elligible = false;
+                            }
+                            if(has_footpath){
+                                if(elligible)//Any unowned land that doesn't have a non-surface path or park entrance is elligible
+                                surface.ownership = 1 << 6;//According to surface.h, Construction rights are 1 bitshifted left 6 times
+                            }
+                            else{
+                                if(elligible)
+                                surface.ownership = 1 << 7;//And purchase rights are 1 bitshifted 7 times.
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -496,7 +553,10 @@ class RCTRArchipelago extends ModuleBase {
             objective.push("Repaid Loan:");
             objective.push("          Check your bank statement.");
         }
-        
+        if (archipelago_objectives.Monopoly[0]){
+            objective.push("Real Estate Monopoly:");
+            objective.push("          Own every tile on the map!")
+        }
         return objective;
     }
 
@@ -587,15 +647,62 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives.LoanPaidOff[1] = true;
         }
 
+        if (archipelago_objectives.Monopoly[0]){//Check if Monopoly is Enabled
+            if(archipelago_settings.monopoly_complete)
+            archipelago_objectives.Monopoly[1] = true;
+        }
         //Check if all conditions are met
         if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true && 
             archipelago_objectives.RollerCoasters[6] == true && archipelago_objectives.RideIncome[1] == true && 
             archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true && 
-            archipelago_objectives.LoanPaidOff[1] == true){
+            archipelago_objectives.LoanPaidOff[1] == true &&
+            archipelago_objectives.Monopoly[1] == true){
             context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
             
         }
         
+    }
+
+    CheckMonopoly(): any{
+        if(archipelago_objectives.Monopoly[0] && !(archipelago_settings.monopoly_complete)){
+            var x = map.size.x;//Gets the size of the map
+            var y = map.size.y;
+            var monopoly = true;//Assume true until proven false
+            var timeout_counter = 0;//Only check 16 tiles/tick max
+            for(let i = archipelago_settings.monopoly_x; i < (x - 1); i++){//check the x's. Map.size gives a couple coordinates off the map, so we exclude those.
+                for(let j = archipelago_settings.monopoly_y; j < (y - 1); j++){//check the y's
+                    var tile = map.getTile(i,j).elements;//get the tile data
+                    for(let k = 0; k < tile.length; k++){//iterate through everything on the tile
+                        if(tile[k].type == "surface"){//if it's a surface element
+                            var surface = tile[k] as SurfaceElement;
+                            var tile_ownership = surface.hasOwnership;//check ownership and construction rights
+                            var tile_construction_rights = surface.hasConstructionRights;
+                            var is_entrance = false;//Park entrance won't have ownership or construction rights
+                            if((!tile_ownership) && (!tile_construction_rights)){
+                                for(let l = k + 1; l < tile.length; l++){
+                                    if(tile[l].type == "entrance"){
+                                        is_entrance = true;
+                                        break;
+                                    }
+                                }
+                                if(is_entrance == false){//if unowned and lacking an entrance
+                                    return;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    timeout_counter++;
+                    if(timeout_counter >= 16){
+                        archipelago_settings.monopoly_x = i;
+                        archipelago_settings.monopoly_y = j;
+                        saveArchipelagoProgress();
+                        return;
+                    }
+                }
+            }
+            archipelago_settings.monopoly_complete = true;
+        }
     }
 
     IsVisible(LockedID): boolean{
