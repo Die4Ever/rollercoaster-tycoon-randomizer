@@ -74,7 +74,7 @@ class RCTRArchipelago extends ModuleBase {
                         archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
                         archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
                         archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
-                        archipelago_objectives = {Guests: [300, false], ParkValue: [0, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
+                        archipelago_objectives = {Guests: [300, false], ParkValue: [100000, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
                         context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
                         context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
                         ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
@@ -514,18 +514,20 @@ class RCTRArchipelago extends ModuleBase {
     CreateObjectiveList(): any{
         var self = this;
         var objective = [];
-        if (archipelago_objectives.Guests){
+        if (archipelago_objectives.Guests[0]){
             objective.push("Guests:");
-            objective.push("          " + archipelago_objectives.Guests[0].toString());
+            //Place a checkmark beforehand if the objective is complete
+            objective.push(archipelago_objectives.Guests[1] ? ("✓        " + archipelago_objectives.Guests[0].toString()) : ("          " + archipelago_objectives.Guests[0].toString()) );
         }
         if (archipelago_objectives.ParkValue[0]){
             objective.push("Park Value:");
-            objective.push("          " + context.formatString("{CURRENCY2DP}",  Number(archipelago_objectives.ParkValue[0]) * 10));//Multiply by 10 to get in-game amount
+            //Multiply by 10 to get in-game amount
+            objective.push(archipelago_objectives.ParkValue[1] ? ("✓        " + context.formatString("{CURRENCY2DP}",  Number(archipelago_objectives.ParkValue[0]) * 10)) : ("          " + context.formatString("{CURRENCY2DP}",  Number(archipelago_objectives.ParkValue[0]) * 10)));
         }
         var RollerCoaster = archipelago_objectives.RollerCoasters;
         if (RollerCoaster[0]){
             objective.push("Roller Coasters:");
-            var Line = "          " + RollerCoaster[0];
+            var Line = (RollerCoaster[6] ? ("✓        " + RollerCoaster[0]) : ("          " + RollerCoaster[0]));
             if(RollerCoaster[1]){
                 Line += " (> " + RollerCoaster[1] + " Excitement)";
             }
@@ -547,15 +549,15 @@ class RCTRArchipelago extends ModuleBase {
         // }
         if (archipelago_objectives.ParkRating[0]){
             objective.push("Park Rating:");
-            objective.push("          " + archipelago_objectives.ParkRating[0].toString());
+            objective.push(archipelago_objectives.ParkRating[1] ? ("✓        " + archipelago_objectives.ParkRating[0].toString()) : ("          " + archipelago_objectives.ParkRating[0].toString()));
         }
         if (archipelago_objectives.LoanPaidOff[0]){
             objective.push("Repaid Loan:");
-            objective.push("          Check your bank statement.");
+            objective.push(archipelago_objectives.LoanPaidOff[1] ? ("✓        Check your bank statement.") : ("          Check your bank statement."));
         }
         if (archipelago_objectives.Monopoly[0]){
             objective.push("Real Estate Monopoly:");
-            objective.push("          Own every tile on the map!")
+            objective.push(archipelago_objectives.Monopoly[1] ? ("✓        Own every tile on the map!") : ("          Own every tile on the map!"));
         }
         return objective;
     }
