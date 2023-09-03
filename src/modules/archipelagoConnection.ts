@@ -129,12 +129,14 @@ function ac_req(data) {
     }
     return;
 }
-
+var connection = null;
 function init_archipelago_connection() {
     console.log("Hello?");
-    //var connection = new APIConnection("Archipelago", 38280, ac_req);
-    //connection.send({"password":"","game":"OpenRCT2","name":"Colby","items_handling":"0b011"})
+    connection = new APIConnection("Archipelago", 38280, ac_req);
+    // connection.send({"password":"","game":"OpenRCT2","name":"Colby","items_handling":"0b011"})
 }
+
+
 
 function archipelago_print_message(message) {
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
@@ -184,6 +186,7 @@ function archipelago_send_message(type, message?) {
             break;
         case "Say":
             console.log({cmd: "Say", text: message});
+            connection.send({cmd: "Say", text: message});
             break;
         case "GetDataPackage":
             break;

@@ -681,6 +681,30 @@ function archipelagoDebug(){
                     onClick: function() {
                         park.cash = 1000000;
                     }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button16',
+                    x: 210,
+                    y: 140,
+                    width: 200,
+                    height: 25,
+                    text: 'AC_Connect',
+                    onClick: function() {
+                        init_archipelago_connection();
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button17',
+                    x: 210,
+                    y: 170,
+                    width: 200,
+                    height: 25,
+                    text: 'Send Message',
+                    onClick: function() {
+                        park.cash = 1000000;
+                    }
                 }
            ]
         )
