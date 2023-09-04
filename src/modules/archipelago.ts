@@ -112,7 +112,7 @@ class RCTRArchipelago extends ModuleBase {
         var self = this;
         for(let i = 0; i < item.length; i++){
             var category = "item"; //Any item with the 0b100 flag is always a trap
-            if(item[i].flags = 0b100)
+            if(item[i].flags == 0b100)
             category = "trap";
             if(RideType[item[i].item])//Any item that fits a ride type is a ride
             category = "ride";
