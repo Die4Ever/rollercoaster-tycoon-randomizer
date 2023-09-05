@@ -701,9 +701,64 @@ function archipelagoDebug(){
                     y: 170,
                     width: 200,
                     height: 25,
-                    text: 'Send Message',
+                    text: 'List Unresearched Rides',
                     onClick: function() {
-                        park.cash = 1000000;
+                        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
+                        for(let i=0; i<researchItems.length; i++) {
+                            console.log(researchItems[i]);
+                        }
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button18',
+                    x: 210,
+                    y: 200,
+                    width: 200,
+                    height: 25,
+                    text: 'AddCash($10,000)',
+                    onClick: function() {
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.AddCash("$10,000");
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button19',
+                    x: 210,
+                    y: 230,
+                    width: 200,
+                    height: 25,
+                    text: 'AddGuests(250)',
+                    onClick: function() {
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.AddGuests("250 Guests");
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button20',
+                    x: 210,
+                    y: 260,
+                    width: 200,
+                    height: 25,
+                    text: 'Colbys Choice',
+                    onClick: function() {
+                        var thing = map.getAllEntities("guest");
+                        console.log(thing[1]);
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button21',
+                    x: 210,
+                    y: 290,
+                    width: 200,
+                    height: 25,
+                    text: 'Colbys Choice',
+                    onClick: function() {
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.BeautyContest();
                     }
                 }
            ]

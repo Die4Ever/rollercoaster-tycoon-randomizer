@@ -7,7 +7,7 @@ class RCTRArchipelagoConnection extends ModuleBase {
         var self = this;
         if (!settings.rando_archipelago)
             return;
-        init_archipelago_connection();
+        //init_archipelago_connection();
         
     }
 }

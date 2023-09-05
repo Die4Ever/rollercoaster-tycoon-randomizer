@@ -57,7 +57,7 @@ class RCTRArchipelago extends ModuleBase {
         ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
         if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
         self.SubscribeEvent('vehicle.crash',e => self.SendDeathLink(e.id));
-        context.subscribe('action.execute',e => self.logRide(e.player, e.action, e.result));
+        context.subscribe('action.execute',e => self.LogRide(e.player, e.action, e.result));
         context.subscribe('interval.tick', e => self.CheckMonopoly());
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
 
@@ -71,13 +71,13 @@ class RCTRArchipelago extends ModuleBase {
 
         if(bDebug){
             archipelago_settings.location_information = 'Full';
-                        archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
-                        archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
-                        archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
-                        archipelago_objectives = {Guests: [300, false], ParkValue: [100000, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
-                        context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
-                        context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
-                        ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+            archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
+            archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
+            archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
+            archipelago_objectives = {Guests: [300, false], ParkValue: [100000, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
+            context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
+            context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
+            ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
         }
     }
 
@@ -86,7 +86,7 @@ class RCTRArchipelago extends ModuleBase {
         park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0. 
     }
 
-    logRide(player, action, result): void {//This will eventually be used to identify who built a ride for Deathlink to identify the culprit
+    LogRide(player, action, result): void {//This will eventually be used to identify who built a ride for Deathlink to identify the culprit
         if(action == "ridecreate"){
             console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
         }
@@ -116,6 +116,10 @@ class RCTRArchipelago extends ModuleBase {
             category = "trap";
             if(RideType[item[i].item])//Any item that fits a ride type is a ride
             category = "ride";
+            if(item[i].item.includes("$"))
+            category = "cash"
+            if(item[i].item.includes("guests"))
+            category = "guests"
             if(category == "item"){//Check the actual item if none of the above works out
                 switch(item[i].item){
                     case "scenery":
@@ -132,6 +136,10 @@ class RCTRArchipelago extends ModuleBase {
                     case "forbidMarketingCampaigns":
                     case "forbidTreeRemoval":
                         category = "rule";
+                        break;
+                    case "BeautyContest":
+                        category = "beauty";
+                        break;
                 }
             }
             
@@ -154,6 +162,16 @@ class RCTRArchipelago extends ModuleBase {
                 case "discount":
                     self.GrantDiscount(item[i].item);
                     break;
+                case "cash":
+                    self.AddCash(item[i].item)
+                    break;
+                case "guests":
+                    self.AddGuests(item[i].item)
+                    break;
+                case "beauty":
+                    self.BeautyContest();
+                    break;
+                    
                 default:
                     console.log("Error in ReceiveArchipelagoItem: category not found");
             }
@@ -305,6 +323,83 @@ class RCTRArchipelago extends ModuleBase {
             park.postMessage("Speech increased to " + (archipelago_settings.current_land_checks + archipelago_settings.current_rights_checks) + ". New construction rights price is: " + context.formatString("{CURRENCY2DP}",  park.constructionRightsPrice));
             saveArchipelagoProgress();
         }
+    }
+
+    AddCash(amount): any{
+        amount = amount.replace(/\D/g,'');//Drops the '$' from the amount
+        amount = Number(amount);//Converts to a number
+        park.cash += amount * 10;//Multiply by 10 to get the dollar amount
+    }
+
+    AddGuests(amount): any{
+        amount = amount.replace(/\D/g,'');//Strips everything but the number
+        amount = Number(amount);
+        for(let i = 0; i < amount; i++){
+            map.createEntity("guest", {name: "doug"});//So, this is apparently broken. We just won't have those checks until something is improved in the API
+        }
+    }
+
+    BeautyContest(): any{//Yep. It's a stupid refrence, but I aint removing it now!
+        var window = ui.openWindow({
+            classification: 'Beauty Contest',
+            title: "Community Chest",
+            width: 300,
+            height: 150,
+            colours: [17,0],
+            widgets: [].concat(
+                [
+                    {
+                        type: 'label',
+                        x: 0,
+                        y: 25,
+                        width: 300,
+                        height: 25,
+                        textAlign: "centred",
+                        text: "You have won"
+                    },
+                    {
+                        type: 'label',
+                        x: 0,
+                        y: 50,
+                        width: 300,
+                        height: 25,
+                        textAlign: "centred",
+                        text: "second prize" 
+                    },
+                    {
+                        type: 'label',
+                        x: 0,
+                        y: 75,
+                        width: 300,
+                        height: 25,
+                        textAlign: "centred",
+                        text: "in a" 
+                    },
+                    {
+                        type: 'label',
+                        x: 0,
+                        y: 100,
+                        width: 300,
+                        height: 25,
+                        textAlign: "centred",
+                        text: "beauty contest" 
+                    },
+                    {
+                        type: "button",
+                        x: 0,
+                        y: 125,
+                        width: 300,
+                        height: 25,
+                        text: "collect $10",
+                        onClick: function() {
+                            park.cash += 100;
+                            window.close();
+                        }
+                    }
+                ]
+            )
+        });
+        return window;
     }
 
     SetPurchasableTiles(): any{
