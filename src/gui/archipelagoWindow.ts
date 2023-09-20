@@ -742,10 +742,12 @@ function archipelagoDebug(){
                     y: 260,
                     width: 200,
                     height: 25,
-                    text: 'Colbys Choice',
+                    text: 'Set Weather (Blizzard)',
                     onClick: function() {
-                        var thing = map.getAllEntities("guest");
-                        console.log(thing[1]);
+                        // let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
+                        // console.log(researchItems.length);
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.setWeather("Blizzard");
                     }
                 },
                 {

@@ -140,6 +140,12 @@ class RCTRArchipelago extends ModuleBase {
                     case "BeautyContest":
                         category = "beauty";
                         break;
+                    case "Rainstorm":
+                    case "Thunderstorm":
+                    case "Snowstorm":
+                    case "Blizzard":
+                        category = "weather"
+                        break;
                 }
             }
             
@@ -171,6 +177,8 @@ class RCTRArchipelago extends ModuleBase {
                 case "beauty":
                     self.BeautyContest();
                     break;
+                case "weather":
+                    self.setWeather(item[i].item)
                     
                 default:
                     console.log("Error in ReceiveArchipelagoItem: category not found");
@@ -334,9 +342,7 @@ class RCTRArchipelago extends ModuleBase {
     AddGuests(amount): any{
         amount = amount.replace(/\D/g,'');//Strips everything but the number
         amount = Number(amount);
-        for(let i = 0; i < amount; i++){
-            map.createEntity("guest", {name: "doug"});//So, this is apparently broken. We just won't have those checks until something is improved in the API
-        }
+        context.executeAction("cheatset", {type: 20, param1: amount, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
     }
 
     BeautyContest(): any{//Yep. It's a stupid refrence, but I aint removing it now!
@@ -400,6 +406,25 @@ class RCTRArchipelago extends ModuleBase {
             )
         });
         return window;
+    }
+
+    setWeather(weather): any{
+        switch(weather){
+            case "Rainstorm":
+                context.executeAction("cheatset", {type: 35, param1: 4, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+                break;
+            case "Thunderstorm":
+                context.executeAction("cheatset", {type: 35, param1: 5, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+                break;
+            case "Snowstorm":
+                context.executeAction("cheatset", {type: 35, param1: 7, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+                break;
+            case "Blizzard":
+                context.executeAction("cheatset", {type: 35, param1: 8, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+                break;
+
+    
+        }
     }
 
     SetPurchasableTiles(): any{
