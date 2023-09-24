@@ -18,21 +18,23 @@ if(context.apiVersion >= 75)
 
 function ac_req(data) {
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
-    console.log(data);
+    // console.log(data);
     var archipelagoPlayers = [];
     switch(data.cmd){
         case "RoomInfo":
             archipelago_settings.current_time = data.time;
-            archipelago_send_message("Connect",{password: 8, name: "Colby"});
+            console.log("Archipelago Time has been set:");
+            console.log(archipelago_settings.current_time);
+            // archipelago_send_message("Connect",{password: 8, name: "Colby"});
             break;
         case "Connected"://Packet stating player is connected to the Archipelago game
             archipelagoPlayers = [];
-            console.log(data.players.length);
             for(let i=0; i<data.players.length; i++) {
-                console.log("hi");
                 //Create guest list populated with Player names
-                archipelagoPlayers.push(data.players[i].alias);
+                archipelagoPlayers.push(data.players[i][2]);
             }
+            console.log("Here's our players:");
+            console.log(archipelagoPlayers);
             context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
             console.log(archipelagoPlayers);
             Archipelago.SetNames();
@@ -96,13 +98,15 @@ function ac_req(data) {
             break;
 
         case "Bounced":
-            for(let i = 0; i < data.tags.length; i++){
-                if(data.tags[i] == "DeathLink"){
-                    const cause = data.data.cause;
-                    const source = data.data.source;
-                    Archipelago.ReceiveDeathLink({cause, source});
-                    archipelago_print_message(cause);
-                    break;
+            if(data.tags){
+                for(let i = 0; i < data.tags.length; i++){
+                    if(data.tags[i] == "DeathLink"){
+                        const cause = data.data.cause;
+                        const source = data.data.source;
+                        Archipelago.ReceiveDeathLink({cause, source});
+                        archipelago_print_message(cause);
+                        break;
+                    }
                 }
             }
             break;

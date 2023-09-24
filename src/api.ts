@@ -114,7 +114,7 @@ class APIConnection
             printException('error handling '+this.name+' request: ' + message, e);
         }
 
-        this.send(resp);
+        //this.send(resp);
     }
 
     private reset_timeout() {
