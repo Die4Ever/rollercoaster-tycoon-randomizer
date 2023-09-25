@@ -108,20 +108,25 @@ class RCTRArchipelago extends ModuleBase {
         this.AddChange('NumInventedItems', 'Invented items', origNumResearched, numResearched);
     }
     
-    ReceiveArchipelagoItem(item): void{
+    ReceiveArchipelagoItem(items): void{
         var self = this;
-        for(let i = 0; i < item.length; i++){
-            var category = "item"; //Any item with the 0b100 flag is always a trap
-            if(item[i].flags == 0b100)
+        console.log("Here's the array of items:");
+        console.log(items);
+        for(let i = 0; i < items.length; i++){
+            var category = "item";
+            if(item_id_to_name[items[i]] >= 200000 && item_id_to_name[items[i]] <= 200116)//This number will need to change if we ever add more items/traps/etc.
+            var item = item_id_to_name[items[i][0]];
+            console.log(item);
+            if(item.indexOf("Trap") > -1)
             category = "trap";
-            if(RideType[item[i].item])//Any item that fits a ride type is a ride
+            if(RideType[item])//Any item that fits a ride type is a ride
             category = "ride";
-            if(item[i].item.includes("$"))
-            category = "cash"
-            if(item[i].item.includes("guests"))
-            category = "guests"
+            if(item.indexOf("$") > -1)
+            category = "cash";
+            if(item.indexOf("Guests") > -1)
+            category = "guests";
             if(category == "item"){//Check the actual item if none of the above works out
-                switch(item[i].item){
+                switch(item){
                     case "scenery":
                         category = "scenery";
                         break;
@@ -129,15 +134,15 @@ class RCTRArchipelago extends ModuleBase {
                     case "Construction Rights Discount":
                         category = "discount";
                         break;
-                    case "difficultGuestGeneration":
-                    case "difficultParkRating":
-                    case "forbidHighConstruction":
-                    case "forbidLandscapeChanges":
-                    case "forbidMarketingCampaigns":
-                    case "forbidTreeRemoval":
+                    case "Easier Guest Generation":
+                    case "Easier Park Rating":
+                    case "Allow High Construction":
+                    case "Allow Landscape Changes":
+                    case "Allow Marketing Campaigns":
+                    case "Allow Tree Removal":
                         category = "rule";
                         break;
-                    case "BeautyContest":
+                    case "Beauty Contest":
                         category = "beauty";
                         break;
                     case "Rainstorm":
@@ -151,35 +156,35 @@ class RCTRArchipelago extends ModuleBase {
             
             switch(category){
                 case "ride":
-                    self.AddRide(RideType[item[i].item]);
+                    self.AddRide(RideType[item]);
                     break;
                 case "stall":
-                    self.AddRide(item[i].item);
+                    self.AddRide(item);
                     break;
                 case "trap":
-                    self.ActivateTrap(item[i].item);
+                    self.ActivateTrap(item);
                     break;
                 case "rule":
-                    self.ReleaseRule(item[i].item);
+                    self.ReleaseRule(item);
                     break;
                 case "scenery":
                     self.AddScenery();
                     break;
                 case "discount":
-                    self.GrantDiscount(item[i].item);
+                    self.GrantDiscount(item);
                     break;
                 case "cash":
-                    self.AddCash(item[i].item)
+                    self.AddCash(item)
                     break;
                 case "guests":
-                    self.AddGuests(item[i].item)
+                    self.AddGuests(item)
                     break;
                 case "beauty":
                     self.BeautyContest();
                     break;
                 case "weather":
-                    self.setWeather(item[i].item)
-                    
+                    self.setWeather(item)
+                    break;
                 default:
                     console.log("Error in ReceiveArchipelagoItem: category not found");
             }
@@ -227,13 +232,13 @@ class RCTRArchipelago extends ModuleBase {
             case "FoodPoison":
                 self.PoisonTrap();
                 break;
-            case "Bathroom":
+            case "Bathroom Trap":
                 self.BathroomTrap();
                 break;
-            case "FurryConvention":
+            case "Furry Convention Trap":
                 self.FurryConventionTrap();
                 break;
-            case "Spam":
+            case "Spam Trap":
                 self.SpamTrap();
                 break;
         }
@@ -272,33 +277,33 @@ class RCTRArchipelago extends ModuleBase {
     ReleaseRule(rule): void{//Function that ends enforcement of detrimental park modifiers
         var releaseRule = function(rule){
             switch(rule){
-                case "difficultGuestGeneration":
+                case "Easier Guest Generation":
                     park.postMessage(
                         {type: 'award', text: "Congradulations! " + park.name + " has been recognized as an Archipelago historic site! Expect to see a permanent increase in visitors."} as ParkMessageDesc);
                     park.setFlag("difficultGuestGeneration", false);
                     break;
 
-                case "difficultParkRating":
+                case "Easier Park Rating":
                     park.postMessage(
                         {type: 'peep', text: "Breaking news! The park ratings council has been overthrown in a military backed coup! The new leader has promised easier park ratings for the rest of this game!"} as ParkMessageDesc);
                     park.setFlag("difficultParkRating", false);
                     break;
-                case "forbidHighConstruction":
+                case "Allow High Construction":
                     park.postMessage(
                         {type: 'peep', text: "Wait a second, airplanes don't exist in Roller Coaster Tycoon. Why are limiting construction height? Let's go ahead and fix that now."} as ParkMessageDesc);
                     park.setFlag("forbidHighConstruction", false);
                     break;
-                case "forbidLandscapeChanges":
+                case "Allow Landscape Changes":
                     park.postMessage(
                         {type: "chart", text: "IMPORTANT GOVERNMENT ANNOUNCEMENT: ALL UNEXPLODED ORDINANCE FROM THE GREAT TYCOON WAR HAS BEEN CLEARED FROM THIS SITE. " + park.name + " MAY RESUME LANDSCAPING OPERATIONS."} as ParkMessageDesc);
                     park.setFlag("forbidLandscapeChanges", false);
                     break;
-                case "forbidMarketingCampaigns":
+                case "Allow Marketing Campaigns":
                     park.postMessage(
                         {type: 'money', text: "Inspector. The ministry of information has approved your application for promotion in all state media. You may now submit marketing campaigns. Glory to Arstotzka"} as ParkMessageDesc);
                     park.setFlag("forbidMarketingCampaigns", false);
                     break;
-                case "forbidTreeRemoval":
+                case "Allow Tree Removal":
                     park.postMessage(
                         {type: 'blank', text: "Upon further research, it would appear that the endangered trees in your park are in fact, invasive species. You may now chop them down."} as ParkMessageDesc);
                     park.setFlag("forbidTreeRemoval", false);

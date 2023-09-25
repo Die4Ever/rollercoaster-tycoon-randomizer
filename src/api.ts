@@ -68,6 +68,16 @@ class APIConnection
                 {type: 'blank', text: 'error in '+this.name+' connection, will keep trying...'} as ParkMessageDesc
             );
         }
+        if(settings.rando_archipelago){
+            archipelago_connected = false;
+            try {
+                ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected").text = "The Archipelago Client is {RED}not{WHITE} connected!";
+                ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected;
+            }
+            catch{
+                console.log("Looks like the window isn't open.");
+            }
+        }
         this.good = false;
         this.connect();
     }
@@ -179,6 +189,11 @@ class APIConnection
                 park.postMessage(
                     {type: 'blank', text: self.name+' connected!'} as ParkMessageDesc
                 );
+                if(settings.rando_archipelago){
+                    archipelago_connected = true;
+                    ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected").text = "The Archipelago Client is connected!";
+                    ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected;
+                }
             }
             self.good = true;
         });

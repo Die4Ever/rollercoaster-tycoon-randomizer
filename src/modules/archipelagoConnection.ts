@@ -117,7 +117,7 @@ function ac_req(data) {
             break;
 
         case "ReceivedItems":
-            Archipelago.ReceiveArchipelagoItem(data.list);
+            Archipelago.ReceiveArchipelagoItem(data.items);
             break;
 
         case "LocationInfo":
@@ -196,7 +196,7 @@ function archipelago_send_message(type, message?) {
             break;
         case "Bounce":
             if(message.tag == "DeathLink"){
-                console.log({cmd: "Bounce", data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: "Colby"}})
+                connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: "Colby"}});
             }
             break;
         case "Get":

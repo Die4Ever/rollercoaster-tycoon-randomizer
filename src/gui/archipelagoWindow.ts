@@ -3,7 +3,7 @@
 
 function archipelagoGui(){
     var ww = 350;
-    var wh = 350;
+    var wh = 175;
     let y = 0;
 
     var onStart = function() {
@@ -48,29 +48,17 @@ function archipelagoGui(){
         width: ww,
         height: wh,
         widgets: [].concat(
-            NewLabel('Your plugin.store.json file is ready. Provide this to the host of your Archipelago game along with your .yaml file.', {
+            NewLabel("If you haven't done so, open your OpenRCT2 Client. You can find more info at archipelago.gg/tutorial", {
                 name: 'Instructions',
                 y: y++,
                 width: 2,
-                tooltip: 'For more information, visit archipelago.gg/tutorial'
+                tooltip: "Shoutout to Die4Ever for figuring out all this networking stuff, cause I certainly wouldn't have been able to."
             }),
-            NewEdit('Server Address:', {
-                name: 'server-address',
+            NewLabel(archipelago_connected ? "The Archipelago Client is connected!" : "The Archipelago Client is {RED}not{WHITE} connected.", {
+                name: 'Connected',
                 y: y++,
-                text: '',
-                tooltip: 'Enter the server address and port (e.g. archipelago.gg:53055)'
-            }),
-            NewEdit('Slot Name:', {
-                name: 'slot-name',
-                y: y++,
-                text: '',
-                tooltip: 'Enter your slot name'
-            }),
-            NewEdit('Server Password:', {
-                name: 'server-password',
-                y: y++,
-                text: '',
-                tooltip: 'Enter the server password, if there is one'
+                width: 2,
+                tooltip: "Ooh, it changes based on connection status! That's pretty fancy!"
             }),
             [{
                 type: 'button',
@@ -84,19 +72,8 @@ function archipelagoGui(){
                 onClick: function() {
                     startGameGui();
                     settings.rando_archipelago = false;
-                    window.close();
-                }
-            },
-            {
-                type: 'button',
-                name: 'connect-button',
-                x: ww - 90 - 6,
-                y: wh - 6 - 26,
-                width: 90,
-                height: 26,
-                text: 'Connect to Server',
-                onClick: function() {
-                    //TODO: Create function connecting to the Archipelago server
+                    // var connection = GetModule("APIConnection") as APIConnection;
+                    connection.destroy()
                     window.close();
                 }
             },
@@ -109,6 +86,7 @@ function archipelagoGui(){
                 height: 26,
                 text: 'Start Game!',
                 tooltip: 'Starts your game of Archipelago!',
+                isDisabled: !archipelago_connected,
                 onClick: function() {
                     onStart();
                     console.log("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");

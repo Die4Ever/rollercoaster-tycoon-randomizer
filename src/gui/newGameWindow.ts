@@ -138,7 +138,7 @@ function startGameGui() {
                 text: 'Archipelago',
                 tooltip: 'Prepares this park to connect to a game of Archipelago',
                 onClick: function() {
-                    console.log("At this point, the user should have a pop up telling them to grab the .json file.");
+                    init_archipelago_connection();
                     archipelagoGui();
                     settings.rando_archipelago = true;
                     window.close();
