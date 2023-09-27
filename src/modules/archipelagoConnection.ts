@@ -36,9 +36,10 @@ function ac_req(data) {
             console.log("Here's our players:");
             console.log(archipelagoPlayers);
             context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
-            console.log(archipelagoPlayers);
             Archipelago.SetNames();
             context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
+            if(!archipelago_init_received)
+            Archipelago.SetImportedSettings(data.slot_data);
             break;
 
         case "ConnectionRefused"://Packet stating an error has occured in connecting to the Archipelago game
@@ -200,7 +201,7 @@ function archipelago_send_message(type, message?) {
             }
             break;
         case "Get":
-            break;
+            connection.send({cmd: "Get", keys: []});
         case "Set":
             break;
         case "SetNotify":

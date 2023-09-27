@@ -69,13 +69,14 @@ class APIConnection
             );
         }
         if(settings.rando_archipelago){
-            archipelago_connected = false;
+            archipelago_connected_to_game = false;
             try {
-                ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected").text = "The Archipelago Client is {RED}not{WHITE} connected!";
-                ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected;
+                ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
+                ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = (!archipelago_connected_to_game || !archipelago_connected_to_server);
+                console.log(archipelago_connected_to_server);
             }
             catch{
-                console.log("Looks like the window isn't open.");
+                console.log("Looks like the Archipelago window isn't open.");
             }
         }
         this.good = false;
@@ -190,9 +191,9 @@ class APIConnection
                     {type: 'blank', text: self.name+' connected!'} as ParkMessageDesc
                 );
                 if(settings.rando_archipelago){
-                    archipelago_connected = true;
-                    ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected").text = "The Archipelago Client is connected!";
-                    ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected;
+                    archipelago_connected_to_game = true;
+                    ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game").text = "The Archipelago Client is connected to the game!";
+                    ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server;
                 }
             }
             self.good = true;

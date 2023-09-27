@@ -10,6 +10,9 @@ function info(message?: any, ...optionalParams: any[]): void {
     console.log(message, optionalParams);
 }
 
+if (bDebug)
+    ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
+
 var global_settings = {
     rando_version: rando_version,
     enabled: true,
@@ -102,7 +105,9 @@ var settings = {
     rando_archipelago: false
 };
 
-var archipelago_connected = false;
+var archipelago_connected_to_game = false;
+var archipelago_connected_to_server = false;
+var archipelago_init_received = false;
 
 var archipelago_settings = {
     deathlink: false,

@@ -10,19 +10,14 @@ function archipelagoGui(){
         console.log('This is where we connect to Archipelago and set up the game.');
         //TODO: Get seed from Archipelago
         setGlobalSeed(1337['text']);//Using a filler here until I get websocket support working
-        //TODO: Set Difficulty from Archipelago
-        //TODO: Get Range from Archipelago
-        //TODO: Get Length from Archipelago
         //TODO: Get Ride Types from Archipelago
         //TODO: Get Park Flags from Archipelago
-        //TODO: Get Park Values from Archipelago
         //TODO: Get Goals from Archipelago
         //No need for research, since we're using a different system entirely for that
         settings.rando_research = false;
         //Crowd control has a lot of options that would most likely break Archipelago. We're going to disable both at once until further notice.
         //TODO: Get reroll frequency from Archipelago
         //TODO: Get DeathLink toggle from Archipelago
-        archipelago_settings.deathlink = true; //Change this line once actual Archipelago code is implemented
         archipelago_settings.deathlink_timeout = false;
         //TODO: Get Locations list from Archipelago
         //Until these are implemented, we're going to stick with default values, which should be good enough for debugging
@@ -54,11 +49,17 @@ function archipelagoGui(){
                 width: 2,
                 tooltip: "Shoutout to Die4Ever for figuring out all this networking stuff, cause I certainly wouldn't have been able to."
             }),
-            NewLabel(archipelago_connected ? "The Archipelago Client is connected!" : "The Archipelago Client is {RED}not{WHITE} connected.", {
-                name: 'Connected',
+            NewLabel(archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.", {
+                name: 'Connected-to-game',
                 y: y++,
                 width: 2,
                 tooltip: "Ooh, it changes based on connection status! That's pretty fancy!"
+            }),
+            NewLabel(archipelago_connected_to_server ? "The Archipelago Client is connected to the server!" : "The Archipelago Client is {RED}not{WHITE} connected to the server.", {
+                name: 'Connected-to-server',
+                y: y++,
+                width: 2,
+                tooltip: "Too bad this font doesn't support emoji. :("
             }),
             [{
                 type: 'button',
@@ -86,7 +87,7 @@ function archipelagoGui(){
                 height: 26,
                 text: 'Start Game!',
                 tooltip: 'Starts your game of Archipelago!',
-                isDisabled: !archipelago_connected,
+                isDisabled: (!archipelago_connected_to_game || !archipelago_connected_to_server),
                 onClick: function() {
                     onStart();
                     console.log("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");
@@ -737,8 +738,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.BeautyContest();
+                        console.log(archipelago_objectives);
                     }
                 }
            ]

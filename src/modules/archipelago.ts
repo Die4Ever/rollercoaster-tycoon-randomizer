@@ -53,8 +53,6 @@ class RCTRArchipelago extends ModuleBase {
         self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives(); self.SetNames();});
         //Add menu items
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
-        if (bDebug)
-        ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy! 
         if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
         self.SubscribeEvent('vehicle.crash',e => self.SendDeathLink(e.id));
         context.subscribe('action.execute',e => self.LogRide(e.player, e.action, e.result));
@@ -70,15 +68,128 @@ class RCTRArchipelago extends ModuleBase {
         }
 
         if(bDebug){
-            archipelago_settings.location_information = 'Full';
+            // archipelago_settings.location_information = 'Full';
             archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
             archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
             archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
-            archipelago_objectives = {Guests: [300, false], ParkValue: [100000, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
+            // archipelago_objectives = {Guests: [300, false], ParkValue: [100000, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
             context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
-            context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
+            // context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
             ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
         }
+    }
+
+    SetImportedSettings(imported_settings): void{
+        var self = this;
+        console.log("Setting values retrieved from Archipelago");
+        switch(imported_settings.difficulty){
+            case 0://very_easy
+                settings.difficulty = difficulties["Very Easy"];
+                break;
+            case 1://easy
+                settings.difficulty = difficulties["Easy"];
+                break;
+            case 2://medium
+                settings.difficulty = difficulties["Medium"];
+                break;
+            case 3://hard
+                settings.difficulty = difficulties["Hard"];
+                break;
+            case 4://extreme
+                settings.difficulty = difficulties["Extreme"];
+                break;
+        }
+        switch(imported_settings.scenario_length){
+            case 0://speedrun
+                settings.scenarioLength = scenarioLengths.Speedrun;
+                break;
+            case 1://normal
+                settings.scenarioLength = scenarioLengths.Normal;
+                break;
+            case 2://lengthy
+                settings.scenarioLength = scenarioLengths.Long;
+                break;
+            case 3://marathon
+                settings.scenarioLength = scenarioLengths.Marathon;
+                break;
+        }
+        if(imported_settings.death_link)
+        archipelago_settings.deathlink = true;
+        else
+        archipelago_settings.deathlink = false;
+        switch(imported_settings.randomization_range){
+            case 0://low
+                settings.rando_range = randoRanges.Low;
+                break;
+            case 1://medium
+                settings.rando_range = randoRanges.Medium
+                break;
+            case 2://high
+                settings.rando_range = randoRanges.High
+                break;
+            case 3://extreme
+                settings.rando_range = randoRanges.Extreme
+                break;
+        }
+        switch(imported_settings.stat_rerolls){
+            case 0://never
+                settings.num_months_cycle = randoCycles.Never;
+                break;
+            case 1://infrequent
+                settings.num_months_cycle = randoCycles.Infrequent;
+                break;
+            case 2://semi_frequent
+                settings.num_months_cycle = randoCycles["Semi-Frequent"];
+                break;
+            case 3://frequent
+                settings.num_months_cycle = randoCycles.Frequent;
+                break;
+            case 4://very_frequent
+                settings.num_months_cycle = randoCycles["Very Frequent"];
+                break;
+            case 5://extremely_frequent
+                settings.num_months_cycle = randoCycles["Extremely Frequent"];
+                break;
+        }
+
+        if(imported_settings.randomize_park_values)
+        settings.rando_park_values = true;
+        else
+        settings.rando_park_values = false;
+        
+        archipelago_objectives.Guests[0] = imported_settings.objectives.Guests[0];
+        archipelago_objectives.ParkValue[0] = imported_settings.objectives.ParkValue[0];
+        for(let i = 0; i < 5; i++){
+            archipelago_objectives.RollerCoasters[i] = imported_settings.objectives.RollerCoasters[i];
+        }
+        archipelago_objectives.RideIncome[0] = imported_settings.objectives.RideIncome[0];
+        archipelago_objectives.ShopIncome[0] = imported_settings.objectives.ShopIncome[0];
+        archipelago_objectives.ParkRating[0] = imported_settings.objectives.ParkRating[0];
+        archipelago_objectives.LoanPaidOff[0] = imported_settings.objectives.LoanPaidOff[0];
+        archipelago_objectives.Monopoly[0] = imported_settings.objectives.Monopoly[0];
+
+        console.log(archipelago_objectives.Monopoly[0]);
+        if(archipelago_objectives.Monopoly[0])
+        self.SetPurchasableTiles();
+
+        switch(imported_settings.visibility){
+            case 0: 
+                archipelago_settings.location_information = "None"
+                break;
+            case 1:
+                archipelago_settings.location_information = "Recipient"
+                break;
+            case 2:
+                archipelago_settings.location_information = "Full"
+                break;
+        }
+        
+        context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
+        saveArchipelagoProgress();
+
+        archipelago_connected_to_server = true;
+        ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the server!";
+        ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server;
     }
 
     SetArchipelagoResearch(): void {
@@ -114,79 +225,80 @@ class RCTRArchipelago extends ModuleBase {
         console.log(items);
         for(let i = 0; i < items.length; i++){
             var category = "item";
-            if(item_id_to_name[items[i]] >= 200000 && item_id_to_name[items[i]] <= 200116)//This number will need to change if we ever add more items/traps/etc.
-            var item = item_id_to_name[items[i][0]];
-            console.log(item);
-            if(item.indexOf("Trap") > -1)
-            category = "trap";
-            if(RideType[item])//Any item that fits a ride type is a ride
-            category = "ride";
-            if(item.indexOf("$") > -1)
-            category = "cash";
-            if(item.indexOf("Guests") > -1)
-            category = "guests";
-            if(category == "item"){//Check the actual item if none of the above works out
-                switch(item){
-                    case "scenery":
-                        category = "scenery";
-                        break;
-                    case "Land Discount":
-                    case "Construction Rights Discount":
-                        category = "discount";
-                        break;
-                    case "Easier Guest Generation":
-                    case "Easier Park Rating":
-                    case "Allow High Construction":
-                    case "Allow Landscape Changes":
-                    case "Allow Marketing Campaigns":
-                    case "Allow Tree Removal":
-                        category = "rule";
-                        break;
-                    case "Beauty Contest":
-                        category = "beauty";
-                        break;
-                    case "Rainstorm":
-                    case "Thunderstorm":
-                    case "Snowstorm":
-                    case "Blizzard":
-                        category = "weather"
-                        break;
+            if(item_id_to_name[items[i]] >= 200000 && item_id_to_name[items[i]] <= 200116){//This number will need to change if we ever add more items/traps/etc.
+                var item = item_id_to_name[items[i][0]];
+                console.log(item);
+                if(item.indexOf("Trap") > -1)
+                category = "trap";
+                if(RideType[item])//Any item that fits a ride type is a ride
+                category = "ride";
+                if(item.indexOf("$") > -1)
+                category = "cash";
+                if(item.indexOf("Guests") > -1)
+                category = "guests";
+                if(category == "item"){//Check the actual item if none of the above works out
+                    switch(item){
+                        case "scenery":
+                            category = "scenery";
+                            break;
+                        case "Land Discount":
+                        case "Construction Rights Discount":
+                            category = "discount";
+                            break;
+                        case "Easier Guest Generation":
+                        case "Easier Park Rating":
+                        case "Allow High Construction":
+                        case "Allow Landscape Changes":
+                        case "Allow Marketing Campaigns":
+                        case "Allow Tree Removal":
+                            category = "rule";
+                            break;
+                        case "Beauty Contest":
+                            category = "beauty";
+                            break;
+                        case "Rainstorm":
+                        case "Thunderstorm":
+                        case "Snowstorm":
+                        case "Blizzard":
+                            category = "weather"
+                            break;
+                    }
                 }
-            }
-            
-            switch(category){
-                case "ride":
-                    self.AddRide(RideType[item]);
-                    break;
-                case "stall":
-                    self.AddRide(item);
-                    break;
-                case "trap":
-                    self.ActivateTrap(item);
-                    break;
-                case "rule":
-                    self.ReleaseRule(item);
-                    break;
-                case "scenery":
-                    self.AddScenery();
-                    break;
-                case "discount":
-                    self.GrantDiscount(item);
-                    break;
-                case "cash":
-                    self.AddCash(item)
-                    break;
-                case "guests":
-                    self.AddGuests(item)
-                    break;
-                case "beauty":
-                    self.BeautyContest();
-                    break;
-                case "weather":
-                    self.setWeather(item)
-                    break;
-                default:
-                    console.log("Error in ReceiveArchipelagoItem: category not found");
+                
+                switch(category){
+                    case "ride":
+                        self.AddRide(RideType[item]);
+                        break;
+                    case "stall":
+                        self.AddRide(item);
+                        break;
+                    case "trap":
+                        self.ActivateTrap(item);
+                        break;
+                    case "rule":
+                        self.ReleaseRule(item);
+                        break;
+                    case "scenery":
+                        self.AddScenery();
+                        break;
+                    case "discount":
+                        self.GrantDiscount(item);
+                        break;
+                    case "cash":
+                        self.AddCash(item)
+                        break;
+                    case "guests":
+                        self.AddGuests(item)
+                        break;
+                    case "beauty":
+                        self.BeautyContest();
+                        break;
+                    case "weather":
+                        self.setWeather(item)
+                        break;
+                    default:
+                        console.log("Error in ReceiveArchipelagoItem: category not found");
+                }
             }
         }
         return;
