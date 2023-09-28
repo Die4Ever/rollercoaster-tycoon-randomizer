@@ -738,7 +738,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        console.log(archipelago_objectives);
+                        archipelago_send_message("Sync");
                     }
                 }
            ]

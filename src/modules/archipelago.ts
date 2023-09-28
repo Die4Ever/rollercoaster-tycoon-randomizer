@@ -10,8 +10,7 @@ class RCTRArchipelago extends ModuleBase {
         //Disable standard research by resetting research status to 0 and funding to none every in game day
         // self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives()});
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
-        // if (settings.archipelago_deathlink)
-        // context.subscribe('vehicle.crash',self.SendDeathLink);
+        archipelago_send_message("Sync");
         if (archipelago_settings.rule_locations){//Setting rules for Archipelago, dictated by the YAML
             var setRules = function(){
                 park.setFlag("difficultGuestGeneration", true);
@@ -225,7 +224,8 @@ class RCTRArchipelago extends ModuleBase {
         console.log(items);
         for(let i = 0; i < items.length; i++){
             var category = "item";
-            if(item_id_to_name[items[i]] >= 200000 && item_id_to_name[items[i]] <= 200116){//This number will need to change if we ever add more items/traps/etc.
+            console.log(items[i][0]);
+            if(items[i][0] >= 2000000 && items[i][0] <= 2000116){//This number will need to change if we ever add more items/traps/etc.
                 var item = item_id_to_name[items[i][0]];
                 console.log(item);
                 if(item.indexOf("Trap") > -1)

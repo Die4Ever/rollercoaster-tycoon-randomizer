@@ -175,7 +175,7 @@ function archipelago_send_message(type, message?) {
         case "ConnectUpdate":
             console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
         case "Sync":
-            console.log({cmd: "Synch"});
+            connection.send({cmd: "Sync"});
             break;
         case "LocationChecks":
             var checks = [];//List of unlocked locations
