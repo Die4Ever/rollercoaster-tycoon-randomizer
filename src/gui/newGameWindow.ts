@@ -56,7 +56,7 @@ function startGameGui() {
         width: ww,
         height: wh,
         widgets: [].concat(
-            NewLabel('https://discord.gg/jjfKT9nYDR', {
+            NewLabel('Mods4Ever.com/discord', {
                 name: 'url',
                 y: y++,
                 width: 2,

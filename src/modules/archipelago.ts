@@ -53,9 +53,9 @@ class RCTRArchipelago extends ModuleBase {
         //Add menu items
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
         if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
-        self.SubscribeEvent('vehicle.crash',e => self.SendDeathLink(e.id));
-        context.subscribe('action.execute',e => self.LogRide(e.player, e.action, e.result));
-        context.subscribe('interval.tick', e => self.CheckMonopoly());
+        self.SubscribeEvent('vehicle.crash',(e: any) => self.SendDeathLink(e.id));
+        // context.subscribe('action.execute',e => self.LogRide(e.player, e.action, e.result));
+        context.subscribe('interval.tick', (e: any) => self.CheckMonopoly());
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
 
         //Set up actions for multiplayer
@@ -78,7 +78,7 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    SetImportedSettings(imported_settings): void{
+    SetImportedSettings(imported_settings: any): void{
         var self = this;
         console.log("Setting values retrieved from Archipelago");
         switch(imported_settings.difficulty){
@@ -196,11 +196,11 @@ class RCTRArchipelago extends ModuleBase {
         park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0. 
     }
 
-    LogRide(player, action, result): void {//This will eventually be used to identify who built a ride for Deathlink to identify the culprit
-        if(action == "ridecreate"){
-            console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
-        }
-    }
+    // LogRide(player, action, result): void {//This will eventually be used to identify who built a ride for Deathlink to identify the culprit
+    //     if(action == "ridecreate"){
+    //         console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
+    //     }
+    // }
 
     RemoveItems(): void{
         const origNumResearched = park.research.inventedItems.length;
@@ -218,7 +218,7 @@ class RCTRArchipelago extends ModuleBase {
         this.AddChange('NumInventedItems', 'Invented items', origNumResearched, numResearched);
     }
     
-    ReceiveArchipelagoItem(items): void{
+    ReceiveArchipelagoItem(items: any[]): void{
         var self = this;
         console.log("Here's the array of items:");
         console.log(items);
@@ -304,7 +304,7 @@ class RCTRArchipelago extends ModuleBase {
         return;
     }
 
-    AddRide(ride): void{
+    AddRide(ride: any): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items. 
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
@@ -338,7 +338,7 @@ class RCTRArchipelago extends ModuleBase {
         return;
     }
 
-    ActivateTrap(trap): void{
+    ActivateTrap(trap: string): void{
         var self = this;
         switch(trap){
             case "FoodPoison":
@@ -386,8 +386,8 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    ReleaseRule(rule): void{//Function that ends enforcement of detrimental park modifiers
-        var releaseRule = function(rule){
+    ReleaseRule(rule: string): void{//Function that ends enforcement of detrimental park modifiers
+        var releaseRule = function(rule: string){
             switch(rule){
                 case "Easier Guest Generation":
                     park.postMessage(
@@ -427,7 +427,7 @@ class RCTRArchipelago extends ModuleBase {
         runNextTick(releaseRule(rule));
     }
 
-    GrantDiscount(type): any{
+    GrantDiscount(type: string): any{
         if (type == "Land Discount"){
             if(archipelago_settings.current_land_checks >= archipelago_settings.max_land_checks){
                 console.log("Error in GrantDiscount: current land checks greater than max land checks")
@@ -450,13 +450,13 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    AddCash(amount): any{
+    AddCash(amount: any): void{
         amount = amount.replace(/\D/g,'');//Drops the '$' from the amount
         amount = Number(amount);//Converts to a number
         park.cash += amount * 10;//Multiply by 10 to get the dollar amount
     }
 
-    AddGuests(amount): any{
+    AddGuests(amount: any): void{
         amount = amount.replace(/\D/g,'');//Strips everything but the number
         amount = Number(amount);
         context.executeAction("cheatset", {type: 20, param1: amount, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
@@ -525,7 +525,7 @@ class RCTRArchipelago extends ModuleBase {
         return window;
     }
 
-    setWeather(weather): any{
+    setWeather(weather: string): any{
         switch(weather){
             case "Rainstorm":
                 context.executeAction("cheatset", {type: 35, param1: 4, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
@@ -539,7 +539,8 @@ class RCTRArchipelago extends ModuleBase {
             case "Blizzard":
                 context.executeAction("cheatset", {type: 35, param1: 8, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
                 break;
-
+            default:
+                console.log("Error in setWeather: Invalid Weather Type Provided.");
     
         }
     }
@@ -628,7 +629,7 @@ class RCTRArchipelago extends ModuleBase {
         context.executeAction('ExplodeRide', DeathLinkPacket);
     }
 
-    SendDeathLink(vehicleID): any{
+    SendDeathLink(vehicleID: number): any{
         if(archipelago_settings.deathlink_timeout == false) {
             archipelago_settings.deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
             context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
@@ -944,7 +945,7 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    IsVisible(LockedID): boolean{
+    IsVisible(LockedID: number): boolean{
         var CheckID = 0; //We want to limit the locations shown until the correct previous locations have been unlocked
         switch(LockedID){//These unlocks form a tree, with 2 branching nodes until item 6. All further nodes have only 1 branch
             case 0:
@@ -1086,7 +1087,7 @@ class RCTRArchipelago extends ModuleBase {
 }
 
 
-function explodeRide(args){
+function explodeRide(args: any){
     console.log(args);
     const cause = args.args.cause;
     const source = args.args.source;

@@ -8,7 +8,7 @@
         "removeComments": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": false,
-        "noFallthroughCasesInSwitch": false,
+        "noFallthroughCasesInSwitch": true,
         "noImplicitAny": true,
         "noImplicitOverride": false,
         "noImplicitReturns": true,
