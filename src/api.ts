@@ -11,6 +11,7 @@ class APIConnection
     onExpectedCloseCallback: (hadError: any) => void;
     onErrorCallback: (hadError: any) => void;
     onDataCallback: (hadError: any) => void;
+    buffer:string = "";
 
     constructor(name:string, port:number, callback:CallableFunction) {
         this.name = name;
@@ -109,23 +110,33 @@ class APIConnection
         let data: Object = null;
         let resp: Object = null;
 
+        // chop off the null-terminator
+        while(message[message.length-1] == '\0')
+            message = message.substring(0, message.length-1);
+
+        // try
         try {
-            // chop off the null-terminator
-            while(message[message.length-1] == '\0')
-                message = message.substring(0, message.length-1);
             data = JSON.parse(message);
-            info(this.name+" received data: ", data);
+            this.buffer = "";
         } catch(e) {
-            printException('error parsing '+this.name+' request JSON: ' + message, e);
+            try {
+                this.buffer += message;
+                data = JSON.parse(this.buffer);
+                this.buffer = "";
+            }
+            catch(e) {
+                printException('error parsing '+this.name+' request JSON: ' + message, e);
+                return;
+            }
         }
 
         try {
+            info(this.name+" received data: ", data);
             resp = this.callback(data);
+            this.send(resp);
         } catch(e) {
             printException('error handling '+this.name+' request: ' + message, e);
         }
-
-        //this.send(resp);
     }
 
     private reset_timeout() {
