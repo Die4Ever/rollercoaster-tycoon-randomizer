@@ -318,7 +318,7 @@ function archipelagoLocations(){
                                 height: 10,
                                 tooltip: 'Prints Archipelago chats and messages as in game notifications. If your group is chatty, this could be annoying',
                                 isChecked: archipelago_settings.park_message_chat,
-                                onChange: function(isChecked) {
+                                onChange: function(isChecked: boolean) {
                                     var currentWindow = ui.getWindow("archipelago-locations");
                                     archipelago_settings.park_message_chat = isChecked;
                                     saveArchipelagoProgress();
@@ -334,7 +334,7 @@ function archipelagoLocations(){
                                 height: 10,
                                 tooltip: 'Prints Archipelago chats and messages as network chats. This will not work in single player mode',
                                 isChecked: archipelago_settings.network_chat,
-                                onChange: function(isChecked) {
+                                onChange: function(isChecked: boolean) {
                                     var currentWindow = ui.getWindow("archipelago-locations");
                                     archipelago_settings.network_chat = isChecked;
                                     saveArchipelagoProgress();
