@@ -133,7 +133,7 @@ class APIConnection
         try {
             info(this.name+" received data: ", data);
             resp = this.callback(data);
-            this.send(resp);
+            // this.send(resp);
         } catch(e) {
             printException('error handling '+this.name+' request: ' + message, e);
         }

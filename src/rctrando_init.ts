@@ -147,7 +147,8 @@ var archipelago_settings: any = {
     monopoly_complete: false,
     monopoly_x: 1,
     monopoly_y: 1,
-    received_items: []
+    received_items: [],
+    started: false
 };
 
 function _main() {

@@ -218,89 +218,120 @@ class RCTRArchipelago extends ModuleBase {
         this.AddChange('NumInventedItems', 'Invented items', origNumResearched, numResearched);
     }
     
-    ReceiveArchipelagoItem(items: any[]): void{
+    ReceiveArchipelagoItem(items: any[], index: number): void{
         var self = this;
         console.log("Here's the array of items:");
         console.log(items);
-        for(let i = 0; i < items.length; i++){
-            var category = "item";
-            console.log(items[i][0]);
-            if(items[i][0] >= 2000000 && items[i][0] <= 2000116){//This number will need to change if we ever add more items/traps/etc.
-                var item = item_id_to_name[items[i][0]];
-                console.log(item);
-                if(item.indexOf("Trap") > -1)
-                category = "trap";
-                if(RideType[item])//Any item that fits a ride type is a ride
-                category = "ride";
-                if(item.indexOf("$") > -1)
-                category = "cash";
-                if(item.indexOf("Guests") > -1)
-                category = "guests";
-                if(category == "item"){//Check the actual item if none of the above works out
-                    switch(item){
-                        case "scenery":
-                            category = "scenery";
-                            break;
-                        case "Land Discount":
-                        case "Construction Rights Discount":
-                            category = "discount";
-                            break;
-                        case "Easier Guest Generation":
-                        case "Easier Park Rating":
-                        case "Allow High Construction":
-                        case "Allow Landscape Changes":
-                        case "Allow Marketing Campaigns":
-                        case "Allow Tree Removal":
-                            category = "rule";
-                            break;
-                        case "Beauty Contest":
-                            category = "beauty";
-                            break;
-                        case "Rainstorm":
-                        case "Thunderstorm":
-                        case "Snowstorm":
-                        case "Blizzard":
-                            category = "weather"
-                            break;
-                    }
+        var compare_list: any = [];
+        if(index == 0){
+            for(let i = 0; i < items.length; i++){
+                if (compare_list.indexOf(items[i][0]) > -1){//Check if item on the list already
+                    compare_list.indexOf(items[i][0])[1] ++;//Add 1 to the count
                 }
-                
-                switch(category){
-                    case "ride":
-                        self.AddRide(RideType[item]);
-                        break;
-                    case "stall":
-                        self.AddRide(item);
-                        break;
-                    case "trap":
-                        self.ActivateTrap(item);
-                        break;
-                    case "rule":
-                        self.ReleaseRule(item);
-                        break;
-                    case "scenery":
-                        self.AddScenery();
-                        break;
-                    case "discount":
-                        self.GrantDiscount(item);
-                        break;
-                    case "cash":
-                        self.AddCash(item)
-                        break;
-                    case "guests":
-                        self.AddGuests(item)
-                        break;
-                    case "beauty":
-                        self.BeautyContest();
-                        break;
-                    case "weather":
-                        self.setWeather(item)
-                        break;
-                    default:
-                        console.log("Error in ReceiveArchipelagoItem: category not found");
+                else{
+                    compare_list.push([items[i][0], 1]);//Create the new item on the list.
+                }
+                console.log(compare_list);
+            }
+        }
+        else{
+            compare_list = archipelago_settings.received_items.slice();//Stupid p*cking Typescript, throwing refrences arround in the air like it just don't care
+            for(let i = 0; i < items.length; i++){
+                if (compare_list.indexOf(items[i][0]) > -1){//Item, Location, Player, Flags, Class
+                    compare_list.indexOf(items[i][0])[1] ++;//Add 1 to the count
+                }
+                else{
+                    compare_list.push([items[i][0], 1]);//Create the new item on the list.
                 }
             }
         }
+        for(let i = 0; i < compare_list.length; i++){//Each item
+            for(let j = 0; j < compare_list[i][1]; j++){//Each instance of item
+                var category = "item";
+                let compare_number = archipelago_settings.received_items[i];
+                if (compare_number === undefined)
+                compare_number = 0;
+                if(compare_list[i][j] > compare_number){//If its not on the list already
+                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000116){//This number will need to change if we ever add more items/traps/etc.
+                        var item = item_id_to_name[compare_list[i][0]];
+                        console.log(item);
+                        if(item.indexOf("Trap") > -1)
+                        category = "trap";
+                        if(RideType[item])//Any item that fits a ride type is a ride
+                        category = "ride";
+                        if(item.indexOf("$") > -1)
+                        category = "cash";
+                        if(item.indexOf("Guests") > -1)
+                        category = "guests";
+                        if(category == "item"){//Check the actual item if none of the above works out
+                            switch(item){
+                                case "scenery":
+                                    category = "scenery";
+                                    break;
+                                case "Land Discount":
+                                case "Construction Rights Discount":
+                                    category = "discount";
+                                    break;
+                                case "Easier Guest Generation":
+                                case "Easier Park Rating":
+                                case "Allow High Construction":
+                                case "Allow Landscape Changes":
+                                case "Allow Marketing Campaigns":
+                                case "Allow Tree Removal":
+                                    category = "rule";
+                                    break;
+                                case "Beauty Contest":
+                                    category = "beauty";
+                                    break;
+                                case "Rainstorm":
+                                case "Thunderstorm":
+                                case "Snowstorm":
+                                case "Blizzard":
+                                    category = "weather"
+                                    break;
+                            }
+                        }
+                        
+                        switch(category){
+                            case "ride":
+                                self.AddRide(RideType[item]);
+                                break;
+                            case "stall":
+                                self.AddRide(item);
+                                break;
+                            case "trap":
+                                self.ActivateTrap(item);
+                                break;
+                            case "rule":
+                                self.ReleaseRule(item);
+                                break;
+                            case "scenery":
+                                self.AddScenery();
+                                break;
+                            case "discount":
+                                self.GrantDiscount(item);
+                                break;
+                            case "cash":
+                                self.AddCash(item)
+                                break;
+                            case "guests":
+                                self.AddGuests(item)
+                                break;
+                            case "beauty":
+                                self.BeautyContest();
+                                break;
+                            case "weather":
+                                self.setWeather(item)
+                                break;
+                            default:
+                                console.log("Error in ReceiveArchipelagoItem: category not found");
+                        }
+                    }
+                }
+            }
+        }
+        archipelago_settings.received_items = compare_list;//Save the updated list
+        saveArchipelagoProgress();
         return;
     }
 

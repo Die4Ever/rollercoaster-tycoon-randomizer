@@ -23,6 +23,7 @@ function archipelagoGui(){
         //Until these are implemented, we're going to stick with default values, which should be good enough for debugging
         //We're going to track the objectives ourselves instead
         scenario.objective.type = "haveFun";
+        archipelago_settings.started = true;
         saveArchipelagoProgress();//Save the settings to our Archipelago tracker
         // we need to unpause the game in order for the next tick to run
         var wasPaused = UnpauseGame();
@@ -303,7 +304,7 @@ function archipelagoLocations(){
                                     var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
                                     if (!message)
                                     return;
-                                    archipelago_print_message(message);
+                                    // archipelago_print_message(message);
                                     archipelago_send_message("Say", message);
                                     currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
                                 }
@@ -736,9 +737,21 @@ function archipelagoDebug(){
                     y: 290,
                     width: 200,
                     height: 25,
-                    text: 'Colbys Choice',
+                    text: '\{Cmd: "Sync"\}',
                     onClick: function() {
                         archipelago_send_message("Sync");
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button22',
+                    x: 210,
+                    y: 320,
+                    width: 200,
+                    height: 25,
+                    text: 'Colbys Choice',
+                    onClick: function() {
+                        console.log(archipelago_settings.received_items);
                     }
                 }
            ]

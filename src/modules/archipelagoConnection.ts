@@ -48,6 +48,7 @@ function ac_req(data) {
                 errorMessage += data.errors[i];
             }
             archipelago_print_message(errorMessage);
+            break;
 
         case "PrintJSON"://Packet with data to print to the screen
             archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
@@ -118,7 +119,9 @@ function ac_req(data) {
             break;
 
         case "ReceivedItems":
-            Archipelago.ReceiveArchipelagoItem(data.items);
+            if (archipelago_settings.started){//We don't want to apply all the previously received items before we start the game.
+                Archipelago.ReceiveArchipelagoItem(data.items, data.index);
+            }
             break;
 
         case "LocationInfo":
@@ -138,12 +141,11 @@ var connection = null;
 function init_archipelago_connection() {
     console.log("Hello?");
     connection = new APIConnection("Archipelago", 38280, ac_req);
-    // connection.send({"password":"","game":"OpenRCT2","name":"Colby","items_handling":"0b011"})
 }
 
 
 
-function archipelago_print_message(message) {
+function archipelago_print_message(message: string) {
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
     if(messageLog)
     messageLog.push(message);
@@ -162,18 +164,16 @@ function archipelago_print_message(message) {
         network.sendMessage(message);
 
     }
-
-    // var lockedWindow = ui.getWindow("archipelago-locations");
-    // lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();
 }
 
-function archipelago_send_message(type, message?) {
+function archipelago_send_message(type: string, message?: any) {
     switch(type){//Gotta fill these in as we improve crud
         case "Connect":
             console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
             break;
         case "ConnectUpdate":
             console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
+            break;
         case "Sync":
             connection.send({cmd: "Sync"});
             break;
@@ -202,6 +202,7 @@ function archipelago_send_message(type, message?) {
             break;
         case "Get":
             connection.send({cmd: "Get", keys: []});
+            break;
         case "Set":
             break;
         case "SetNotify":
