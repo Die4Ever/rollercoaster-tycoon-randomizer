@@ -74,7 +74,7 @@ class RCTRArchipelago extends ModuleBase {
             // archipelago_objectives = {Guests: [300, false], ParkValue: [100000, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
             context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
             // context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
-            ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+            // ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
         }
     }
 
@@ -1094,6 +1094,7 @@ class RCTRArchipelago extends ModuleBase {
                     Locked.splice(item,1);
                     archipelago_locked_locations = Locked;
                     archipelago_unlocked_locations = Unlocked;
+                    console.log(archipelago_locked_locations);
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var lockedWindow = ui.getWindow("archipelago-locations");
                     lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();

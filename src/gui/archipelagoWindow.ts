@@ -737,7 +737,7 @@ function archipelagoDebug(){
                     y: 290,
                     width: 200,
                     height: 25,
-                    text: '\{Cmd: "Sync"\}',
+                    text: 'Cmd: "Sync"',
                     onClick: function() {
                         archipelago_send_message("Sync");
                     }
@@ -751,7 +751,30 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        console.log(archipelago_settings.received_items);
+                        // console.log(archipelago_settings.received_items);
+                        // archipelago_print_message
+                        var window = ui.openWindow({
+                            classification: 'rain-check',
+                            title: "Official Archipelago Rain Check",
+                            width: 400,
+                            height: 300,
+                            colours: [7,7],
+                            widgets: [].concat(
+                                [
+                                    {
+                                        type: 'label',
+                                        name: 'Debug-Label',
+                                        x: 0,
+                                        y: 50,
+                                        width: 400,
+                                        height: 26,
+                                        text: 'Colby {RED} is {WHITE} very {PURPLE} cool{WHITE} indeed!',
+                                        tooltip: "Y'all's sure do {MAGENTA}talk a lot, don't you?"
+                                    }
+                                ]
+                            )
+                        });
+                        return window;
                     }
                 }
            ]

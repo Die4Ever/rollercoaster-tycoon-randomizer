@@ -54,12 +54,42 @@ function ac_req(data) {
             archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
             switch(data.type){
                 case "ItemSend":
-                    var itemMessage = archipelagoPlayers[(data.data[0].text) - 1];
-                    itemMessage += data.data[1].text;
-                    itemMessage += data.data[2].text;
-                    itemMessage += data.data[3].text;
-                    itemMessage += "You know what? Future Colby will figure out the rest when the actual Archipelago connection is working";
-                    archipelago_print_message(itemMessage);
+                    let message = "";
+                    for (let i = 0; i < data.data.length; i++){
+                        let color = "";
+                        if(data.data[i].color){
+                            switch(data.data[i].color){
+                                case "black":
+                                    color = "BLACK";
+                                    break;
+                                case "red":
+                                    color = "RED"
+                                    break;
+                                case "green":
+                                    color = "GREEN"
+                                    break;
+                                case "yellow":
+                                    color = "YELLOW";
+                                    break;
+                                case "blue":
+                                case "cyan":
+                                    color = "BABYBLUE";
+                                    break;
+                                case "magenta":
+                                case "plum":
+                                    color = "PALELAVENDER";
+                                    break;
+                                case "white":
+                                    color = "WHITE";
+                                    break;
+                            }
+                            message += '{' + color + '}' + data.data[i].text + '{WHITE}';
+                        }
+                        else{
+                            message += data.data[i].text;
+                        }
+                    }
+                    archipelago_print_message(message);
                     break;
 
                 case "ItemCheat":
@@ -182,7 +212,7 @@ function archipelago_send_message(type: string, message?: any) {
             for (let i = 0; i < message.length; i++){
                 checks.push(message[i].LocationID + 2000000);//OpenRCT2 has reserved the item ID space starting at 2000000
             }
-            console.log({cmd: "LocationChecks", locations: checks});
+            connection.send({cmd: "LocationChecks", locations: checks});
             break;
         // case "LocationScouts":
         //     break;
