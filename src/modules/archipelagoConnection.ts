@@ -73,6 +73,7 @@ function ac_req(data) {
                                     break;
                                 case "blue":
                                 case "cyan":
+                                case "slateblue":
                                     color = "BABYBLUE";
                                     break;
                                 case "magenta":
@@ -89,6 +90,7 @@ function ac_req(data) {
                             message += data.data[i].text;
                         }
                     }
+                    console.log(message);
                     archipelago_print_message(message);
                     break;
 

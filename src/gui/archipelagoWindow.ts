@@ -160,22 +160,6 @@ function archipelagoLocations(){
                                 items: Archipelago.CreateLockedList(),
                                 scrollbars: 'none',
                                 onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)
-                            },
-                            {
-                                type: 'button',
-                                name: 'debug-button',
-                                x: 300,
-                                y: 300,
-                                width: 100,
-                                height: 26,
-                                text: 'Colbys Debug Button. No Touchy!',
-                                onClick: function() {
-                                    console.log("dangit");
-                                    //console.log(map.getAllEntities('car')[1]);
-                                    // for (var i = 0; i < map.numEntities; i++) {//get every entity on the map
-                                    //     console.log(map.getEntity(i));//load data for the entity;
-
-                                }
                             }
                         ]
                     )
@@ -204,20 +188,6 @@ function archipelagoLocations(){
                                 height: 200,
                                 isStriped: true,
                                 items: Archipelago.CreateUnlockedList()
-                            },
-                            {
-                                type: 'button',
-                                name: 'debug-button',
-                                x: 125,
-                                y: 300,
-                                width: 100,
-                                height: 26,
-                                text: 'Colbys Debug Button. No Touchy!',
-                                onClick: function() {
-                                    scenario.objective.type = "haveFun";
-
-
-                                }
                             }
                         ]
                     )
