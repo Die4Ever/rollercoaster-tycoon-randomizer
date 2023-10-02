@@ -29,15 +29,23 @@ function ac_req(data) {
             break;
         case "Connected"://Packet stating player is connected to the Archipelago game
             archipelagoPlayers = [];
+            var multiworld_games = []
             for(let i=0; i<data.players.length; i++) {
                 //Create guest list populated with Player names
                 archipelagoPlayers.push(data.players[i][2]);
+                multiworld_games.push(data.slot_info[i + 1][1]);
             }
+            console.log(data.slot_info);
             console.log("Here's our players:");
             console.log(archipelagoPlayers);
             context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
             Archipelago.SetNames();
             context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
+            
+            archipelago_settings.multiworld_games = multiworld_games;
+            console.log("Here's the games in the multiworld:");
+            console.log(archipelago_settings.multiworld_games);
+
             if(!archipelago_init_received)
             Archipelago.SetImportedSettings(data.slot_data);
             break;
@@ -120,15 +128,47 @@ function ac_req(data) {
             }
             break;
 
-        case "DataPacket":
-            var item_name_to_id = [];
-            var location_name_to_id = [];
-            for (let i = 0; i < data.data.length; i++){//Might be wrong. Take a look future Colby.
-                item_name_to_id.push(data.data[i].games[1].item_name_to_id);
-                location_name_to_id.push(data.data[i].games[i].location_name_to_id);
+        case "DataPackage":
+            var item_name_to_id = {};
+            var item_id_to_name = {};
+            var location_name_to_id = {};
+            var location_id_to_name = {};
+
+            function mergeObjects(target: { [key: string]: any }, source: { [key: string]: any }): void {
+                for (const key in source) {
+                  if (source.hasOwnProperty(key)) {
+                    target[key] = source[key];
+                  }
+                }
+              }
+
+            function flipObject(obj: { [key: string]: any }): { [key: string]: string } {
+                const flippedObject: { [key: string]: string } = {};
+              
+                for (const key in obj) {
+                  if (obj.hasOwnProperty(key)) {
+                    const value = obj[key];
+                    flippedObject[value] = key;
+                  }
+                }
+              
+                return flippedObject;
+              }
+            for (let i = 0; i < data.data.games.length; i++){//For every game in this game of Archipelago
+                mergeObjects(item_name_to_id, data.data.games[i].item_name_to_id);
+                mergeObjects(location_name_to_id, data.data.games[i].location_name_to_id);
             }
-            context.getParkStorage().set("RCTRando.ArchipelagoItemNameToID",item_name_to_id);
-            context.getParkStorage().set("RCTRando.ArchipelagoLocationNameToID",location_name_to_id);
+            item_id_to_name = flipObject(item_name_to_id);
+            location_id_to_name = flipObject(location_name_to_id);
+
+            full_item_id_to_name = item_id_to_name;
+            full_location_id_to_name = location_id_to_name;
+
+            context.getParkStorage().set("RCTRando.ArchipelagoItemIDToName",full_item_id_to_name);
+            context.getParkStorage().set("RCTRando.ArchipelagoLocationIDToName",full_location_id_to_name);
+
+            console.log(full_item_id_to_name);
+            console.log(full_location_id_to_name);
             break;
 
         case "Bounced":
@@ -226,6 +266,7 @@ function archipelago_send_message(type: string, message?: any) {
             connection.send({cmd: "Say", text: message});
             break;
         case "GetDataPackage":
+            connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games});
             break;
         case "Bounce":
             if(message.tag == "DeathLink"){
