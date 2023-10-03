@@ -11,6 +11,8 @@ class RCTRArchipelago extends ModuleBase {
         // self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives()});
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         archipelago_send_message("Sync");
+        context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 1500);//We have to stagger these to not break the connection.
+        context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000);
         if (archipelago_settings.rule_locations){//Setting rules for Archipelago, dictated by the YAML
             var setRules = function(){
                 park.setFlag("difficultGuestGeneration", true);
@@ -43,11 +45,13 @@ class RCTRArchipelago extends ModuleBase {
         if (!settings.rando_archipelago)//Don't P*ck with the game if we're not playing Archipelago
             return;
         //Load saved progress
-        archipelago_locked_locations = context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations');
-        archipelago_unlocked_locations = context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations');
-        archipelago_location_prices = context.getParkStorage().get('RCTRando.ArchipelagoLocationPrices');
-        archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
-        archipelago_settings = context.getParkStorage().get('RCTRando.ArchipelagoSettings');
+        if(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations')){//Don't break the lists if nothings saved yet.
+            archipelago_locked_locations = context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations');
+            archipelago_unlocked_locations = context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations');
+            archipelago_location_prices = context.getParkStorage().get('RCTRando.ArchipelagoLocationPrices');
+            archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
+            archipelago_settings = context.getParkStorage().get('RCTRando.ArchipelagoSettings');
+        }
         //Set up daily events
         self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives(); self.SetNames();});
         //Add menu items
@@ -68,8 +72,8 @@ class RCTRArchipelago extends ModuleBase {
 
         if(bDebug){
             // archipelago_settings.location_information = 'Full';
-            archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
-            archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
+            // archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
+            // archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
             // archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
             // archipelago_objectives = {Guests: [300, false], ParkValue: [100000, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false]};
             // context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
@@ -743,6 +747,7 @@ class RCTRArchipelago extends ModuleBase {
         var self = this;
         var locked = [];
         var location = archipelago_locked_locations;
+        // console.log(location);
         var prices = archipelago_location_prices;
         for(var i = 0; i < location.length; i++){//Loop through every locked location
             if (self.IsVisible(location[i].LocationID)){
@@ -753,6 +758,7 @@ class RCTRArchipelago extends ModuleBase {
                     var prereqs = prices[location[i].LocationID].RidePrereq;
                     
                     var cost = "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                    // console.log(prereqs);
                     if(prereqs.length != 0) {//Handle prerequisites 
                         cost += " + " + prereqs[0].toString() + " ";
                         cost += prereqs[1] + "(s)";

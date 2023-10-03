@@ -560,7 +560,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Decision',
                     onClick: function() {
-                        archipelago_send_message("GetDataPackage");
+                        console.log(archipelago_locked_locations);
                     }
                 },
                 {

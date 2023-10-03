@@ -106,7 +106,7 @@ function SaveSettings() {
 
 function ArchipelagoSaveLocations(LockedLocations, UnlockedLocations) {
     try {
-        archipelago_send_message("LocationChecks", UnlockedLocations);
+        context.setTimeout(() => {archipelago_send_message("LocationChecks", UnlockedLocations)}, 1500);
         context.getParkStorage().set('RCTRando.ArchipelagoLockedLocations', LockedLocations);
         context.getParkStorage().set('RCTRando.ArchipelagoUnlockedLocations', UnlockedLocations);
         console.log("Location lists updated!");

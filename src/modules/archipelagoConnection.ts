@@ -19,7 +19,7 @@ if(context.apiVersion >= 75)
 function ac_req(data) {
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
     // console.log(data);
-    var archipelagoPlayers = [];
+    var archipelagoPlayers: string[] = [];
     switch(data.cmd){
         case "RoomInfo":
             archipelago_settings.current_time = data.time;
@@ -134,8 +134,11 @@ function ac_req(data) {
             var location_name_to_id = {};
             var location_id_to_name = {};
 
+            console.log("Received DataPackage, setting translation tables");
+
             function mergeObjects(target: { [key: string]: any }, source: { [key: string]: any }): void {
                 for (const key in source) {
+                    console.log(key);
                   if (source.hasOwnProperty(key)) {
                     target[key] = source[key];
                   }
@@ -154,9 +157,11 @@ function ac_req(data) {
               
                 return flippedObject;
               }
-            for (let i = 0; i < data.data.games.length; i++){//For every game in this game of Archipelago
-                mergeObjects(item_name_to_id, data.data.games[i].item_name_to_id);
-                mergeObjects(location_name_to_id, data.data.games[i].location_name_to_id);
+            for (const gameName in data.data.games){//For every game in this game of Archipelago
+                if (data.data.games.hasOwnProperty(gameName)) {
+                    mergeObjects(item_name_to_id, data.data.games[gameName].item_name_to_id);
+                    mergeObjects(location_name_to_id, data.data.games[gameName].location_name_to_id);
+                }                
             }
             item_id_to_name = flipObject(item_name_to_id);
             location_id_to_name = flipObject(location_name_to_id);
@@ -197,15 +202,11 @@ function ac_req(data) {
             break;
 
         case "LocationInfo":
+            const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
             for(let i = 0; i < data.locations.length; i++){
-                var locationMessage = "Your ";
-                locationMessage += data.locations[i].item;
-                locationMessage += " is at "
-                locationMessage += data.locations[i].player;
-                locationMessage += "'s ";
-                locationMessage += data.locations[i].location;
-                archipelago_print_message(locationMessage);
+                archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1]})
             }
+            ArchipelagoSaveLocations(archipelago_locked_locations,[]);
     }
     return;
 }
@@ -256,8 +257,13 @@ function archipelago_send_message(type: string, message?: any) {
             }
             connection.send({cmd: "LocationChecks", locations: checks});
             break;
-        // case "LocationScouts":
-        //     break;
+        case "LocationScouts":
+            var wanted_locations = [];
+            for(let i = 0; i < archipelago_location_prices.length; i++){
+                wanted_locations.push(2000000 + i);
+            }
+            connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
+            break;
         case "StatusUpdate":
             console.log({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
             break;
