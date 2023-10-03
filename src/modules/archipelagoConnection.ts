@@ -226,8 +226,10 @@ function archipelago_print_message(message: string) {
     messageLog = [message];
     context.getParkStorage().set("RCTRando.MessageLog", messageLog);
     var lockedWindow = ui.getWindow("archipelago-locations");
-    if(lockedWindow)
-    lockedWindow.findWidget<ListViewWidget>("message-list").items = messageLog;
+    if(lockedWindow){//If the archipelago window is open
+        if(lockedWindow.findWidget<ListViewWidget>("message-list"))//If the player is on the chat tab
+        lockedWindow.findWidget<ListViewWidget>("message-list").items = messageLog;
+    }
     if(archipelago_settings.park_message_chat){
         park.postMessage(
             {type: 'blank', text: message} as ParkMessageDesc
