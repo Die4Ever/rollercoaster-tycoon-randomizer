@@ -52,6 +52,9 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
             archipelago_settings = context.getParkStorage().get('RCTRando.ArchipelagoSettings');
         }
+        //Set up connection to client
+        if (!archipelago_connected_to_game)
+        init_archipelago_connection();
         //Set up daily events
         self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives(); self.SetNames();});
         //Add menu items
@@ -193,9 +196,18 @@ class RCTRArchipelago extends ModuleBase {
         context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
         saveArchipelagoProgress();
 
+        var scenario_name: string = scenario.name.toLowerCase();
+        console.log("Game expects: " + scenario_name + "\nArchipelago provided: " + ScenarioName[imported_settings.scenario]);
+        if(ScenarioName[imported_settings.scenario] == scenario_name)
+        archipelago_correct_scenario = true;
+        else{
+            archipelago_correct_scenario = false;
+            ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Correct-scenario").text = "{RED}WARNING!{WHITE} Archipelagos scenario does not match this one. Please open: " + ScenarioName[imported_settings.scenario];
+        }
+
         archipelago_connected_to_server = true;
         ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the server!";
-        ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server;
+        ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario;
     }
 
     SetArchipelagoResearch(): void {

@@ -72,13 +72,22 @@ class APIConnection
         if(settings.rando_archipelago){
             archipelago_connected_to_game = false;
             try {
+                if (ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game"))
                 ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
-                ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = (!archipelago_connected_to_game || !archipelago_connected_to_server);
-                console.log(archipelago_connected_to_server);
+                ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = (!archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario);
             }
             catch{
                 console.log("Looks like the Archipelago window isn't open.");
             }
+            try {
+                if (ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
+                ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
+                console.log(archipelago_connected_to_server);
+            }
+            catch{
+                console.log("Looks like the Archipelago Shop isn't open");
+            }
+            
         }
         this.good = false;
         this.connect();
@@ -203,8 +212,22 @@ class APIConnection
                 );
                 if(settings.rando_archipelago){
                     archipelago_connected_to_game = true;
-                    ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game").text = "The Archipelago Client is connected to the game!";
-                    ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server;
+                    try {
+                        if (ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game")){
+                            ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game").text = "The Archipelago Client is connected to the game!";
+                            ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario;
+                        }
+                    }
+                    catch {
+                        console.log("Looks like the setup window isn't open.")
+                    }
+                    try{
+                        if(ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
+                        ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the game!";
+                    }
+                    catch{
+                        console.log("Looks like the unlock shop isn't open.");
+                    }
                 }
             }
             self.good = true;

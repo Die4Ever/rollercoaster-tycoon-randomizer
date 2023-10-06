@@ -3,7 +3,7 @@
 
 function archipelagoGui(){
     var ww = 350;
-    var wh = 175;
+    var wh = 225;
     let y = 0;
 
     var onStart = function() {
@@ -62,6 +62,12 @@ function archipelagoGui(){
                 width: 2,
                 tooltip: "Too bad this font doesn't support emoji. :("
             }),
+            NewLabel("", {
+                name: 'Correct-scenario',
+                y: y++,
+                width: 2,
+                tooltip: "Writing code to figure this out specifically was kind of a pain."
+            }),
             [{
                 type: 'button',
                 name: 'cancel-button',
@@ -88,7 +94,7 @@ function archipelagoGui(){
                 height: 26,
                 text: 'Start Game!',
                 tooltip: 'Starts your game of Archipelago!',
-                isDisabled: (!archipelago_connected_to_game || !archipelago_connected_to_server),
+                isDisabled: (!archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario),
                 onClick: function() {
                     onStart();
                     console.log("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");
@@ -126,7 +132,7 @@ function archipelagoLocations(){
                 else if (currentWindow.tabIndex == 2){
                     currentWindow.findWidget<ListViewWidget>("objective-list").items = Archipelago.CreateObjectiveList();
                 }
-                else{
+                else if (currentWindow.tabIndex == 3){
                     currentWindow.findWidget<ListViewWidget>("message-list").items = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
                     currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = archipelago_settings.park_message_chat;
                     currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = archipelago_settings.network_chat;
@@ -160,6 +166,16 @@ function archipelagoLocations(){
                                 items: Archipelago.CreateLockedList(),
                                 scrollbars: 'none',
                                 onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)
+                            },
+                            {
+                                type: 'label',
+                                name: 'Connected-to-server',
+                                x: 200,
+                                y: 300,
+                                width: 300,
+                                height: 26,
+                                text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                                tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
                             }
                         ]
                     )
@@ -188,6 +204,16 @@ function archipelagoLocations(){
                                 height: 200,
                                 isStriped: true,
                                 items: Archipelago.CreateUnlockedList()
+                            },
+                            {
+                                type: 'label',
+                                name: 'Connected-to-server',
+                                x: 200,
+                                y: 300,
+                                width: 300,
+                                height: 26,
+                                text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                                tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
                             }
                         ]
                     )
@@ -218,6 +244,16 @@ function archipelagoLocations(){
                                 isStriped: true,
                                 scrollbars: 'none',
                                 items: Archipelago.CreateObjectiveList()
+                            },
+                            {
+                                type: 'label',
+                                name: 'Connected-to-server',
+                                x: 200,
+                                y: 300,
+                                width: 300,
+                                height: 26,
+                                text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                                tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
                             }
                         ]
                     )
@@ -560,7 +596,9 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Decision',
                     onClick: function() {
-                        console.log(archipelago_locked_locations);
+                        console.log(scenario.name);
+                        console.log(ScenarioName[0]);
+                        archipelago_settings.location_information = locationInfo.Full;
                     }
                 },
                 {

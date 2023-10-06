@@ -216,8 +216,6 @@ function init_archipelago_connection() {
     connection = new APIConnection("Archipelago", 38280, ac_req);
 }
 
-
-
 function archipelago_print_message(message: string) {
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
     if(messageLog)
