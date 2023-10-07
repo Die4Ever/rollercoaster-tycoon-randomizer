@@ -4,11 +4,10 @@
 class RCTRArchipelago extends ModuleBase {
     FirstEntry(): void {//Loads on park starting for first time. Something in my code calls it as well
         var self = this;
+        // self.RemoveItems();// Used to get the full list of items and scenery for Archipelago
         info("Module to handle connecting and communicating with Archipelago");
         if(!settings.rando_archipelago)
             return;
-        //Disable standard research by resetting research status to 0 and funding to none every in game day
-        // self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives()});
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         archipelago_send_message("Sync");
         context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 1500);//We have to stagger these to not break the connection.
@@ -44,6 +43,8 @@ class RCTRArchipelago extends ModuleBase {
         var self = this;
         if (!settings.rando_archipelago)//Don't P*ck with the game if we're not playing Archipelago
             return;
+        //Connection Stuff
+        context.setTimeout(() => {self.SendStatus();}, 4500);
         //Load saved progress
         if(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations')){//Don't break the lists if nothings saved yet.
             archipelago_locked_locations = context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations');
@@ -178,6 +179,9 @@ class RCTRArchipelago extends ModuleBase {
         if(archipelago_objectives.Monopoly[0])
         self.SetPurchasableTiles();
 
+        archipelago_settings.rule_locations = imported_settings.rules;
+        console.log("Park Rules are enabled: " + archipelago_settings.rule_locations);
+
         switch(imported_settings.visibility){
             case 0: 
                 archipelago_settings.location_information = "None"
@@ -225,6 +229,20 @@ class RCTRArchipelago extends ModuleBase {
         const origNumResearched = park.research.inventedItems.length;
         let numResearched = 0;
         let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
+
+        //Used to show what items are in the scenario
+        // var items: any = [];
+        // for(let i = 0; i < researchItems.length; i++){
+            // if(researchItems[i].category == "scenery")
+            // items.push("scenery");
+            // else
+            // items.push(RideType[researchItems[i].rideType]);
+        // }
+        // console.log("\n\n\n\n\n");
+        // console.log(scenario.name);
+        // console.log(JSON.stringify(items));
+        // console.log("\n\n\n\n\n");
+
         for(let i=0; i<researchItems.length; i++) {//We still randomize the items since finding multiple copies will unlock different vehicles
             let a = researchItems[i];
             let slot = rng(0, researchItems.length - 1);
@@ -943,13 +961,16 @@ class RCTRArchipelago extends ModuleBase {
             if(archipelago_settings.monopoly_complete)
             archipelago_objectives.Monopoly[1] = true;
         }
+        else {//If Monopoly isn't enabled, autoset to true
+            archipelago_objectives.Monopoly[1] = true;
+        }
         //Check if all conditions are met
         if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true && 
             archipelago_objectives.RollerCoasters[6] == true && archipelago_objectives.RideIncome[1] == true && 
             archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true && 
             archipelago_objectives.LoanPaidOff[1] == true &&
             archipelago_objectives.Monopoly[1] == true){
-            context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+            context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => archipelago_send_message("StatusUpdate", 30));
             
         }
         
@@ -1135,6 +1156,21 @@ class RCTRArchipelago extends ModuleBase {
         }
         
         return;
+    }
+
+    SendStatus(): any{
+        var self = this;
+        if(archipelago_connected_to_server){
+            if(scenario.status == "completed"){//Goal Complete
+                archipelago_send_message("StatusUpdate", 30)
+            }
+            else{//Just Playing
+                archipelago_send_message("StatusUpdate", 20)
+            }
+        }
+        else{
+            context.setTimeout(() => {self.SendStatus();}, 1500);
+        }
     }
 
 

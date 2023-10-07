@@ -48,6 +48,8 @@ function ac_req(data) {
 
             if(!archipelago_init_received)
             Archipelago.SetImportedSettings(data.slot_data);
+
+            archipelago_connected_to_server = true;
             break;
 
         case "ConnectionRefused"://Packet stating an error has occured in connecting to the Archipelago game
@@ -265,7 +267,7 @@ function archipelago_send_message(type: string, message?: any) {
             connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
             break;
         case "StatusUpdate":
-            console.log({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
+            connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
             break;
         case "Say":
             console.log({cmd: "Say", text: message});
@@ -274,7 +276,7 @@ function archipelago_send_message(type: string, message?: any) {
         case "GetDataPackage":
             connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games});
             break;
-        case "Bounce":
+        case "Bounce"://Fix
             if(message.tag == "DeathLink"){
                 connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: "Colby"}});
             }
