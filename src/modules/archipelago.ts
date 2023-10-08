@@ -1067,6 +1067,10 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     PurchaseItem(item: number): any{
+        if(spam_timeout){
+            ui.showError("Spam Purchase Error", "Spam may be the fastest way to a vikings heart, but it's also the fastest way to break the connection to the client, and that would be frustrating for everybody. Try again in a second.");
+            return;
+        }
         var self = this;
         console.log("Purchasing item number:");
         console.log(item);
@@ -1161,6 +1165,8 @@ class RCTRArchipelago extends ModuleBase {
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var lockedWindow = ui.getWindow("archipelago-locations");
                     lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();
+                    spam_timeout = true;
+                    context.setTimeout(() => {spam_timeout = false;}, 5000);
                 }
                 else{
                     ui.showError("Prerequisites not met", "One or more of the prerequisites for this unlock have not been fulfilled");

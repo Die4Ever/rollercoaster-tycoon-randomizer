@@ -14,7 +14,8 @@ class RCTRArchipelagoConnection extends ModuleBase {
 
 if(context.apiVersion >= 75)
     registerModule(new RCTRArchipelagoConnection());
-var send_timeout = false;
+var send_timeout = false; //For plugin side sends
+var spam_timeout = false; //For user side sends
 
 function ac_req(data) {
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
