@@ -1056,6 +1056,8 @@ class RCTRArchipelago extends ModuleBase {
                 CheckID = LockedID - 8;
             break;
         }
+        // console.log("Locked ID is: " + String(LockedID));
+        // console.log("CheckID is: " + String(CheckID));
         for(var i = 0; i < archipelago_unlocked_locations.length; i++){
             if (CheckID == archipelago_unlocked_locations[i].LocationID)
             return true;
@@ -1066,13 +1068,29 @@ class RCTRArchipelago extends ModuleBase {
 
     PurchaseItem(item: number): any{
         var self = this;
-        console.log("Purchasing location number:");
+        console.log("Purchasing item number:");
         console.log(item);
         let Locked = archipelago_locked_locations;
         let Unlocked = archipelago_unlocked_locations;
         let Prices = archipelago_location_prices;
         let LocationID = Locked[item].LocationID;
-        let Prereqs = Prices[LocationID].RidePrereq;
+        let wantedItem = 0;
+        let counter = 0;
+        for(let i = 0; i < Locked.length; i++){
+            if(self.IsVisible(Locked[i].LocationID)){
+                if(item == counter){
+                    LocationID = Locked[i].LocationID;
+                    wantedItem = i;
+                    console.log("Here's the locationID: " + String(LocationID));
+                    break;
+                }
+                else
+                counter ++;
+            }
+        }
+        let Prereqs = Prices[LocationID].RidePrereq;//Have to get LocationID before we can properly check Prereqs
+
+        console.log(Prices[LocationID]);
         if(Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0){//Check if player has enough cash or if the price is 0.
             if(Prices[LocationID].Lives <= park.guests){//Check if the player has enough guests to sacrifice
                 var NumQualifiedRides = 0;
@@ -1120,6 +1138,7 @@ class RCTRArchipelago extends ModuleBase {
                     }
                 }
                 if(!Prereqs.length || NumQualifiedRides >= Prereqs[0]){
+                    console.log("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
                     if(Prices[LocationID].Lives != 0){//Code to explode guests
                     var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
                         if(doomed < map.getAllEntities("guest").length){//Explode either the doomed amount, or every guest in the park, whichever is less
@@ -1134,8 +1153,8 @@ class RCTRArchipelago extends ModuleBase {
                         }
                     }
                     park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
-                    Unlocked.push(Locked[item]);
-                    Locked.splice(item,1);
+                    Unlocked.push(Locked[wantedItem]);
+                    Locked.splice(wantedItem,1);
                     archipelago_locked_locations = Locked;
                     archipelago_unlocked_locations = Unlocked;
                     console.log(archipelago_locked_locations);
