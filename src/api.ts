@@ -87,7 +87,7 @@ class APIConnection
             catch{
                 console.log("Looks like the Archipelago Shop isn't open");
             }
-            
+
         }
         this.good = false;
         this.connect();
@@ -119,9 +119,8 @@ class APIConnection
         let data: Object = null;
         let resp: Object = null;
 
-        // chop off the null-terminator
-        while(message[message.length-1] == '\0')
-            message = message.substring(0, message.length-1);
+        let packets = message.split('\0')
+        message = packets[0];
 
         // try
         try {
@@ -145,6 +144,14 @@ class APIConnection
             // this.send(resp);
         } catch(e) {
             printException('error handling '+this.name+' request: ' + message, e);
+        }
+
+        if(packets.length > 1) {
+            packets = packets.slice(1);
+            message = packets.join('\0');
+            if(message.length > 1) {
+                this.onData(message);
+            }
         }
     }
 
