@@ -881,8 +881,9 @@ class RCTRArchipelago extends ModuleBase {
         else{
             archipelago_objectives.Guests[1] = false;
         }
-
-        if (park.value >= (Number(archipelago_objectives.ParkValue[0])/10)){
+        console.log("Current park value: " + String(park.value));
+        console.log("Park value objective: "+ String(archipelago_objectives.ParkValue));
+        if (park.value >= (Number(archipelago_objectives.ParkValue[0])*10)){
             archipelago_objectives.ParkValue[1] = true;
         }
         else{
