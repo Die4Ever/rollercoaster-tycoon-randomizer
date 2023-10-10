@@ -152,6 +152,7 @@ var archipelago_settings: any = {
     monopoly_y: 1,
     multiworld_games: [],
     received_items: [],
+    player: "",
     started: false
 };
 

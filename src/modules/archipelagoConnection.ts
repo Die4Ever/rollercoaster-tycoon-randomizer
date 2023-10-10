@@ -47,6 +47,8 @@ function ac_req(data) {
             console.log("Here's the games in the multiworld:");
             console.log(archipelago_settings.multiworld_games);
 
+            archipelago_settings.player = archipelagoPlayers[data.slot - 1];
+
             if(!archipelago_init_received)
             Archipelago.SetImportedSettings(data.slot_data);
 
@@ -282,7 +284,7 @@ function archipelago_send_message(type: string, message?: any) {
                     break;
                 case "Bounce"://Fix
                     if(message.tag == "DeathLink"){
-                        connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: "Colby"}});
+                        connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: archipelago_settings.player}});
                     }
                     break;
                 case "Get":
