@@ -243,58 +243,65 @@ function archipelago_print_message(message: string) {
 }
 
 function archipelago_send_message(type: string, message?: any) {
-    if (!send_timeout){
-        switch(type){//Gotta fill these in as we improve crud
-            case "Connect":
-                console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
-                break;
-            case "ConnectUpdate":
-                console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
-                break;
-            case "Sync":
-                connection.send({cmd: "Sync"});
-                break;
-            case "LocationChecks":
-                var checks = [];//List of unlocked locations
-                for (let i = 0; i < message.length; i++){
-                    checks.push(message[i].LocationID + 2000000);//OpenRCT2 has reserved the item ID space starting at 2000000
-                }
-                connection.send({cmd: "LocationChecks", locations: checks});
-                break;
-            case "LocationScouts":
-                var wanted_locations = [];
-                for(let i = 0; i < archipelago_location_prices.length; i++){
-                    wanted_locations.push(2000000 + i);
-                }
-                connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
-                break;
-            case "StatusUpdate":
-                connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
-                break;
-            case "Say":
-                console.log({cmd: "Say", text: message});
-                connection.send({cmd: "Say", text: message});
-                break;
-            case "GetDataPackage":
-                connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games});
-                break;
-            case "Bounce"://Fix
-                if(message.tag == "DeathLink"){
-                    connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: "Colby"}});
-                }
-                break;
-            case "Get":
-                connection.send({cmd: "Get", keys: []});
-                break;
-            case "Set":
-                break;
-            case "SetNotify":
-                break;
+    console.log(connection.buffer.length);
+    if (connection.buffer.length == 0){
+        if (!send_timeout){
+            switch(type){//Gotta fill these in as we improve crud
+                case "Connect":
+                    console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
+                    break;
+                case "ConnectUpdate":
+                    console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
+                    break;
+                case "Sync":
+                    connection.send({cmd: "Sync"});
+                    break;
+                case "LocationChecks":
+                    var checks = [];//List of unlocked locations
+                    for (let i = 0; i < message.length; i++){
+                        checks.push(message[i].LocationID + 2000000);//OpenRCT2 has reserved the item ID space starting at 2000000
+                    }
+                    connection.send({cmd: "LocationChecks", locations: checks});
+                    break;
+                case "LocationScouts":
+                    var wanted_locations = [];
+                    for(let i = 0; i < archipelago_location_prices.length; i++){
+                        wanted_locations.push(2000000 + i);
+                    }
+                    connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
+                    break;
+                case "StatusUpdate":
+                    connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
+                    break;
+                case "Say":
+                    console.log({cmd: "Say", text: message});
+                    connection.send({cmd: "Say", text: message});
+                    break;
+                case "GetDataPackage":
+                    connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games});
+                    break;
+                case "Bounce"://Fix
+                    if(message.tag == "DeathLink"){
+                        connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: "Colby"}});
+                    }
+                    break;
+                case "Get":
+                    connection.send({cmd: "Get", keys: []});
+                    break;
+                case "Set":
+                    break;
+                case "SetNotify":
+                    break;
+            }
+            send_timeout = true;
+            context.setTimeout(() => {send_timeout = false;}, 1500);
         }
-        send_timeout = true;
-        context.setTimeout(() => {send_timeout = false;}, 1500);
+        else{
+            context.setTimeout(() => {archipelago_send_message(type,message);}, 1500);
+        }
     }
     else{
+        console.log("Receiving message. Will send once complete.");
         context.setTimeout(() => {archipelago_send_message(type,message);}, 1500);
     }
 }

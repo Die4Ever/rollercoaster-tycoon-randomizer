@@ -357,7 +357,7 @@ function archipelagoLocations(){
 }
 
 function archipelagoDebug(){
-    var ww = 450;
+    var ww = 600;
     var wh = 350;
     let y = 0;
 
@@ -599,6 +599,7 @@ function archipelagoDebug(){
                         console.log(scenario.name);
                         console.log(ScenarioName[0]);
                         archipelago_settings.location_information = locationInfo.Full;
+                        archipelago_send_message("GetDataPackage");
                     }
                 },
                 {
@@ -757,7 +758,7 @@ function archipelagoDebug(){
                     y: 320,
                     width: 200,
                     height: 25,
-                    text: 'Colbys Choice',
+                    text: 'UI Tests',
                     onClick: function() {
                         // console.log(archipelago_settings.received_items);
                         // archipelago_print_message
@@ -783,6 +784,19 @@ function archipelagoDebug(){
                             )
                         });
                         return window;
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button23',
+                    x: 415,
+                    y: 320,
+                    width: 200,
+                    height: 25,
+                    text: 'Colbys Choice',
+                    onClick: function() {
+                        console.log(archipelago_settings.started);
+                        archipelago_settings.started = true;
                     }
                 }
            ]
