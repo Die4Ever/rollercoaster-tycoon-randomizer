@@ -67,6 +67,7 @@ function ac_req(data) {
             archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
             switch(data.type){
                 case "ItemSend":
+                case "Hint":
                     let message = "";
                     for (let i = 0; i < data.data.length; i++){
                         let color = "";
@@ -112,10 +113,10 @@ function ac_req(data) {
                     archipelago_print_message(cheatMessage);
                     break;
 
-                case "Hint":
-                    var hintMessage = "Colby has a lot to do when he gets the proxy";
-                    archipelago_print_message(hintMessage);
-                    break;
+                // case "Hint":
+                //     var hintMessage = "Colby has a lot to do when he gets the proxy";
+                //     archipelago_print_message(hintMessage);
+                //     break;
 
                 case "Goal":
                     archipelago_print_message(data.data[0].text);
