@@ -12,6 +12,7 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_send_message("Sync");
         context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 1500);//We have to stagger these to not break the connection.
         context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000);
+        context.setTimeout(() => {self.SetPostGenerationSettings();}, 3500);//Wait a few seconds for the other settings to do their thing
         if (archipelago_settings.rule_locations){//Setting rules for Archipelago, dictated by the YAML
             var setRules = function(){
                 park.setFlag("difficultGuestGeneration", true);
@@ -163,6 +164,8 @@ class RCTRArchipelago extends ModuleBase {
         settings.rando_park_values = true;
         else
         settings.rando_park_values = false;
+
+        archipelago_preferred_intensity = imported_settings.preferred_intensity;
         
         archipelago_objectives.Guests[0] = imported_settings.objectives.Guests[0];
         archipelago_objectives.ParkValue[0] = imported_settings.objectives.ParkValue[0];
@@ -1198,9 +1201,23 @@ class RCTRArchipelago extends ModuleBase {
             context.setTimeout(() => {self.SendStatus();}, 1500);
         }
     }
-
-
-    
+    SetPostGenerationSettings(): void{
+        park.setFlag("noMoney", false);
+        switch(archipelago_preferred_intensity){
+            case 0:
+                park.setFlag("preferLessIntenseRides", true);
+                park.setFlag("preferMoreIntenseRides", false);
+                break;
+            case 1:
+                park.setFlag("preferLessIntenseRides", false);
+                park.setFlag("preferMoreIntenseRides", false);
+                break;
+            case 2:
+                park.setFlag("preferLessIntenseRides", false);
+                park.setFlag("preferMoreIntenseRides", true);
+                break;
+            }
+    }
 }
 
 
