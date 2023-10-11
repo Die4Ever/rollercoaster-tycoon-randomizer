@@ -7,16 +7,20 @@ class APIConnection
     name:string = "API";
     port:number;
     callback:CallableFunction;
+    errorCallback:CallableFunction;
+    connectCallback:CallableFunction;
     onCloseCallback: (hadError: any) => void;
     onExpectedCloseCallback: (hadError: any) => void;
     onErrorCallback: (hadError: any) => void;
     onDataCallback: (hadError: any) => void;
     buffer:string = "";
 
-    constructor(name:string, port:number, callback:CallableFunction) {
+    constructor(name:string, port:number, callback:CallableFunction, errorCallback?:CallableFunction, connectCallback?:CallableFunction) {
         this.name = name;
         this.port = port;
         this.callback = callback;
+        this.errorCallback = errorCallback;
+        this.connectCallback = connectCallback;
 
         var self = this;
         this.onCloseCallback = function(hadError){self.onClose(hadError);};
@@ -69,25 +73,8 @@ class APIConnection
                 {type: 'blank', text: 'error in '+this.name+' connection, will keep trying...'} as ParkMessageDesc
             );
         }
-        if(settings.rando_archipelago){
-            archipelago_connected_to_game = false;
-            try {
-                if (ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game"))
-                ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
-                ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = (!archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario);
-            }
-            catch{
-                console.log("Looks like the Archipelago window isn't open.");
-            }
-            try {
-                if (ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
-                ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
-                console.log(archipelago_connected_to_server);
-            }
-            catch{
-                console.log("Looks like the Archipelago Shop isn't open");
-            }
-
+        if(this.errorCallback) {
+            this.errorCallback();
         }
         this.good = false;
         this.connect();
@@ -217,24 +204,8 @@ class APIConnection
                 park.postMessage(
                     {type: 'blank', text: self.name+' connected!'} as ParkMessageDesc
                 );
-                if(settings.rando_archipelago){
-                    archipelago_connected_to_game = true;
-                    try {
-                        if (ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game")){
-                            ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-game").text = "The Archipelago Client is connected to the game!";
-                            ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario;
-                        }
-                    }
-                    catch {
-                        console.log("Looks like the setup window isn't open.")
-                    }
-                    try{
-                        if(ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
-                        ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the game!";
-                    }
-                    catch{
-                        console.log("Looks like the unlock shop isn't open.");
-                    }
+                if(self.connectCallback) {
+                    self.connectCallback();
                 }
             }
             self.good = true;
