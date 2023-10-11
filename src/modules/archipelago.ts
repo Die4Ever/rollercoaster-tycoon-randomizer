@@ -60,7 +60,7 @@ class RCTRArchipelago extends ModuleBase {
         //Set up daily events
         self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives(); self.SetNames();});
         //Add menu items
-        ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu 
+        ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu
         if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
         self.SubscribeEvent('vehicle.crash',(e: any) => self.SendDeathLink(e.id));
         // context.subscribe('action.execute',e => self.LogRide(e.player, e.action, e.result));
@@ -166,7 +166,7 @@ class RCTRArchipelago extends ModuleBase {
         settings.rando_park_values = false;
 
         archipelago_preferred_intensity = imported_settings.preferred_intensity;
-        
+
         archipelago_objectives.Guests[0] = imported_settings.objectives.Guests[0];
         archipelago_objectives.ParkValue[0] = imported_settings.objectives.ParkValue[0];
         for(let i = 0; i < 5; i++){
@@ -186,7 +186,7 @@ class RCTRArchipelago extends ModuleBase {
         console.log("Park Rules are enabled: " + archipelago_settings.rule_locations);
 
         switch(imported_settings.visibility){
-            case 0: 
+            case 0:
                 archipelago_settings.location_information = "None"
                 break;
             case 1:
@@ -199,7 +199,7 @@ class RCTRArchipelago extends ModuleBase {
 
         archipelago_location_prices = imported_settings.location_prices;
         context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
-        
+
         context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
         saveArchipelagoProgress();
 
@@ -219,7 +219,7 @@ class RCTRArchipelago extends ModuleBase {
 
     SetArchipelagoResearch(): void {
         context.executeAction("parksetresearchfunding", {priorities: 0, fundingAmount: 0}, noop);//Set Funding to 0 and unselect every focus
-        park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0. 
+        park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0.
     }
 
     // LogRide(player, action, result): void {//This will eventually be used to identify who built a ride for Deathlink to identify the culprit
@@ -257,7 +257,7 @@ class RCTRArchipelago extends ModuleBase {
         this.AddChange('ShuffledResearch', 'Shuffled research items', null, null, null);
         this.AddChange('NumInventedItems', 'Invented items', origNumResearched, numResearched);
     }
-    
+
     ReceiveArchipelagoItem(items: any[], index: number): void{
         var self = this;
         console.log("Here's the array of items:");
@@ -331,7 +331,7 @@ class RCTRArchipelago extends ModuleBase {
                                     break;
                             }
                         }
-                        
+
                         switch(category){
                             case "ride":
                                 self.AddRide(RideType[item]);
@@ -376,7 +376,7 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     AddRide(ride: any): void{
-        //Creates function that finds the ride in Uninvented and moves it to Invented items. 
+        //Creates function that finds the ride in Uninvented and moves it to Invented items.
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
         for(let i=0; i<unresearchedItems.length; i++) {
@@ -393,7 +393,7 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     AddScenery(): void{
-        //Creates function that moves the next scenery to Invented items. 
+        //Creates function that moves the next scenery to Invented items.
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
         for(let i=0; i<unresearchedItems.length; i++) {
@@ -458,7 +458,7 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     ReleaseRule(rule: string): void{//Function that ends enforcement of detrimental park modifiers
-        var releaseRule = function(rule: string){
+        var releaseRule = function(){
             switch(rule){
                 case "Easier Guest Generation":
                     park.postMessage(
@@ -495,7 +495,7 @@ class RCTRArchipelago extends ModuleBase {
                     console.log("Error in ReleaseRule: no rule found");
             }
         }
-        runNextTick(releaseRule(rule));
+        runNextTick(releaseRule);
     }
 
     GrantDiscount(type: string): any{
@@ -558,7 +558,7 @@ class RCTRArchipelago extends ModuleBase {
                         width: 300,
                         height: 25,
                         textAlign: "centred",
-                        text: "second prize" 
+                        text: "second prize"
                     },
                     {
                         type: 'label',
@@ -567,7 +567,7 @@ class RCTRArchipelago extends ModuleBase {
                         width: 300,
                         height: 25,
                         textAlign: "centred",
-                        text: "in a" 
+                        text: "in a"
                     },
                     {
                         type: 'label',
@@ -576,7 +576,7 @@ class RCTRArchipelago extends ModuleBase {
                         width: 300,
                         height: 25,
                         textAlign: "centred",
-                        text: "beauty contest" 
+                        text: "beauty contest"
                     },
                     {
                         type: "button",
@@ -612,7 +612,7 @@ class RCTRArchipelago extends ModuleBase {
                 break;
             default:
                 console.log("Error in setWeather: Invalid Weather Type Provided.");
-    
+
         }
     }
 
@@ -690,7 +690,7 @@ class RCTRArchipelago extends ModuleBase {
                             height: 25,
                             text: 'Click here to sign and close.',
                             onClick: function() {
-                                window.close();        
+                                window.close();
                         }
                     }]
                 )
@@ -758,7 +758,7 @@ class RCTRArchipelago extends ModuleBase {
             else{//Set up the string denoting the price
                 var prereqs = prices[location[i].LocationID].RidePrereq;
                 var cost = "          " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
-                if(prereqs.length != 0) {//Handle prerequisites 
+                if(prereqs.length != 0) {//Handle prerequisites
                     cost += " + " + prereqs[0].toString() + " ";
                     cost += prereqs[1] + "(s)";
                     if(prereqs[2] != 0)//Check for excitement requirement
@@ -789,10 +789,10 @@ class RCTRArchipelago extends ModuleBase {
                 }
                 else{//Set up the string denoting the price
                     var prereqs = prices[location[i].LocationID].RidePrereq;
-                    
+
                     var cost = "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                     // console.log(prereqs);
-                    if(prereqs.length != 0) {//Handle prerequisites 
+                    if(prereqs.length != 0) {//Handle prerequisites
                         cost += " + " + prereqs[0].toString() + " ";
                         cost += prereqs[1] + "(s)";
                         if(prereqs[2] != 0)//Check for excitement requirement
@@ -912,7 +912,7 @@ class RCTRArchipelago extends ModuleBase {
                     }
                 }
                 if (elligible){
-                    QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby 
+                    QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
                     if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
                         QualifiedExcitement = true;
                     }
@@ -935,7 +935,7 @@ class RCTRArchipelago extends ModuleBase {
             }
 
         }
-        
+
         //TODO: Wait for monthly ride and shop income to become visible to the API
         archipelago_objectives.RideIncome[1] = true;
         archipelago_objectives.ShopIncome[1] = true;
@@ -969,15 +969,15 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives.Monopoly[1] = true;
         }
         //Check if all conditions are met
-        if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true && 
-            archipelago_objectives.RollerCoasters[6] == true && archipelago_objectives.RideIncome[1] == true && 
-            archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true && 
+        if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true &&
+            archipelago_objectives.RollerCoasters[6] == true && archipelago_objectives.RideIncome[1] == true &&
+            archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true &&
             archipelago_objectives.LoanPaidOff[1] == true &&
             archipelago_objectives.Monopoly[1] == true){
             context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => archipelago_send_message("StatusUpdate", 30));
-            
+
         }
-        
+
     }
 
     CheckMonopoly(): any{
@@ -1066,7 +1066,7 @@ class RCTRArchipelago extends ModuleBase {
             if (CheckID == archipelago_unlocked_locations[i].LocationID)
             return true;
         }
-        
+
         return false;
     }
 
@@ -1111,7 +1111,7 @@ class RCTRArchipelago extends ModuleBase {
                     var QualifiedNausea = false;
                     var QualifiedLength = false;
                     var elligible = false;
-                    if(ride){//See if there's a prereq that's a specific ride 
+                    if(ride){//See if there's a prereq that's a specific ride
                         if (Number(ride) == map.rides[i].type){//If the rides match, they're elligible
                         elligible = true;
                         }
@@ -1156,7 +1156,7 @@ class RCTRArchipelago extends ModuleBase {
                         }
                         else{
                             for(var i = 0; i < map.getAllEntities("guest").length; i++){
-                                map.getAllEntities("guest")[i].setFlag("explode", true);                            
+                                map.getAllEntities("guest")[i].setFlag("explode", true);
                             }
                         }
                     }
@@ -1183,7 +1183,7 @@ class RCTRArchipelago extends ModuleBase {
         else{
             ui.showError("Not Enough Cash...", "You do not have enough money to buy this!")
         }
-        
+
         return;
     }
 

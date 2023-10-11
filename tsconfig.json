@@ -9,7 +9,7 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "noImplicitOverride": false,
         "noImplicitReturns": true,
         "noImplicitThis": false,
