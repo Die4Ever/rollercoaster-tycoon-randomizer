@@ -524,13 +524,13 @@ class RCTRArchipelago extends ModuleBase {
     AddCash(amount: any): void{
         amount = amount.replace(/\D/g,'');//Drops the '$' from the amount
         amount = Number(amount);//Converts to a number
-        park.cash += amount * 10;//Multiply by 10 to get the dollar amount
+        runNextTick(() => {park.cash += amount * 10;});//Multiply by 10 to get the dollar amount
     }
 
     AddGuests(amount: any): void{
         amount = amount.replace(/\D/g,'');//Strips everything but the number
         amount = Number(amount);
-        context.executeAction("cheatset", {type: 20, param1: amount, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+        context.executeAction("cheatset", {type: 20, param1: amount, param2: 0}, () => console.log("Added " + String(amount) + " guests to the park."));
     }
 
     BeautyContest(): any{//Yep. It's a stupid refrence, but I aint removing it now!
@@ -599,16 +599,16 @@ class RCTRArchipelago extends ModuleBase {
     setWeather(weather: string): any{
         switch(weather){
             case "Rainstorm":
-                context.executeAction("cheatset", {type: 35, param1: 4, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+                context.executeAction("cheatset", {type: 35, param1: 4, param2: 0}, () => console.log("Summoned a " + weather));
                 break;
             case "Thunderstorm":
-                context.executeAction("cheatset", {type: 35, param1: 5, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+                context.executeAction("cheatset", {type: 35, param1: 5, param2: 0}, () => console.log("Summoned a " + weather));
                 break;
             case "Snowstorm":
-                context.executeAction("cheatset", {type: 35, param1: 7, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+                context.executeAction("cheatset", {type: 35, param1: 7, param2: 0}, () => console.log("Summoned a " + weather));
                 break;
             case "Blizzard":
-                context.executeAction("cheatset", {type: 35, param1: 8, param2: 0}, () => console.log("I will need to write a function to send the win condition over "));
+                context.executeAction("cheatset", {type: 35, param1: 8, param2: 0}, () => console.log("Summoned a " + weather));
                 break;
             default:
                 console.log("Error in setWeather: Invalid Weather Type Provided.");

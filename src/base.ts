@@ -124,9 +124,9 @@ function crc32(str) {
 function DeepCopy(o) {
     return JSON.parse(JSON.stringify(o));
 }
-
+// var action_counter = 0;
 // game state can't be modified outside of synchronized functions, and tick is one of them
-function runNextTick(func) {
+function runNextTick(func: Function) {
     try {
         context.executeAction('RCTRandoExec', {}, function(a) {
             try {
@@ -138,6 +138,21 @@ function runNextTick(func) {
     } catch(e) {
         printException('error in runNextTick executing action', e);
     }
+    // console.log(String(action_counter));
+    // action_counter ++;
+    // try{
+    //     context.registerAction(String(action_counter),(args) => {return {};},(args) => func(args))
+    // }
+    // catch(e) {
+    //     console.log(e);
+    // }
+    // try{
+    //     context.executeAction(String(action_counter),func,() => {return});
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+
 }
 
 function ifPaused(whenPaused: () => void, whenUnpaused: () => void) {
