@@ -171,7 +171,7 @@ class RCTRArchipelago extends ModuleBase {
         else
         settings.rando_park_values = false;
 
-        archipelago_preferred_intensity = imported_settings.preferred_intensity;
+        archipelago_settings.preferred_intensity = imported_settings.preferred_intensity;
 
         archipelago_objectives.Guests[0] = imported_settings.objectives.Guests[0];
         archipelago_objectives.ParkValue[0] = imported_settings.objectives.ParkValue[0];
@@ -1209,7 +1209,7 @@ class RCTRArchipelago extends ModuleBase {
     }
     SetPostGenerationSettings(): void{
         park.setFlag("noMoney", false);
-        switch(archipelago_preferred_intensity){
+        switch(archipelago_settings.preferred_intensity){
             case 0:
                 park.setFlag("preferLessIntenseRides", true);
                 park.setFlag("preferMoreIntenseRides", false);

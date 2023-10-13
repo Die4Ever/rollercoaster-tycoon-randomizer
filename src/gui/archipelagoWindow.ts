@@ -145,7 +145,7 @@ function archipelagoLocations(){
         tabs:
         [
             {
-                image: {frameBase: 80641,frameCount: 8,frameDuration: 4},
+                image: {frameBase: 5261,frameCount: 8,frameDuration: 4},
                 widgets: [].concat
                 (
                     [
@@ -223,7 +223,7 @@ function archipelagoLocations(){
                 )
             },
             {
-                image: {frameBase: 80870,frameCount: 15,frameDuration: 4},
+                image: {frameBase: 5511,frameCount: 15,frameDuration: 4},
                 widgets: [].concat
                 (
                     [
@@ -263,7 +263,7 @@ function archipelagoLocations(){
                 )
             },
             {
-                image: {frameBase: 80649,frameCount: 8,frameDuration: 4},
+                image: {frameBase: 5269,frameCount: 8,frameDuration: 4},
                 widgets: [].concat
                 (
                     [
