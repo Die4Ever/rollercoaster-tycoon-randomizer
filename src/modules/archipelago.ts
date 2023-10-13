@@ -13,17 +13,23 @@ class RCTRArchipelago extends ModuleBase {
         context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 1500);//We have to stagger these to not break the connection.
         context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000);
         context.setTimeout(() => {self.SetPostGenerationSettings();}, 3500);//Wait a few seconds for the other settings to do their thing
-        if (archipelago_settings.rule_locations){//Setting rules for Archipelago, dictated by the YAML
-            var setRules = function(){
-                park.setFlag("difficultGuestGeneration", true);
-                park.setFlag("difficultParkRating", true);
-                park.setFlag("forbidHighConstruction", true);
-                park.setFlag("forbidLandscapeChanges", true);
-                park.setFlag("forbidMarketingCampaigns", true);
-                park.setFlag("forbidTreeRemoval", true);
-            }
-            runNextTick(setRules);//Mutates the game context, so it has to be run on a tick event
+        //Setting rules for Archipelago, dictated by the YAML
+        var setRules = function(){
+            if(archipelago_settings.rule_locations[0])
+            park.setFlag("difficultGuestGeneration", true);
+            if(archipelago_settings.rule_locations[1])
+            park.setFlag("difficultParkRating", true);
+            if(archipelago_settings.rule_locations[2])
+            park.setFlag("forbidHighConstruction", true);
+            if(archipelago_settings.rule_locations[3])
+            park.setFlag("forbidLandscapeChanges", true);
+            if(archipelago_settings.rule_locations[4])
+            park.setFlag("forbidMarketingCampaigns", true);
+            if(archipelago_settings.rule_locations[5])
+            park.setFlag("forbidTreeRemoval", true);
         }
+        runNextTick(setRules);//Mutates the game context, so it has to be run on a tick event
+        
         if (archipelago_settings.purchase_land_checks){
             var enableLandChecks = function(){
                 park.landPrice = 2000;//$200/per tile
@@ -183,7 +189,7 @@ class RCTRArchipelago extends ModuleBase {
         self.SetPurchasableTiles();
 
         archipelago_settings.rule_locations = imported_settings.rules;
-        console.log("Park Rules are enabled: " + archipelago_settings.rule_locations);
+        console.log("These Park Rules are enabled: " + archipelago_settings.rule_locations);
 
         switch(imported_settings.visibility){
             case 0:
