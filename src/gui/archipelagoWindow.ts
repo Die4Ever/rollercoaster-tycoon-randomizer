@@ -115,245 +115,248 @@ function archipelagoLocations(){
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
 
-    if(!ui.getWindow("archipelago-locations")){
-        var window = ui.openWindow({
-            classification: 'archipelago-locations',
-            title: "Welcome to the Unlock Shop!",
-            width: ww,
-            height: wh,
-            onTabChange: () => {
-                var currentWindow = ui.getWindow("archipelago-locations");
-                if (currentWindow.tabIndex == 0){
-                    currentWindow.findWidget<ListViewWidget>("locked-location-list").items = Archipelago.CreateLockedList();
-                }
-                else if (currentWindow.tabIndex == 1){
-                    currentWindow.findWidget<ListViewWidget>("unlocked-location-list").items = Archipelago.CreateUnlockedList();
-                }
-                else if (currentWindow.tabIndex == 2){
-                    currentWindow.findWidget<ListViewWidget>("objective-list").items = Archipelago.CreateObjectiveList();
-                }
-                else if (currentWindow.tabIndex == 3){
-                    currentWindow.findWidget<ListViewWidget>("message-list").items = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
-                    currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = archipelago_settings.park_message_chat;
-                    currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = archipelago_settings.network_chat;
-                }
-            },
-            tabs:
-            [
-                {
-                    image: {frameBase: 80641,frameCount: 8,frameDuration: 4},
-                    widgets: [].concat
-                    (
-                        [
-                            {
-                                type: 'label',
-                                name: 'Locked-Location-Label',
-                                x: 250,
-                                y: 50,
-                                width: 100,
-                                height: 26,
-                                text: 'Locked Checks',
-                                tooltip: 'Buying these will help somebody in the multiworld!'
-                            },
-                            {
-                                type: 'listview',
-                                name: 'locked-location-list',
-                                x: 25,
-                                y: 75,
-                                width: 650,
-                                height: 200,
-                                isStriped: true,
-                                items: Archipelago.CreateLockedList(),
-                                scrollbars: 'none',
-                                onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)
-                            },
-                            {
-                                type: 'label',
-                                name: 'Connected-to-server',
-                                x: 200,
-                                y: 300,
-                                width: 300,
-                                height: 26,
-                                text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                                tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
-                            }
-                        ]
-                    )
-                },
-                {
-                    image: {frameBase: 5442,frameCount: 16,frameDuration: 4},
-                    widgets: [].concat
-                    (
-                        [
-                            {
-                                type: 'label',
-                                name: 'Unlocked-Location-Label',
-                                x: 125,
-                                y: 50,
-                                width: 100,
-                                height: 26,
-                                text: 'Unlocked Checks',
-                                tooltip: 'Thank you for your purchases! No refunds!'
-                            },
-                            {
-                                type: 'listview',
-                                name: 'unlocked-location-list',
-                                x: 25,
-                                y: 75,
-                                width: 650,
-                                height: 200,
-                                isStriped: true,
-                                items: Archipelago.CreateUnlockedList()
-                            },
-                            {
-                                type: 'label',
-                                name: 'Connected-to-server',
-                                x: 200,
-                                y: 300,
-                                width: 300,
-                                height: 26,
-                                text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                                tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
-                            }
-                        ]
-                    )
-                },
-                {
-                    image: {frameBase: 80870,frameCount: 15,frameDuration: 4},
-                    widgets: [].concat
-                    (
-                        [
-
-                            {
-                                type: 'label',
-                                name: 'Goal',
-                                x: 45,
-                                y: 60,
-                                width: 1000,
-                                height: 56,
-                                text: "Your goal, should you choose to accept it, is to build a grand theme park featuring - at minimum - the following attributes:",
-                                tooltip: 'If you have deathlink on... good luck'
-                            },
-                            {
-                                type: 'listview',
-                                name: 'objective-list',
-                                x: 25,
-                                y: 75,
-                                width: 650,
-                                height: 200,
-                                isStriped: true,
-                                scrollbars: 'none',
-                                items: Archipelago.CreateObjectiveList()
-                            },
-                            {
-                                type: 'label',
-                                name: 'Connected-to-server',
-                                x: 200,
-                                y: 300,
-                                width: 300,
-                                height: 26,
-                                text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                                tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
-                            }
-                        ]
-                    )
-                },
-                {
-                    image: {frameBase: 80649,frameCount: 8,frameDuration: 4},
-                    widgets: [].concat
-                    (
-                        [
-                            {
-                                type: 'label',
-                                name: 'Message-Log-Label',
-                                x: 250,
-                                y: 50,
-                                width: 100,
-                                height: 26,
-                                text: 'Message Log',
-                                tooltip: "Y'all's sure do talk a lot, don't you?"
-                            },
-                            {
-                                type: 'listview',
-                                name: 'message-list',
-                                x: 25,
-                                y: 75,
-                                width: 650,
-                                height: 200,
-                                isStriped: false,
-                                items: (messageLog ? messageLog : []),
-                                scrollbars: 'both',
-                                columns:[{width: 1400}]
-                            },
-                            {
-                                type: 'textbox',
-                                name: 'chatbox',
-                                text: 'Type your message here!',
-                                maxLength: 999,
-                                x: 25,
-                                y: 275,
-                                width: 650,
-                                height: 20,
-                                tooltip: "You know, not every game lets you type in-game. All I'm saying is that we're better than Ocarina of Time because of this.",
-                            },
-                            {
-                                type: 'button',
-                                name: 'send-chat-button',
-                                x: 25,
-                                y: 300,
-                                width: 100,
-                                height: 26,
-                                text: 'Send Message!',
-                                tooltip: 'The shortcut to this button is alt-F4',
-                                onClick: function() {
-                                    var currentWindow = ui.getWindow("archipelago-locations");
-                                    var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
-                                    if (!message)
-                                    return;
-                                    // archipelago_print_message(message);
-                                    archipelago_send_message("Say", message);
-                                    currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
-                                }
-                            },
-                            {
-                                type: 'checkbox',
-                                name: 'park-message-toggle',
-                                text: 'Print Archipelago Chat to Park Messages',
-                                x: 400,
-                                y: 310,
-                                width: 240,
-                                height: 10,
-                                tooltip: 'Prints Archipelago chats and messages as in game notifications. If your group is chatty, this could be annoying',
-                                isChecked: archipelago_settings.park_message_chat,
-                                onChange: function(isChecked: boolean) {
-                                    var currentWindow = ui.getWindow("archipelago-locations");
-                                    archipelago_settings.park_message_chat = isChecked;
-                                    saveArchipelagoProgress();
-                                }
-                            },
-                            {
-                                type: 'checkbox',
-                                name: 'network-chat-toggle',
-                                text: "Print Archipelago Chat to Network Messages",
-                                x: 400,
-                                y: 330,
-                                width: 220,
-                                height: 10,
-                                tooltip: 'Prints Archipelago chats and messages as network chats. This will not work in single player mode',
-                                isChecked: archipelago_settings.network_chat,
-                                onChange: function(isChecked: boolean) {
-                                    var currentWindow = ui.getWindow("archipelago-locations");
-                                    archipelago_settings.network_chat = isChecked;
-                                    saveArchipelagoProgress();
-                                }
-                            }
-                        ]
-                    )
-                }
-            ]
-        });
-        return window;
+    var existing: Window = ui.getWindow("archipelago-locations");
+    if(existing) {
+        return existing;
     }
+
+    var window = ui.openWindow({
+        classification: 'archipelago-locations',
+        title: "Welcome to the Unlock Shop!",
+        width: ww,
+        height: wh,
+        onTabChange: () => {
+            var currentWindow = ui.getWindow("archipelago-locations");
+            if (currentWindow.tabIndex == 0){
+                currentWindow.findWidget<ListViewWidget>("locked-location-list").items = Archipelago.CreateLockedList();
+            }
+            else if (currentWindow.tabIndex == 1){
+                currentWindow.findWidget<ListViewWidget>("unlocked-location-list").items = Archipelago.CreateUnlockedList();
+            }
+            else if (currentWindow.tabIndex == 2){
+                currentWindow.findWidget<ListViewWidget>("objective-list").items = Archipelago.CreateObjectiveList();
+            }
+            else if (currentWindow.tabIndex == 3){
+                currentWindow.findWidget<ListViewWidget>("message-list").items = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
+                currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = archipelago_settings.park_message_chat;
+                currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = archipelago_settings.network_chat;
+            }
+        },
+        tabs:
+        [
+            {
+                image: {frameBase: 80641,frameCount: 8,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+                        {
+                            type: 'label',
+                            name: 'Locked-Location-Label',
+                            x: 250,
+                            y: 50,
+                            width: 100,
+                            height: 26,
+                            text: 'Locked Checks',
+                            tooltip: 'Buying these will help somebody in the multiworld!'
+                        },
+                        {
+                            type: 'listview',
+                            name: 'locked-location-list',
+                            x: 25,
+                            y: 75,
+                            width: 650,
+                            height: 200,
+                            isStriped: true,
+                            items: Archipelago.CreateLockedList(),
+                            scrollbars: 'none',
+                            onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)
+                        },
+                        {
+                            type: 'label',
+                            name: 'Connected-to-server',
+                            x: 200,
+                            y: 300,
+                            width: 300,
+                            height: 26,
+                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        }
+                    ]
+                )
+            },
+            {
+                image: {frameBase: 5442,frameCount: 16,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+                        {
+                            type: 'label',
+                            name: 'Unlocked-Location-Label',
+                            x: 125,
+                            y: 50,
+                            width: 100,
+                            height: 26,
+                            text: 'Unlocked Checks',
+                            tooltip: 'Thank you for your purchases! No refunds!'
+                        },
+                        {
+                            type: 'listview',
+                            name: 'unlocked-location-list',
+                            x: 25,
+                            y: 75,
+                            width: 650,
+                            height: 200,
+                            isStriped: true,
+                            items: Archipelago.CreateUnlockedList()
+                        },
+                        {
+                            type: 'label',
+                            name: 'Connected-to-server',
+                            x: 200,
+                            y: 300,
+                            width: 300,
+                            height: 26,
+                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        }
+                    ]
+                )
+            },
+            {
+                image: {frameBase: 80870,frameCount: 15,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+
+                        {
+                            type: 'label',
+                            name: 'Goal',
+                            x: 45,
+                            y: 60,
+                            width: 1000,
+                            height: 56,
+                            text: "Your goal, should you choose to accept it, is to build a grand theme park featuring - at minimum - the following attributes:",
+                            tooltip: 'If you have deathlink on... good luck'
+                        },
+                        {
+                            type: 'listview',
+                            name: 'objective-list',
+                            x: 25,
+                            y: 75,
+                            width: 650,
+                            height: 200,
+                            isStriped: true,
+                            scrollbars: 'none',
+                            items: Archipelago.CreateObjectiveList()
+                        },
+                        {
+                            type: 'label',
+                            name: 'Connected-to-server',
+                            x: 200,
+                            y: 300,
+                            width: 300,
+                            height: 26,
+                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        }
+                    ]
+                )
+            },
+            {
+                image: {frameBase: 80649,frameCount: 8,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+                        {
+                            type: 'label',
+                            name: 'Message-Log-Label',
+                            x: 250,
+                            y: 50,
+                            width: 100,
+                            height: 26,
+                            text: 'Message Log',
+                            tooltip: "Y'all's sure do talk a lot, don't you?"
+                        },
+                        {
+                            type: 'listview',
+                            name: 'message-list',
+                            x: 25,
+                            y: 75,
+                            width: 650,
+                            height: 200,
+                            isStriped: false,
+                            items: (messageLog ? messageLog : []),
+                            scrollbars: 'both',
+                            columns:[{width: 1400}]
+                        },
+                        {
+                            type: 'textbox',
+                            name: 'chatbox',
+                            text: 'Type your message here!',
+                            maxLength: 999,
+                            x: 25,
+                            y: 275,
+                            width: 650,
+                            height: 20,
+                            tooltip: "You know, not every game lets you type in-game. All I'm saying is that we're better than Ocarina of Time because of this.",
+                        },
+                        {
+                            type: 'button',
+                            name: 'send-chat-button',
+                            x: 25,
+                            y: 300,
+                            width: 100,
+                            height: 26,
+                            text: 'Send Message!',
+                            tooltip: 'The shortcut to this button is alt-F4',
+                            onClick: function() {
+                                var currentWindow = ui.getWindow("archipelago-locations");
+                                var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
+                                if (!message)
+                                return;
+                                // archipelago_print_message(message);
+                                archipelago_send_message("Say", message);
+                                currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
+                            }
+                        },
+                        {
+                            type: 'checkbox',
+                            name: 'park-message-toggle',
+                            text: 'Print Archipelago Chat to Park Messages',
+                            x: 400,
+                            y: 310,
+                            width: 240,
+                            height: 10,
+                            tooltip: 'Prints Archipelago chats and messages as in game notifications. If your group is chatty, this could be annoying',
+                            isChecked: archipelago_settings.park_message_chat,
+                            onChange: function(isChecked: boolean) {
+                                var currentWindow = ui.getWindow("archipelago-locations");
+                                archipelago_settings.park_message_chat = isChecked;
+                                saveArchipelagoProgress();
+                            }
+                        },
+                        {
+                            type: 'checkbox',
+                            name: 'network-chat-toggle',
+                            text: "Print Archipelago Chat to Network Messages",
+                            x: 400,
+                            y: 330,
+                            width: 220,
+                            height: 10,
+                            tooltip: 'Prints Archipelago chats and messages as network chats. This will not work in single player mode',
+                            isChecked: archipelago_settings.network_chat,
+                            onChange: function(isChecked: boolean) {
+                                var currentWindow = ui.getWindow("archipelago-locations");
+                                archipelago_settings.network_chat = isChecked;
+                                saveArchipelagoProgress();
+                            }
+                        }
+                    ]
+                )
+            }
+        ]
+    });
+    return window;
 }
 
 function archipelagoDebug(){
@@ -379,7 +382,7 @@ function archipelagoDebug(){
                     onClick: function() {
                         // network.sendMessage("data.data.text");
                         // console.log(RideType["Merry Go Round"]);
-                        
+
                         // park.cash = 10000;
                         // var i = "Monorail";
                         //console.log(RideType["rollercoaster"]);
@@ -399,7 +402,7 @@ function archipelagoDebug(){
                         // console.log(context.getParkStorage().get('RCTRando.nuttin'));
                         // (BathroomTrap as RCTRArchipelagoConnection).connect();
                         // init_archipelago_connection();
-                        
+
                     }
                 },
                 {
@@ -413,7 +416,7 @@ function archipelagoDebug(){
                     onClick: function() {
                         // network.sendMessage("data.data.text");
                         // console.log(RideType["Merry Go Round"]);
-                        
+
                         // park.cash = 10000;
                         // var i = "Monorail";
                         //console.log(RideType["rollercoaster"]);
@@ -428,7 +431,7 @@ function archipelagoDebug(){
                         // console.log(context.getParkStorage().get('RCTRando.nuttin'));
                         // (BathroomTrap as RCTRArchipelagoConnection).connect();
                         // init_archipelago_connection();
-                        
+
                     }
                 },
                 {
@@ -442,7 +445,7 @@ function archipelagoDebug(){
                     onClick: function() {
                         // network.sendMessage("data.data.text");
                         // console.log(RideType["Merry Go Round"]);
-                        
+
                         // park.cash = 10000;
                         // var i = "Monorail";
                         //console.log(RideType["rollercoaster"]);
@@ -460,7 +463,7 @@ function archipelagoDebug(){
                         // console.log(context.getParkStorage().get('RCTRando.nuttin'));
                         // (BathroomTrap as RCTRArchipelagoConnection).connect();
                         // init_archipelago_connection();
-                        
+
                     }
                 },
                 {
@@ -501,7 +504,7 @@ function archipelagoDebug(){
                         // console.log(context.getParkStorage().get('RCTRando.nuttin'));
                         // (BathroomTrap as RCTRArchipelagoConnection).connect();
                         // init_archipelago_connection();
-                        
+
                     }
                 },
                 {
@@ -515,7 +518,7 @@ function archipelagoDebug(){
                     onClick: function() {
                         // network.sendMessage("data.data.text");
                         // console.log(RideType["Merry Go Round"]);
-                        
+
                         // park.cash = 10000;
                         // var i = "Monorail";
                         //console.log(RideType["rollercoaster"]);
@@ -534,7 +537,7 @@ function archipelagoDebug(){
                         // console.log(context.getParkStorage().get('RCTRando.nuttin'));
                         // (BathroomTrap as RCTRArchipelagoConnection).connect();
                         // init_archipelago_connection();
-                        
+
                     }
                 },
                 {
@@ -548,7 +551,7 @@ function archipelagoDebug(){
                     onClick: function() {
                         // network.sendMessage("data.data.text");
                         // console.log(RideType["Merry Go Round"]);
-                        
+
                         // park.cash = 10000;
                         // var i = "Monorail";
                         //console.log(RideType["rollercoaster"]);
@@ -559,7 +562,7 @@ function archipelagoDebug(){
                         //console.log(RideType["Looping Roller Coaster"].rideType);
                         // settings.archipelago_park_message_chat = true;
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.GrantDiscount("Land Discount");                        
+                        BathroomTrap.GrantDiscount("Land Discount");
                     }
                 },
                 {
@@ -572,7 +575,7 @@ function archipelagoDebug(){
                     text: '"Grant Discount(Construction Rights)"',
                     onClick: function() {
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.GrantDiscount("Construction Rights Discount");                   
+                        BathroomTrap.GrantDiscount("Construction Rights Discount");
                     }
                 },
                 {
@@ -584,7 +587,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: '"Display all cars"',
                     onClick: function() {
-                        console.log(map.getAllEntities("car"));                
+                        console.log(map.getAllEntities("car"));
                     }
                 },
                 {

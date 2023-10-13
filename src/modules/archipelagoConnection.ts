@@ -8,7 +8,7 @@ class RCTRArchipelagoConnection extends ModuleBase {
         if (!settings.rando_archipelago)
             return;
         //init_archipelago_connection();
-        
+
     }
 }
 
@@ -42,7 +42,7 @@ function ac_req(data) {
             context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
             Archipelago.SetNames();
             context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
-            
+
             archipelago_settings.multiworld_games = multiworld_games;
             console.log("Here's the games in the multiworld:");
             console.log(archipelago_settings.multiworld_games);
@@ -128,7 +128,7 @@ function ac_req(data) {
                         }
                     }
                     break;
-                
+
                 default:
                     archipelago_print_message(data.data[0].text);
             }
@@ -153,21 +153,21 @@ function ac_req(data) {
 
             function flipObject(obj: { [key: string]: any }): { [key: string]: string } {
                 const flippedObject: { [key: string]: string } = {};
-              
+
                 for (const key in obj) {
                   if (obj.hasOwnProperty(key)) {
                     const value = obj[key];
                     flippedObject[value] = key;
                   }
                 }
-              
+
                 return flippedObject;
               }
             for (const gameName in data.data.games){//For every game in this game of Archipelago
                 if (data.data.games.hasOwnProperty(gameName)) {
                     mergeObjects(item_name_to_id, data.data.games[gameName].item_name_to_id);
                     mergeObjects(location_name_to_id, data.data.games[gameName].location_name_to_id);
-                }                
+                }
             }
             item_id_to_name = flipObject(item_name_to_id);
             location_id_to_name = flipObject(location_name_to_id);
@@ -216,10 +216,54 @@ function ac_req(data) {
     }
     return;
 }
+
+function errorCallback() {
+    archipelago_connected_to_game = false;
+    try {
+        var window:Window = ui.getWindow("archipelago-connect");
+        window.findWidget<LabelWidget>("label-Connected-to-game").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
+        var button:ButtonWidget = window.findWidget<ButtonWidget>("start-button");
+        button.isDisabled = (!archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario);
+    }
+    catch{
+        console.log("Looks like the Archipelago window isn't open.");
+    }
+    try {
+        var window:Window = ui.getWindow("archipelago-locations");
+        window.findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
+        console.log(archipelago_connected_to_server);
+    }
+    catch{
+        console.log("Looks like the Archipelago Shop isn't open");
+    }
+}
+
+function connectCallback() {
+    archipelago_connected_to_game = true;
+    try {
+        var window:Window = ui.getWindow("archipelago-connect");
+        var label:LabelWidget = window.findWidget<LabelWidget>("label-Connected-to-game");
+        if (label){
+            label.text = "The Archipelago Client is connected to the game!";
+            window.findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario;
+        }
+    }
+    catch {
+        console.log("Looks like the setup window isn't open.")
+    }
+    try{
+        if(ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
+        ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the game!";
+    }
+    catch{
+        console.log("Looks like the unlock shop isn't open.");
+    }
+}
+
 var connection = null;
 function init_archipelago_connection() {
     console.log("Hello?");
-    connection = new APIConnection("Archipelago", 38280, ac_req);
+    connection = new APIConnection("Archipelago", 38280, ac_req, errorCallback, connectCallback);
 }
 
 function archipelago_print_message(message: string) {

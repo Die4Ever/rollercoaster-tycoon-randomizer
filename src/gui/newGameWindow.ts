@@ -7,7 +7,7 @@ function startGameGui() {
     if (typeof ui === 'undefined') {
         info('startGameGui() ui is undefined');
         initRando();
-        return;
+        return null;
     }
 
     if(global_settings.auto_pause) {
