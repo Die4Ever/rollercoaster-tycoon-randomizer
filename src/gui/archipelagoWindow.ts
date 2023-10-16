@@ -115,6 +115,11 @@ function archipelagoLocations(){
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
 
+    var game_choice = ["Ocarina of Time", "Adventure", "Donkey Kong Country 3", "Final Fantasy 1", "Hollow Knight", 
+    "The Legend of Zelda", "A Link to the Past", "Links Awakening", "Pokemon Red and Blue", "Rogue Legacy", 
+    "Sonic Adventure 2", "Super Mario World", "Super Metroid", "VVVVVV"];
+    var game = game_choice[Math.floor(Math.random() * game_choice.length)];
+
     var existing: Window = ui.getWindow("archipelago-locations");
     if(existing) {
         return existing;
@@ -298,7 +303,7 @@ function archipelagoLocations(){
                             y: 275,
                             width: 650,
                             height: 20,
-                            tooltip: "You know, not every game lets you type in-game. All I'm saying is that we're better than Ocarina of Time because of this.",
+                            tooltip: "You know, not every game lets you type in-game. All I'm saying is that we're better than " + game + " because of this.",
                         },
                         {
                             type: 'button',
