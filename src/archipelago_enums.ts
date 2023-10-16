@@ -1,4 +1,5 @@
 enum ObjectCategory {
+    "not a ride",
     "transport", // 0
     "gentle",
     "rollercoaster",
