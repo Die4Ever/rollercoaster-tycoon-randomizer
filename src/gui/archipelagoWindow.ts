@@ -117,8 +117,8 @@ function archipelagoLocations(){
 
     var game_choice = ["Ocarina of Time", "Adventure", "Donkey Kong Country 3", "Final Fantasy 1", "Hollow Knight", 
     "The Legend of Zelda", "A Link to the Past", "Links Awakening", "Pokemon Red and Blue", "Rogue Legacy", 
-    "Sonic Adventure 2", "Super Mario World", "Super Metroid", "VVVVVV"];
-    var game = game_choice[Math.floor(Math.random() * game_choice.length)];
+    "Sonic Adventure 2", "Super Mario World", "Super Mario 64", "Super Metroid", "VVVVVV"];
+    var game = game_choice[Math.floor(Math.random() * game_choice.length)];//Gotta throw that shade
 
     var existing: Window = ui.getWindow("archipelago-locations");
     if(existing) {

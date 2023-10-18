@@ -479,7 +479,7 @@ class RCTRArchipelago extends ModuleBase {
                     break;
                 case "Allow High Construction":
                     park.postMessage(
-                        {type: 'peep', text: "Wait a second, airplanes don't exist in Roller Coaster Tycoon. Why are limiting construction height? Let's go ahead and fix that now."} as ParkMessageDesc);
+                        {type: 'peep', text: "Wait a second, airplanes don't exist in Roller Coaster Tycoon. Why are we limiting construction height? Let's go ahead and fix that now."} as ParkMessageDesc);
                     park.setFlag("forbidHighConstruction", false);
                     break;
                 case "Allow Landscape Changes":
