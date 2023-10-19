@@ -71,34 +71,58 @@ function ac_req(data) {
                     let message = "";
                     for (let i = 0; i < data.data.length; i++){
                         let color = "";
-                        if(data.data[i].color){
-                            switch(data.data[i].color){
-                                case "black":
-                                    color = "BLACK";
-                                    break;
-                                case "red":
-                                    color = "RED"
-                                    break;
-                                case "green":
-                                    color = "GREEN"
-                                    break;
-                                case "yellow":
-                                    color = "YELLOW";
-                                    break;
-                                case "blue":
-                                case "cyan":
-                                case "slateblue":
-                                    color = "BABYBLUE";
-                                    break;
-                                case "magenta":
-                                case "plum":
+                        if(data.data[i].type){
+                            let segment = data.data[i].text;
+                            switch(data.data[i].type){
+                                case "player_id":
+                                    segment = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1];
                                     color = "PALELAVENDER";
                                     break;
-                                case "white":
-                                    color = "WHITE";
+                                case "item_id":
+                                    segment = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[Number(data.data[i].text)];
+                                    switch(data.data[i].flags){
+                                        case 0:
+                                        case 2:
+                                            color = "BABYBLUE";
+                                            break;
+                                        case 1:
+                                            color = "PALELAVENDER";
+                                            break;
+                                    }
                                     break;
+                                case "location_id":
+                                    segment = context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName")[Number(data.data[i].text)];
+                                    color = "GREEN";
+                                    break;
+
+                                // Once upon a time, the client sent a different datapacket.
+                                // case "black":
+                                //     color = "BLACK";
+                                //     break;
+                                // case "red":
+                                //     color = "RED"
+                                //     break;
+                                // case "green":
+                                //     color = "GREEN"
+                                //     break;
+                                // case "yellow":
+                                //     color = "YELLOW";
+                                //     break;
+                                // case "blue":
+                                // case "cyan":
+                                // case "slateblue":
+                                //     color = "BABYBLUE";
+                                //     break;
+                                // case "magenta":
+                                // case "plum":
+                                //     color = "PALELAVENDER";
+                                //     segment = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1]
+                                //     break;
+                                // case "white":
+                                //     color = "WHITE";
+                                //     break;
                             }
-                            message += '{' + color + '}' + data.data[i].text + '{WHITE}';
+                            message += '{' + color + '}' + segment + '{WHITE}';
                         }
                         else{
                             message += data.data[i].text;
