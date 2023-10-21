@@ -212,7 +212,9 @@ function ac_req(data) {
                     if(data.tags[i] == "DeathLink"){
                         const cause = data.data.cause;
                         const source = data.data.source;
-                        Archipelago.ReceiveDeathLink({cause, source});
+                        if(archipelago_settings.deathlink){
+                            Archipelago.ReceiveDeathLink({cause, source});
+                        }
                         archipelago_print_message(cause);
                         break;
                     }
