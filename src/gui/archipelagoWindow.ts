@@ -803,7 +803,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        console.log(item_id_to_name[2000107]);
+                        console.log(scenario.name);
                     }
                 }
            ]
