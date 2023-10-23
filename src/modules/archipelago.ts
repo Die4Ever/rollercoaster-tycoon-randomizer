@@ -1110,6 +1110,7 @@ class RCTRArchipelago extends ModuleBase {
                 var NumQualifiedRides = 0;
                 var object = Prices[LocationID]
                 var ride = RideType[Prices[LocationID].RidePrereq[1]];
+                let ride_list = map.rides;
 
                 for(var i = 0; i < map.numRides; i++){
                     var QualifiedExcitement = false;
@@ -1118,7 +1119,7 @@ class RCTRArchipelago extends ModuleBase {
                     var QualifiedLength = false;
                     var elligible = false;
                     if(ride){//See if there's a prereq that's a specific ride
-                        if (Number(ride) == map.rides[i].type){//If the rides match, they're elligible
+                        if (Number(ride) == ride_list[i].type){//If the rides match, they're elligible
                         elligible = true;
                         }
                     }
@@ -1126,7 +1127,7 @@ class RCTRArchipelago extends ModuleBase {
                     if (ObjectCategory[object.RidePrereq[1]]){//See if there's a prereq that's a category
                         let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
                         for(var j = 0; j < researchItems.length; j++){
-                            if((researchItems[j] as RideResearchItem).rideType == map.rides[i].type){//If the items match...
+                            if((researchItems[j] as RideResearchItem).rideType == ride_list[i].type){//If the items match...
                                 if(researchItems[j].category == Prices[LocationID].RidePrereq[1]){//Check if the categories match
                                     elligible = true;
                                 }
@@ -1136,13 +1137,13 @@ class RCTRArchipelago extends ModuleBase {
 
                     if (elligible){
                         QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                        if (map.rides[i].excitement >= (Prereqs[2] * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                        if (ride_list[i].excitement >= (Prereqs[2] * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
                             QualifiedExcitement = true;
                         }
-                        if (map.rides[i].intensity >= (Prereqs[3] * 100)){
+                        if (ride_list[i].intensity >= (Prereqs[3] * 100)){
                             QualifiedIntensity = true;
                         }
-                        if (map.rides[i].nausea >= (Prereqs[4] * 100)){
+                        if (ride_list[i].nausea >= (Prereqs[4] * 100)){
                             QualifiedNausea = true;
                         }
                     }
