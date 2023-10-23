@@ -17,16 +17,28 @@ class RCTRArchipelago extends ModuleBase {
         var setRules = function(){
             if(archipelago_settings.rule_locations[0])
             park.setFlag("difficultGuestGeneration", true);
+            else
+            park.setFlag("difficultGuestGeneration", false);
             if(archipelago_settings.rule_locations[1])
             park.setFlag("difficultParkRating", true);
+            else
+            park.setFlag("difficultParkRating", false);
             if(archipelago_settings.rule_locations[2])
             park.setFlag("forbidHighConstruction", true);
+            else
+            park.setFlag("forbidHighConstruction", false);
             if(archipelago_settings.rule_locations[3])
             park.setFlag("forbidLandscapeChanges", true);
+            else
+            park.setFlag("forbidLandscapeChanges", false);
             if(archipelago_settings.rule_locations[4])
             park.setFlag("forbidMarketingCampaigns", true);
+            else
+            park.setFlag("forbidMarketingCampaigns", false);
             if(archipelago_settings.rule_locations[5])
             park.setFlag("forbidTreeRemoval", true);
+            else
+            park.setFlag("forbidTreeRemoval", false);
         }
         runNextTick(setRules);//Mutates the game context, so it has to be run on a tick event
         
