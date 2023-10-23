@@ -1111,6 +1111,7 @@ class RCTRArchipelago extends ModuleBase {
                 var object = Prices[LocationID]
                 var ride = RideType[Prices[LocationID].RidePrereq[1]];
                 let ride_list = map.rides;
+                let guest_list = map.getAllEntities("guest");
 
                 for(var i = 0; i < map.numRides; i++){
                     var QualifiedExcitement = false;
@@ -1156,14 +1157,14 @@ class RCTRArchipelago extends ModuleBase {
                     console.log("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
                     if(Prices[LocationID].Lives != 0){//Code to explode guests
                     var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
-                        if(doomed < map.getAllEntities("guest").length){//Explode either the doomed amount, or every guest in the park, whichever is less
+                        if(doomed < guest_list.length){//Explode either the doomed amount, or every guest in the park, whichever is less
                             for(var i = 0; i < doomed; i++){
-                                map.getAllEntities("guest")[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
+                                guest_list[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
                             }
                         }
                         else{
-                            for(var i = 0; i < map.getAllEntities("guest").length; i++){
-                                map.getAllEntities("guest")[i].setFlag("explode", true);
+                            for(var i = 0; i < guest_list.length; i++){
+                                guest_list[i].setFlag("explode", true);
                             }
                         }
                     }
