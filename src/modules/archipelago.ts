@@ -955,6 +955,9 @@ class RCTRArchipelago extends ModuleBase {
                         archipelago_objectives.RollerCoasters[6] = true;
                         break;
                     }
+                    else {
+                        archipelago_objectives.RollerCoasters[6] = false;
+                    }
                 }
             }
 
