@@ -215,7 +215,21 @@ function ac_req(data) {
                         if(archipelago_settings.deathlink){
                             Archipelago.ReceiveDeathLink({cause, source});
                         }
-                        archipelago_print_message(cause);
+                        if(cause){
+                            archipelago_print_message(cause);
+                        }
+                        else{
+                            var player_color = "{PALELAVENDER}" + source;
+                            var message_choice = [player_color + " {RED}is bad at video games!", player_color + " just got Windows Vista'd.", 
+                                player_color + " {RED}should have upgraded to Linux.", player_color + " {RED}has met their maker!", 
+                                '{RED}"What is death anyways?"\n{PALELAVENDER}-' + player_color, 
+                                "{RED}If it makes you feel better, at least it's " + player_color + "{RED}'s fault and not yours.", player_color + " {RED}is an airsick lowlander!",
+                                player_color + "{RED} missed 100% of the shots they didn't take.", "{RED}It was " + player_color + "{RED}'s controller, I swear!",
+                                player_color + "{RED} was not the imposter.", player_color + "{RED} rolled a natural 1.", 
+                                player_color + "{RED} should not have tried stealing the kings flocks from Ammon!", player_color + "{RED} started a land war in Asia!"];
+                            var death_message = message_choice[Math.floor(Math.random() * message_choice.length)];
+                            archipelago_print_message(death_message);
+                        }
                         break;
                     }
                 }
