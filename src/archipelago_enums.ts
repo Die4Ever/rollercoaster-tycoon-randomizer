@@ -20,7 +20,7 @@ enum ScenarioName {
     "dinky park",
     "aqua park",
     "millennium mines",
-    "karts and coasters",
+    "karts & coasters",
     "mel’s world",
     "mothball mountain",
     "pacific pyramids",
