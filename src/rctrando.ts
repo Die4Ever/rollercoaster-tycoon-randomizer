@@ -103,14 +103,3 @@ function SaveSettings() {
         printException('error saving settings: ', e);
     }
 }
-
-function ArchipelagoSaveLocations(LockedLocations, UnlockedLocations) {
-    try {
-        context.setTimeout(() => {archipelago_send_message("LocationChecks", UnlockedLocations)}, 1500);
-        context.getParkStorage().set('RCTRando.ArchipelagoLockedLocations', LockedLocations);
-        context.getParkStorage().set('RCTRando.ArchipelagoUnlockedLocations', UnlockedLocations);
-        console.log("Location lists updated!");
-    } catch(e) {
-        printException('error in ArchipelagoSaveLocations: ', e);
-    }
-}

@@ -41,7 +41,7 @@ class RCTRArchipelago extends ModuleBase {
             park.setFlag("forbidTreeRemoval", false);
         }
         runNextTick(setRules);//Mutates the game context, so it has to be run on a tick event
-        
+
         if (archipelago_settings.purchase_land_checks){
             var enableLandChecks = function(){
                 park.landPrice = 2000;//$200/per tile
@@ -86,10 +86,15 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
 
         //Set shortcuts
-        ui.registerShortcut({id:"spamTrapBackspace", text:"Don't press this when a spam window is open.", bindings:['BACKSPACE'], callback() 
-            {if(ui.getWindow("popup")){showRandomAd(); showRandomAd();};}});
-        ui.registerShortcut({id:"spamTrapShiftBackspace", text:"Don't press this when a spam window is open.", bindings:['SHIFT+BACKSPACE'], callback() 
-            {if(ui.getWindow("popup")){context.setTimeout(() => {for(let i = 0; i < 12; i++){showRandomAd();};}, 50);};}});
+        ui.registerShortcut(
+            {id:"spamTrapBackspace", text:"Don't press this when a spam window is open.", bindings:['BACKSPACE'],
+            callback() {if(ui.getWindow("popup")){showRandomAd(); showRandomAd();};}
+        });
+
+        ui.registerShortcut(
+            {id:"spamTrapShiftBackspace", text:"Don't press this when a spam window is open.", bindings:['SHIFT+BACKSPACE'],
+            callback() {if(ui.getWindow("popup")){context.setTimeout(() => {for(let i = 0; i < 12; i++){showRandomAd();};}, 50);};}
+        });
 
         //Set up actions for multiplayer
         try{
