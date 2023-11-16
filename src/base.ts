@@ -96,6 +96,15 @@ function randomize(value, difficulty) {
     return ret;
 }
 
+function shuffle(items:Array<any>) {
+    for(let i=0; i<items.length; i++) {
+        let a = items[i];
+        let slot = rng(0, items.length - 1);
+        items[i] = items[slot];
+        items[slot] = a;
+    }
+}
+
 var crcTable = makeCRCTable();
 function makeCRCTable(){
     var c;
