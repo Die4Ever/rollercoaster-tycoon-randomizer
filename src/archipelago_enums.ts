@@ -117,7 +117,7 @@ enum ScenarioName {
     "north america - rollercoaster heaven",
     "south america - inca lost city",
     "africa - oasis",
-    "antartic - ecological salvage",
+    "antarctic - ecological salvage",
     "asia - japanese costal reclaim",
     "australasia - fun at the beach",
     "europe - renovation",
