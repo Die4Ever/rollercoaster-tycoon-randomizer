@@ -803,7 +803,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        console.log(scenario.name);
+                        archipelago_send_message("GetDataPackage");
                     }
                 }
            ]

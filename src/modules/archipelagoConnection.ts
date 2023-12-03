@@ -220,7 +220,7 @@ function ac_req(data) {
                         }
                         else{
                             var player_color = "{PALELAVENDER}" + source;
-                            var message_choice = [player_color + " {RED}is bad at video games!", player_color + " just got Windows Vista'd.", 
+                            var message_choice = [player_color + " {RED}is bad at video games!", player_color + " {RED}just got Windows Vista'd.", 
                                 player_color + " {RED}should have upgraded to Linux.", player_color + " {RED}has met their maker!", 
                                 '{RED}"What is death anyways?"\n{PALELAVENDER}-' + player_color, 
                                 "{RED}If it makes you feel better, at least it's " + player_color + "{RED}'s fault and not yours.", player_color + " {RED}is an airsick lowlander!",
