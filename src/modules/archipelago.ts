@@ -849,6 +849,17 @@ class RCTRArchipelago extends ModuleBase {
                 }
             }
         }
+        console.log(locked);
+        console.log(archipelago_unlocked_locations);
+        if(!locked.length){
+            if(!archipelago_unlocked_locations.length){
+                return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
+                "{WHITE}If you're still seeing this message after 2 minutes (Be sure to actually close and reopen this window),",
+                "{WHITE}bother Colby in the Discord and he'll complain about past Colby."];
+            }
+            else
+            return ["Conglaturations! You've unlocked everything! Now go outside and touch some grass."]
+        }
         return locked;
     }
 
