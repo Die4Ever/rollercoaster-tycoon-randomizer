@@ -319,8 +319,24 @@ function archipelagoLocations(){
                                 var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
                                 if (!message)
                                 return;
-                                // archipelago_print_message(message);
-                                archipelago_send_message("Say", message);
+                                switch(message){
+                                    case '!!help':
+                                        archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.\n!!toggleDeathLink: Enables/Disables Deathlink\n");
+                                        break;
+                                    case '!!toggleDeathLink':
+                                        archipelago_settings.death_link = !archipelago_settings.death_link;
+                                        if(archipelago_settings.death_link)
+                                        archipelago_print_message("Deathlink Enabled you monster");
+                                        else
+                                        archipelago_print_message("Deathlink Disabled you coward");
+                                    break;
+                                    case 'Colby sucks':
+                                        archipelago_send_message("Say","Colby is awesome!");
+                                        break;
+                                    default:
+                                        archipelago_send_message("Say", message);
+                                        break;
+                                }
                                 currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
                             }
                         },

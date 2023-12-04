@@ -49,6 +49,8 @@ function archipelago_send_message(type: string, message?: any) {
                     connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
                     break;
                 case "Say":
+                    const regex = /peck/gi;
+                    message = message.replace(regex, 'p*ck');
                     console.log({cmd: "Say", text: message});
                     connection.send({cmd: "Say", text: message});
                     break;
