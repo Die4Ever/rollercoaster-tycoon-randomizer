@@ -803,7 +803,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        archipelago_send_message("GetDataPackage");
+                        console.log(archipelago_settings.multiworld_games);
                     }
                 }
            ]
