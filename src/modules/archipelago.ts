@@ -97,6 +97,41 @@ class RCTRArchipelago extends ModuleBase {
             callback() {if(ui.getWindow("popup")){context.setTimeout(() => {for(let i = 0; i < 12; i++){showRandomAd();};}, 50);};}
         });
 
+        ui.registerShortcut(
+            {id:"sendMessage", text:"Sends message from the unlock shop.",bindings:['RETURN'],
+            callback() {try {//I'll need to break this into a seperate function eventually.
+                var window:Window = ui.getWindow("archipelago-locations");
+                if(window.findWidget<ButtonWidget>("send-chat-button")){
+                    var currentWindow = ui.getWindow("archipelago-locations");
+                                var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
+                                if (!message)
+                                return;
+                                switch(message){
+                                    case '!!help':
+                                        archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.\n!!toggleDeathLink: Enables/Disables Deathlink\n");
+                                        break;
+                                    case '!!toggleDeathLink':
+                                        archipelago_settings.death_link = !archipelago_settings.death_link;
+                                        if(archipelago_settings.death_link)
+                                        archipelago_print_message("Deathlink Enabled you monster");
+                                        else
+                                        archipelago_print_message("Deathlink Disabled you coward");
+                                    break;
+                                    case 'Colby sucks':
+                                        archipelago_send_message("Say","Colby is awesome!");
+                                        break;
+                                    default:
+                                        archipelago_send_message("Say", message);
+                                        break;
+                                }
+                                currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
+                }
+            }
+            catch{
+                console.log("Looks like the Archipelago Shop isn't open");
+            }}
+        });
+
         //Set up actions for multiplayer
         try{
             context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide(args));
@@ -814,13 +849,44 @@ class RCTRArchipelago extends ModuleBase {
         var prices = archipelago_location_prices;
         for(var i = 0; i < location.length; i++){//Loop through every locked location
             if (self.IsVisible(location[i].LocationID)){
+                var color = '{WHITE}';
+                if (location[i].LocationID < 7)
+                color = '{WHITE}';
+                else{
+                    switch(location[i].LocationID%8){
+                        case 0: 
+                            color = '{RED}';
+                            break;
+                        case 1: 
+                            color = '{GREEN}'
+                            break;
+                        case 2: 
+                            color = '{BABYBLUE}';
+                            break;
+                        case 3: 
+                            color = '{YELLOW}';
+                            break;
+                        case 4: 
+                            color = '{PALEGOLD}';
+                            break;
+                        case 5: 
+                            color = '{PALESILVER}';
+                            break;
+                        case 6: 
+                            color = '{CELADON}'
+                            break;
+                        case 7:
+                            color = '{LIGHTPINK}';
+                            break;
+                    }
+                }
                 if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
-                    locked.push("[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                    locked.push(color + "[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                 }
                 else{//Set up the string denoting the price
                     var prereqs = prices[location[i].LocationID].RidePrereq;
 
-                    var cost = "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                    var cost = color + "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                     // console.log(prereqs);
                     if(prereqs.length != 0) {//Handle prerequisites
                         cost += " + " + prereqs[0].toString() + " ";

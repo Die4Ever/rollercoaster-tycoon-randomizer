@@ -177,6 +177,66 @@ function archipelagoLocations(){
                             onClick: (item: number) => Archipelago.PurchaseItem((item - item %2) / 2)
                         },
                         {
+                            type: 'textbox',
+                            name: 'lookup-box',
+                            text: '',
+                            maxLength: 3,
+                            x: 25,
+                            y: 275,
+                            width: 100,
+                            height: 20,
+                            tooltip: "Input your desired shop number here, and it'll tell you what you need to purchase!",
+                        },
+                        {
+                            type: 'button',
+                            name: 'lookup-button',
+                            x: 25,
+                            y: 300,
+                            width: 100,
+                            height: 26,
+                            text: 'Find item!',
+                            tooltip: 'Playtesters told me they didn\'t like "Doing math with modulus while trying to play a game", so here you go. You\'re welcome',
+                            onClick: function() {
+                                var currentWindow = ui.getWindow("archipelago-locations");
+                                var message = currentWindow.findWidget<TextBoxWidget>("lookup-box").text;
+                                var wanted_number = parseInt(message, 10);
+                                if (!wanted_number)
+                                return;
+                                if (wanted_number < 0)
+                                return;
+                                if (wanted_number < 8)
+                                archipelago_print_message("Item " + String(wanted_number) + " is on the{WHITE} White Branch!")
+                                else{
+                                    switch (wanted_number % 8){
+                                        case 0: 
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {RED}Red Branch!");
+                                        break;
+                                    case 1: 
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {GREEN}Green Branch!");
+                                        break;
+                                    case 2: 
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {BABYBLUE}Blue Branch!");
+                                        break;
+                                    case 3: 
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {YELLOW}Yellow Branch!");
+                                        break;
+                                    case 4: 
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {PALEGOLD}Gold Branch!");
+                                        break;
+                                    case 5: 
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {PALESILVER}Silver Branch!");
+                                        break;
+                                    case 6: 
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {CELADON}Celadon Branch!");
+                                        break;
+                                    case 7:
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {LIGHTPINK}Pink Branch!");
+                                        break;
+                                    }
+                                }
+                            }
+                        },
+                        {
                             type: 'label',
                             name: 'Connected-to-server',
                             x: 200,
