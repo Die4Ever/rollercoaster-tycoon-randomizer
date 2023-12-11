@@ -242,6 +242,7 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_objectives.ParkRating[0] = imported_settings.objectives.ParkRating[0];
         archipelago_objectives.LoanPaidOff[0] = imported_settings.objectives.LoanPaidOff[0];
         archipelago_objectives.Monopoly[0] = imported_settings.objectives.Monopoly[0];
+        archipelago_objectives.UniqueRides[0] = imported_settings.objectives.UniqueRides[0];
 
         console.log(archipelago_objectives.Monopoly[0]);
         if(archipelago_objectives.Monopoly[0])
@@ -945,7 +946,7 @@ class RCTRArchipelago extends ModuleBase {
         var RollerCoaster = archipelago_objectives.RollerCoasters;
         if (RollerCoaster[0]){
             objective.push("Roller Coasters:");
-            var Line = (RollerCoaster[6] ? ("✓        " + RollerCoaster[0]) : ("          " + RollerCoaster[0]));
+            var Line = (RollerCoaster[5] ? ("✓        " + RollerCoaster[0]) : ("          " + RollerCoaster[0]));
             if(RollerCoaster[1]){
                 Line += " (> " + RollerCoaster[1] + " Excitement)";
             }
@@ -977,6 +978,14 @@ class RCTRArchipelago extends ModuleBase {
             objective.push("Real Estate Monopoly:");
             objective.push(archipelago_objectives.Monopoly[1] ? ("✓        Own every tile on the map!") : ("          Own every tile on the map!"));
         }
+        if (archipelago_objectives.UniqueRides[0]){
+            objective.push("Required Rides:");
+            var ride_list = (archipelago_objectives.UniqueRides[1]) ? "✓        " : "        ";
+            for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
+                ride_list += (archipelago_objectives.UniqueRides[0][i]) + ", ";
+            }
+            objective.push(ride_list);
+        }
         return objective;
     }
 
@@ -1000,51 +1009,57 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives.ParkValue[1] = false;
         }
 
-        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
-        var NumQualifiedRides = 0;
-        for(var i = 0; i < map.numRides; i++){
-            var ride = map.rides[i].type;
-            var QualifiedExcitement = false;
-            var QualifiedIntensity = false;
-            var QualifiedNausea = false;
-            var QualifiedLength = false;
-            var elligible = false;
-            if (!(ride == 28 || ride == 30 || ride == 32)){
-                for(var j = 0; j < researchItems.length; j++){
-                    if((researchItems[j] as RideResearchItem).rideType == ride){//If the items match...
-                        if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
-                            elligible = true;
+        if (archipelago_objectives.RollerCoasters[0]){
+            let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
+            var NumQualifiedRides = 0;
+            for(var i = 0; i < map.numRides; i++){
+                var ride = map.rides[i].type;
+                var QualifiedExcitement = false;
+                var QualifiedIntensity = false;
+                var QualifiedNausea = false;
+                var QualifiedLength = false;
+                var elligible = false;
+
+                //Handle checks for Roller Coasters
+                if (!(ride == 28 || ride == 30 || ride == 32)){
+                    for(var j = 0; j < researchItems.length; j++){
+                        if((researchItems[j] as RideResearchItem).rideType == ride){//If the items match...
+                            if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
+                                elligible = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (elligible){
+                        QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
+                        if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                            QualifiedExcitement = true;
+                        }
+                        if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
+                            QualifiedIntensity = true;
+                        }
+                        if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[4]) * 100)){
+                            QualifiedNausea = true;
+                        }
+
+                        if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
+                            NumQualifiedRides += 1;
+                        }
+
+                        if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0])){
+                            archipelago_objectives.RollerCoasters[5] = true;
                             break;
+                        }
+                        else {
+                            archipelago_objectives.RollerCoasters[5] = false;
                         }
                     }
                 }
-                if (elligible){
-                    QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                    if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
-                        QualifiedExcitement = true;
-                    }
-                    if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
-                        QualifiedIntensity = true;
-                    }
-                    if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[4]) * 100)){
-                        QualifiedNausea = true;
-                    }
 
-                    if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
-                        NumQualifiedRides += 1;
-                    }
-
-                    if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0])){
-                        archipelago_objectives.RollerCoasters[6] = true;
-                        break;
-                    }
-                    else {
-                        archipelago_objectives.RollerCoasters[6] = false;
-                    }
-                }
             }
-
         }
+        else
+        archipelago_objectives.RollerCoasters[5] = true;
 
         //TODO: Wait for monthly ride and shop income to become visible to the API
         archipelago_objectives.RideIncome[1] = true;
@@ -1078,12 +1093,36 @@ class RCTRArchipelago extends ModuleBase {
         else {//If Monopoly isn't enabled, autoset to true
             archipelago_objectives.Monopoly[1] = true;
         }
+        if (archipelago_objectives.UniqueRides[0]){
+            var goal_complete = true;
+            for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
+                var found = false;
+                var checkedRide = archipelago_objectives.UniqueRides[0][i];
+                for(let j = 0; j < map.numRides; j++){
+                    if (Number(RideType[checkedRide]) == map.rides[j].type){
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found){
+                    goal_complete = false;
+                    break;
+                }
+            }
+            if (goal_complete)
+            archipelago_objectives.UniqueRides[1] = true;
+            else
+            archipelago_objectives.UniqueRides[1] = false;
+        }
+        else{
+            archipelago_objectives.UniqueRides[1] = true;
+        }
         //Check if all conditions are met
         if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true &&
-            archipelago_objectives.RollerCoasters[6] == true && archipelago_objectives.RideIncome[1] == true &&
+            archipelago_objectives.RollerCoasters[5] == true && archipelago_objectives.RideIncome[1] == true &&
             archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true &&
             archipelago_objectives.LoanPaidOff[1] == true &&
-            archipelago_objectives.Monopoly[1] == true){
+            archipelago_objectives.Monopoly[1] == true && archipelago_objectives.UniqueRides[1] == true){
             context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => archipelago_send_message("StatusUpdate", 30));
 
         }

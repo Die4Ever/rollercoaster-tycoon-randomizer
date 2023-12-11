@@ -221,8 +221,8 @@ function ac_req(data) {
                     break;
 
                 case "ItemCheat":
-                    var cheatMessage = "Colby will write out code to figure out how cheats work when he gets the proxy client";
-                    archipelago_print_message(cheatMessage);
+                    // var cheatMessage = "Colby will write out code to figure out how cheats work when he gets the proxy client";
+                    archipelago_print_message(data.data[0].text);
                     break;
 
                 // case "Hint":
