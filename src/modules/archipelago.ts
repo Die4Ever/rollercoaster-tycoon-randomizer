@@ -922,7 +922,9 @@ class RCTRArchipelago extends ModuleBase {
             if(!archipelago_unlocked_locations.length){
                 return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
                 "{WHITE}If you're still seeing this message after 2 minutes (Be sure to actually close and reopen this window),",
-                "{WHITE}bother Colby in the Discord and he'll complain about past Colby."];
+                "{WHITE}bother Colby in the Discord and he'll complain about past Colby.",
+                "{WHITE}Current Progress: " + String(archipelago_games_requested) + "/" + String(archipelago_settings.multiworld_games.length)
+                + " games requested."];
             }
             else
             return ["Conglaturations! You've unlocked everything! Now go outside and touch some grass."]

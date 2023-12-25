@@ -64,7 +64,7 @@ function archipelago_send_message(type: string, message?: any) {
                         if (requested_games.length == 3){
                             let games = requested_games;
                             context.setTimeout(() => {
-                                connection.send({cmd: "GetDataPackage", games: games}); 
+                                connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 3;
                                 }, timeout);//console.log("Sending the following games for IDs: " + requested_games);
                             timeout += 6000;
                             requested_games = [];
@@ -72,7 +72,7 @@ function archipelago_send_message(type: string, message?: any) {
                     }
                     if (requested_games){//request any remaining games
                         let games = requested_games; 
-                        context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games});}, timeout);
+                        context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
                     }
                     break;
                 case "Bounce"://Fix
