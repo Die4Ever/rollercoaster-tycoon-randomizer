@@ -1102,8 +1102,11 @@ class RCTRArchipelago extends ModuleBase {
                 var checkedRide = archipelago_objectives.UniqueRides[0][i];
                 for(let j = 0; j < map.numRides; j++){
                     if (Number(RideType[checkedRide]) == map.rides[j].type){
-                        found = true;
-                        break;
+                        if (map.rides[j].excitement > 1){
+                            console.log(map.rides[j].excitement);
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 if (!found){

@@ -806,7 +806,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        console.log(archipelago_objectives);
+                        context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => archipelago_print_message("DUCKS!"));
                     }
                 }
            ]
