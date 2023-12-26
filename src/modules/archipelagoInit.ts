@@ -46,6 +46,7 @@ var archipelago_settings: any = {
     location_information: locationInfo.None,
     park_message_chat: true,
     network_chat: true,
+    universal_item_messages: true,
     rule_locations: [],
     purchase_land_checks: true,
     max_land_checks: 20,

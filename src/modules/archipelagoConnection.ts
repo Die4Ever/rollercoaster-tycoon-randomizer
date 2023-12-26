@@ -156,6 +156,20 @@ function ac_req(data) {
             switch(data.type){
                 case "ItemSend":
                 case "Hint":
+                    if (!archipelago_settings.universal_item_messages){
+                        let display = false;
+                        for (let i = 0; i < data.data.length; i++){
+                            if(data.data[i].type == "player_id"){
+                                let checked_player = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1];
+                                if (archipelago_settings.player == checked_player){
+                                    display = true;
+                                    break;//Breaks the for loop
+                                }
+                            }
+                        }
+                        if (!display)
+                        break;//Breaks the case statement
+                    }
                     let message = "";
                     for (let i = 0; i < data.data.length; i++){
                         let color = "";

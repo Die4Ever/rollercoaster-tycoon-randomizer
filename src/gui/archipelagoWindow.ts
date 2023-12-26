@@ -143,6 +143,7 @@ function archipelagoLocations(){
             }
             else if (currentWindow.tabIndex == 3){
                 currentWindow.findWidget<ListViewWidget>("message-list").items = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
+                currentWindow.findWidget<CheckboxWidget>("universal-notifications-toggle").isChecked = archipelago_settings.universal_item_messages;
                 currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = archipelago_settings.park_message_chat;
                 currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = archipelago_settings.network_chat;
             }
@@ -399,6 +400,22 @@ function archipelagoLocations(){
                                         break;
                                 }
                                 currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
+                            }
+                        },
+                        {
+                            type: 'checkbox',
+                            name: 'universal-notifications-toggle',
+                            text: 'Enable universal item notifications',
+                            x: 150,
+                            y: 310,
+                            width: 240,
+                            height: 10,
+                            tooltip: 'If disabled, only items directly related to you will appear as chats. Useful in large games.',
+                            isChecked: archipelago_settings.universal_item_messages,
+                            onChange: function(isChecked: boolean) {
+                                var currentWindow = ui.getWindow("archipelago-locations");
+                                archipelago_settings.universal_item_messages = isChecked;
+                                saveArchipelagoProgress();
                             }
                         },
                         {
