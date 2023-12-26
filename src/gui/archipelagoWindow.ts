@@ -312,6 +312,7 @@ function archipelagoLocations(){
                             height: 200,
                             isStriped: true,
                             scrollbars: 'both',
+                            columns:[{width: 1400}],
                             items: Archipelago.CreateObjectiveList()
                         },
                         {
@@ -806,7 +807,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => archipelago_print_message("DUCKS!"));
+                        console.log(archipelago_objectives.UniqueRides);
                     }
                 }
            ]

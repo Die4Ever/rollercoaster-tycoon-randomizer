@@ -980,7 +980,7 @@ class RCTRArchipelago extends ModuleBase {
             objective.push("Real Estate Monopoly:");
             objective.push(archipelago_objectives.Monopoly[1] ? ("✓        Own every tile on the map!") : ("          Own every tile on the map!"));
         }
-        if (archipelago_objectives.UniqueRides[0]){
+        if (archipelago_objectives.UniqueRides[0].length){
             objective.push("Required Rides:");
             var ride_list = (archipelago_objectives.UniqueRides[1]) ? "✓        " : "        ";
             for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
