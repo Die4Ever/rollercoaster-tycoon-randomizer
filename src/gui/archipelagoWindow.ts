@@ -238,6 +238,17 @@ function archipelagoLocations(){
                             }
                         },
                         {
+                            type: 'button',
+                            name: 'excorcize-furry-button',
+                            x: 500,
+                            y: 300,
+                            width: 175,
+                            height: 26,
+                            text: 'A furry problem? In my park?',
+                            tooltip: "It's more likely than you think!",
+                            onClick: () => {archipelagoExcorcizeFurries();}
+                        },
+                        {
                             type: 'label',
                             name: 'Connected-to-server',
                             x: 200,
@@ -456,6 +467,70 @@ function archipelagoLocations(){
         ]
     });
     return window;
+}
+
+function archipelagoExcorcizeFurries(){
+    if (ui.getWindow("archipelago-excorcize-furries"))
+    return;
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    let challenge = returnChallenge();
+    let buttons = [];
+    for (let i = 0; i < challenge.buttons.length; i++){
+        buttons.push({
+            type: 'button',
+            name: 'button-' + String(i),
+            x: 35 + (i%3) * 90,
+            y: 112 + (Math.floor(i/3) * 26),
+            width: 90,
+            height: 26,
+            text: challenge.buttons[i].text,
+            tooltip: challenge.buttons[i].tooltip,
+            onClick: challenge.buttons[i].onClick
+        })
+    }
+    var prompt = ui.openWindow({
+        classification: 'archipelago-excorcize-furries',
+        title: "Furry Removal Services",
+        width: ww,
+        height: wh,
+        colours: challenge.colors,
+        widgets: [].concat(
+            NewLabel(challenge.label1, {
+                name: 'label-1',
+                y: y++,
+                width: 2,
+                tooltip: challenge.label1_tooltip
+            }),
+            NewLabel(challenge.label2, {
+                name: 'label-2',
+                y: y++,
+                width: 2,
+                tooltip: challenge.label2_tooltip
+            }),
+            buttons
+        )
+    });
+    return;
+}
+
+function explodeFurries(){
+    archipelago_print_message("Boom");
+}
+
+function explodeGuests(number){
+    var guest_list = map.getAllEntities("guest");
+    if (guest_list.length > number){
+        for(var i = 0; i < number; i++){
+            guest_list[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
+        }
+    }
+    else{
+        for(var i = 0; i < guest_list.length; i++){
+            guest_list[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
+        }
+    }
 }
 
 function archipelagoDebug(){
@@ -824,7 +899,11 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        console.log(archipelago_objectives.UniqueRides);
+                        var x = map.getAllEntities("staff")[0].x;
+                        var y = map.getAllEntities("staff")[0].y;
+                        var z = map.getAllEntities("staff")[0].z;
+                        map.getAllEntities("staff")[0].remove();
+                        map.createEntity("litter",{x:x, y:y, z:z})
                     }
                 }
            ]

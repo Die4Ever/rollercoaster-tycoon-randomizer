@@ -126,6 +126,12 @@ const adPool: Ad[] = [
         header: "Here is your download:",
         message: "openrct3.dat (43.5 mB)",
         button: "DOWNLOAD"
+    },
+    {
+        title: "CLOSE THIS WINDOW!",
+        header: "Tired of the buttons not closing these windows?",
+        message: "Fix it today!",
+        button: "Click here!"
     }
 ]
 
