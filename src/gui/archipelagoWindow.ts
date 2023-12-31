@@ -515,8 +515,18 @@ function archipelagoExcorcizeFurries(){
     return;
 }
 
-function explodeFurries(){
-    archipelago_print_message("Boom");
+function explodeFurries(){//TODO: Actually explode them. Just removing them isn't enough
+    var staff_list = map.getAllEntities("staff");
+    for (let i = 0; i < staff_list.length; i++){
+        if(staff_list[i].staffType == "entertainer"){
+            console.log(staff_list[i].patrolArea.tiles);
+            console.log(staff_list[i].patrolArea.tiles.length);
+            if (!staff_list[i].patrolArea.tiles.length){
+                console.log("alroecugaoeutbklrcoeugl");
+                staff_list[i].remove();
+            }
+        }
+    }
 }
 
 function explodeGuests(number){
