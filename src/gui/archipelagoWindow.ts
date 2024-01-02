@@ -71,7 +71,7 @@ function archipelagoGui(){
             [{
                 type: 'button',
                 name: 'cancel-button',
-                x: ww - 90 - 6,
+                x: ww - 160 - 6,
                 y: wh - 6 - 26 - 29,
                 width: 90,
                 height: 26,
@@ -88,7 +88,7 @@ function archipelagoGui(){
             {
                 type: 'button',
                 name: 'start-button',
-                x: ww - 90 - 88 - 6,
+                x: ww - 160 - 88 - 6,
                 y: wh - 6 - 26 - 29,
                 width: 85,
                 height: 26,
@@ -101,6 +101,21 @@ function archipelagoGui(){
                     window.close();
                 }
             },
+            {
+                type: 'checkbox',
+                name: 'multiple-game-requests-toggle',
+                text: 'Send multiple game requests',
+                x: ww - 325,
+                y: wh - 6 - 42 - 45,
+                width: 240,
+                height: 10,
+                tooltip: 'If enabled, the game will split its request for items/locations into several packets. If you\'re in a multiworld with lots of games, this will fix the issue of your items not appearing...hopefully. Recommended off.',
+                isChecked: archipelago_multiple_requests,
+                onChange: function(isChecked: boolean) {
+                    var currentWindow = ui.getWindow("archipelago-connect");
+                    archipelago_multiple_requests = isChecked;
+                }
+            }
             ]
         )
     });
