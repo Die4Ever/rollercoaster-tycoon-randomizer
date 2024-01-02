@@ -516,14 +516,46 @@ function archipelagoExcorcizeFurries(){
 }
 
 function explodeFurries(){//TODO: Actually explode them. Just removing them isn't enough
-    var staff_list = map.getAllEntities("staff");
+    var staff_list = map.getAllEntities("staff").filter((staff: Staff) => staff.staffType === "entertainer");
+    let effect = Math.floor(Math.random() * 8);
     for (let i = 0; i < staff_list.length; i++){
         if(staff_list[i].staffType == "entertainer"){
-            console.log(staff_list[i].patrolArea.tiles);
-            console.log(staff_list[i].patrolArea.tiles.length);
             if (!staff_list[i].patrolArea.tiles.length){
-                console.log("alroecugaoeutbklrcoeugl");
+                let id = staff_list[i].id;
+                let x = staff_list[i].x;
+                let y = staff_list[i].y;
+                let z = staff_list[i].z;
+                // context.executeAction("stafffire",{id: id});
                 staff_list[i].remove();
+                //TODO: Await the fix on OpenRCT2's end. Until then, it'll be boring
+                // if(i < 250){
+                //     switch(effect){
+                //     case 0://What hilarious effect will banishment have?
+                //         map.createEntity("balloon",{x,y,z});
+                //         break;
+                //     case 1:
+                //         map.createEntity("crash_splash",{x,y,z});
+                //         break;
+                //     case 2:
+                //         map.createEntity("duck",{x,y,z});
+                //         break;
+                //     case 3: 
+                //         map.createEntity("explosion_cloud",{x,y,z});
+                //         break;
+                //     case 4:
+                //         map.createEntity("explosion_flare",{x,y,z});
+                //         break;
+                //     case 5:
+                //         map.createEntity("litter",{x,y,z});
+                //         break;
+                //     case 6:
+                //         map.createEntity("money_effect",{x,y,z,});
+                //         break;
+                //     case 7:
+                //         map.createEntity("steam_particle",{x,y,z});
+                //         break;
+                //     }
+                // }
             }
         }
     }
@@ -909,11 +941,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        var x = map.getAllEntities("staff")[0].x;
-                        var y = map.getAllEntities("staff")[0].y;
-                        var z = map.getAllEntities("staff")[0].z;
-                        map.getAllEntities("staff")[0].remove();
-                        map.createEntity("litter",{x:x, y:y, z:z})
+                        explodeFurries();
                     }
                 }
            ]
