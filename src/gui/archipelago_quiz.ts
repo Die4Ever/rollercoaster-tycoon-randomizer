@@ -73,7 +73,7 @@ var challenges = [
                 text: 'Nephi',
                 tooltip: '"I Nephi, having been born of goodly parents..."',
                 onClick: function() {
-                    explodeGuests(200);
+                    explodeGuests(50);
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
             },
@@ -81,7 +81,7 @@ var challenges = [
                 text: 'King Benjamin',
                 tooltip: 'Preaching atop the wall since 124 BC!',
                 onClick: function() {
-                    explodeGuests(200);
+                    explodeGuests(50);
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
             },
@@ -97,7 +97,7 @@ var challenges = [
                 text: '{TINYFONT}Samuel the Lamanite',
                 tooltip: 'Preaching atop the wall, this time while dodging arrows!',
                 onClick: function() {
-                    explodeGuests(200);
+                    explodeGuests(50);
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
             }
@@ -134,6 +134,63 @@ var challenges = [
             {
                 text: '{TINYFONT}Electrical Engineering',
                 tooltip: 'Technically immune to lightning!',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+        ]
+    },
+    {//SCUBA Quiz
+        colors: [38,7], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:"SCUBA: Self Contained Underwater Breathing Apparatus",
+        label2: "but beware, this comes at a great price. What is the least likely problem while SCUBA Diving?",
+        label2_tooltip: "TUBA: Terrible Underwater Breathing Apparatus",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: '{TINYFONT}Nitrogen Narcosis',
+                tooltip: 'Us pros call it "Narked"',
+                onClick: function() {
+                    explodeGuests(50);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '{TINYFONT}Oxygen Toxicity',
+                tooltip: 'Toxic Oxygen? In *MY* SCUBA tank? It\s more likely than you think!',
+                onClick: function() {
+                    explodeGuests(50);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '{TINYFONT}Decompression Sickness',
+                tooltip: 'Such little bubbles, so much pain.',
+                onClick: function() {
+                    explodeGuests(50);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Silt Out',
+                tooltip: '"They\'re tiny rocks! How problematic could they be?"',
+                onClick: function() {
+                    explodeGuests(50);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Hypothermia',
+                tooltip: 'Not a problem for me. My Nordic blood gives me 50% immunity to cold damage.',
+                onClick: function() {
+                    explodeGuests(50);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Anchor Lesion',
+                tooltip: 'Anchors away me boys! Anchors away!',
                 onClick: function() {
                     explodeFurries();
                     ui.getWindow("archipelago-excorcize-furries").close();

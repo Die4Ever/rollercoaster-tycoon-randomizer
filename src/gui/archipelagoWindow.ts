@@ -543,7 +543,7 @@ function explodeFurries(){//TODO: Actually explode them. Just removing them isn'
                 // context.executeAction("stafffire",{id: id});
                 staff_list[i].remove();
                 //TODO: Await the fix on OpenRCT2's end. Until then, it'll be boring
-                // if(i < 250){
+                // if(i < 450){
                 //     switch(effect){
                 //     case 0://What hilarious effect will banishment have?
                 //         map.createEntity("balloon",{x,y,z});
@@ -956,7 +956,9 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {
-                        explodeFurries();
+                        for(let i = 0; i < 500; i++){
+                            map.createEntity("balloon",{x: 0,y: 0,z: 0})
+                        }
                     }
                 }
            ]
