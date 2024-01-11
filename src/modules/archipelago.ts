@@ -1329,7 +1329,7 @@ class RCTRArchipelago extends ModuleBase {
                     context.setTimeout(() => {spam_timeout = false;}, 5000);
                 }
                 else{
-                    ui.showError("Prerequisites not met", "One or more of the prerequisites for this unlock have not been fulfilled");
+                    ui.showError("Prerequisites not met", "You only have " + String(NumQualifiedRides) + " elligible rides in the park! (Ensure they have posted stats)");
                 }
             }
             else{

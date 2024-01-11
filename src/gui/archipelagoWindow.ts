@@ -959,10 +959,8 @@ function archipelagoDebug(){
                     width: 200,
                     height: 25,
                     text: 'Colbys Choice',
-                    onClick: function() {
-                        for(let i = 0; i < 500; i++){
-                            map.createEntity("balloon",{x: 0,y: 0,z: 0})
-                        }
+                    onClick: function() {    
+                        console.log(JSON.stringify(archipelago_locked_locations))
                     }
                 }
            ]
