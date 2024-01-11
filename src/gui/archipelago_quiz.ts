@@ -104,7 +104,7 @@ var challenges = [
         ]
     },
     {//Degree quiz
-        colors: [38,8], //Colors for the popup
+        colors: [38,13], //Colors for the popup
         label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
         label1_tooltip:"To be honest, I've never even seen Yugioh. Or Beyblades. What show is the {PALELAVENDER}shadow realm from?.",
         label2: "but beware, this comes at a great price. What is the best degree out of all of these?",
@@ -128,7 +128,7 @@ var challenges = [
                 text: 'Buisness',
                 tooltip: 'I sell propane and propane accessories!',
                 onClick: function() {
-                    ui.showError("Incorrect","Some buisness graduate was behind every microtransaction in gaming.")
+                    ui.showError("Incorrect","Some buisness graduate was behind every microtransaction in gaming.");
                 }
             },
             {
@@ -158,7 +158,7 @@ var challenges = [
             },
             {
                 text: '{TINYFONT}Oxygen Toxicity',
-                tooltip: 'Toxic Oxygen? In *MY* SCUBA tank? It\s more likely than you think!',
+                tooltip: 'Toxic Oxygen? In *MY* SCUBA tank? It\'s more likely than you think!',
                 onClick: function() {
                     explodeGuests(50);
                     ui.getWindow("archipelago-excorcize-furries").close();
@@ -194,6 +194,94 @@ var challenges = [
                 onClick: function() {
                     explodeFurries();
                     ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+        ]
+    },
+    {//The Game
+        colors: [1,4], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:"Some friends of mine started this thing called the competition. If you think about it, you win!",
+        label2: "but beware, this comes at a great price. You just lost the game!",
+        label2_tooltip: "They're no longer my friends.",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: 'Dangit',
+                tooltip: 'I\'ve been playing since 2009!',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Why?',
+                tooltip: 'No, it hasn\'t gotten old yet.',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'You faltu!',
+                tooltip: 'That was one of my favorite words from India!',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '*Insert angry face here',
+                tooltip: '*Insert angry face here',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '*Insert angrier face here',
+                tooltip: '*Insert angrier face here',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Junk fellow!',
+                tooltip: 'Yes, I\'m trying to force my broken English onto you.',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Waste fellow!',
+                tooltip: 'I will not apologize for my actions.',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'You p*ck n*ck!',
+                tooltip: 'Here in OpenRCT2, we refrain from all swearing. Even the bird swears.',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'The Game?',
+                tooltip: 'Dude, the games been around since like, 1976. What do you mean you haven\'t heard of it?',
+                onClick: function() {
+                    ui.showError("The rules are simple: ","If you think about the game, you lose the game. Tell your friends and they\'ll lose too!")
                 }
             }
         ]

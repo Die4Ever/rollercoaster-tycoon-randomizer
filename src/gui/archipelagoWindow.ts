@@ -126,6 +126,7 @@ function archipelagoLocations(){
     var ww = 700;
     var wh = 350;
     let y = 0;
+    const furryProblem: boolean = (map.getAllEntities("staff").filter((staff: Staff) => staff.staffType === "entertainer").length < 19 ? true : false);
 
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
@@ -261,6 +262,8 @@ function archipelagoLocations(){
                             height: 26,
                             text: 'A furry problem? In my park?',
                             tooltip: "It's more likely than you think!",
+                            //Disable the button if there's not a furry problem in the park
+                            isDisabled: furryProblem,
                             onClick: () => {archipelagoExcorcizeFurries();}
                         },
                         {
@@ -533,6 +536,7 @@ function archipelagoExcorcizeFurries(){
 function explodeFurries(){//TODO: Actually explode them. Just removing them isn't enough
     var staff_list = map.getAllEntities("staff").filter((staff: Staff) => staff.staffType === "entertainer");
     let effect = Math.floor(Math.random() * 8);
+    ui.getWindow('archipelago-locations').close();
     for (let i = 0; i < staff_list.length; i++){
         if(staff_list[i].staffType == "entertainer"){
             if (!staff_list[i].patrolArea.tiles.length){
