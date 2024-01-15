@@ -944,7 +944,7 @@ function archipelagoDebug(){
                                         y: 50,
                                         width: 400,
                                         height: 26,
-                                        text: 'Colby {RED} is {WHITE} very {PURPLE} cool{WHITE} indeed!',
+                                        text: 'Colby {RED} is {WHITE} very {PURPLE} cool{WHITE} indeed!{INLINE_SPRITE}{164}{20}{0}{0}',
                                         tooltip: "Y'all's sure do {MAGENTA}talk a lot, don't you?"
                                     }
                                 ]

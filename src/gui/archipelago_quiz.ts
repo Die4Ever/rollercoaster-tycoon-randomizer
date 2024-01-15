@@ -233,24 +233,6 @@ var challenges = [
                 }
             },
             {
-                text: '*Insert angry face here',
-                tooltip: '*Insert angry face here',
-                onClick: function() {
-                    archipelago_send_message("Say", "I lost the game!");
-                    explodeFurries();
-                    ui.getWindow("archipelago-excorcize-furries").close();
-                }
-            },
-            {
-                text: '*Insert angrier face here',
-                tooltip: '*Insert angrier face here',
-                onClick: function() {
-                    archipelago_send_message("Say", "I lost the game!");
-                    explodeFurries();
-                    ui.getWindow("archipelago-excorcize-furries").close();
-                }
-            },
-            {
                 text: 'Junk fellow!',
                 tooltip: 'Yes, I\'m trying to force my broken English onto you.',
                 onClick: function() {
@@ -278,10 +260,81 @@ var challenges = [
                 }
             },
             {
+                text: '{INLINE_SPRITE}{164}{20}{0}{0}',
+                tooltip: '{INLINE_SPRITE}{164}{20}{0}{0}',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '{INLINE_SPRITE}{194}{20}{0}{0}',
+                tooltip: '{INLINE_SPRITE}{194}{20}{0}{0}',
+                onClick: function() {
+                    archipelago_send_message("Say", "I lost the game!");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
                 text: 'The Game?',
                 tooltip: 'Dude, the games been around since like, 1976. What do you mean you haven\'t heard of it?',
                 onClick: function() {
                     ui.showError("The rules are simple: ","If you think about the game, you lose the game. Tell your friends and they\'ll lose too!")
+                }
+            }
+        ]
+    },
+    {//Spelling
+        colors: [50,4], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:"I swear, some people don't know how to spell names",
+        label2: "but beware, this comes at a great price. What is the correct spelling?",
+        label2_tooltip: "It's a treal Tragedeigh",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: 'Colby',
+                tooltip: 'This is an old English word for "Coal Miner"',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Kolby',
+                tooltip: 'This is an old English word for "Koal Miner"',
+                onClick: function() {
+                    park.cash -= 5000;
+                    ui.showError("Incorrect:", "That there was a " + context.formatString("{CURRENCY2DP}", 5000) + " mistake!")
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Kobe',
+                tooltip: "Isn't this like a basketball player or something?",
+                onClick: function() {
+                    park.cash -= 4200;
+                    ui.showError("Incorrect:", "That there was a " + context.formatString("{CURRENCY2DP}", 4200) + " mistake!")
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Cobe',
+                tooltip: "Isn't this like a football player or something?",
+                onClick: function() {
+                    park.cash -= 690;
+                    ui.showError("Incorrect:", "That there was a " + context.formatString("{CURRENCY2DP}", 690) + " mistake!")
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Colbeigh',
+                tooltip: 'I swear if you click this button...',
+                onClick: function() {
+                    park.cash -= 20000;
+                    ui.showError("What the p*ck dude?", "I'm charging you " + context.formatString("{CURRENCY2DP}", 20000) + " for that offense against spelling.")
+                    ui.getWindow("archipelago-excorcize-furries").close();
                 }
             }
         ]
