@@ -338,6 +338,68 @@ var challenges = [
                 }
             }
         ]
+    },
+    {//Sea Shanty
+        colors: [38,4], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:"Sea Shanties never should have gone out of style",
+        label2: "but beware, this comes at a great price. Which of the following is a Longest Johns Original?",
+        label2_tooltip: "Dude, they're such a good vocal group.",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: 'Wellerman',
+                tooltip: 'Soon may the Wellerman come, to bring us sugar and tea and rum!',
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Drunken Sailor',
+                tooltip: 'What shall we do with a Drunken Sailor early in the morning?',
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Santiana',
+                tooltip: "Oh Santiana gained a day. Away Santiana!",
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Old Maui',
+                tooltip: "Rolling down to Old Maui me boys! Rolling down to Old Maui!",
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Moby Duck',
+                tooltip: 'Row ho! Row ho! And with any luck! We\'ll win the day and do away the dreaded Moby Duck!',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Fish in the Sea',
+                tooltip: 'And it\'s windy weather boys! Stormy weather boys! When the wind blows, we\'re all together boys!',
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+        ]
     }
 ]
 
