@@ -540,7 +540,7 @@ function explodeFurries(){
         ui.getWindow('archipelago-locations').close();
     }
     catch{
-        console.log("Error: No Window to close");
+        console.log("Error in explodeFurries: No Window to close");
     }
     for (let i = 0; i < staff_list.length; i++){
         if(staff_list[i].staffType == "entertainer"){
@@ -551,31 +551,33 @@ function explodeFurries(){
                 let z = staff_list[i].z;
                 // context.executeAction("stafffire",{id: id});
                 staff_list[i].remove();
-                switch(effect){
-                case 0://What hilarious effect will banishment have?
-                    map.createEntity("balloon",{x,y,z});
-                    break;
-                case 1:
-                    map.createEntity("crash_splash",{x,y,z});
-                    break;
-                case 2:
-                    map.createEntity("duck",{x,y,z});
-                    break;
-                case 3: 
-                    map.createEntity("explosion_cloud",{x,y,z});
-                    break;
-                case 4:
-                    map.createEntity("explosion_flare",{x,y,z});
-                    break;
-                case 5:
-                    map.createEntity("litter",{x,y,z});
-                    break;
-                case 6:
-                    map.createEntity("money_effect",{x,y,z,});
-                    break;
-                case 7:
-                    map.createEntity("steam_particle",{x,y,z});
-                    break;
+                if (i < 250){//TODO: Remove this check on next major OpenRCT2 release
+                    switch(effect){
+                    case 0://What hilarious effect will banishment have?
+                        map.createEntity("balloon",{x,y,z});
+                        break;
+                    case 1:
+                        map.createEntity("crash_splash",{x,y,z});
+                        break;
+                    case 2:
+                        map.createEntity("duck",{x,y,z});
+                        break;
+                    case 3: 
+                        map.createEntity("explosion_cloud",{x,y,z});
+                        break;
+                    case 4:
+                        map.createEntity("explosion_flare",{x,y,z});
+                        break;
+                    case 5:
+                        map.createEntity("litter",{x,y,z});
+                        break;
+                    case 6:
+                        map.createEntity("money_effect",{x,y,z,});
+                        break;
+                    case 7:
+                        map.createEntity("steam_particle",{x,y,z});
+                        break;
+                    }
                 }
             }
         }
@@ -963,7 +965,7 @@ function archipelagoDebug(){
                     text: 'Colbys Choice',
                     onClick: function() {    
                         // console.log(JSON.stringify(archipelago_locked_locations))
-                        explodeFurries();
+                        context.executeAction("gamesetspeed",{speed: 1});
                     }
                 }
            ]
