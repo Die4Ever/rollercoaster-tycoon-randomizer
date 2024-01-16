@@ -412,8 +412,8 @@ var challenges = [
                 text: 'P = IV',
                 tooltip: 'In other words, P = V^2/R',
                 onClick: function() {
-                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
-                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.showError("That is incorrect.", "But I mean, you really shouldn't be expected to know that. We'll banish the furries anyways.")
+                    explodeFurries();
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
             },
@@ -421,8 +421,9 @@ var challenges = [
                 text: 'V = IR',
                 tooltip: 'Circuits go VIR',
                 onClick: function() {
-                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
-                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.showError("Correct!", "Because you're such a smart cookie, we'll give you some cash too!")
+                    park.cash += 5000;
+                    explodeFurries();
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
             },
@@ -430,8 +431,7 @@ var challenges = [
                 text: 'A^2 + B^2 = C^2',
                 tooltip: "Pythagorean Ohm was his full name!",
                 onClick: function() {
-                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
-                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.showError("That is incorrect.", "You probably should have known that option was Pythogrians therom though.")
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
             },
@@ -439,8 +439,8 @@ var challenges = [
                 text: 'V = Q/C',
                 tooltip: "Do you think OpenRCT2 will ever support LaTEX script?",
                 onClick: function() {
-                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
-                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.showError("That is incorrect.", "But I mean, you really shouldn't be expected to know that. We'll banish the furries anyways.")
+                    explodeFurries();
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
             },
@@ -448,6 +448,7 @@ var challenges = [
                 text: 'q = CV',
                 tooltip: 'Quantum = Current * Voltage (Trust me brah)',
                 onClick: function() {
+                    ui.showError("That is incorrect.", "But I mean, you really shouldn't be expected to know that. We'll banish the furries anyways.")
                     explodeFurries();
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
