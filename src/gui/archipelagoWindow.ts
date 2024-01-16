@@ -614,8 +614,7 @@ function explodeFurries(){
                         }
                         break;
                     case 6:
-                        let cash = map.createEntity("money_effect",{x,y,z}) as ;//,Value:Math.floor(Math.random()*100000)});
-
+                        map.createEntity("money_effect",{x,y,z})//,Value:Math.floor(Math.random()*100000)});
                         break;
                     case 7:
                         map.createEntity("steam_particle",{x,y,z});
