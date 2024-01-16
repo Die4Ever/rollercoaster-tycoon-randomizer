@@ -106,7 +106,7 @@ function archipelagoGui(){
                 name: 'multiple-game-requests-toggle',
                 text: 'Send multiple game requests',
                 x: ww - 325,
-                y: wh - 6 - 42 - 45,
+                y: wh - 6 - 27 - 45,
                 width: 240,
                 height: 10,
                 tooltip: 'If enabled, the game will split its request for items/locations into several packets. If you\'re in a multiworld with lots of games, this will fix the issue of your items not appearing...hopefully. Recommended off.',
