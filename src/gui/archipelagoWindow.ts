@@ -535,8 +535,8 @@ function archipelagoExcorcizeFurries(){
 
 function explodeFurries(){
     var staff_list = map.getAllEntities("staff").filter((staff: Staff) => staff.staffType === "entertainer");
-    // let effect = Math.floor(Math.random() * 8);
-    let effect = 6;
+    let effect = Math.floor(Math.random() * 8);
+    // let effect = 6;
     try{
         ui.getWindow('archipelago-locations').close();
     }
@@ -570,10 +570,52 @@ function explodeFurries(){
                         map.createEntity("explosion_flare",{x,y,z});
                         break;
                     case 5:
-                        map.createEntity("litter",{x,y,z});//,litterType:"burger_box"});//Math.floor(Math.random()*12)});
+                        let litter = map.createEntity("litter",{x,y,z}) as Litter;//,litterType:"burger_box"});//Math.floor(Math.random()*12)});
+                        switch(Math.floor(Math.random() * 8)){
+                            case 0:
+                                litter.litterType = "vomit";
+                                break;
+                            case 1:
+                                litter.litterType = "vomit_alt";
+                                break;
+                            case 2:
+                                litter.litterType = "empty_can";
+                                break;
+                            case 3:
+                                litter.litterType = "rubbish";
+                                break;
+                            case 4:
+                                litter.litterType = "burger_box";
+                                break;
+                            case 5:
+                                litter.litterType = "empty_cup";
+                                break;
+                            case 6:
+                                litter.litterType = "empty_box";
+                                break;
+                            case 7:
+                                litter.litterType = "empty_bottle";
+                                break;
+                            case 8:
+                                litter.litterType = "empty_bowl_red";
+                                break;
+                            case 9:
+                                litter.litterType = "empty_bowl_blue";
+                                break;
+                            case 10:
+                                litter.litterType = "empty_drink_carton";
+                                break;
+                            case 11:
+                                litter.litterType = "empty_juice_cup";
+                                break;
+                            default:
+                                litter.litterType = "vomit_alt";
+                                break;
+                        }
                         break;
                     case 6:
-                        map.createEntity("money_effect",{x,y,z});//,Value:Math.floor(Math.random()*100000)});
+                        let cash = map.createEntity("money_effect",{x,y,z}) as ;//,Value:Math.floor(Math.random()*100000)});
+
                         break;
                     case 7:
                         map.createEntity("steam_particle",{x,y,z});

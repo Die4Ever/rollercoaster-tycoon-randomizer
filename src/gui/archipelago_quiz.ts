@@ -400,6 +400,59 @@ var challenges = [
                 }
             }
         ]
+    },
+    {//Sea Shanty
+        colors: [57,4], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:"You should have paid attention in ECEN 150!",
+        label2: "but beware, this comes at a great price. Which of the following is Ohms Law??",
+        label2_tooltip: "What do you mean you don't know what class that is?",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: 'P = IV',
+                tooltip: 'In other words, P = V^2/R',
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'V = IR',
+                tooltip: 'Circuits go VIR',
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'A^2 + B^2 = C^2',
+                tooltip: "Pythagorean Ohm was his full name!",
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'V = Q/C',
+                tooltip: "Do you think OpenRCT2 will ever support LaTEX script?",
+                onClick: function() {
+                    ui.showError("That is incorrect.", "So now you get ducks! (Maybe... they sometimes don't show up.")
+                    context.executeAction("cheatset", {type: 46, param1: 50, param2: 0}, () => console.log("Added 50 ducks to the park."));
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'q = CV',
+                tooltip: 'Quantum = Current * Voltage (Trust me brah)',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+        ]
     }
 ]
 
