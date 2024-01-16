@@ -82,7 +82,7 @@ class RCTRArchipelago extends ModuleBase {
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu
         if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
         self.SubscribeEvent('vehicle.crash',(e: any) => self.SendDeathLink(e.id));
-        // context.subscribe('action.execute',e => self.LogRide(e.player, e.action, e.result));
+        context.subscribe('action.execute',e => self.InterpretAction(e.player, e.action, e.args, e.result));
         context.subscribe('interval.tick', (e: any) => self.CheckMonopoly());
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
 
@@ -288,11 +288,20 @@ class RCTRArchipelago extends ModuleBase {
         park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0.
     }
 
-    // LogRide(player, action, result): void {//This will eventually be used to identify who built a ride for Deathlink to identify the culprit
-    //     if(action == "ridecreate"){
-    //         console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
-    //     }
-    // }
+    InterpretAction(player, action, args, result): void {//Interprets game actions for various processes
+        // if(action == "ridecreate"){
+        //     console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
+        // }
+        switch(action){
+            case "gamesetspeed":
+                console.log(args.speed);
+                console.log(archipelago_settings.maximum_speed);
+                if(args.speed > archipelago_settings.maximum_speed){
+                    ui.showError("Too fast!", "You haven't unlocked that speed tier yet!")
+                    context.executeAction("gamesetspeed",{speed: 1} as GameSetSpeedArgs);
+                }
+        }
+    }
 
     RemoveItems(): void{
         const origNumResearched = park.research.inventedItems.length;
@@ -393,7 +402,10 @@ class RCTRArchipelago extends ModuleBase {
                                 case "Thunderstorm":
                                 case "Snowstorm":
                                 case "Blizzard":
-                                    category = "weather"
+                                    category = "weather";
+                                    break;
+                                case "Progressive Speed":
+                                    category = "speed";
                                     break;
                             }
                         }
@@ -428,6 +440,9 @@ class RCTRArchipelago extends ModuleBase {
                                 break;
                             case "weather":
                                 self.setWeather(item)
+                                break;
+                            case "speed":
+                                self.updateMaxSpeed();
                                 break;
                             default:
                                 console.log("Error in ReceiveArchipelagoItem: category not found");
@@ -680,6 +695,16 @@ class RCTRArchipelago extends ModuleBase {
                 console.log("Error in setWeather: Invalid Weather Type Provided.");
 
         }
+    }
+
+    updateMaxSpeed(): any{
+        park.postMessage(
+            {type: 'award', text: "The Elder Gods have granted your petition to defy phyics and create entropy. Your maximum speed has increased!"} as ParkMessageDesc);
+        if (archipelago_settings.maximum_speed < 4)
+            archipelago_settings.maximum_speed ++;
+        else
+            archipelago_settings.maximum_speed = 8;
+        saveArchipelagoProgress();
     }
 
     SetPurchasableTiles(): any{

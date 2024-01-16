@@ -535,7 +535,8 @@ function archipelagoExcorcizeFurries(){
 
 function explodeFurries(){
     var staff_list = map.getAllEntities("staff").filter((staff: Staff) => staff.staffType === "entertainer");
-    let effect = Math.floor(Math.random() * 8);
+    // let effect = Math.floor(Math.random() * 8);
+    let effect = 6;
     try{
         ui.getWindow('archipelago-locations').close();
     }
@@ -569,10 +570,10 @@ function explodeFurries(){
                         map.createEntity("explosion_flare",{x,y,z});
                         break;
                     case 5:
-                        map.createEntity("litter",{x,y,z});
+                        map.createEntity("litter",{x,y,z});//,litterType:"burger_box"});//Math.floor(Math.random()*12)});
                         break;
                     case 6:
-                        map.createEntity("money_effect",{x,y,z,});
+                        map.createEntity("money_effect",{x,y,z});//,Value:Math.floor(Math.random()*100000)});
                         break;
                     case 7:
                         map.createEntity("steam_particle",{x,y,z});
@@ -965,7 +966,8 @@ function archipelagoDebug(){
                     text: 'Colbys Choice',
                     onClick: function() {    
                         // console.log(JSON.stringify(archipelago_locked_locations))
-                        context.executeAction("gamesetspeed",{speed: 1});
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.updateMaxSpeed();
                     }
                 }
            ]
