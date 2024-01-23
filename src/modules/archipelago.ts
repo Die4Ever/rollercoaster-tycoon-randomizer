@@ -100,32 +100,7 @@ class RCTRArchipelago extends ModuleBase {
         ui.registerShortcut(
             {id:"sendMessage", text:"Sends message from the unlock shop.",bindings:['RETURN'],
             callback() {try {//I'll need to break this into a seperate function eventually.
-                var window:Window = ui.getWindow("archipelago-locations");
-                if(window.findWidget<ButtonWidget>("send-chat-button")){
-                    var currentWindow = ui.getWindow("archipelago-locations");
-                                var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
-                                if (!message)
-                                return;
-                                switch(message){
-                                    case '!!help':
-                                        archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.\n!!toggleDeathLink: Enables/Disables Deathlink\n");
-                                        break;
-                                    case '!!toggleDeathLink':
-                                        archipelago_settings.death_link = !archipelago_settings.death_link;
-                                        if(archipelago_settings.death_link)
-                                        archipelago_print_message("Deathlink Enabled you monster");
-                                        else
-                                        archipelago_print_message("Deathlink Disabled you coward");
-                                    break;
-                                    case 'Colby sucks':
-                                        archipelago_send_message("Say","Colby is awesome!");
-                                        break;
-                                    default:
-                                        archipelago_send_message("Say", message);
-                                        break;
-                                }
-                                currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
-                }
+                interpretMessage();
             }
             catch{
                 console.log("Looks like the Archipelago Shop isn't open");

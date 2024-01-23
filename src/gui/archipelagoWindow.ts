@@ -406,29 +406,7 @@ function archipelagoLocations(){
                             text: 'Send Message!',
                             tooltip: 'The shortcut to this button is alt-F4',
                             onClick: function() {
-                                var currentWindow = ui.getWindow("archipelago-locations");
-                                var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
-                                if (!message)
-                                return;
-                                switch(message){
-                                    case '!!help':
-                                        archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.\n!!toggleDeathLink: Enables/Disables Deathlink\n");
-                                        break;
-                                    case '!!toggleDeathLink':
-                                        archipelago_settings.death_link = !archipelago_settings.death_link;
-                                        if(archipelago_settings.death_link)
-                                        archipelago_print_message("Deathlink Enabled you monster");
-                                        else
-                                        archipelago_print_message("Deathlink Disabled you coward");
-                                    break;
-                                    case 'Colby sucks':
-                                        archipelago_send_message("Say","Colby is awesome!");
-                                        break;
-                                    default:
-                                        archipelago_send_message("Say", message);
-                                        break;
-                                }
-                                currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
+                                interpretMessage();
                             }
                         },
                         {
@@ -1015,6 +993,61 @@ function archipelagoDebug(){
         )
     });
     return window;
+}
+
+function interpretMessage(){
+    var currentWindow = ui.getWindow("archipelago-locations");
+    if (!currentWindow)
+    return;
+    if(currentWindow.findWidget<ButtonWidget>("send-chat-button")){
+        var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
+        if (!message)
+        return;
+        console.log("This is the message:");
+        console.log(message);
+        switch(message){
+            case '!!help':
+                archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.");
+                archipelago_print_message("!!toggleDeathLink: Enables/Disables Deathlink\n");
+                archipelago_print_message("setMaxSpeed x: Sets the maximum allowed speed.");
+                break;
+            case '!!toggleDeathLink':
+                archipelago_settings.death_link = !archipelago_settings.death_link;
+                if(archipelago_settings.death_link)
+                archipelago_print_message("Deathlink Enabled you monster");
+                else
+                archipelago_print_message("Deathlink Disabled you coward");
+                break;
+            case '!!setMaxSpeed 1'://Changes maximum speed allowed
+                archipelago_settings.maximum_speed = 1;
+                archipelago_print_message("Maximum speed reset to 1. We're off! Like a herd of turtles!")
+                break;
+            case '!!setMaxSpeed 2':
+                archipelago_settings.maximum_speed = 2;
+                archipelago_print_message("Maximum speed set to 2. Those guests sure are slow, ain't they?");
+                break;
+            case '!!setMaxSpeed 3':
+                archipelago_settings.maximum_speed = 3;
+                archipelago_print_message("Maximum speed set to 3. Zoom. Look at it go.");
+                break;
+            case '!!setMaxSpeed 4':
+                archipelago_settings.maximum_speed = 4;
+                archipelago_print_message("Maximum speed set to 4. Is this not fast enough for you yet?");
+                break;
+            case '!!setMaxSpeed 5':
+                archipelago_settings.maximum_speed = 5;
+                archipelago_print_message("Maximum speed set. You better pray you don't get a furry trap.");
+                break;
+            case 'Colby sucks'://Gotta do some error correction here.
+                archipelago_send_message("Say","Colby is awesome!");
+                break;
+            default:
+                archipelago_send_message("Say", message);
+                break;
+        }
+        currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
+    }
+    return;
 }
 
 function test(player, type, result){
