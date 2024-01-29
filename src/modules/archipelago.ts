@@ -347,7 +347,7 @@ class RCTRArchipelago extends ModuleBase {
                         console.log(item);
                         if(item.indexOf("Trap") > -1)
                         category = "trap";
-                        if(RideType[item])//Any item that fits a ride type is a ride
+                        if(RideType[item] > -1)//Any item that fits a ride type is a ride
                         category = "ride";
                         if(item.indexOf("$") > -1)
                         category = "cash";
@@ -1077,7 +1077,7 @@ class RCTRArchipelago extends ModuleBase {
 
         if (archipelago_objectives.LoanPaidOff[0] == true)//Check if Loans are enabled
         {
-            if (park.bankLoan <= 0){//Check if loan is paid off
+            if (park.bankLoan <= 0){//Check if loan is paid off //TODO: This may be a glitch. Go check future Colby
                 archipelago_objectives.LoanPaidOff[1] = true;
             }
             else{
@@ -1267,7 +1267,7 @@ class RCTRArchipelago extends ModuleBase {
                     var QualifiedNausea = false;
                     var QualifiedLength = false;
                     var elligible = false;
-                    if(ride){//See if there's a prereq that's a specific ride
+                    if(ride > -1){//See if there's a prereq that's a specific ride
                         if (Number(ride) == ride_list[i].type){//If the rides match, they're elligible
                         elligible = true;
                         }

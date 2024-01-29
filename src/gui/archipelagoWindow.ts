@@ -985,8 +985,14 @@ function archipelagoDebug(){
                     text: 'Colbys Choice',
                     onClick: function() {    
                         // console.log(JSON.stringify(archipelago_locked_locations))
-                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.updateMaxSpeed();
+                        // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        // BathroomTrap.updateMaxSpeed();
+                        if (archipelago_settings.poopybutts > -1){
+                            console.log("Bad!");
+                        }
+                        else{
+                            console.log("Good!");
+                        }
                     }
                 }
            ]
@@ -1035,7 +1041,7 @@ function interpretMessage(){
                 archipelago_print_message("Maximum speed set to 4. Is this not fast enough for you yet?");
                 break;
             case '!!setMaxSpeed 5':
-                archipelago_settings.maximum_speed = 5;
+                archipelago_settings.maximum_speed = 8;
                 archipelago_print_message("Maximum speed set. You better pray you don't get a furry trap.");
                 break;
             case 'Colby sucks'://Gotta do some error correction here.
