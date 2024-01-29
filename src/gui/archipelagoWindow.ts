@@ -987,7 +987,7 @@ function archipelagoDebug(){
                         // console.log(JSON.stringify(archipelago_locked_locations))
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
-                        if (archipelago_settings.poopybutts > -1){
+                        if (Number(archipelago_settings.poopybutts) > -1){
                             console.log("Bad!");
                         }
                         else{

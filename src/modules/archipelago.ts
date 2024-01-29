@@ -347,7 +347,7 @@ class RCTRArchipelago extends ModuleBase {
                         console.log(item);
                         if(item.indexOf("Trap") > -1)
                         category = "trap";
-                        if(RideType[item] > -1)//Any item that fits a ride type is a ride
+                        if(Number(RideType[item]) > -1)//Any item that fits a ride type is a ride
                         category = "ride";
                         if(item.indexOf("$") > -1)
                         category = "cash";
@@ -1267,7 +1267,7 @@ class RCTRArchipelago extends ModuleBase {
                     var QualifiedNausea = false;
                     var QualifiedLength = false;
                     var elligible = false;
-                    if(ride > -1){//See if there's a prereq that's a specific ride
+                    if(Number(ride) > -1){//See if there's a prereq that's a specific ride
                         if (Number(ride) == ride_list[i].type){//If the rides match, they're elligible
                         elligible = true;
                         }
