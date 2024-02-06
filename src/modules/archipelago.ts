@@ -1358,6 +1358,8 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
     SetPostGenerationSettings(): void{
+        if (park.getFlag("noMoney"))
+        park.cash = 100069;
         park.setFlag("noMoney", false);
         switch(archipelago_settings.preferred_intensity){
             case 0:
