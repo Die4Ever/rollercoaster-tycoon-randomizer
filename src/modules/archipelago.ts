@@ -1033,14 +1033,21 @@ class RCTRArchipelago extends ModuleBase {
                         }
                     }
                     if (elligible){
+                        // console.log("Apples!!!");
+                        // console.log(Number(archipelago_objectives.RollerCoasters[2]) * 100);
+                        // console.log(Number(archipelago_objectives.RollerCoasters[3]) * 100);
+                        // console.log(Number(archipelago_objectives.RollerCoasters[4]) * 100);
+                        // console.log(map.rides[i].excitement);
+                        // console.log(map.rides[i].intensity);
+                        // console.log(map.rides[i].nausea);
                         QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                        if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                        if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[1]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
                             QualifiedExcitement = true;
                         }
-                        if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
+                        if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){
                             QualifiedIntensity = true;
                         }
-                        if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[4]) * 100)){
+                        if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
                             QualifiedNausea = true;
                         }
 
