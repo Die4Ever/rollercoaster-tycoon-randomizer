@@ -793,18 +793,20 @@ class RCTRArchipelago extends ModuleBase {
         //Generates guests with the names of the Archipelago players
         if(context.getParkStorage().get("RCTRando.ArchipelagoPlayers")){
             let guests = map.getAllEntities("guest");
-            let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
+            let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
             for(let i=0; i<(archipelagoPlayers.length); i++){
                 var inPark = false;
                 for(let j=0; j<(guests.length); j++){
-                    if(archipelagoPlayers[i] == (guests[j].name)){
-                    inPark = true;
-                    break;
+                    if(archipelagoPlayers[i][0] == (guests[j].name)){
+                        inPark = true;
+                        if(archipelagoPlayers[i][1] == true)//If this game has beaten their scenario
+                        guests[j].setFlag("joy", true);//Make them do a little dance
+                        break;
                     }
                 }
                 if(!inPark){
                     if(guests.length >= archipelagoPlayers.length){
-                        guests[i].name = archipelagoPlayers[i];
+                        guests[i].name = archipelagoPlayers[i][0];
                     }
                 }
             }

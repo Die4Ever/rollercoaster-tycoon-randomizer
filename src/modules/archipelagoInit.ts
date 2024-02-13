@@ -21,6 +21,8 @@ interface archipelago_price{
     Lives: number,
     RidePrereq: any[]
 }
+
+type playerTuple = [string, boolean];
 var archipelago_locked_locations: archipelago_item[] = []; // List of 3 objects: Location ID, Item, and Receiving Player
 var archipelago_unlocked_locations: archipelago_item[] = [];
 var archipelago_location_prices: archipelago_price[] = []; // List of Location ID's and the requirements to unlock them

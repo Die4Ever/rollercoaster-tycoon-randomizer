@@ -107,30 +107,29 @@ function archipelago_send_message(type: string, message?: any) {
     }
 }
 
-function ac_req(data) {
+function ac_req(data) {//This is what we do when we receive a data packet
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
-    // console.log(data);
-    var archipelagoPlayers: string[] = [];
+    var archipelagoPlayers: playerTuple[] = [];
     switch(data.cmd){
         case "RoomInfo":
             archipelago_settings.current_time = data.time;
             console.log("Archipelago Time has been set:");
             console.log(archipelago_settings.current_time);
-            // archipelago_send_message("Connect",{password: 8, name: "Colby"});
             break;
         case "Connected"://Packet stating player is connected to the Archipelago game
-            archipelagoPlayers = [];
-            var multiworld_games = []
-            for(let i=0; i<data.players.length; i++) {
-                //Create guest list populated with Player names
-                archipelagoPlayers.push(data.players[i][2]);
-                multiworld_games.push(data.slot_info[i + 1][1]);
+            var multiworld_games = [];
+            if(!context.getParkStorage().get("RCTRando.ArchipelagoPlayers")){ //We only need to do this once
+                for(let i=0; i<data.players.length; i++) {
+                    //Create guest list populated with Player names
+                    archipelagoPlayers.push([data.players[i][2], false]);
+                    multiworld_games.push(data.slot_info[i + 1][1]);
+                }
+                console.log(data.slot_info);
+                console.log("Here's our players:");
+                console.log(archipelagoPlayers);
+                context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
+                Archipelago.SetNames();
             }
-            console.log(data.slot_info);
-            console.log("Here's our players:");
-            console.log(archipelagoPlayers);
-            context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
-            Archipelago.SetNames();
             context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
 
             //To prevent sending lots of redundant data, we strip copies of games
@@ -158,11 +157,11 @@ function ac_req(data) {
             break;
 
         case "PrintJSON"://Packet with data to print to the screen
-            archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
+            archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
             switch(data.type){
                 case "ItemSend":
                 case "Hint":
-                    if (!archipelago_settings.universal_item_messages){
+                    if (!archipelago_settings.universal_item_messages){//Only display item messages directly relevant to the player if enabled
                         let display = false;
                         for (let i = 0; i < data.data.length; i++){
                             if(data.data[i].type == "player_id"){
@@ -183,18 +182,21 @@ function ac_req(data) {
                             let segment = data.data[i].text;
                             switch(data.data[i].type){
                                 case "player_id":
-                                    segment = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1];
-                                    color = "PALELAVENDER";
+                                    segment = archipelagoPlayers[Number(data.data[i].text)-1][0];//Gets the name of the relevant player
+                                    color = "PALELAVENDER";//Colors them purple
                                     break;
                                 case "item_id":
                                     segment = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[Number(data.data[i].text)];
                                     switch(data.data[i].flags){
-                                        case 0:
-                                        case 2:
+                                        case 0://Normal
+                                        case 2://Useful
                                             color = "BABYBLUE";
                                             break;
-                                        case 1:
+                                        case 1://Progression
                                             color = "PALELAVENDER";
+                                            break;
+                                        case 4://Trap
+                                            color = "RED";
                                             break;
                                     }
                                     break;
@@ -252,13 +254,16 @@ function ac_req(data) {
 
                 case "Goal":
                     archipelago_print_message(data.data[0].text);
-                    let guests = map.getAllEntities("guest");
-                    for(let i=0; i<(guests.length); i++){
-                        if(guests[i].name == archipelagoPlayers[data.slot - 1]){
-                            guests[i].setFlag("joy", true);
-                            break;
-                        }
-                    }
+                    archipelagoPlayers[data.slot - 1][1] = true;
+                    context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
+                    // let guests = map.getAllEntities("guest");
+                    // for(let i=0; i<(guests.length); i++){
+                    //     if(guests[i].name == archipelagoPlayers[data.slot - 1]){
+                    //         guests[i].setFlag("joy", true);
+                    //         break;
+                    //     }
+                    // }
+
                     break;
 
                 default:
@@ -358,7 +363,7 @@ function ac_req(data) {
         case "LocationInfo":
             const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
             for(let i = 0; i < data.locations.length; i++){
-                archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1]})
+                archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
             }
             ArchipelagoSaveLocations(archipelago_locked_locations,[]);
     }
