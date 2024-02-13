@@ -987,7 +987,8 @@ function archipelagoDebug(){
                         // console.log(JSON.stringify(archipelago_locked_locations))
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
-                        console.log(JSON.stringify(archipelago_objectives));
+                        // console.log(archipelago_settings.player);
+                        archipelago_send_message("StatusUpdate", 30)
                     }
                 }
            ]

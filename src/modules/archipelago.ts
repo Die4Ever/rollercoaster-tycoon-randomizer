@@ -996,6 +996,8 @@ class RCTRArchipelago extends ModuleBase {
     CheckObjectives(): any{
         var self = this;
         if (scenario.status == "completed"){
+            if(!archipelago_settings.player[1])
+            archipelago_send_message("StatusUpdate", 30);
             return;
         }
         if (park.guests >= Number(archipelago_objectives.Guests[0])){
