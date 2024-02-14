@@ -100,22 +100,22 @@ function archipelagoGui(){
                     console.log("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");
                     window.close();
                 }
-            },
-            {
-                type: 'checkbox',
-                name: 'multiple-game-requests-toggle',
-                text: 'Send multiple game requests',
-                x: ww - 325,
-                y: wh - 6 - 27 - 45,
-                width: 240,
-                height: 10,
-                tooltip: 'If enabled, the game will split its request for items/locations into several packets. If you\'re in a multiworld with lots of games, this will fix the issue of your items not appearing...hopefully. Recommended off.',
-                isChecked: archipelago_multiple_requests,
-                onChange: function(isChecked: boolean) {
-                    var currentWindow = ui.getWindow("archipelago-connect");
-                    archipelago_multiple_requests = isChecked;
-                }
-            }
+            }//,
+            // {
+            //     type: 'checkbox',
+            //     name: 'multiple-game-requests-toggle',
+            //     text: 'Send multiple game requests',
+            //     x: ww - 325,
+            //     y: wh - 6 - 27 - 45,
+            //     width: 240,
+            //     height: 10,
+            //     tooltip: 'If enabled, the game will split its request for items/locations into several packets. If you\'re in a multiworld with lots of games, this will fix the issue of your items not appearing...hopefully. Recommended off.',
+            //     isChecked: archipelago_multiple_requests,
+            //     onChange: function(isChecked: boolean) {
+            //         var currentWindow = ui.getWindow("archipelago-connect");
+            //         archipelago_multiple_requests = isChecked;
+            //     }
+            // }
             ]
         )
     });

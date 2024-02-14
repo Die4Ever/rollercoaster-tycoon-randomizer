@@ -40,7 +40,7 @@ var archipelago_connected_to_game = false;
 var archipelago_connected_to_server = false;
 var archipelago_init_received = false;
 var archipelago_correct_scenario = true;
-var archipelago_multiple_requests = false;
+var archipelago_multiple_requests = true;
 var archipelago_games_requested = 0;
 
 var archipelago_settings: any = {
