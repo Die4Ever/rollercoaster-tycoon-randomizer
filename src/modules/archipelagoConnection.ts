@@ -83,7 +83,7 @@ function archipelago_send_message(type: string, message?: any) {
                     break;
                 case "Bounce"://Fix
                     if(message.tag == "DeathLink"){
-                        connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: archipelago_settings.player}});
+                        connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: archipelago_settings.player[0]}});
                     }
                     break;
                 case "Get":
@@ -165,8 +165,8 @@ function ac_req(data) {//This is what we do when we receive a data packet
                         let display = false;
                         for (let i = 0; i < data.data.length; i++){
                             if(data.data[i].type == "player_id"){
-                                let checked_player = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1];
-                                if (archipelago_settings.player == checked_player){
+                                let checked_player = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1][0];
+                                if (archipelago_settings.player[0] == checked_player){
                                     display = true;
                                     break;//Breaks the for loop
                                 }

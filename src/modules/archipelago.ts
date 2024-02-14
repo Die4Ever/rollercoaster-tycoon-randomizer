@@ -772,14 +772,22 @@ class RCTRArchipelago extends ModuleBase {
             context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
             console.log("We're off to kill the Wizard!");
             var cars = map.getAllEntities("car");
+            //console.log((cars));
             for(let i = 0; i < cars.length; i++){
                 if(cars[i].id == vehicleID){
                     var rideID = cars[i].ride;
-                    var ride = map.rides[rideID].name;
+                    var rideName = "";//map.rides[rideID].name;
+                    var rides = map.rides;
+                    for(let j = 0; j < rides.length; j++){
+                        if (rides[j].id == rideID){
+                            rideName = rides[j].name;
+                            break;//breaks the for loop
+                        }
+                    }
                     console.log("vehicleID:" + vehicleID);
-                    console.log(rideID);
-                    console.log(ride);
-                    archipelago_send_message("Bounce",{ride: ride, tag: "DeathLink"});
+                    console.log("rideID:" + rideID);
+                    console.log("ride name:" + rideName);
+                    archipelago_send_message("Bounce",{ride: rideName, tag: "DeathLink"});
                     break;
                 }
             }
