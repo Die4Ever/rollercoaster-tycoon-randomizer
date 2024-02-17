@@ -990,7 +990,7 @@ function archipelagoDebug(){
                         for(let i = 0; i<map.rides.length; i++){
                             console.log("ID: " + map.rides[i].id);
                             console.log("Name: " + map.rides[i].name);
-
+                            console.log(map.rides);
                         }
                         // archipelago_send_message("StatusUpdate", 30)
                     }
@@ -1015,7 +1015,8 @@ function interpretMessage(){
             case '!!help':
                 archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.");
                 archipelago_print_message("!!toggleDeathLink: Enables/Disables Deathlink\n");
-                archipelago_print_message("setMaxSpeed x: Sets the maximum allowed speed.");
+                archipelago_print_message("!!setMaxSpeed x: Sets the maximum allowed speed.");
+                archipelago_print_message("!!resendChecks: Resends all the purchased checks in case the connector is bad at its job.");
                 break;
             case '!!toggleDeathLink':
                 archipelago_settings.death_link = !archipelago_settings.death_link;
@@ -1043,6 +1044,9 @@ function interpretMessage(){
             case '!!setMaxSpeed 5':
                 archipelago_settings.maximum_speed = 8;
                 archipelago_print_message("Maximum speed set. You better pray you don't get a furry trap.");
+                break;
+            case '!!resendChecks':
+                ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
                 break;
             case 'Colby sucks'://Gotta do some error correction here.
                 archipelago_send_message("Say","Colby is awesome!");
