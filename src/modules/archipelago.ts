@@ -166,16 +166,19 @@ class RCTRArchipelago extends ModuleBase {
         else
         archipelago_settings.deathlink = false;
         switch(imported_settings.randomization_range){
-            case 0://low
+            case 0://none
+                settings.rando_range = randoRanges.None;
+                break;
+            case 1://low
                 settings.rando_range = randoRanges.Low;
                 break;
-            case 1://medium
+            case 2://medium
                 settings.rando_range = randoRanges.Medium
                 break;
-            case 2://high
+            case 3://high
                 settings.rando_range = randoRanges.High
                 break;
-            case 3://extreme
+            case 4://extreme
                 settings.rando_range = randoRanges.Extreme
                 break;
         }
