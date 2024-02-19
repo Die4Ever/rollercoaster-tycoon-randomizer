@@ -987,11 +987,8 @@ function archipelagoDebug(){
                         // console.log(JSON.stringify(archipelago_locked_locations))
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
-                        for(let i = 0; i<map.rides.length; i++){
-                            console.log("ID: " + map.rides[i].id);
-                            console.log("Name: " + map.rides[i].name);
-                            console.log(map.rides);
-                        }
+                        archipelago_settings.player = ["Colby",0];
+                        
                         // archipelago_send_message("StatusUpdate", 30)
                     }
                 }

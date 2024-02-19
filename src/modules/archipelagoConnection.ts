@@ -129,6 +129,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 console.log(archipelagoPlayers);
                 context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
                 Archipelago.SetNames();
+                archipelago_settings.player = archipelagoPlayers[data.slot - 1];
             }
             context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
 
@@ -139,8 +140,6 @@ function ac_req(data) {//This is what we do when we receive a data packet
             archipelago_settings.multiworld_games = unique_multiworld_games;
             console.log("Here's the games in the multiworld:");
             console.log(archipelago_settings.multiworld_games);
-
-            archipelago_settings.player = archipelagoPlayers[data.slot - 1];
 
             if(!archipelago_init_received)
             Archipelago.SetImportedSettings(data.slot_data);
