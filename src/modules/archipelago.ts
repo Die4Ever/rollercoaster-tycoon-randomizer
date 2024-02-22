@@ -1348,7 +1348,7 @@ class RCTRArchipelago extends ModuleBase {
                     var lockedWindow = ui.getWindow("archipelago-locations");
                     lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();
                     spam_timeout = true;
-                    context.setTimeout(() => {spam_timeout = false;}, 5000);
+                    context.setTimeout(() => {spam_timeout = false;}, 2000);
                 }
                 else{
                     ui.showError("Prerequisites not met", "You only have " + String(NumQualifiedRides) + " elligible rides in the park! (Ensure they have posted stats)");

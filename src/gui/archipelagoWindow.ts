@@ -979,6 +979,29 @@ function archipelagoDebug(){
                     type: 'button',
                     name: 'debug-button23',
                     x: 415,
+                    y: 170,
+                    width: 200,
+                    height: 25,
+                    text: 'Get List for Archipelago',
+                    onClick: function() {
+                        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
+                        var items: any = [];
+                        for(let i = 0; i < researchItems.length; i++){
+                            if(researchItems[i].category == "scenery")
+                            items.push("scenery");
+                            else
+                            items.push(RideType[researchItems[i].rideType]);
+                        }
+                        console.log("\n\n\n\n\n");
+                        console.log(scenario.name);
+                        console.log(JSON.stringify(items));
+                        console.log("\n\n\n\n\n");
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button24',
+                    x: 415,
                     y: 320,
                     width: 200,
                     height: 25,
@@ -987,8 +1010,7 @@ function archipelagoDebug(){
                         // console.log(JSON.stringify(archipelago_locked_locations))
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
-                        archipelago_settings.player = ["Colby",0];
-                        
+                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayer"));
                         // archipelago_send_message("StatusUpdate", 30)
                     }
                 }

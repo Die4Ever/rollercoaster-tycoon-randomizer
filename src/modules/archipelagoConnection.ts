@@ -117,32 +117,34 @@ function ac_req(data) {//This is what we do when we receive a data packet
             console.log(archipelago_settings.current_time);
             break;
         case "Connected"://Packet stating player is connected to the Archipelago game
-            var multiworld_games = [];
-            if(!context.getParkStorage().get("RCTRando.ArchipelagoPlayers")){ //We only need to do this once
-                for(let i=0; i<data.players.length; i++) {
-                    //Create guest list populated with Player names
-                    archipelagoPlayers.push([data.players[i][2], false]);
-                    multiworld_games.push(data.slot_info[i + 1][1]);
+            if(!archipelago_settings.started){
+                var multiworld_games = [];
+                if(!context.getParkStorage().get("RCTRando.ArchipelagoPlayers")){ //We only need to do this once
+                    for(let i=0; i<data.players.length; i++) {
+                        //Create guest list populated with Player names
+                        archipelagoPlayers.push([data.players[i][2], false]);
+                        multiworld_games.push(data.slot_info[i + 1][1]);
+                    }
+                    console.log(data.slot_info);
+                    console.log("Here's our players:");
+                    console.log(archipelagoPlayers);
+                    context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
+                    Archipelago.SetNames();
+                    archipelago_settings.player = archipelagoPlayers[data.slot - 1];
                 }
-                console.log(data.slot_info);
-                console.log("Here's our players:");
-                console.log(archipelagoPlayers);
-                context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
-                Archipelago.SetNames();
-                archipelago_settings.player = archipelagoPlayers[data.slot - 1];
+                context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
+
+                //To prevent sending lots of redundant data, we strip copies of games
+                var unique_multiworld_games = multiworld_games.filter(function(elem, index, self) {
+                    return index === self.indexOf(elem);
+                })
+                archipelago_settings.multiworld_games = unique_multiworld_games;
+                console.log("Here's the games in the multiworld:");
+                console.log(archipelago_settings.multiworld_games);
+
+                if(!archipelago_init_received)
+                Archipelago.SetImportedSettings(data.slot_data);
             }
-            context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
-
-            //To prevent sending lots of redundant data, we strip copies of games
-            var unique_multiworld_games = multiworld_games.filter(function(elem, index, self) {
-                return index === self.indexOf(elem);
-            })
-            archipelago_settings.multiworld_games = unique_multiworld_games;
-            console.log("Here's the games in the multiworld:");
-            console.log(archipelago_settings.multiworld_games);
-
-            if(!archipelago_init_received)
-            Archipelago.SetImportedSettings(data.slot_data);
 
             archipelago_connected_to_server = true;
             break;
