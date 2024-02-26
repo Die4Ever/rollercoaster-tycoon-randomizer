@@ -469,7 +469,7 @@ var challenges = [
                     ui.showError("No", "I don't think you understand what a d6 is.");
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
-            }
+            },
             {
                 text: '1',
                 tooltip: 'A critical fail on most d20\'s.',
