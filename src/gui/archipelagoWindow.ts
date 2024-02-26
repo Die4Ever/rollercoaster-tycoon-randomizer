@@ -10,9 +10,6 @@ function archipelagoGui(){
         console.log('This is where we connect to Archipelago and set up the game.');
         //TODO: Get seed from Archipelago
         setGlobalSeed(1337['text']);//Using a filler here until I get websocket support working
-        //TODO: Get Ride Types from Archipelago
-        //TODO: Get Park Flags from Archipelago
-        //TODO: Get Goals from Archipelago
         //No need for research, since we're using a different system entirely for that
         settings.rando_research = false;
         //Crowd control has a lot of options that would most likely break Archipelago. We're going to disable both at once until further notice.
@@ -1007,7 +1004,8 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {    
-                        console.log(JSON.stringify(archipelago_settings.received_items));
+                        park.setFlag("unlockAllPrices", true);
+                        // console.log(JSON.stringify(archipelago_settings.received_items));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
                         // console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayer"));

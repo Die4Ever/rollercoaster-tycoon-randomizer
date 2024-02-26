@@ -1397,6 +1397,7 @@ class RCTRArchipelago extends ModuleBase {
                 park.setFlag("preferMoreIntenseRides", true);
                 break;
             }
+        park.setFlag("unlockAllPrices", true);//Allows charging for the entrance, rides, or both
     }
 }
 

@@ -18,7 +18,7 @@ class RCTRPark extends ModuleBase {
             if(rng_bool())
                 this.RandomizeParkFlag("freeParkEntry", 1);
             else
-                this.RandomizeParkFlag("unlockAllPrices", -1);// I think this allows the player to always set entry fees and ride fees? should be mutually exclusive with freeParkEntry or just remove this?
+                this.RandomizeParkFlag("unlockAllPrices", -1);// This allows the player to always set entry fees and ride fees. should be mutually exclusive with freeParkEntry or just remove this?
 
             //this.RandomizeParkFlag("noMoney", -1);// too easy?
         }
