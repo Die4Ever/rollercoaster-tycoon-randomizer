@@ -405,7 +405,7 @@ var challenges = [
         colors: [57,4], //Colors for the popup
         label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
         label1_tooltip:"You should have paid attention in ECEN 150!",
-        label2: "but beware, this comes at a great price. Which of the following is Ohms Law??",
+        label2: "but beware, this comes at a great price. Which of the following is Ohms Law?",
         label2_tooltip: "What do you mean you don't know what class that is?",
         buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
             {

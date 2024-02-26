@@ -9,15 +9,11 @@ function archipelagoGui(){
     var onStart = function() {
         console.log('This is where we connect to Archipelago and set up the game.');
         //TODO: Get seed from Archipelago
-        setGlobalSeed(1337['text']);//Using a filler here until I get websocket support working
+        setGlobalSeed(Math.floor(Math.random() * 1000000));//Maybe someday I'll allow custom seeds
         //No need for research, since we're using a different system entirely for that
         settings.rando_research = false;
         //Crowd control has a lot of options that would most likely break Archipelago. We're going to disable both at once until further notice.
-        //TODO: Get reroll frequency from Archipelago
-        //TODO: Get DeathLink toggle from Archipelago
         archipelago_settings.deathlink_timeout = false;
-        //TODO: Get Locations list from Archipelago
-        //Until these are implemented, we're going to stick with default values, which should be good enough for debugging
         //We're going to track the objectives ourselves instead
         scenario.objective.type = "haveFun";
         archipelago_settings.started = true;

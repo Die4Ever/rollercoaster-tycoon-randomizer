@@ -208,6 +208,11 @@ class RCTRArchipelago extends ModuleBase {
         else
         settings.rando_park_values = false;
 
+        if(imported_settings.ignore_ride_stat_changes)
+        settings.rando_ride_types = false;
+        else
+        settings.rando_ride_types = true;
+
         archipelago_settings.preferred_intensity = imported_settings.preferred_intensity;
 
         archipelago_objectives.Guests[0] = imported_settings.objectives.Guests[0];
