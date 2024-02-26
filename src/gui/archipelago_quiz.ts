@@ -401,7 +401,7 @@ var challenges = [
             }
         ]
     },
-    {//Sea Shanty
+    {//Ohms Law
         colors: [57,4], //Colors for the popup
         label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
         label1_tooltip:"You should have paid attention in ECEN 150!",
@@ -451,6 +451,119 @@ var challenges = [
                     ui.showError("That is incorrect.", "But I mean, you really shouldn't be expected to know that. We'll banish the furries anyways.")
                     explodeFurries();
                     ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+        ]
+    },
+    {//Dice Roll
+        colors: [59,4], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:"Roll for initiative.",
+        label2: "but beware, this comes at a great price. Roll a d6.",
+        label2_tooltip: "I'd do a d20, but these quiz windows can only support 9 options.",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: '0',
+                tooltip: 'Wait, why is this option even here?',
+                onClick: function() {
+                    ui.showError("No", "I don't think you understand what a d6 is.");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+            {
+                text: '1',
+                tooltip: 'A critical fail on most d20\'s.',
+                onClick: function() {
+                    let dice_roll = Math.ceil(Math.random() * 6)
+                    if(dice_roll == 1){
+                        ui.showError("Correct!", ":D")
+                        explodeFurries();
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                    else{
+                        ui.showError("That is incorrect.", "The correct answer was actually " + String(dice_roll));
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                }
+            },
+            {
+                text: '2',
+                tooltip: 'Despite being the root of the base 2 number system, 2 never appears in base 2.',
+                onClick: function() {
+                    let dice_roll = Math.ceil(Math.random() * 6)
+                    if(dice_roll == 2){
+                        ui.showError("Correct!", ":D")
+                        explodeFurries();
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                    else{
+                        ui.showError("That is incorrect.", "The correct answer was actually " + String(dice_roll));
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                }
+            },
+            {
+                text: '3',
+                tooltip: 'Despite its reputation as a magic number, 3 is actually inert. Pi on the other hand...',
+                onClick: function() {
+                    let dice_roll = Math.ceil(Math.random() * 6)
+                    if(dice_roll == 3){
+                        ui.showError("Correct!", ":D")
+                        explodeFurries();
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                    else{
+                        ui.showError("That is incorrect.", "The correct answer was actually " + String(dice_roll));
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                }
+            },
+            {
+                text: '4',
+                tooltip: 'And here you are. You could be doing literally anything in the world, but instead you\'re reading a toolip for the number 4.',
+                onClick: function() {
+                    let dice_roll = Math.ceil(Math.random() * 6)
+                    if(dice_roll == 4){
+                        ui.showError("Correct!", ":D")
+                        explodeFurries();
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                    else{
+                        ui.showError("That is incorrect.", "The correct answer was actually " + String(dice_roll));
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                }
+            },
+            {
+                text: '5',
+                tooltip: 'I\'ve never liked 5. It just feels a bit too pretentious. You know what I mean?',
+                onClick: function() {
+                    let dice_roll = Math.ceil(Math.random() * 6)
+                    if(dice_roll == 5){
+                        ui.showError("Correct!", ":D")
+                        explodeFurries();
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                    else{
+                        ui.showError("That is incorrect.", "The correct answer was actually " + String(dice_roll));
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                }
+            },
+            {
+                text: '6',
+                tooltip: 'Go big or go home!',
+                onClick: function() {
+                    let dice_roll = Math.ceil(Math.random() * 6)
+                    if(dice_roll == 6){
+                        ui.showError("Correct!", ":D")
+                        explodeFurries();
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
+                    else{
+                        ui.showError("That is incorrect.", "The correct answer was actually " + String(dice_roll));
+                        ui.getWindow("archipelago-excorcize-furries").close();
+                    }
                 }
             }
         ]

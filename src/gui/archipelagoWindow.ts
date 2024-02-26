@@ -990,7 +990,7 @@ function archipelagoDebug(){
                             if(researchItems[i].category == "scenery")
                             items.push("scenery");
                             else
-                            console.log("P*CK OFF");// items.push(RideType[researchItems[i].rideType]);
+                            console.log("P*CK OFF!");// items.push(RideType[researchItems[i].rideType]);
                         }
                         console.log("\n\n\n\n\n");
                         console.log(scenario.name);
@@ -1007,10 +1007,10 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() {    
-                        // console.log(JSON.stringify(archipelago_locked_locations))
+                        console.log(JSON.stringify(archipelago_settings.received_items));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
-                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayer"));
+                        // console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayer"));
                         // archipelago_send_message("StatusUpdate", 30)
                     }
                 }
