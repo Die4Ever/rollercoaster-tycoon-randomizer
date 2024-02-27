@@ -729,13 +729,13 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string}): any{
+    ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string, attempt: number}): any{
         var self = this;
         if (archipelago_settings.deathlink_timeout == true){//If the timeout hasn't expired, don't force another coaster to crash
             console.log("Death Link Timeout has not expired. Ignoring Death Link signal")
             return;
         }
-        if (!map.getAllEntities("car").length){//If there's nothing to explode, give the user a pass
+        if ((!map.getAllEntities("car").length) || DeathLinkPacket.attempt == 3){//If there's nothing to explode, give the user a pass
             console.log("Rain check");
             var window = ui.openWindow({
                 classification: 'rain-check',
@@ -1417,7 +1417,8 @@ function explodeRide(args: any){
     console.log(args);
     const cause = args.args.cause;
     const source = args.args.source;
-    const DeathLinkPacket = {cause, source};
+    const attempt = args.args.attempt + 1;
+    const DeathLinkPacket = {cause, source, attempt};
     console.log(DeathLinkPacket);
     var self = this;
     var car = map.getAllEntities('car');

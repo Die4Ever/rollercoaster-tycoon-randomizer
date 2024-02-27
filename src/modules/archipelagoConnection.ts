@@ -327,7 +327,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
                         const cause = data.data.cause;
                         const source = data.data.source;
                         if(archipelago_settings.deathlink){
-                            Archipelago.ReceiveDeathLink({cause, source});
+                            Archipelago.ReceiveDeathLink({cause, source, attempt: 1});
                         }
                         if(cause){
                             archipelago_print_message(cause);
