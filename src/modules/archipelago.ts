@@ -1385,8 +1385,14 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
     SetPostGenerationSettings(): void{
-        if (park.getFlag("noMoney"))
-        park.cash = 100069;
+        if (park.getFlag("noMoney")){
+            let guests = map.getAllEntities("guest");
+            let funnyNumbers = [690, 4200, 270, 1, 10, 314];
+            park.cash = 100069;
+            for(let i = 0; i < guests.length; i++){
+                guests[i].cash = funnyNumbers[Math.floor(Math.random() * funnyNumbers.length)];
+            }
+        }
         park.setFlag("noMoney", false);
         switch(archipelago_settings.preferred_intensity){
             case 0:
