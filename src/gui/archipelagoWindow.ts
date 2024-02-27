@@ -983,7 +983,8 @@ function archipelagoDebug(){
                             if(researchItems[i].category == "scenery")
                             items.push("scenery");
                             else
-                            console.log("P*CK OFF!");// items.push(RideType[researchItems[i].rideType]);
+                            console.log("Hi");
+                            // items.push(RideType[researchItems[i].rideType]);
                         }
                         console.log("\n\n\n\n\n");
                         console.log(scenario.name);

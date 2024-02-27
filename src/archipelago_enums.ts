@@ -152,6 +152,17 @@ enum ScenarioName {
     "build your own six flags magic mountain",
     "build your own six flags park",
     "build your own six flags over texas",
+    "random RCT1",
+    "random loopy landscapes",
+    "random corkscrew follies",
+    "random RCT2",
+    "random wacky worlds",
+    "random time twister",
+    "random RCT1 expansions",
+    "random RCT2 expansions",
+    "archipelago madness (vanilla)",
+    "archipelago madness (expansions)"
+
 }
 // var reverseScenarioName = new Map<string, ScenarioName>();
 // Object.keys(ScenarioName).forEach((scenarioName: ScenarioName) => {
