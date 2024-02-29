@@ -1000,8 +1000,9 @@ function archipelagoDebug(){
                     width: 200,
                     height: 25,
                     text: 'Colbys Choice',
-                    onClick: function() {    
-                        park.setFlag("unlockAllPrices", true);
+                    onClick: function() { 
+                        console.log(JSON.stringify(archipelago_location_prices));
+                        // park.setFlag("unlockAllPrices", true);
                         // console.log(JSON.stringify(archipelago_settings.received_items));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
