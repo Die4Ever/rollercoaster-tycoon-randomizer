@@ -62,12 +62,12 @@ function archipelago_send_message(type: string, message?: any) {
                         for(let i = 0; i < archipelago_settings.multiworld_games.length; i++){
                             requested_games.push(archipelago_settings.multiworld_games[i]);
                             console.log(requested_games);
-                            if (requested_games.length == 3){
+                            if (requested_games.length == 1){
                                 let games = requested_games;
                                 context.setTimeout(() => {
-                                    connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 3;
+                                    connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
                                     }, timeout);//console.log("Sending the following games for IDs: " + requested_games);
-                                timeout += 6000;
+                                timeout += 5000;
                                 requested_games = [];
                             }
                         }

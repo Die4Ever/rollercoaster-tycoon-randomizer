@@ -10,7 +10,7 @@ class RCTRArchipelago extends ModuleBase {
             return;
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         archipelago_send_message("Sync");
-        let timeout = archipelago_settings.multiworld_games.length * 2000;
+        let timeout = archipelago_settings.multiworld_games.length * 6000;
         context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 1500);//We have to stagger these to not break the connection.
         context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 5000 + timeout);
         context.setTimeout(() => {self.SetPostGenerationSettings();}, 6500+ timeout);//Wait a few seconds for the other settings to do their thing
@@ -441,18 +441,27 @@ class RCTRArchipelago extends ModuleBase {
 
     AddRide(ride: any): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items.
-        let unresearchedItems = park.research.uninventedItems;
-        let researchedItems = park.research.inventedItems;
-        for(let i=0; i<unresearchedItems.length; i++) {
-            if (((unresearchedItems[i] as RideResearchItem).rideType) == ride){//Check if the ride type matches
-                researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
-                unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
-                park.research.inventedItems = researchedItems;
-                park.research.uninventedItems = unresearchedItems;//Save the researched items list
-                return;
+        try{
+            let unresearchedItems = park.research.uninventedItems;
+            let researchedItems = park.research.inventedItems;
+            for(let i=0; i<unresearchedItems.length; i++) {
+                if (((unresearchedItems[i] as RideResearchItem).rideType) == ride){//Check if the ride type matches
+                    researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
+                    unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
+                    park.research.inventedItems = researchedItems;
+                    park.research.uninventedItems = unresearchedItems;//Save the researched items list
+                    return;
+                }
             }
+            console.log("Error in AddRide: ride not in uninvented items");
+            archipelago_print_message("CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!")
+            ui.showError("CRITICAL ERROR FOUND!", "CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!");
         }
-        console.log("Error in AddRide: ride not in uninvented items")
+        catch{
+            console.log("Error in AddRide: ride not in uninvented items");
+            archipelago_print_message("CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!")
+            ui.showError("CRITICAL ERROR FOUND!", "CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!");
+        }
         return;
     }
 
