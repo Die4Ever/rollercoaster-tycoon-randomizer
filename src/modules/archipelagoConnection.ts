@@ -45,6 +45,9 @@ function archipelago_send_message(type: string, message?: any) {
                     }
                     connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
                     break;
+                case "LocationHints":
+                    connection.send({cmd: "LocationScouts", locations: message, create_as_hint: 2});
+                    break;
                 case "StatusUpdate":
                     connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
                     break;
@@ -362,11 +365,13 @@ function ac_req(data) {//This is what we do when we receive a data packet
             break;
 
         case "LocationInfo":
-            const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
-            for(let i = 0; i < data.locations.length; i++){
-                archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
+            if(data.locations.length > 9){
+                const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
+                for(let i = 0; i < data.locations.length; i++){
+                    archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
+                }
+                ArchipelagoSaveLocations(archipelago_locked_locations,[]);
             }
-            ArchipelagoSaveLocations(archipelago_locked_locations,[]);
     }
     return;
 }

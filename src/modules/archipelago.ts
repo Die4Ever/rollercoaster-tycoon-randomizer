@@ -872,9 +872,9 @@ class RCTRArchipelago extends ModuleBase {
     CreateLockedList(): any{
         var self = this;
         var locked = [];
-        var location = archipelago_locked_locations;
+        var location = archipelago_locked_locations.slice();
         // console.log(location);
-        var prices = archipelago_location_prices;
+        var prices = archipelago_location_prices.slice();
         for(var i = 0; i < location.length; i++){//Loop through every locked location
             if (self.IsVisible(location[i].LocationID)){
                 var color = '{WHITE}';
@@ -1252,8 +1252,9 @@ class RCTRArchipelago extends ModuleBase {
         }
         // console.log("Locked ID is: " + String(LockedID));
         // console.log("CheckID is: " + String(CheckID));
-        for(var i = 0; i < archipelago_unlocked_locations.length; i++){
-            if (CheckID == archipelago_unlocked_locations[i].LocationID)
+        const temp_list = archipelago_unlocked_locations.slice();
+        for(let i = 0; i < temp_list.length; i++){
+            if (CheckID == temp_list[i].LocationID)
             return true;
         }
 
@@ -1268,9 +1269,9 @@ class RCTRArchipelago extends ModuleBase {
         var self = this;
         console.log("Purchasing item number:");
         console.log(item);
-        let Locked = archipelago_locked_locations;
-        let Unlocked = archipelago_unlocked_locations;
-        let Prices = archipelago_location_prices;
+        let Locked = archipelago_locked_locations.slice();
+        let Unlocked = archipelago_unlocked_locations.slice();
+        let Prices = archipelago_location_prices.slice();
         let LocationID = Locked[item].LocationID;
         let wantedItem = 0;
         let counter = 0;
@@ -1353,9 +1354,13 @@ class RCTRArchipelago extends ModuleBase {
                         }
                     }
                     park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
+
+
                     Unlocked.push(Locked[wantedItem]);
+                    console.log("pickle");
                     Locked.splice(wantedItem,1);
                     archipelago_locked_locations = Locked;
+                    console.log(JSON.stringify(archipelago_locked_locations));
                     archipelago_unlocked_locations = Unlocked;
                     console.log(archipelago_locked_locations);
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
@@ -1363,6 +1368,22 @@ class RCTRArchipelago extends ModuleBase {
                     lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();
                     spam_timeout = true;
                     context.setTimeout(() => {spam_timeout = false;}, 2000);
+                    //If we have full visibility, send hints for any items shown
+                    if(archipelago_settings.location_information == "Full"){
+                        let hint_list = [];
+                        console.log("Jill me");
+                        console.log(hint_list);
+                        const temp_list = archipelago_locked_locations.slice();//Dude, screw how lists are handled in this stupid language
+                        for(let i = 0; i < temp_list.length; i++){
+                            let location = temp_list[i].LocationID;
+                            console.log(location);
+                            if(self.IsVisible(location))
+                            hint_list.push(location + 2000000);
+                        }
+                        console.log("killme");
+                        console.log(hint_list);
+                        archipelago_send_message("LocationHints",hint_list);
+                    }
                 }
                 else{
                     ui.showError("Prerequisites not met", "You only have " + String(NumQualifiedRides) + " elligible rides in the park! (Ensure they have posted stats)");
