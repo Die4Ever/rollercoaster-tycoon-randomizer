@@ -441,7 +441,7 @@ class RCTRArchipelago extends ModuleBase {
 
     AddRide(ride: any): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items.
-        try{
+        
             let unresearchedItems = park.research.uninventedItems;
             let researchedItems = park.research.inventedItems;
             for(let i=0; i<unresearchedItems.length; i++) {
@@ -450,19 +450,14 @@ class RCTRArchipelago extends ModuleBase {
                     unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
                     park.research.inventedItems = researchedItems;
                     park.research.uninventedItems = unresearchedItems;//Save the researched items list
+                    console.log("Corndags)");
                     return;
                 }
             }
             console.log("Error in AddRide: ride not in uninvented items");
             archipelago_print_message("CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!")
             ui.showError("CRITICAL ERROR FOUND!", "CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!");
-        }
-        catch{
-            console.log("Error in AddRide: ride not in uninvented items");
-            archipelago_print_message("CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!")
-            ui.showError("CRITICAL ERROR FOUND!", "CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!");
-        }
-        return;
+            return;
     }
 
     AddScenery(): void{

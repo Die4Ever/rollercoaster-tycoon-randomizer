@@ -983,7 +983,7 @@ function archipelagoDebug(){
                             if(researchItems[i].category == "scenery")
                             items.push("scenery");
                             else
-                            console.log("Hi");
+                            console.log("Shreked");
                             // items.push(RideType[researchItems[i].rideType]);
                         }
                         console.log("\n\n\n\n\n");
