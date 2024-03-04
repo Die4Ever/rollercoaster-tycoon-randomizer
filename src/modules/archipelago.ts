@@ -9,10 +9,11 @@ class RCTRArchipelago extends ModuleBase {
         if(!settings.rando_archipelago)
             return;
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
-        archipelago_send_message("Sync");
+        // archipelago_send_message("Sync");
         let timeout = archipelago_settings.multiworld_games.length * 6000;
-        context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 1500);//We have to stagger these to not break the connection.
-        context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 5000 + timeout);
+        context.setTimeout(() => {archipelago_send_message("Sync");}, 1000);
+        context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 2500);//We have to stagger these to not break the connection.
+        context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 6000 + timeout);
         context.setTimeout(() => {self.SetPostGenerationSettings();}, 6500+ timeout);//Wait a few seconds for the other settings to do their thing
         //Setting rules for Archipelago, dictated by the YAML
         var setRules = function(){
