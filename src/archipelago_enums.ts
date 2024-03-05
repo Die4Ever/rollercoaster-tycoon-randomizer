@@ -131,7 +131,7 @@ enum ScenarioName {
     "future - first encounters",
     "mythological - animatronic film set",
     "prehistoric - jurassic safari",
-    "roaring twenties - schnider cup",
+    "roaring twenties - schneider cup",
     "future - future world",
     "mythological - cradle of civilization",
     "prehistoric - stone age",
