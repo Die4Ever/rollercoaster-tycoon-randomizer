@@ -567,6 +567,72 @@ var challenges = [
                 }
             }
         ]
+    },
+    {//Cosmere
+        colors: [65,7], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:'"Airsick Lowlander!"',
+        label2: "but beware, this comes at a great price. Which of the following planets is not in the Cosmere?.",
+        label2_tooltip: "-Numuhukumakiaki'aialunamor.",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: 'Roshar',
+                tooltip: 'Why have mammals when you could have *CRABS*?',
+                onClick: function() {
+                    ui.showError("Incorrect", "You Airsick Lowlander!");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Drengi',
+                tooltip: 'The Drengin suck. Nobody in the galaxy likes them.',
+                onClick: function() {
+                    ui.showError("Correct!", "Drengi is actually from the game Galactic Civilzations, of which you should play");
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Sel',
+                tooltip: 'Lots and lots of pretty pictures on that planet.',
+                onClick: function() {
+                    ui.showError("Incorrect", "Perhaps you should convert to the Derethi religion.");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Canticle',
+                tooltip: 'You can get one heckuva suntan here!',
+                onClick: function() {
+                    ui.showError("Incorrect", "'Perhaps you should try something else', the Knight tells his Squire");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Scadrial',
+                tooltip: 'Like Avatar the Last Airbender, but everybodys a metal bender!',
+                onClick: function() {
+                    ui.showError("Incorrect", "Rust and Ruin");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Nalthis',
+                tooltip: 'I wouldn\'t hold your breath on this one.... Actually, I would.',
+                onClick: function() {
+                    ui.showError("Incorrect", "Colors, this is the most Cosmere of the Cosmere planets!");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Taldain',
+                tooltip: 'I don\'t like sand. It\'s coarse and rough and irritating and it gets everywhere.',
+                onClick: function() {
+                    ui.showError("Incorrect", "But to be fair, nobody read that graphic novel. I\'ll wait till it\'s an actual novel.");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+        ]
     }
 ]
 
