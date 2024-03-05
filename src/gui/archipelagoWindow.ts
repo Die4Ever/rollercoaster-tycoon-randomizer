@@ -156,10 +156,13 @@ function archipelagoLocations(){
                 currentWindow.findWidget<CheckboxWidget>("park-message-toggle").isChecked = archipelago_settings.park_message_chat;
                 currentWindow.findWidget<CheckboxWidget>("network-chat-toggle").isChecked = archipelago_settings.network_chat;
             }
+            else if (currentWindow.tabIndex == 4){
+                currentWindow.findWidget<ListViewWidget>("Hint-list").items = createHintList();
+            }
         },
         tabs:
         [
-            {
+            {//Locked Checks
                 image: {frameBase: 5261,frameCount: 8,frameDuration: 4},
                 widgets: [].concat
                 (
@@ -272,7 +275,7 @@ function archipelagoLocations(){
                     ]
                 )
             },
-            {
+            {//Unlocked Checks
                 image: {frameBase: 5442,frameCount: 16,frameDuration: 4},
                 widgets: [].concat
                 (
@@ -310,7 +313,7 @@ function archipelagoLocations(){
                     ]
                 )
             },
-            {
+            {//Goals
                 image: {frameBase: 5511,frameCount: 15,frameDuration: 4},
                 widgets: [].concat
                 (
@@ -351,7 +354,7 @@ function archipelagoLocations(){
                     ]
                 )
             },
-            {
+            {//Chat
                 image: {frameBase: 5269,frameCount: 8,frameDuration: 4},
                 widgets: [].concat
                 (
@@ -448,6 +451,82 @@ function archipelagoLocations(){
                                 var currentWindow = ui.getWindow("archipelago-locations");
                                 archipelago_settings.network_chat = isChecked;
                                 saveArchipelagoProgress();
+                            }
+                        }
+                    ]
+                )
+            },
+            {//Hints
+                image: {frameBase: 5367,frameCount: 8,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+                        {
+                            type: 'label',
+                            name: 'Hint-Log-Label',
+                            x: 250,
+                            y: 50,
+                            width: 100,
+                            height: 26,
+                            text: 'Hints',
+                            tooltip: "Is it really that important to know where your items are?"
+                        },
+                        {
+                            type: 'listview',
+                            name: 'Hint-list',
+                            x: 25,
+                            y: 75,
+                            width: 650,
+                            height: 200,
+                            isStriped: true,
+                            items: (createHintList()),
+                            scrollbars: 'vertical',
+                            columns:[{width: 140},{width: 140},{width: 140},{width: 140},{width: 140}]
+                        },
+                        {
+                            type: 'checkbox',
+                            name: 'not-found-toggle',
+                            text: 'Only show Not Found',
+                            x: 150,
+                            y: 310,
+                            width: 240,
+                            height: 10,
+                            tooltip: 'Hides any items already found.',
+                            isChecked: archipelago_settings.hint_not_found_filter,
+                            onChange: function(isChecked: boolean) {
+                                var currentWindow = ui.getWindow("archipelago-locations");
+                                archipelago_settings.hint_not_found_filter = isChecked;
+                                saveArchipelagoProgress();
+                                currentWindow.findWidget<ListViewWidget>("Hint-list").items = createHintList();
+                            }
+                        },{
+                            type: 'label',
+                            name: 'Player-List-Label',
+                            x: 150,
+                            y: 325,
+                            width: 150,
+                            height: 26,
+                            text: 'Filter by player:',
+                            tooltip: "Filters by the selected player. Man, this is better than the client!"
+                        },
+                        {
+                            type: 'dropdown',
+                            name: 'player-toggle',
+                            text: 'Filter by Player',
+                            x: 300,
+                            y: 325,
+                            width: 240,
+                            height: 10,
+                            tooltip: 'Filters by the selected player. Man, this is better than the client!',
+                            items: ["All", ...(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]).map(tuple => tuple[0])],
+                            onChange: function(index: number) {
+                                var currentWindow = ui.getWindow("archipelago-locations");
+                                if(index)
+                                archipelago_settings.hint_player_filter = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[index - 1][0];
+                                else
+                                archipelago_settings.hint_player_filter = 0;
+                                saveArchipelagoProgress();
+                                currentWindow.findWidget<ListViewWidget>("Hint-list").items = createHintList();
                             }
                         }
                     ]
@@ -1001,7 +1080,8 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
-                        archipelago_send_message("LocationHints",[2000000]);
+                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers"));
+                        console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // console.log(JSON.stringify(archipelago_settings.received_items));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
@@ -1014,6 +1094,19 @@ function archipelagoDebug(){
         )
     });
     return window;
+}
+
+function createHintList(){
+    var hint_list = [["{WHITE}Receiving Player","{WHITE}Item","{WHITE}Finding Player","{WHITE}Location","{WHITE}Status"]];
+    var hints = archipelago_settings.hints;
+    for(let i = 0; i < hints.length; i++){
+        let hint = [hints[i].ReceivingPlayer,hints[i].Item,hints[i].FindingPlayer,hints[i].Location,hints[i].Found? "{GREEN}Found" : "{RED}Not Found"];
+        if((!hints[i].Found || !archipelago_settings.hint_not_found_filter) && //Found Filter
+            ((hints[i].ReceivingPlayer == archipelago_settings.hint_player_filter || hints[i].FindingPlayer == archipelago_settings.hint_player_filter) ||
+            archipelago_settings.hint_player_filter == 0))// Player Filter
+        hint_list.push(hint);
+    }
+    return hint_list;
 }
 
 function interpretMessage(){

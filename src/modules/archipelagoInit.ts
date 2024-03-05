@@ -21,6 +21,13 @@ interface archipelago_price{
     Lives: number,
     RidePrereq: any[]
 }
+interface archipelago_hint{
+    ReceivingPlayer: string,
+    FindingPlayer: string,
+    Location: string,
+    Item: string,
+    Found: boolean
+}
 
 type playerTuple = [string, boolean];
 var archipelago_locked_locations: archipelago_item[] = []; // List of 3 objects: Location ID, Item, and Receiving Player
@@ -50,6 +57,8 @@ var archipelago_settings: any = {
     park_message_chat: true,
     network_chat: true,
     universal_item_messages: false,
+    hint_not_found_filter: false,
+    hint_player_filter: "",
     rule_locations: [],
     purchase_land_checks: true,
     max_land_checks: 20,
@@ -63,6 +72,7 @@ var archipelago_settings: any = {
     monopoly_y: 1,
     multiworld_games: [],
     received_items: [],
+    hints: [],
     player: "",
     preferred_intensity: 1,
     maximum_speed: 1,

@@ -1378,7 +1378,7 @@ class RCTRArchipelago extends ModuleBase {
                         }
                         console.log("killme");
                         console.log(hint_list);
-                        archipelago_send_message("LocationHints",hint_list);
+                        context.setTimeout(() => (archipelago_send_message("LocationHints",hint_list)), 2000)
                     }
                 }
                 else{
@@ -1469,6 +1469,7 @@ function explodeRide(args: any){
 
 function saveArchipelagoProgress(){
     context.getParkStorage().set('RCTRando.ArchipelagoSettings', archipelago_settings);
+    console.log("Progress Saved!")
 }
 
 if(context.apiVersion >= 75)

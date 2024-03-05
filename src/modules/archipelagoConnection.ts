@@ -163,8 +163,8 @@ function ac_req(data) {//This is what we do when we receive a data packet
         case "PrintJSON"://Packet with data to print to the screen
             archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
             switch(data.type){
-                case "ItemSend":
                 case "Hint":
+                case "ItemSend":
                     if (!archipelago_settings.universal_item_messages){//Only display item messages directly relevant to the player if enabled
                         let display = false;
                         for (let i = 0; i < data.data.length; i++){
@@ -371,6 +371,46 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
                 }
                 ArchipelagoSaveLocations(archipelago_locked_locations,[]);
+            }
+            break;
+        case "SetReply"://Handles hints
+            if(data.key == "_read_hints_0_2"){
+                console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
+                for(let i = 0; i < data.value.length; i++){
+                    let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
+                    // console.log("Receiving Player:")
+                    // console.log(archipelagoPlayers[Number(data.value[i].receiving_player) - 1][0])
+                    // console.log("Finding Player:")
+                    // console.log(archipelagoPlayers[Number(data.value[i].finding_player) - 1][0])
+                    // console.log("Location:")
+                    // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName")[Number(data.value[i].location)])
+                    // console.log("Item:")
+                    // console.log(context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[Number(data.value[i].item)])
+                    // console.log("Found:")
+                    // console.log(data.value[i].found)
+                    var hint: archipelago_hint = {
+                        ReceivingPlayer: archipelagoPlayers[Number(data.value[i].receiving_player) - 1][0],
+                        FindingPlayer: archipelagoPlayers[Number(data.value[i].finding_player) - 1][0],
+                        Location: context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName")[Number(data.value[i].location)],
+                        Item: context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[Number(data.value[i].item)],
+                        Found: data.value[i].found
+                    }
+                    //Check if we've received the hint before
+                    var position = -1;
+                    for (let j = 0; j < archipelago_settings.hints.length; j++) {
+                        const obj = archipelago_settings.hints[j];
+                        if (obj.Location === hint.Location && obj.FindingPlayer === hint.FindingPlayer) {
+                            position = j; // Return the index of the matching object
+                        }
+                    }
+                    if(position > -1){
+                        archipelago_settings.hints[position].Found = hint.Found;
+                    }
+                    else{
+                        archipelago_settings.hints.push(hint);
+                    }
+                }
+                saveArchipelagoProgress();
             }
     }
     return;
