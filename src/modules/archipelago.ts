@@ -351,7 +351,7 @@ class RCTRArchipelago extends ModuleBase {
                 if (compare_number === undefined)
                 compare_number = 0;
                 if(compare_list[i][j] > compare_number){//If its not on the list already
-                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000117){//This number will need to change if we ever add more items/traps/etc.
+                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000118){//This number will need to change if we ever add more items/traps/etc.
                         var item = item_id_to_name[compare_list[i][0]];
                         console.log(item);
                         if(item.indexOf("Trap") > -1)
@@ -391,6 +391,9 @@ class RCTRArchipelago extends ModuleBase {
                                 case "Progressive Speed":
                                     category = "speed";
                                     break;
+                                case "Skip":
+                                    category = "skip";
+                                    break;
                             }
                         }
 
@@ -427,6 +430,9 @@ class RCTRArchipelago extends ModuleBase {
                                 break;
                             case "speed":
                                 self.updateMaxSpeed();
+                                break;
+                            case "skip":
+                                self.addSkip();
                                 break;
                             default:
                                 console.log("Error in ReceiveArchipelagoItem: category not found");
@@ -692,6 +698,18 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_settings.maximum_speed ++;
         else
             archipelago_settings.maximum_speed = 8;
+        saveArchipelagoProgress();
+    }
+
+    addSkip(): any{
+        archipelago_settings.skips ++;
+        try{
+            (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).text = 'Skips: ' + String(archipelago_settings.skips);
+            (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isDisabled = !archipelago_settings.skips;
+        }
+        catch{
+            console.log("Looks like the Archipelago Shop isn't open");
+        }
         saveArchipelagoProgress();
     }
 
@@ -1334,23 +1352,31 @@ class RCTRArchipelago extends ModuleBase {
                         NumQualifiedRides += 1;
                     }
                 }
-                if(!Prereqs.length || NumQualifiedRides >= Prereqs[0]){
-                    console.log("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
-                    if(Prices[LocationID].Lives != 0){//Code to explode guests
-                    var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
-                        if(doomed < guest_list.length){//Explode either the doomed amount, or every guest in the park, whichever is less
-                            for(var i = 0; i < doomed; i++){
-                                guest_list[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
+                if(!Prereqs.length || NumQualifiedRides >= Prereqs[0] || archipelago_skip_enabled){
+                    if(!archipelago_skip_enabled){
+                        console.log("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
+                        if(Prices[LocationID].Lives != 0){//Code to explode guests
+                        var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
+                            if(doomed < guest_list.length){//Explode either the doomed amount, or every guest in the park, whichever is less
+                                for(var i = 0; i < doomed; i++){
+                                    guest_list[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
+                                }
+                            }
+                            else{
+                                for(var i = 0; i < guest_list.length; i++){
+                                    guest_list[i].setFlag("explode", true);
+                                }
                             }
                         }
-                        else{
-                            for(var i = 0; i < guest_list.length; i++){
-                                guest_list[i].setFlag("explode", true);
-                            }
-                        }
+                        park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
                     }
-                    park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
-
+                    else{
+                        archipelago_skip_enabled = false;
+                        archipelago_settings.skips --;
+                        (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).text = 'Skips: ' + String(archipelago_settings.skips);
+                        (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isPressed = false;
+                        (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isDisabled = !archipelago_settings.skips;
+                    }
 
                     Unlocked.push(Locked[wantedItem]);
                     console.log("pickle");

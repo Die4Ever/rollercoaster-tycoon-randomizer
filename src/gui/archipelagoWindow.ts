@@ -143,6 +143,8 @@ function archipelagoLocations(){
             var currentWindow = ui.getWindow("archipelago-locations");
             if (currentWindow.tabIndex == 0){
                 currentWindow.findWidget<ListViewWidget>("locked-location-list").items = Archipelago.CreateLockedList();
+                (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).text = 'Skips: ' + String(archipelago_settings.skips);
+                (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isDisabled = !archipelago_settings.skips;
             }
             else if (currentWindow.tabIndex == 1){
                 currentWindow.findWidget<ListViewWidget>("unlocked-location-list").items = Archipelago.CreateUnlockedList();
@@ -159,6 +161,9 @@ function archipelagoLocations(){
             else if (currentWindow.tabIndex == 4){
                 currentWindow.findWidget<ListViewWidget>("Hint-list").items = createHintList();
             }
+        },
+        onClose: () => {
+            archipelago_skip_enabled = false;
         },
         tabs:
         [
@@ -253,7 +258,7 @@ function archipelagoLocations(){
                             type: 'button',
                             name: 'excorcize-furry-button',
                             x: 500,
-                            y: 300,
+                            y: 285,
                             width: 175,
                             height: 26,
                             text: 'A furry problem? In my park?',
@@ -261,6 +266,31 @@ function archipelagoLocations(){
                             //Disable the button if there's not a furry problem in the park
                             isDisabled: furryProblem,
                             onClick: () => {archipelagoExcorcizeFurries();}
+                        },
+                        {
+                            type: 'button',
+                            name: 'skip-button',
+                            x: 500,
+                            y: 315,
+                            width: 175,
+                            height: 26,
+                            text: 'Skips: ' + String(archipelago_settings.skips),
+                            tooltip: "You're telling me you *don't* want to build 9 Railroads?",
+                            //Disable the button if there's no skips in the bank
+                            isDisabled: !archipelago_settings.skips,
+                            onClick: () => {
+                                let pressed = (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isPressed;
+                                if (!pressed){
+                                    (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isPressed = true;
+                                    archipelago_skip_enabled = true;
+                                    console.log("Clicky");
+                                }
+                                else{
+                                    (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isPressed = false;
+                                    archipelago_skip_enabled = false;
+                                    console.log("Unclicky");
+                                }
+                            }
                         },
                         {
                             type: 'label',
@@ -1125,6 +1155,7 @@ function interpretMessage(){
                 archipelago_print_message("!!toggleDeathLink: Enables/Disables Deathlink\n");
                 archipelago_print_message("!!setMaxSpeed x: Sets the maximum allowed speed.");
                 archipelago_print_message("!!resendChecks: Resends all the purchased checks in case the connector is bad at its job.");
+                archipelago_print_message("!!addSkip: Cheats in a skip for the unlock shop. This is on the honor system.");
                 break;
             case '!!toggleDeathLink':
                 archipelago_settings.death_link = !archipelago_settings.death_link;
@@ -1155,6 +1186,10 @@ function interpretMessage(){
                 break;
             case '!!resendChecks':
                 ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
+                break;
+            case '!!addSkip':
+                archipelago_settings.skips ++;
+                archipelago_print_message("It appears somebody set their difficulty too high. This is where your hubris brought you!");
                 break;
             case 'Colby sucks'://Gotta do some error correction here.
                 archipelago_send_message("Say","Colby is awesome!");
