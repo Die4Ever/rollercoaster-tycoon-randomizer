@@ -89,24 +89,36 @@ class RCTRArchipelago extends ModuleBase {
 
         //Set shortcuts
         ui.registerShortcut(
-            {id:"spamTrapBackspace", text:"Don't press this when a spam window is open.", bindings:['BACKSPACE'],
+            {id:"spamTrapBackspace", text:"[AP] Don't press this when a spam window is open", bindings:['BACKSPACE'],
             callback() {if(ui.getWindow("popup")){showRandomAd(); showRandomAd();};}
         });
 
         ui.registerShortcut(
-            {id:"spamTrapShiftBackspace", text:"Don't press this when a spam window is open.", bindings:['SHIFT+BACKSPACE'],
+            {id:"spamTrapShiftBackspace", text:"[AP] Don't press this when a spam window is open", bindings:['SHIFT+BACKSPACE'],
             callback() {if(ui.getWindow("popup")){context.setTimeout(() => {for(let i = 0; i < 12; i++){showRandomAd();};}, 50);};}
         });
 
         ui.registerShortcut(
-            {id:"sendMessage", text:"Sends message from the unlock shop.",bindings:['RETURN'],
-            callback() {try {//I'll need to break this into a seperate function eventually.
+            {id:"sendMessage", text:"[AP] Sends message from the unlock shop.",bindings:['RETURN'],
+            callback() {try {
                 interpretMessage();
             }
             catch{
                 console.log("Looks like the Archipelago Shop isn't open");
             }}
         });
+
+        ui.registerShortcut(
+            {id:"openUnlockShop", text:"[AP] Opens the unlock shop.", bindings:['HOME'],
+        callback() {
+            try{
+                archipelagoLocations()
+            }
+            catch{
+                console.log("Welp. Something went wrong with the shortcut");
+            }
+        }}
+        )
 
         //Set up actions for multiplayer
         try{
