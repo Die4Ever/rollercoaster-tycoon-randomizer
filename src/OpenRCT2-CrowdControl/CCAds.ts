@@ -3,7 +3,8 @@ interface Ad {
     title: string,
     header: string,
     message: string,
-    button: string
+    button: string,
+    onClick?: Function
 }
 
 const adPool: Ad[] = [
@@ -149,13 +150,20 @@ const adPool: Ad[] = [
         title: "DANGER",
         header: "Don't click this button!",
         message: "It's extremely hazardous!",
-        button: "SEND DEATHLINK"
+        button: "SEND DEATHLINK",
+        onClick: () => 
+            {try{
+                var DeathLink = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                DeathLink.SendDeathLink(null,"A popup window with the text \"SEND DEATHLINK\"");}
+            catch{ui.showError("Archipelago not open", "You should try this while playing Archipelago!")}
+            ui.closeAllWindows()}//We don't know the ID, so close everything. Besides, it "Crashed"
     },
     {
         title: "Freedom!",
         header: "This game is sponsored by Linux Mint!",
         message: "Linux is vastly superior to Windows!",
-        button: "Upgrade today!"
+        button: "Upgrade today!",
+        onClick: () => {archipelago_print_message("Go to LinuxMint.com and click \"Download\"")}
     },
     {
         title: "Lorem ipsum",
@@ -199,7 +207,8 @@ function showAd(ad: Ad): void {
                     y: 75,
                     width: 300,
                     height: 25,
-                    text: ad.button
+                    text: ad.button,
+                    onClick: ad.onClick as () => void || (() => { console.log("No button code provided"); })
                 }
             ]
         });

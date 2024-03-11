@@ -797,31 +797,37 @@ class RCTRArchipelago extends ModuleBase {
         context.executeAction('ExplodeRide', DeathLinkPacket);
     }
 
-    SendDeathLink(vehicleID: number): any{
+    SendDeathLink(vehicleID?: number, name?: string): any{
         if(archipelago_settings.deathlink_timeout == false) {
             archipelago_settings.deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
             context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
             console.log("We're off to kill the Wizard!");
-            var cars = map.getAllEntities("car");
-            //console.log((cars));
-            for(let i = 0; i < cars.length; i++){
-                if(cars[i].id == vehicleID){
-                    var rideID = cars[i].ride;
-                    var rideName = "";//map.rides[rideID].name;
-                    var rides = map.rides;
-                    for(let j = 0; j < rides.length; j++){
-                        if (rides[j].id == rideID){
-                            rideName = rides[j].name;
-                            break;//breaks the for loop
+            if(vehicleID){
+                var cars = map.getAllEntities("car");
+                //console.log((cars));
+                for(let i = 0; i < cars.length; i++){
+                    if(cars[i].id == vehicleID){
+                        var rideID = cars[i].ride;
+                        var rideName = "";//map.rides[rideID].name;
+                        var rides = map.rides;
+                        for(let j = 0; j < rides.length; j++){
+                            if (rides[j].id == rideID){
+                                rideName = rides[j].name;
+                                break;//breaks the for loop
+                            }
                         }
+                        console.log("vehicleID:" + vehicleID);
+                        console.log("rideID:" + rideID);
+                        console.log("ride name:" + rideName);
+                        archipelago_send_message("Bounce",{ride: rideName, tag: "DeathLink"});
+                        break;
                     }
-                    console.log("vehicleID:" + vehicleID);
-                    console.log("rideID:" + rideID);
-                    console.log("ride name:" + rideName);
-                    archipelago_send_message("Bounce",{ride: rideName, tag: "DeathLink"});
-                    break;
                 }
             }
+            if(name){
+                archipelago_send_message("Bounce",{ride: name, tag: "DeathLink"});
+            }
+            
         }
         else {
             console.log("Death Link Timeout has not expired. Cancelling Death Link signal. Note: Multiple cars crashing will attempt to send multiple signals")

@@ -84,7 +84,7 @@ function archipelago_send_message(type: string, message?: any) {
                         archipelago_games_requested += archipelago_settings.multiworld_games.length;
                     }
                     break;
-                case "Bounce"://Fix
+                case "Bounce":
                     if(message.tag == "DeathLink"){
                         connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: archipelago_settings.player[0]}});
                     }
