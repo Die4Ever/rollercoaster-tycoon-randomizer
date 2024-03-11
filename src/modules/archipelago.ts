@@ -1322,8 +1322,8 @@ class RCTRArchipelago extends ModuleBase {
         let Prereqs = Prices[LocationID].RidePrereq;//Have to get LocationID before we can properly check Prereqs
 
         console.log(Prices[LocationID]);
-        if(Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0){//Check if player has enough cash or if the price is 0.
-            if(Prices[LocationID].Lives <= park.guests){//Check if the player has enough guests to sacrifice
+        if((Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0) || archipelago_skip_enabled){//Check if player has enough cash or if the price is 0.
+            if((Prices[LocationID].Lives <= park.guests) || archipelago_skip_enabled){//Check if the player has enough guests to sacrifice
                 var NumQualifiedRides = 0;
                 var object = Prices[LocationID]
                 var ride = RideType[Prices[LocationID].RidePrereq[1]];
