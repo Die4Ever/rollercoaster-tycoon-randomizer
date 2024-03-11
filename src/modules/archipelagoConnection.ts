@@ -367,10 +367,23 @@ function ac_req(data) {//This is what we do when we receive a data packet
         case "LocationInfo":
             if(data.locations.length > 9){
                 const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
+                var ready = true;
                 for(let i = 0; i < data.locations.length; i++){
-                    archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
+                    if(full_item_id_to_name[data.locations[i][0]] === undefined){
+                        ready = false;
+                        break;//Breaks the for loop, not the case.
+                    }
                 }
-                ArchipelagoSaveLocations(archipelago_locked_locations,[]);
+                if(ready){
+                    for(let i = 0; i < data.locations.length; i++){
+                        archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
+                    }
+                    ArchipelagoSaveLocations(archipelago_locked_locations,[]);
+                }
+                else{//We don't have all the item info yet. Try again.
+                    context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000)
+                }
+                
             }
             break;
         case "SetReply"://Handles hints
