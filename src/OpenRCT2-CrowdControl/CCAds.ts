@@ -132,6 +132,36 @@ const adPool: Ad[] = [
         header: "Tired of the buttons not closing these windows?",
         message: "Fix it today!",
         button: "Click here!"
+    },
+    {
+        title: "Archipelago",
+        header: "Have you checked your tracker?",
+        message: "do it.",
+        button: "Finish Sphere 1"
+    },
+    {
+        title: "",
+        header: "",
+        message: "",
+        button: ""
+    },
+    {
+        title: "DANGER",
+        header: "Don't click this button!",
+        message: "It's extremely hazardous!",
+        button: "SEND DEATHLINK"
+    },
+    {
+        title: "Freedom!",
+        header: "This game is sponsored by Linux Mint!",
+        message: "Linux is vastly superior to Windows!",
+        button: "Upgrade today!"
+    },
+    {
+        title: "Lorem ipsum",
+        header: "Aliquam euismod, risus vel ultricies ornare",
+        message: "Nam feugiat est in diam maximus consectetur.",
+        button: "Phasellus imperdiet auctor nisi."
     }
 ]
 

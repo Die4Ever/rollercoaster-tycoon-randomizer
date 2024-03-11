@@ -572,7 +572,7 @@ var challenges = [
         colors: [65,7], //Colors for the popup
         label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
         label1_tooltip:'"Airsick Lowlander!"',
-        label2: "but beware, this comes at a great price. Which of the following planets is not in the Cosmere?.",
+        label2: "but beware, this comes at a great price. Which of the following planets is not in the Cosmere?",
         label2_tooltip: "-Numuhukumakiaki'aialunamor.",
         buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
             {
@@ -629,6 +629,63 @@ var challenges = [
                 tooltip: 'I don\'t like sand. It\'s coarse and rough and irritating and it gets everywhere.',
                 onClick: function() {
                     ui.showError("Incorrect", "But to be fair, nobody read that graphic novel. I\'ll wait till it\'s an actual novel.");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+        ]
+    },
+    {//Kingdom Hearts
+        colors: [66,7], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:'"Roller Coaster Tycoon in Kingdom hearts when?"',
+        label2: "but beware, this comes at a great price. How many games are in the Kingdom Hearts Series?",
+        label2_tooltip: "Just Kidding, Disney would sue or something.",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: '10',
+                tooltip: 'Okay, full disclosure, I\'ve only played Kingdom Hearts 1',
+                onClick: function() {
+                    explodeGuests(30);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Too Many',
+                tooltip: 'And on like, 17 different systems too!',
+                onClick: function() {
+                    explodeGuests(30);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '16',
+                tooltip: 'Also the number of hours worth of cutscenes in each game.',
+                onClick: function() {
+                    explodeGuests(30);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '13',
+                tooltip: '"He is manipulated by the Sith Lord, Xehanort who wishes to combine him with his counterpart Vanitas, so that he can unlock Kingdom Hearts and start an apocalyptic Keyblade War. In order to become young again, Xehanort takes this guy\'s body, but fails, but becomes young anyway, then his memory is erased and he is found by Ansem the Wise, before the game even started. Okay?',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '358/2',
+                tooltip: 'Speaking of which, are we ever going to get a DS game on Archipelago?',
+                onClick: function() {
+                    explodeGuests(30);
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: 'Yes',
+                tooltip: 'Yes',
+                onClick: function() {
+                    explodeGuests(30);
                     ui.getWindow("archipelago-excorcize-furries").close();
                 }
             }
