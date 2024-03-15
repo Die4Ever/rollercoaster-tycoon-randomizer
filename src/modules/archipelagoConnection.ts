@@ -368,7 +368,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
             if(data.locations.length > 9){
                 const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
                 var ready = true;
-                for(let i = 0; i < data.locations.length; i++){
+                for(let i = 0; i < data.locations.length; i++){//If the list isn't ready yet, try again
                     if(full_item_id_to_name[data.locations[i][0]] === undefined){
                         ready = false;
                         break;//Breaks the for loop, not the case.

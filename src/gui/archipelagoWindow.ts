@@ -1092,8 +1092,7 @@ function archipelagoDebug(){
                             if(researchItems[i].category == "scenery")
                             items.push("scenery");
                             else
-                            console.log("Shreked");
-                            // items.push(RideType[researchItems[i].rideType]);
+                            items.push(RideType[(researchItems[i] as RideResearchItem).rideType]);
                         }
                         console.log("\n\n\n\n\n");
                         console.log(scenario.name);
@@ -1110,8 +1109,10 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
-                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers"));
-                        console.log(JSON.stringify(archipelago_settings.hints));
+                        // console.log(objectManager.load("Ferris Wheel"));
+                        // console.log((objectManager.getAllObjects("ride")[0]));
+                        objectManager.load(["rct2.ride.atm1","rct2.ride.faid1"]);
+                        // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // console.log(JSON.stringify(archipelago_settings.received_items));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;

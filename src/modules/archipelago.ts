@@ -317,6 +317,8 @@ class RCTRArchipelago extends ModuleBase {
         // console.log(JSON.stringify(items));
         // console.log("\n\n\n\n\n");
 
+        objectManager.load(["rct2.ride.atm1","rct2.ride.faid1"]);//Add First Aid Room and ATM. They won't be unlocked if the yaml says they won't
+
         for(let i=0; i<researchItems.length; i++) {//We still randomize the items since finding multiple copies will unlock different vehicles
             let a = researchItems[i];
             let slot = rng(0, researchItems.length - 1);
