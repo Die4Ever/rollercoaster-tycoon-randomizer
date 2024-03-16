@@ -170,6 +170,12 @@ const adPool: Ad[] = [
         header: "Aliquam euismod, risus vel ultricies ornare",
         message: "Nam feugiat est in diam maximus consectetur.",
         button: "Phasellus imperdiet auctor nisi."
+    },
+    {
+        title: "Uh oh!",
+        header: "Something broke!",
+        message: "TELL COLBY RIGHT NOW!",
+        button: "CALL 1-800-FIX-IT-4-U!"
     }
 ]
 

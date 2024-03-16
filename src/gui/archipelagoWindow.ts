@@ -1155,7 +1155,7 @@ function interpretMessage(){
                 archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.");
                 archipelago_print_message("!!toggleDeathLink: Enables/Disables Deathlink\n");
                 archipelago_print_message("!!setMaxSpeed x: Sets the maximum allowed speed.");
-                archipelago_print_message("!!resendChecks: Resends all the purchased checks in case the connector is bad at its job.");
+                archipelago_print_message("!!sync: syncs all the items in case the connector is bad at its job.");
                 archipelago_print_message("!!addSkip: Cheats in a skip for the unlock shop. This is on the honor system.");
                 break;
             case '!!toggleDeathLink':
@@ -1185,8 +1185,9 @@ function interpretMessage(){
                 archipelago_settings.maximum_speed = 8;
                 archipelago_print_message("Maximum speed set. You better pray you don't get a furry trap.");
                 break;
-            case '!!resendChecks':
+            case '!!sync':
                 ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
+                archipelago_send_message("Sync");
                 break;
             case '!!addSkip':
                 archipelago_settings.skips ++;
