@@ -67,6 +67,7 @@ function archipelago_send_message(type: string, message?: any) {
                             console.log(requested_games);
                             if (requested_games.length == 1){
                                 let games = requested_games;
+                                if(games)//Why is it trying to send empty lists of games?
                                 context.setTimeout(() => {
                                     connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
                                     }, timeout);//console.log("Sending the following games for IDs: " + requested_games);
@@ -74,15 +75,15 @@ function archipelago_send_message(type: string, message?: any) {
                                 requested_games = [];
                             }
                         }
-                        if (requested_games){//request any remaining games
-                            let games = requested_games; 
-                            context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
-                        }
+                        // if (requested_games){//request any remaining games
+                        //     let games = requested_games; 
+                        //     context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
+                        // }
                     }
-                    else{
-                        connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games}); 
-                        archipelago_games_requested += archipelago_settings.multiworld_games.length;
-                    }
+                    // else{
+                    //     connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games}); 
+                    //     archipelago_games_requested += archipelago_settings.multiworld_games.length;
+                    // }
                     break;
                 case "Bounce":
                     if(message.tag == "DeathLink"){
