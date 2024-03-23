@@ -1055,7 +1055,7 @@ function archipelagoDebug(){
                         // archipelago_print_message
                         var window = ui.openWindow({
                             classification: 'rain-check',
-                            title: "Official Archipelago Rain Check",
+                            title: "Official Archipelago UI Debug",
                             width: 400,
                             height: 300,
                             colours: [7,7],
@@ -1068,8 +1068,17 @@ function archipelagoDebug(){
                                         y: 50,
                                         width: 400,
                                         height: 26,
-                                        text: 'Colby {RED} is {WHITE} very {PURPLE} cool{WHITE} indeed!{INLINE_SPRITE}{164}{20}{0}{0}',
+                                        text: 'Colby {RED} is {WHITE} very {PURPLE} cool{WHITE} indeed!',//{INLINE_SPRITE}{164}{20}{0}{0}',
                                         tooltip: "Y'all's sure do {MAGENTA}talk a lot, don't you?"
+                                    },
+                                    {
+                                        type: 'custom',
+                                        name: 'custom-archipealgo-logo',
+                                        x: 0,
+                                        y: 75,
+                                        width: 100,
+                                        height: 108,
+                                        onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
                                     }
                                 ]
                             )
@@ -1111,7 +1120,7 @@ function archipelagoDebug(){
                     onClick: function() { 
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
-                        objectManager.load(["rct2.ride.atm1","rct2.ride.faid1"]);
+                        console.log(archipelago_icon_ID);
                         // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // console.log(JSON.stringify(archipelago_settings.received_items));
