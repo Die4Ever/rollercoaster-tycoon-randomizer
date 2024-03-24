@@ -6,20 +6,41 @@ class RCTRResearch extends ModuleBase {
         setLocalSeed('ShuffleResearch');
 
         const origNumResearched = park.research.inventedItems.length;
-        let numResearched = origNumResearched;
+
+        let rides = [];
+        let scenery = [];
+
+        // first just the inventedItems so we can count them and scale the amount
+        SplitResearchItems(park.research.inventedItems, rides, scenery);
+
         // difficulty is -0.7 for Very Easy and 0.4 for Extreme
-        numResearched -= Math.round(settings.difficulty/2 * numResearched);
-        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
-        for(let i=0; i<researchItems.length; i++) {
-            let a = researchItems[i];
-            let slot = rng(0, researchItems.length - 1);
-            researchItems[i] = researchItems[slot];
-            researchItems[slot] = a;
-        }
-        park.research.inventedItems = researchItems.slice(0, numResearched);
-        park.research.uninventedItems = researchItems.slice(numResearched);
+        let numRides = rides.length;
+        numRides = Math.round(settings.difficulty/2 * numRides);
+        let numScenery = scenery.length;
+        numScenery = Math.round(settings.difficulty/2 * numScenery);
+
+        // now add the uninventedItems and shuffle
+        SplitResearchItems(park.research.uninventedItems, rides, scenery);
+        shuffle(rides);
+        shuffle(scenery);
+
+        // write back new arrays
+        park.research.inventedItems = rides.slice(0, numRides).concat(scenery.slice(0, numScenery));
+        park.research.uninventedItems = rides.slice(numRides).concat(scenery.slice(numScenery));
+
         this.AddChange('ShuffledResearch', 'Shuffled research items', null, null, null);
-        this.AddChange('NumInventedItems', 'Invented items', origNumResearched, numResearched);
+        this.AddChange('NumInventedItems', 'Invented items', origNumResearched, park.research.inventedItems.length);
+    }
+}
+
+function SplitResearchItems(items:Array<ResearchItem>, rides:Array<ResearchItem>, scenery:Array<ResearchItem>) {
+    for(let i=0; i < items.length; i++) {
+        let item = items[i];
+        if(item.type == 'ride') {
+            rides.push(item);
+        } else {
+            scenery.push(item);
+        }
     }
 }
 
