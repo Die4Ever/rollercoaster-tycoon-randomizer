@@ -93,6 +93,16 @@ function archipelagoGui(){
                     console.log("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");
                     window.close();
                 }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'What if this logo was animated? Wouldn\'t that be cool?',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
             }//,
             // {
             //     type: 'checkbox',
@@ -301,6 +311,16 @@ function archipelagoLocations(){
                             height: 26,
                             text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
                             tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: wh - 24,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'I\'ll be honest, I spent way too many hours trying to figure out how to add custom images to not plaster this wherever I could.',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
                         }
                     ]
                 )
@@ -339,6 +359,16 @@ function archipelagoLocations(){
                             height: 26,
                             text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
                             tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: wh - 24,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'I know for a fact nobody is reading this exact tooltip. Therefore I can say whatever I want here without repercussions! Dutch is not a real language.',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
                         }
                     ]
                 )
@@ -380,6 +410,16 @@ function archipelagoLocations(){
                             height: 26,
                             text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
                             tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: wh - 24,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'If you like Archipelago in OpenRCT2, let me know! You can find me at "Crazycolbster" on Discord. If you don\'t like Archipelago in OpenRCT2, that sounds like a you problem.',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
                         }
                     ]
                 )
@@ -482,6 +522,16 @@ function archipelagoLocations(){
                                 archipelago_settings.network_chat = isChecked;
                                 saveArchipelagoProgress();
                             }
+                        },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: wh - 24,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'I bet ' + game + ' doesn\'t have the archipelago logo in it.',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
                         }
                     ]
                 )
@@ -558,6 +608,16 @@ function archipelagoLocations(){
                                 saveArchipelagoProgress();
                                 currentWindow.findWidget<ListViewWidget>("Hint-list").items = createHintList();
                             }
+                        },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: wh - 24,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'After recovering from this project, I\'m thinking about doing Kirby and the Amazing Mirror next. Wouldn\'t that be cool?',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
                         }
                     ]
                 )
