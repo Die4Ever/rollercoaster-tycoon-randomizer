@@ -388,7 +388,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
             }
             break;
         case "SetReply"://Handles hints
-            if(data.key == "_read_hints_0_2"){
+            if(data.key == "_read_hints_0_3"){
                 console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
                 for(let i = 0; i < data.value.length; i++){
                     let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
