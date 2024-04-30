@@ -366,15 +366,15 @@ function ac_req(data) {//This is what we do when we receive a data packet
             break;
 
         case "LocationInfo":
-            if(data.locations.length > 9){
+            if(data.locations.length > 9){//This is for the unlock shop and not a hint
                 const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
                 var ready = true;
-                for(let i = 0; i < data.locations.length; i++){//If the list isn't ready yet, try again
-                    if(full_item_id_to_name[data.locations[i][0]] === undefined){
-                        ready = false;
-                        break;//Breaks the for loop, not the case.
-                    }
-                }
+                // for(let i = 0; i < data.locations.length; i++){//If the list isn't ready yet, try again
+                //     if(full_item_id_to_name[data.locations[i][0]] === undefined){
+                //         ready = false;
+                //         break;//Breaks the for loop, not the case.
+                //     }
+                // }
                 if(ready){
                     for(let i = 0; i < data.locations.length; i++){
                         archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
@@ -382,6 +382,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     ArchipelagoSaveLocations(archipelago_locked_locations,[]);
                 }
                 else{//We don't have all the item info yet. Try again.
+                    console.log("Instert bee movie here");
                     context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000)
                 }
                 

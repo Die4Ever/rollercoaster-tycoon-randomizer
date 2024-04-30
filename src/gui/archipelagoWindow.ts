@@ -1180,7 +1180,7 @@ function archipelagoDebug(){
                     onClick: function() { 
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
-                        console.log(archipelago_icon_ID);
+                        console.log(archipelago_locked_locations);
                         // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // console.log(JSON.stringify(archipelago_settings.received_items));
@@ -1261,6 +1261,10 @@ function interpretMessage(){
             case '!!addSkip':
                 archipelago_settings.skips ++;
                 archipelago_print_message("It appears somebody set their difficulty too high. This is where your hubris brought you!");
+                break;
+            case '!!fixUnlockShop':
+                archipelago_print_message("Apologies from present Colby for past Colby being bad at programming.");
+                archipelago_send_message("LocationScouts");
                 break;
             case 'Colby sucks'://Gotta do some error correction here.
                 archipelago_send_message("Say","Colby is awesome!");
