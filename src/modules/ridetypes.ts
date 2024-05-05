@@ -74,7 +74,7 @@ class RCTRRideTypes extends ModuleBase {
 
         if(isRide) {
             this.SetRideTypeSeed(rideTypeId, 'ride');
-            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'excitement', -1, 0.3) || changed;
+            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'excitement', -1, 0.5) || changed;
             changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'intensity', 0, isIntense ? 0.3 : 0.5) || changed;
             changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1, 0.3) || changed;
         }
