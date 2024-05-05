@@ -108,8 +108,8 @@ enum ScenarioName {
     "rainbow summit",
     "africa - victoria falls",
     "asia - great wall of china tourism enhancement",
-    "north - america grand canyon",
-    "south - america rio carnival",
+    "north america - grand canyon",
+    "south america - rio carnival",
     "africa - african diamond mine",
     "asia - maharaja palace",
     "australasia - ayers rock",
@@ -117,7 +117,7 @@ enum ScenarioName {
     "north america - rollercoaster heaven",
     "south america - inca lost city",
     "africa - oasis",
-    "antartic - ecological salvage",
+    "antarctic - ecological salvage",
     "asia - japanese costal reclaim",
     "australasia - fun at the beach",
     "europe - renovation",
@@ -131,7 +131,7 @@ enum ScenarioName {
     "future - first encounters",
     "mythological - animatronic film set",
     "prehistoric - jurassic safari",
-    "roaring twenties - schnider cup",
+    "roaring twenties - schneider cup",
     "future - future world",
     "mythological - cradle of civilization",
     "prehistoric - stone age",
@@ -152,6 +152,17 @@ enum ScenarioName {
     "build your own six flags magic mountain",
     "build your own six flags park",
     "build your own six flags over texas",
+    "random RCT1",
+    "random loopy landscapes",
+    "random corkscrew follies",
+    "random RCT2",
+    "random wacky worlds",
+    "random time twister",
+    "random RCT1 expansions",
+    "random RCT2 expansions",
+    "archipelago madness (vanilla)",
+    "archipelago madness (expansions)"
+
 }
 // var reverseScenarioName = new Map<string, ScenarioName>();
 // Object.keys(ScenarioName).forEach((scenarioName: ScenarioName) => {

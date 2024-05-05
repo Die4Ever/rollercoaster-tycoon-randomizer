@@ -104,9 +104,9 @@ function startGameGui() {
             [{
                 type: 'button',
                 name: 'cancel-button',
-                x: ww - 90 - 6,
-                y: wh - 6 - 26 - 29,
-                width: 90,
+                x: ww - 90 - 88 - 6,
+                y: wh - 6 - 26,
+                width: 85,
                 height: 26,
                 text: 'Disable Rando',
                 onClick: function() {
@@ -129,18 +129,38 @@ function startGameGui() {
             {
                 type: 'button',
                 name: 'archipelago-button',
-                x: ww - 90 - 88 - 6,
+                x: ww - 90 - 63,
                 y: wh - 6 - 26 - 29,
-                width: 85,
+                width: 114,
                 height: 26,
-                text: 'Archipelago',
-                tooltip: 'Prepares this park to connect to a game of Archipelago',
+                text: 'Archipelago!',
+                tooltip: 'Prepares this park to connect to a game of Archipelago!',
                 onClick: function() {
                     init_archipelago_connection();
                     archipelagoGui();
                     settings.rando_archipelago = true;
                     window.close();
                 }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: ww - 90 - 88,
+                y: wh - 4 - 26 - 29,
+                width: 22,
+                height: 20,
+                tooltip: 'Archipelago is a multiworld randomizer that lets you play your favorite games with your friends, no matter what they play!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-2',
+                x: ww - 35,
+                y: wh - 4 - 26 - 29,
+                width: 22,
+                height: 20,
+                tooltip: 'Ever wanted to see Zelda, Hollow Knight, Mario, and OpenRCT2 all mix together?',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
             }]
         ),
         onClose: function() {

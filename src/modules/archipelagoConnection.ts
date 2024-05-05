@@ -17,40 +17,138 @@ if(context.apiVersion >= 75)
 var send_timeout = false; //For plugin side sends
 var spam_timeout = false; //For user side sends
 
-function ac_req(data) {
+function archipelago_send_message(type: string, message?: any) {
+    console.log(connection.buffer.length);
+    if (connection.buffer.length == 0){
+        if (!send_timeout){
+            switch(type){//Gotta fill these in as we improve crud
+                case "Connect":
+                    console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
+                    break;
+                case "ConnectUpdate":
+                    console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
+                    break;
+                case "Sync":
+                    connection.send({cmd: "Sync"});
+                    break;
+                case "LocationChecks":
+                    var checks = [];//List of unlocked locations
+                    for (let i = 0; i < message.length; i++){
+                        checks.push(message[i].LocationID + 2000000);//OpenRCT2 has reserved the item ID space starting at 2000000
+                    }
+                    connection.send({cmd: "LocationChecks", locations: checks});
+                    break;
+                case "LocationScouts":
+                    var wanted_locations = [];
+                    for(let i = 0; i < archipelago_location_prices.length; i++){
+                        wanted_locations.push(2000000 + i);
+                    }
+                    connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
+                    break;
+                case "LocationHints":
+                    connection.send({cmd: "LocationScouts", locations: message, create_as_hint: 2});
+                    break;
+                case "StatusUpdate":
+                    connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
+                    break;
+                case "Say":
+                    const regex = /peck/gi;
+                    message = message.replace(regex, 'p*ck');
+                    console.log({cmd: "Say", text: message});
+                    connection.send({cmd: "Say", text: message});
+                    break;
+                case "GetDataPackage":
+                    var self = this;
+                    var requested_games = [];
+                    var timeout = 1;
+                    if (archipelago_multiple_requests){
+                        for(let i = 0; i < archipelago_settings.multiworld_games.length; i++){
+                            requested_games.push(archipelago_settings.multiworld_games[i]);
+                            console.log(requested_games);
+                            if (requested_games.length == 1){
+                                let games = requested_games;
+                                if(games)//Why is it trying to send empty lists of games?
+                                context.setTimeout(() => {
+                                    connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
+                                    }, timeout);//console.log("Sending the following games for IDs: " + requested_games);
+                                timeout += 5000;
+                                requested_games = [];
+                            }
+                        }
+                        // if (requested_games){//request any remaining games
+                        //     let games = requested_games; 
+                        //     context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
+                        // }
+                    }
+                    // else{
+                    //     connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games}); 
+                    //     archipelago_games_requested += archipelago_settings.multiworld_games.length;
+                    // }
+                    break;
+                case "Bounce":
+                    if(message.tag == "DeathLink"){
+                        connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: archipelago_settings.player[0]}});
+                    }
+                    break;
+                case "Get":
+                    connection.send({cmd: "Get", keys: []});
+                    break;
+                case "Set":
+                    break;
+                case "SetNotify":
+                    break;
+            }
+            send_timeout = true;
+            context.setTimeout(() => {send_timeout = false;}, 3000);
+        }
+        else{
+            context.setTimeout(() => {archipelago_send_message(type,message);}, 3000);
+        }
+    }
+    else{
+        console.log("Receiving message. Will send once complete.");
+        context.setTimeout(() => {archipelago_send_message(type,message);}, 3000);
+    }
+}
+
+function ac_req(data) {//This is what we do when we receive a data packet
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
-    // console.log(data);
-    var archipelagoPlayers: string[] = [];
+    var archipelagoPlayers: playerTuple[] = [];
     switch(data.cmd){
         case "RoomInfo":
             archipelago_settings.current_time = data.time;
             console.log("Archipelago Time has been set:");
             console.log(archipelago_settings.current_time);
-            // archipelago_send_message("Connect",{password: 8, name: "Colby"});
             break;
         case "Connected"://Packet stating player is connected to the Archipelago game
-            archipelagoPlayers = [];
-            var multiworld_games = []
-            for(let i=0; i<data.players.length; i++) {
-                //Create guest list populated with Player names
-                archipelagoPlayers.push(data.players[i][2]);
-                multiworld_games.push(data.slot_info[i + 1][1]);
+            if(!archipelago_settings.started){
+                var multiworld_games = [];
+                if(!context.getParkStorage().get("RCTRando.ArchipelagoPlayers")){ //We only need to do this once
+                    for(let i=0; i<data.players.length; i++) {
+                        //Create guest list populated with Player names
+                        archipelagoPlayers.push([data.players[i][2], false]);
+                        multiworld_games.push(data.slot_info[i + 1][1]);
+                    }
+                    console.log(data.slot_info);
+                    console.log("Here's our players:");
+                    console.log(archipelagoPlayers);
+                    context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
+                    Archipelago.SetNames();
+                    archipelago_settings.player = archipelagoPlayers[data.slot - 1];
+                }
+                context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
+
+                //To prevent sending lots of redundant data, we strip copies of games
+                var unique_multiworld_games = multiworld_games.filter(function(elem, index, self) {
+                    return index === self.indexOf(elem);
+                })
+                archipelago_settings.multiworld_games = unique_multiworld_games;
+                console.log("Here's the games in the multiworld:");
+                console.log(archipelago_settings.multiworld_games);
+
+                if(!archipelago_init_received)
+                Archipelago.SetImportedSettings(data.slot_data);
             }
-            console.log(data.slot_info);
-            console.log("Here's our players:");
-            console.log(archipelagoPlayers);
-            context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
-            Archipelago.SetNames();
-            context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
-
-            archipelago_settings.multiworld_games = multiworld_games;
-            console.log("Here's the games in the multiworld:");
-            console.log(archipelago_settings.multiworld_games);
-
-            archipelago_settings.player = archipelagoPlayers[data.slot - 1];
-
-            if(!archipelago_init_received)
-            Archipelago.SetImportedSettings(data.slot_data);
 
             archipelago_connected_to_server = true;
             break;
@@ -64,10 +162,24 @@ function ac_req(data) {
             break;
 
         case "PrintJSON"://Packet with data to print to the screen
-            archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
+            archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
             switch(data.type){
-                case "ItemSend":
                 case "Hint":
+                case "ItemSend":
+                    if (!archipelago_settings.universal_item_messages){//Only display item messages directly relevant to the player if enabled
+                        let display = false;
+                        for (let i = 0; i < data.data.length; i++){
+                            if(data.data[i].type == "player_id"){
+                                let checked_player = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1][0];
+                                if (archipelago_settings.player[0] == checked_player){
+                                    display = true;
+                                    break;//Breaks the for loop
+                                }
+                            }
+                        }
+                        if (!display)
+                        break;//Breaks the case statement
+                    }
                     let message = "";
                     for (let i = 0; i < data.data.length; i++){
                         let color = "";
@@ -75,18 +187,21 @@ function ac_req(data) {
                             let segment = data.data[i].text;
                             switch(data.data[i].type){
                                 case "player_id":
-                                    segment = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1];
-                                    color = "PALELAVENDER";
+                                    segment = archipelagoPlayers[Number(data.data[i].text)-1][0];//Gets the name of the relevant player
+                                    color = "PALELAVENDER";//Colors them purple
                                     break;
                                 case "item_id":
                                     segment = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[Number(data.data[i].text)];
                                     switch(data.data[i].flags){
-                                        case 0:
-                                        case 2:
+                                        case 0://Normal
+                                        case 2://Useful
                                             color = "BABYBLUE";
                                             break;
-                                        case 1:
+                                        case 1://Progression
                                             color = "PALELAVENDER";
+                                            break;
+                                        case 4://Trap
+                                            color = "RED";
                                             break;
                                     }
                                     break;
@@ -133,8 +248,8 @@ function ac_req(data) {
                     break;
 
                 case "ItemCheat":
-                    var cheatMessage = "Colby will write out code to figure out how cheats work when he gets the proxy client";
-                    archipelago_print_message(cheatMessage);
+                    // var cheatMessage = "Colby will write out code to figure out how cheats work when he gets the proxy client";
+                    archipelago_print_message(data.data[0].text);
                     break;
 
                 // case "Hint":
@@ -144,13 +259,16 @@ function ac_req(data) {
 
                 case "Goal":
                     archipelago_print_message(data.data[0].text);
-                    let guests = map.getAllEntities("guest");
-                    for(let i=0; i<(guests.length); i++){
-                        if(guests[i].name == archipelagoPlayers[data.slot - 1]){
-                            guests[i].setFlag("joy", true);
-                            break;
-                        }
-                    }
+                    archipelagoPlayers[data.slot - 1][1] = true;
+                    context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
+                    // let guests = map.getAllEntities("guest");
+                    // for(let i=0; i<(guests.length); i++){
+                    //     if(guests[i].name == archipelagoPlayers[data.slot - 1]){
+                    //         guests[i].setFlag("joy", true);
+                    //         break;
+                    //     }
+                    // }
+
                     break;
 
                 default:
@@ -164,7 +282,7 @@ function ac_req(data) {
             var location_name_to_id = {};
             var location_id_to_name = {};
 
-            console.log("Received DataPackage, setting translation tables");
+            console.log("Received DataPackage, updating translation tables");
 
             function mergeObjects(target: { [key: string]: any }, source: { [key: string]: any }): void {
                 for (const key in source) {
@@ -196,8 +314,8 @@ function ac_req(data) {
             item_id_to_name = flipObject(item_name_to_id);
             location_id_to_name = flipObject(location_name_to_id);
 
-            full_item_id_to_name = item_id_to_name;
-            full_location_id_to_name = location_id_to_name;
+            mergeObjects(full_item_id_to_name, item_id_to_name);
+            mergeObjects(full_location_id_to_name, location_id_to_name);
 
             context.getParkStorage().set("RCTRando.ArchipelagoItemIDToName",full_item_id_to_name);
             context.getParkStorage().set("RCTRando.ArchipelagoLocationIDToName",full_location_id_to_name);
@@ -206,21 +324,21 @@ function ac_req(data) {
             console.log(full_location_id_to_name);
             break;
 
-        case "Bounced":
+        case "Bounced"://Keeps the connection alive and recevies the Deathlink Signal from other games
             if(data.tags){
                 for(let i = 0; i < data.tags.length; i++){
                     if(data.tags[i] == "DeathLink"){
                         const cause = data.data.cause;
                         const source = data.data.source;
                         if(archipelago_settings.deathlink){
-                            Archipelago.ReceiveDeathLink({cause, source});
+                            Archipelago.ReceiveDeathLink({cause, source, attempt: 1});
                         }
                         if(cause){
                             archipelago_print_message(cause);
                         }
                         else{
                             var player_color = "{PALELAVENDER}" + source;
-                            var message_choice = [player_color + " {RED}is bad at video games!", player_color + " just got Windows Vista'd.", 
+                            var message_choice = [player_color + " {RED}is bad at video games!", player_color + " {RED}just got Windows Vista'd.", 
                                 player_color + " {RED}should have upgraded to Linux.", player_color + " {RED}has met their maker!", 
                                 '{RED}"What is death anyways?"\n{PALELAVENDER}-' + player_color, 
                                 "{RED}If it makes you feel better, at least it's " + player_color + "{RED}'s fault and not yours.", player_color + " {RED}is an airsick lowlander!",
@@ -248,11 +366,67 @@ function ac_req(data) {
             break;
 
         case "LocationInfo":
-            const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
-            for(let i = 0; i < data.locations.length; i++){
-                archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1]})
+            if(data.locations.length > 9){//This is for the unlock shop and not a hint
+                const players: string[] = context.getParkStorage().get("RCTRando.ArchipelagoPlayers");
+                var ready = true;
+                // for(let i = 0; i < data.locations.length; i++){//If the list isn't ready yet, try again
+                //     if(full_item_id_to_name[data.locations[i][0]] === undefined){
+                //         ready = false;
+                //         break;//Breaks the for loop, not the case.
+                //     }
+                // }
+                if(ready){
+                    for(let i = 0; i < data.locations.length; i++){
+                        archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
+                    }
+                    ArchipelagoSaveLocations(archipelago_locked_locations,[]);
+                }
+                else{//We don't have all the item info yet. Try again.
+                    console.log("Instert bee movie here");
+                    context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000)
+                }
+                
             }
-            ArchipelagoSaveLocations(archipelago_locked_locations,[]);
+            break;
+        case "SetReply"://Handles hints
+            if(data.key == "_read_hints_0_3"){
+                console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
+                for(let i = 0; i < data.value.length; i++){
+                    let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
+                    // console.log("Receiving Player:")
+                    // console.log(archipelagoPlayers[Number(data.value[i].receiving_player) - 1][0])
+                    // console.log("Finding Player:")
+                    // console.log(archipelagoPlayers[Number(data.value[i].finding_player) - 1][0])
+                    // console.log("Location:")
+                    // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName")[Number(data.value[i].location)])
+                    // console.log("Item:")
+                    // console.log(context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[Number(data.value[i].item)])
+                    // console.log("Found:")
+                    // console.log(data.value[i].found)
+                    var hint: archipelago_hint = {
+                        ReceivingPlayer: archipelagoPlayers[Number(data.value[i].receiving_player) - 1][0],
+                        FindingPlayer: archipelagoPlayers[Number(data.value[i].finding_player) - 1][0],
+                        Location: context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName")[Number(data.value[i].location)],
+                        Item: context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[Number(data.value[i].item)],
+                        Found: data.value[i].found
+                    }
+                    //Check if we've received the hint before
+                    var position = -1;
+                    for (let j = 0; j < archipelago_settings.hints.length; j++) {
+                        const obj = archipelago_settings.hints[j];
+                        if (obj.Location === hint.Location && obj.FindingPlayer === hint.FindingPlayer) {
+                            position = j; // Return the index of the matching object
+                        }
+                    }
+                    if(position > -1){
+                        archipelago_settings.hints[position].Found = hint.Found;
+                    }
+                    else{
+                        archipelago_settings.hints.push(hint);
+                    }
+                }
+                saveArchipelagoProgress();
+            }
     }
     return;
 }
@@ -326,69 +500,5 @@ function archipelago_print_message(message: string) {
     if(archipelago_settings.network_chat){
         network.sendMessage(message);
 
-    }
-}
-
-function archipelago_send_message(type: string, message?: any) {
-    console.log(connection.buffer.length);
-    if (connection.buffer.length == 0){
-        if (!send_timeout){
-            switch(type){//Gotta fill these in as we improve crud
-                case "Connect":
-                    console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
-                    break;
-                case "ConnectUpdate":
-                    console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
-                    break;
-                case "Sync":
-                    connection.send({cmd: "Sync"});
-                    break;
-                case "LocationChecks":
-                    var checks = [];//List of unlocked locations
-                    for (let i = 0; i < message.length; i++){
-                        checks.push(message[i].LocationID + 2000000);//OpenRCT2 has reserved the item ID space starting at 2000000
-                    }
-                    connection.send({cmd: "LocationChecks", locations: checks});
-                    break;
-                case "LocationScouts":
-                    var wanted_locations = [];
-                    for(let i = 0; i < archipelago_location_prices.length; i++){
-                        wanted_locations.push(2000000 + i);
-                    }
-                    connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
-                    break;
-                case "StatusUpdate":
-                    connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
-                    break;
-                case "Say":
-                    console.log({cmd: "Say", text: message});
-                    connection.send({cmd: "Say", text: message});
-                    break;
-                case "GetDataPackage":
-                    connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games});
-                    break;
-                case "Bounce"://Fix
-                    if(message.tag == "DeathLink"){
-                        connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: archipelago_settings.player}});
-                    }
-                    break;
-                case "Get":
-                    connection.send({cmd: "Get", keys: []});
-                    break;
-                case "Set":
-                    break;
-                case "SetNotify":
-                    break;
-            }
-            send_timeout = true;
-            context.setTimeout(() => {send_timeout = false;}, 1500);
-        }
-        else{
-            context.setTimeout(() => {archipelago_send_message(type,message);}, 1500);
-        }
-    }
-    else{
-        console.log("Receiving message. Will send once complete.");
-        context.setTimeout(() => {archipelago_send_message(type,message);}, 1500);
     }
 }

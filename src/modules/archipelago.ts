@@ -9,10 +9,11 @@ class RCTRArchipelago extends ModuleBase {
         if(!settings.rando_archipelago)
             return;
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
-        archipelago_send_message("Sync");
-        context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 1500);//We have to stagger these to not break the connection.
-        context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000);
-        context.setTimeout(() => {self.SetPostGenerationSettings();}, 3500);//Wait a few seconds for the other settings to do their thing
+        let timeout = archipelago_settings.multiworld_games.length * 6000;
+        context.setTimeout(() => {archipelago_send_message("Sync");}, 1000);
+        context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 2500);//We have to stagger these to not break the connection.
+        context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 6000 + timeout);
+        context.setTimeout(() => {self.SetPostGenerationSettings();}, 6500+ timeout);//Wait a few seconds for the other settings to do their thing
         //Setting rules for Archipelago, dictated by the YAML
         var setRules = function(){
             if(archipelago_settings.rule_locations[0])
@@ -81,20 +82,42 @@ class RCTRArchipelago extends ModuleBase {
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu
         if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
         self.SubscribeEvent('vehicle.crash',(e: any) => self.SendDeathLink(e.id));
-        // context.subscribe('action.execute',e => self.LogRide(e.player, e.action, e.result));
+        context.subscribe('action.execute',e => self.InterpretAction(e.player, e.action, e.args, e.result));
         context.subscribe('interval.tick', (e: any) => self.CheckMonopoly());
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
 
         //Set shortcuts
         ui.registerShortcut(
-            {id:"spamTrapBackspace", text:"Don't press this when a spam window is open.", bindings:['BACKSPACE'],
+            {id:"spamTrapBackspace", text:"[AP] Don't press this when a spam window is open", bindings:['BACKSPACE'],
             callback() {if(ui.getWindow("popup")){showRandomAd(); showRandomAd();};}
         });
 
         ui.registerShortcut(
-            {id:"spamTrapShiftBackspace", text:"Don't press this when a spam window is open.", bindings:['SHIFT+BACKSPACE'],
+            {id:"spamTrapShiftBackspace", text:"[AP] Don't press this when a spam window is open", bindings:['SHIFT+BACKSPACE'],
             callback() {if(ui.getWindow("popup")){context.setTimeout(() => {for(let i = 0; i < 12; i++){showRandomAd();};}, 50);};}
         });
+
+        ui.registerShortcut(
+            {id:"sendMessage", text:"[AP] Sends message from the unlock shop.",bindings:['RETURN'],
+            callback() {try {
+                interpretMessage();
+            }
+            catch{
+                console.log("Looks like the Archipelago Shop isn't open");
+            }}
+        });
+
+        ui.registerShortcut(
+            {id:"openUnlockShop", text:"[AP] Opens the unlock shop.", bindings:['HOME'],
+        callback() {
+            try{
+                archipelagoLocations()
+            }
+            catch{
+                console.log("Welp. Something went wrong with the shortcut");
+            }
+        }}
+        )
 
         //Set up actions for multiplayer
         try{
@@ -155,16 +178,19 @@ class RCTRArchipelago extends ModuleBase {
         else
         archipelago_settings.deathlink = false;
         switch(imported_settings.randomization_range){
-            case 0://low
+            case 0://none
+                settings.rando_range = randoRanges.None;
+                break;
+            case 1://low
                 settings.rando_range = randoRanges.Low;
                 break;
-            case 1://medium
+            case 2://medium
                 settings.rando_range = randoRanges.Medium
                 break;
-            case 2://high
+            case 3://high
                 settings.rando_range = randoRanges.High
                 break;
-            case 3://extreme
+            case 4://extreme
                 settings.rando_range = randoRanges.Extreme
                 break;
         }
@@ -194,6 +220,11 @@ class RCTRArchipelago extends ModuleBase {
         else
         settings.rando_park_values = false;
 
+        if(imported_settings.ignore_ride_stat_changes)
+        settings.rando_ride_types = false;
+        else
+        settings.rando_ride_types = true;
+
         archipelago_settings.preferred_intensity = imported_settings.preferred_intensity;
 
         archipelago_objectives.Guests[0] = imported_settings.objectives.Guests[0];
@@ -206,6 +237,7 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_objectives.ParkRating[0] = imported_settings.objectives.ParkRating[0];
         archipelago_objectives.LoanPaidOff[0] = imported_settings.objectives.LoanPaidOff[0];
         archipelago_objectives.Monopoly[0] = imported_settings.objectives.Monopoly[0];
+        archipelago_objectives.UniqueRides[0] = imported_settings.objectives.UniqueRides[0];
 
         console.log(archipelago_objectives.Monopoly[0]);
         if(archipelago_objectives.Monopoly[0])
@@ -251,11 +283,20 @@ class RCTRArchipelago extends ModuleBase {
         park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0.
     }
 
-    // LogRide(player, action, result): void {//This will eventually be used to identify who built a ride for Deathlink to identify the culprit
-    //     if(action == "ridecreate"){
-    //         console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
-    //     }
-    // }
+    InterpretAction(player, action, args, result): void {//Interprets game actions for various processes
+        // if(action == "ridecreate"){
+        //     console.log("Player: " + player + "\nType: " + action + "\nResult: " + result);
+        // }
+        switch(action){
+            case "gamesetspeed":
+                console.log(args.speed);
+                console.log(archipelago_settings.maximum_speed);
+                if(args.speed > archipelago_settings.maximum_speed){
+                    ui.showError("Too fast!", "You haven't unlocked that speed tier yet!")
+                    context.executeAction("gamesetspeed",{speed: 1} as GameSetSpeedArgs);
+                }
+        }
+    }
 
     RemoveItems(): void{
         const origNumResearched = park.research.inventedItems.length;
@@ -274,6 +315,8 @@ class RCTRArchipelago extends ModuleBase {
         // console.log(scenario.name);
         // console.log(JSON.stringify(items));
         // console.log("\n\n\n\n\n");
+
+        objectManager.load(["rct2.ride.atm1","rct2.ride.faid1"]);//Add First Aid Room and ATM. They won't be unlocked if the yaml says they won't
 
         for(let i=0; i<researchItems.length; i++) {//We still randomize the items since finding multiple copies will unlock different vehicles
             let a = researchItems[i];
@@ -321,12 +364,12 @@ class RCTRArchipelago extends ModuleBase {
                 if (compare_number === undefined)
                 compare_number = 0;
                 if(compare_list[i][j] > compare_number){//If its not on the list already
-                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000116){//This number will need to change if we ever add more items/traps/etc.
+                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000118){//This number will need to change if we ever add more items/traps/etc.
                         var item = item_id_to_name[compare_list[i][0]];
                         console.log(item);
                         if(item.indexOf("Trap") > -1)
                         category = "trap";
-                        if(RideType[item])//Any item that fits a ride type is a ride
+                        if(Number(RideType[item]) > -1)//Any item that fits a ride type is a ride
                         category = "ride";
                         if(item.indexOf("$") > -1)
                         category = "cash";
@@ -356,7 +399,13 @@ class RCTRArchipelago extends ModuleBase {
                                 case "Thunderstorm":
                                 case "Snowstorm":
                                 case "Blizzard":
-                                    category = "weather"
+                                    category = "weather";
+                                    break;
+                                case "Progressive Speed":
+                                    category = "speed";
+                                    break;
+                                case "Skip":
+                                    category = "skip";
                                     break;
                             }
                         }
@@ -392,6 +441,12 @@ class RCTRArchipelago extends ModuleBase {
                             case "weather":
                                 self.setWeather(item)
                                 break;
+                            case "speed":
+                                self.updateMaxSpeed();
+                                break;
+                            case "skip":
+                                self.addSkip();
+                                break;
                             default:
                                 console.log("Error in ReceiveArchipelagoItem: category not found");
                         }
@@ -406,19 +461,23 @@ class RCTRArchipelago extends ModuleBase {
 
     AddRide(ride: any): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items.
-        let unresearchedItems = park.research.uninventedItems;
-        let researchedItems = park.research.inventedItems;
-        for(let i=0; i<unresearchedItems.length; i++) {
-            if (((unresearchedItems[i] as RideResearchItem).rideType) == ride){//Check if the ride type matches
-                researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
-                unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
-                park.research.inventedItems = researchedItems;
-                park.research.uninventedItems = unresearchedItems;//Save the researched items list
-                return;
+        
+            let unresearchedItems = park.research.uninventedItems;
+            let researchedItems = park.research.inventedItems;
+            for(let i=0; i<unresearchedItems.length; i++) {
+                if (((unresearchedItems[i] as RideResearchItem).rideType) == ride){//Check if the ride type matches
+                    researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
+                    unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
+                    park.research.inventedItems = researchedItems;
+                    park.research.uninventedItems = unresearchedItems;//Save the researched items list
+                    console.log("Corndags)");
+                    return;
+                }
             }
-        }
-        console.log("Error in AddRide: ride not in uninvented items")
-        return;
+            console.log("Error in AddRide: ride not in uninvented items");
+            archipelago_print_message("CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!")
+            ui.showError("CRITICAL ERROR FOUND!", "CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!");
+            return;
     }
 
     AddScenery(): void{
@@ -645,6 +704,28 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
+    updateMaxSpeed(): any{
+        park.postMessage(
+            {type: 'award', text: "The Elder Gods have granted your petition to defy phyics and create entropy. Your maximum speed has increased!"} as ParkMessageDesc);
+        if (archipelago_settings.maximum_speed < 4)
+            archipelago_settings.maximum_speed ++;
+        else
+            archipelago_settings.maximum_speed = 8;
+        saveArchipelagoProgress();
+    }
+
+    addSkip(): any{
+        archipelago_settings.skips ++;
+        try{
+            (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).text = 'Skips: ' + String(archipelago_settings.skips);
+            (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isDisabled = !archipelago_settings.skips;
+        }
+        catch{
+            console.log("Looks like the Archipelago Shop isn't open");
+        }
+        saveArchipelagoProgress();
+    }
+
     SetPurchasableTiles(): any{
         var x = map.size.x;//Gets the size of the map
         var y = map.size.y;
@@ -684,13 +765,13 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string}): any{
+    ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string, attempt: number}): any{
         var self = this;
         if (archipelago_settings.deathlink_timeout == true){//If the timeout hasn't expired, don't force another coaster to crash
             console.log("Death Link Timeout has not expired. Ignoring Death Link signal")
             return;
         }
-        if (!map.getAllEntities("car").length){//If there's nothing to explode, give the user a pass
+        if ((!map.getAllEntities("car").length) || DeathLinkPacket.attempt == 3){//If there's nothing to explode, give the user a pass
             console.log("Rain check");
             var window = ui.openWindow({
                 classification: 'rain-check',
@@ -729,23 +810,37 @@ class RCTRArchipelago extends ModuleBase {
         context.executeAction('ExplodeRide', DeathLinkPacket);
     }
 
-    SendDeathLink(vehicleID: number): any{
+    SendDeathLink(vehicleID?: number, name?: string): any{
         if(archipelago_settings.deathlink_timeout == false) {
             archipelago_settings.deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
             context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
             console.log("We're off to kill the Wizard!");
-            var cars = map.getAllEntities("car");
-            for(let i = 0; i < cars.length; i++){
-                if(cars[i].id == vehicleID){
-                    var rideID = cars[i].ride;
-                    var ride = map.rides[rideID].name;
-                    console.log("vehicleID:" + vehicleID);
-                    console.log(rideID);
-                    console.log(ride);
-                    archipelago_send_message("Bounce",{ride: ride, tag: "DeathLink"});
-                    break;
+            if(vehicleID){
+                var cars = map.getAllEntities("car");
+                //console.log((cars));
+                for(let i = 0; i < cars.length; i++){
+                    if(cars[i].id == vehicleID){
+                        var rideID = cars[i].ride;
+                        var rideName = "";//map.rides[rideID].name;
+                        var rides = map.rides;
+                        for(let j = 0; j < rides.length; j++){
+                            if (rides[j].id == rideID){
+                                rideName = rides[j].name;
+                                break;//breaks the for loop
+                            }
+                        }
+                        console.log("vehicleID:" + vehicleID);
+                        console.log("rideID:" + rideID);
+                        console.log("ride name:" + rideName);
+                        archipelago_send_message("Bounce",{ride: rideName, tag: "DeathLink"});
+                        break;
+                    }
                 }
             }
+            if(name){
+                archipelago_send_message("Bounce",{ride: name, tag: "DeathLink"});
+            }
+            
         }
         else {
             console.log("Death Link Timeout has not expired. Cancelling Death Link signal. Note: Multiple cars crashing will attempt to send multiple signals")
@@ -756,18 +851,20 @@ class RCTRArchipelago extends ModuleBase {
         //Generates guests with the names of the Archipelago players
         if(context.getParkStorage().get("RCTRando.ArchipelagoPlayers")){
             let guests = map.getAllEntities("guest");
-            let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as Array<string>);
+            let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
             for(let i=0; i<(archipelagoPlayers.length); i++){
                 var inPark = false;
                 for(let j=0; j<(guests.length); j++){
-                    if(archipelagoPlayers[i] == (guests[j].name)){
-                    inPark = true;
-                    break;
+                    if(archipelagoPlayers[i][0] == (guests[j].name)){
+                        inPark = true;
+                        if(archipelagoPlayers[i][1] == true)//If this game has beaten their scenario
+                        guests[j].setFlag("joy", true);//Make them do a little dance
+                        break;
                     }
                 }
                 if(!inPark){
                     if(guests.length >= archipelagoPlayers.length){
-                        guests[i].name = archipelagoPlayers[i];
+                        guests[i].name = archipelagoPlayers[i][0];
                     }
                 }
             }
@@ -808,18 +905,49 @@ class RCTRArchipelago extends ModuleBase {
     CreateLockedList(): any{
         var self = this;
         var locked = [];
-        var location = archipelago_locked_locations;
+        var location = archipelago_locked_locations.slice();
         // console.log(location);
-        var prices = archipelago_location_prices;
+        var prices = archipelago_location_prices.slice();
         for(var i = 0; i < location.length; i++){//Loop through every locked location
             if (self.IsVisible(location[i].LocationID)){
+                var color = '{WHITE}';
+                if (location[i].LocationID < 7)
+                color = '{WHITE}';
+                else{
+                    switch(location[i].LocationID%8){
+                        case 0: 
+                            color = '{RED}';
+                            break;
+                        case 1: 
+                            color = '{GREEN}'
+                            break;
+                        case 2: 
+                            color = '{BABYBLUE}';
+                            break;
+                        case 3: 
+                            color = '{YELLOW}';
+                            break;
+                        case 4: 
+                            color = '{PALEGOLD}';
+                            break;
+                        case 5: 
+                            color = '{PALESILVER}';
+                            break;
+                        case 6: 
+                            color = '{CELADON}'
+                            break;
+                        case 7:
+                            color = '{LIGHTPINK}';
+                            break;
+                    }
+                }
                 if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
-                    locked.push("[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                    locked.push(color + "[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                 }
                 else{//Set up the string denoting the price
                     var prereqs = prices[location[i].LocationID].RidePrereq;
 
-                    var cost = "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                    var cost = color + "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                     // console.log(prereqs);
                     if(prereqs.length != 0) {//Handle prerequisites
                         cost += " + " + prereqs[0].toString() + " ";
@@ -848,6 +976,19 @@ class RCTRArchipelago extends ModuleBase {
                 }
             }
         }
+        console.log(locked);
+        console.log(archipelago_unlocked_locations);
+        if(!locked.length){
+            if(!archipelago_unlocked_locations.length){
+                return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
+                "{WHITE}If you're still seeing this message after 2 minutes (Be sure to actually close and reopen this window),",
+                "{WHITE}bother Colby in the Discord and he'll complain about past Colby.",
+                "{WHITE}Current Progress: " + String(archipelago_games_requested) + "/" + String(archipelago_settings.multiworld_games.length)
+                + " games requested."];
+            }
+            else
+            return ["Conglaturations! You've unlocked everything! Now go outside and touch some grass."]
+        }
         return locked;
     }
 
@@ -867,7 +1008,7 @@ class RCTRArchipelago extends ModuleBase {
         var RollerCoaster = archipelago_objectives.RollerCoasters;
         if (RollerCoaster[0]){
             objective.push("Roller Coasters:");
-            var Line = (RollerCoaster[6] ? ("✓        " + RollerCoaster[0]) : ("          " + RollerCoaster[0]));
+            var Line = (RollerCoaster[5] ? ("✓        " + RollerCoaster[0]) : ("          " + RollerCoaster[0]));
             if(RollerCoaster[1]){
                 Line += " (> " + RollerCoaster[1] + " Excitement)";
             }
@@ -899,12 +1040,22 @@ class RCTRArchipelago extends ModuleBase {
             objective.push("Real Estate Monopoly:");
             objective.push(archipelago_objectives.Monopoly[1] ? ("✓        Own every tile on the map!") : ("          Own every tile on the map!"));
         }
+        if (archipelago_objectives.UniqueRides[0].length){
+            objective.push("Required Rides:");
+            var ride_list = (archipelago_objectives.UniqueRides[1]) ? "✓        " : "        ";
+            for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
+                ride_list += (archipelago_objectives.UniqueRides[0][i]) + ", ";
+            }
+            objective.push(ride_list);
+        }
         return objective;
     }
 
     CheckObjectives(): any{
         var self = this;
         if (scenario.status == "completed"){
+            if(!archipelago_settings.player[1])
+            archipelago_send_message("StatusUpdate", 30);
             return;
         }
         if (park.guests >= Number(archipelago_objectives.Guests[0])){
@@ -922,51 +1073,64 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives.ParkValue[1] = false;
         }
 
-        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
-        var NumQualifiedRides = 0;
-        for(var i = 0; i < map.numRides; i++){
-            var ride = map.rides[i].type;
-            var QualifiedExcitement = false;
-            var QualifiedIntensity = false;
-            var QualifiedNausea = false;
-            var QualifiedLength = false;
-            var elligible = false;
-            if (!(ride == 28 || ride == 30 || ride == 32)){
-                for(var j = 0; j < researchItems.length; j++){
-                    if((researchItems[j] as RideResearchItem).rideType == ride){//If the items match...
-                        if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
-                            elligible = true;
+        if (archipelago_objectives.RollerCoasters[0]){
+            let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
+            var NumQualifiedRides = 0;
+            for(var i = 0; i < map.numRides; i++){
+                var ride = map.rides[i].type;
+                var QualifiedExcitement = false;
+                var QualifiedIntensity = false;
+                var QualifiedNausea = false;
+                var QualifiedLength = false;
+                var elligible = false;
+
+                //Handle checks for Roller Coasters
+                if (!(ride == 28 || ride == 30 || ride == 32)){
+                    for(var j = 0; j < researchItems.length; j++){
+                        if((researchItems[j] as RideResearchItem).rideType == ride){//If the items match...
+                            if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
+                                elligible = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (elligible){
+                        // console.log("Apples!!!");
+                        // console.log(Number(archipelago_objectives.RollerCoasters[2]) * 100);
+                        // console.log(Number(archipelago_objectives.RollerCoasters[3]) * 100);
+                        // console.log(Number(archipelago_objectives.RollerCoasters[4]) * 100);
+                        // console.log(map.rides[i].excitement);
+                        // console.log(map.rides[i].intensity);
+                        // console.log(map.rides[i].nausea);
+                        QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
+                        if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[1]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                            QualifiedExcitement = true;
+                        }
+                        if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){
+                            QualifiedIntensity = true;
+                        }
+                        if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
+                            QualifiedNausea = true;
+                        }
+
+                        if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
+                            NumQualifiedRides += 1;
+                        }
+
+                        if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0])){
+                            archipelago_objectives.RollerCoasters[5] = true;
                             break;
+                        }
+                        else {
+                            archipelago_objectives.RollerCoasters[5] = false;
                         }
                     }
                 }
-                if (elligible){
-                    QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                    if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
-                        QualifiedExcitement = true;
-                    }
-                    if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
-                        QualifiedIntensity = true;
-                    }
-                    if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[4]) * 100)){
-                        QualifiedNausea = true;
-                    }
 
-                    if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
-                        NumQualifiedRides += 1;
-                    }
-
-                    if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0])){
-                        archipelago_objectives.RollerCoasters[6] = true;
-                        break;
-                    }
-                    else {
-                        archipelago_objectives.RollerCoasters[6] = false;
-                    }
-                }
             }
-
         }
+        else
+        archipelago_objectives.RollerCoasters[5] = true;
 
         //TODO: Wait for monthly ride and shop income to become visible to the API
         archipelago_objectives.RideIncome[1] = true;
@@ -982,7 +1146,7 @@ class RCTRArchipelago extends ModuleBase {
 
         if (archipelago_objectives.LoanPaidOff[0] == true)//Check if Loans are enabled
         {
-            if (park.bankLoan <= 0){//Check if loan is paid off
+            if (park.bankLoan <= 0){//Check if loan is paid off //TODO: This may be a glitch. Go check future Colby
                 archipelago_objectives.LoanPaidOff[1] = true;
             }
             else{
@@ -1000,12 +1164,39 @@ class RCTRArchipelago extends ModuleBase {
         else {//If Monopoly isn't enabled, autoset to true
             archipelago_objectives.Monopoly[1] = true;
         }
+        if (archipelago_objectives.UniqueRides[0]){
+            var goal_complete = true;
+            for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
+                var found = false;
+                var checkedRide = archipelago_objectives.UniqueRides[0][i];
+                for(let j = 0; j < map.numRides; j++){
+                    if (Number(RideType[checkedRide]) == map.rides[j].type){
+                        if (map.rides[j].excitement > 1){
+                            console.log(map.rides[j].excitement);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found){
+                    goal_complete = false;
+                    break;
+                }
+            }
+            if (goal_complete)
+            archipelago_objectives.UniqueRides[1] = true;
+            else
+            archipelago_objectives.UniqueRides[1] = false;
+        }
+        else{
+            archipelago_objectives.UniqueRides[1] = true;
+        }
         //Check if all conditions are met
         if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true &&
-            archipelago_objectives.RollerCoasters[6] == true && archipelago_objectives.RideIncome[1] == true &&
+            archipelago_objectives.RollerCoasters[5] == true && archipelago_objectives.RideIncome[1] == true &&
             archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true &&
             archipelago_objectives.LoanPaidOff[1] == true &&
-            archipelago_objectives.Monopoly[1] == true){
+            archipelago_objectives.Monopoly[1] == true && archipelago_objectives.UniqueRides[1] == true){
             context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => archipelago_send_message("StatusUpdate", 30));
 
         }
@@ -1094,8 +1285,9 @@ class RCTRArchipelago extends ModuleBase {
         }
         // console.log("Locked ID is: " + String(LockedID));
         // console.log("CheckID is: " + String(CheckID));
-        for(var i = 0; i < archipelago_unlocked_locations.length; i++){
-            if (CheckID == archipelago_unlocked_locations[i].LocationID)
+        const temp_list = archipelago_unlocked_locations.slice();
+        for(let i = 0; i < temp_list.length; i++){
+            if (CheckID == temp_list[i].LocationID)
             return true;
         }
 
@@ -1110,9 +1302,9 @@ class RCTRArchipelago extends ModuleBase {
         var self = this;
         console.log("Purchasing item number:");
         console.log(item);
-        let Locked = archipelago_locked_locations;
-        let Unlocked = archipelago_unlocked_locations;
-        let Prices = archipelago_location_prices;
+        let Locked = archipelago_locked_locations.slice();
+        let Unlocked = archipelago_unlocked_locations.slice();
+        let Prices = archipelago_location_prices.slice();
         let LocationID = Locked[item].LocationID;
         let wantedItem = 0;
         let counter = 0;
@@ -1131,8 +1323,8 @@ class RCTRArchipelago extends ModuleBase {
         let Prereqs = Prices[LocationID].RidePrereq;//Have to get LocationID before we can properly check Prereqs
 
         console.log(Prices[LocationID]);
-        if(Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0){//Check if player has enough cash or if the price is 0.
-            if(Prices[LocationID].Lives <= park.guests){//Check if the player has enough guests to sacrifice
+        if((Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0) || archipelago_skip_enabled){//Check if player has enough cash or if the price is 0.
+            if((Prices[LocationID].Lives <= park.guests) || archipelago_skip_enabled){//Check if the player has enough guests to sacrifice
                 var NumQualifiedRides = 0;
                 var object = Prices[LocationID]
                 var ride = RideType[Prices[LocationID].RidePrereq[1]];
@@ -1145,7 +1337,7 @@ class RCTRArchipelago extends ModuleBase {
                     var QualifiedNausea = false;
                     var QualifiedLength = false;
                     var elligible = false;
-                    if(ride){//See if there's a prereq that's a specific ride
+                    if(Number(ride) > -1){//See if there's a prereq that's a specific ride
                         if (Number(ride) == ride_list[i].type){//If the rides match, they're elligible
                         elligible = true;
                         }
@@ -1179,35 +1371,63 @@ class RCTRArchipelago extends ModuleBase {
                         NumQualifiedRides += 1;
                     }
                 }
-                if(!Prereqs.length || NumQualifiedRides >= Prereqs[0]){
-                    console.log("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
-                    if(Prices[LocationID].Lives != 0){//Code to explode guests
-                    var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
-                        if(doomed < guest_list.length){//Explode either the doomed amount, or every guest in the park, whichever is less
-                            for(var i = 0; i < doomed; i++){
-                                guest_list[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
+                if(!Prereqs.length || NumQualifiedRides >= Prereqs[0] || archipelago_skip_enabled){
+                    if(!archipelago_skip_enabled){
+                        console.log("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
+                        if(Prices[LocationID].Lives != 0){//Code to explode guests
+                        var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
+                            if(doomed < guest_list.length){//Explode either the doomed amount, or every guest in the park, whichever is less
+                                for(var i = 0; i < doomed; i++){
+                                    guest_list[i].setFlag("explode", true);// Credit to Gymnasiast/everything-must-die for the idea
+                                }
+                            }
+                            else{
+                                for(var i = 0; i < guest_list.length; i++){
+                                    guest_list[i].setFlag("explode", true);
+                                }
                             }
                         }
-                        else{
-                            for(var i = 0; i < guest_list.length; i++){
-                                guest_list[i].setFlag("explode", true);
-                            }
-                        }
+                        park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
                     }
-                    park.cash -= (Prices[LocationID].Price * 10);//Multiply by 10 to obtain the correct amount
+                    else{
+                        archipelago_skip_enabled = false;
+                        archipelago_settings.skips --;
+                        (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).text = 'Skips: ' + String(archipelago_settings.skips);
+                        (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isPressed = false;
+                        (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isDisabled = !archipelago_settings.skips;
+                    }
+
                     Unlocked.push(Locked[wantedItem]);
+                    console.log("pickle");
                     Locked.splice(wantedItem,1);
                     archipelago_locked_locations = Locked;
+                    console.log(JSON.stringify(archipelago_locked_locations));
                     archipelago_unlocked_locations = Unlocked;
                     console.log(archipelago_locked_locations);
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var lockedWindow = ui.getWindow("archipelago-locations");
                     lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();
                     spam_timeout = true;
-                    context.setTimeout(() => {spam_timeout = false;}, 5000);
+                    context.setTimeout(() => {spam_timeout = false;}, 2000);
+                    //If we have full visibility, send hints for any items shown
+                    if(archipelago_settings.location_information == "Full"){
+                        let hint_list = [];
+                        console.log("Jill me");
+                        console.log(hint_list);
+                        const temp_list = archipelago_locked_locations.slice();//Dude, screw how lists are handled in this stupid language
+                        for(let i = 0; i < temp_list.length; i++){
+                            let location = temp_list[i].LocationID;
+                            console.log(location);
+                            if(self.IsVisible(location))
+                            hint_list.push(location + 2000000);
+                        }
+                        console.log("killme");
+                        console.log(hint_list);
+                        context.setTimeout(() => (archipelago_send_message("LocationHints",hint_list)), 2000)
+                    }
                 }
                 else{
-                    ui.showError("Prerequisites not met", "One or more of the prerequisites for this unlock have not been fulfilled");
+                    ui.showError("Prerequisites not met", "You only have " + String(NumQualifiedRides) + " elligible rides in the park! (Ensure they have posted stats)");
                 }
             }
             else{
@@ -1236,6 +1456,14 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
     SetPostGenerationSettings(): void{
+        if (park.getFlag("noMoney")){
+            let guests = map.getAllEntities("guest");
+            let funnyNumbers = [690, 4200, 270, 1, 10, 314];
+            park.cash = 100069;
+            for(let i = 0; i < guests.length; i++){
+                guests[i].cash = funnyNumbers[Math.floor(Math.random() * funnyNumbers.length)];
+            }
+        }
         park.setFlag("noMoney", false);
         switch(archipelago_settings.preferred_intensity){
             case 0:
@@ -1251,6 +1479,7 @@ class RCTRArchipelago extends ModuleBase {
                 park.setFlag("preferMoreIntenseRides", true);
                 break;
             }
+        park.setFlag("unlockAllPrices", true);//Allows charging for the entrance, rides, or both
     }
 }
 
@@ -1259,7 +1488,8 @@ function explodeRide(args: any){
     console.log(args);
     const cause = args.args.cause;
     const source = args.args.source;
-    const DeathLinkPacket = {cause, source};
+    const attempt = args.args.attempt + 1;
+    const DeathLinkPacket = {cause, source, attempt};
     console.log(DeathLinkPacket);
     var self = this;
     var car = map.getAllEntities('car');
@@ -1284,6 +1514,7 @@ function explodeRide(args: any){
 
 function saveArchipelagoProgress(){
     context.getParkStorage().set('RCTRando.ArchipelagoSettings', archipelago_settings);
+    console.log("Progress Saved!")
 }
 
 if(context.apiVersion >= 75)

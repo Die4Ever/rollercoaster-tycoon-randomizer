@@ -3,7 +3,8 @@ interface Ad {
     title: string,
     header: string,
     message: string,
-    button: string
+    button: string,
+    onClick?: Function
 }
 
 const adPool: Ad[] = [
@@ -126,6 +127,55 @@ const adPool: Ad[] = [
         header: "Here is your download:",
         message: "openrct3.dat (43.5 mB)",
         button: "DOWNLOAD"
+    },
+    {
+        title: "CLOSE THIS WINDOW!",
+        header: "Tired of the buttons not closing these windows?",
+        message: "Fix it today!",
+        button: "Click here!"
+    },
+    {
+        title: "Archipelago",
+        header: "Have you checked your tracker?",
+        message: "do it.",
+        button: "Finish Sphere 1"
+    },
+    {
+        title: "",
+        header: "",
+        message: "",
+        button: ""
+    },
+    {
+        title: "DANGER",
+        header: "Don't click this button!",
+        message: "It's extremely hazardous!",
+        button: "SEND DEATHLINK",
+        onClick: () => 
+            {try{
+                var DeathLink = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                DeathLink.SendDeathLink(null,"A popup window with the text \"SEND DEATHLINK\"");}
+            catch{ui.showError("Archipelago not open", "You should try this while playing Archipelago!")}
+            ui.closeAllWindows()}//We don't know the ID, so close everything. Besides, it "Crashed"
+    },
+    {
+        title: "Freedom!",
+        header: "This game is sponsored by Linux Mint!",
+        message: "Linux is vastly superior to Windows!",
+        button: "Upgrade today!",
+        onClick: () => {archipelago_print_message("Go to LinuxMint.com and click \"Download\"")}
+    },
+    {
+        title: "Lorem ipsum",
+        header: "Aliquam euismod, risus vel ultricies ornare",
+        message: "Nam feugiat est in diam maximus consectetur.",
+        button: "Phasellus imperdiet auctor nisi."
+    },
+    {
+        title: "Uh oh!",
+        header: "Something broke!",
+        message: "TELL COLBY RIGHT NOW!",
+        button: "CALL 1-800-FIX-IT-4-U!"
     }
 ]
 
@@ -163,7 +213,8 @@ function showAd(ad: Ad): void {
                     y: 75,
                     width: 300,
                     height: 25,
-                    text: ad.button
+                    text: ad.button,
+                    onClick: ad.onClick as () => void || (() => { console.log("No button code provided"); })
                 }
             ]
         });
