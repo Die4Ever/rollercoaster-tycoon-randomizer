@@ -38,13 +38,11 @@ function startGameGui() {
         settings.num_months_cycle = randoCycles[cycle['text']];
 
         // we need to unpause the game in order for the next tick to run
-        var wasPaused = UnpauseGame();
+        UnpauseGame();
         runNextTick(function() {
             initRando();
-            if(wasPaused.wasPaused && global_settings.auto_pause) {
-                // we know the game is currently unpaused because we're inside a tick event
-                // so we don't need the fancy PauseGame function
-                context.executeAction('pausetoggle', {});
+            if(global_settings.auto_pause) {
+                PauseGame();
             }
             createChangesWindow();
         });

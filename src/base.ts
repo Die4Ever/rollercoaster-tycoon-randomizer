@@ -165,19 +165,11 @@ function runNextTick(func: Function) {
 }
 
 function ifPaused(whenPaused: () => void, whenUnpaused: () => void) {
-    var wasPaused = { wasPaused: undefined };
-    var oldElapsed = date.ticksElapsed;
-    context.setTimeout(function() {
-        if( date.ticksElapsed == oldElapsed ) {
-            wasPaused.wasPaused = true;
-            if(whenPaused)
-                whenPaused();
-        } else {
-            wasPaused.wasPaused = false;
-            if(whenUnpaused)
-                whenUnpaused();
-        }
-    }, 100);
+    var wasPaused = context.paused;
+
+    if(wasPaused) whenPaused();
+    else whenUnpaused();
+
     return wasPaused;
 }
 

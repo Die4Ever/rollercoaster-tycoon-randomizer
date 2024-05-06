@@ -19,13 +19,11 @@ function archipelagoGui(){
         archipelago_settings.started = true;
         saveArchipelagoProgress();//Save the settings to our Archipelago tracker
         // we need to unpause the game in order for the next tick to run
-        var wasPaused = UnpauseGame();
+        UnpauseGame();
         runNextTick(function() {
             initRando();
-            if(wasPaused.wasPaused && global_settings.auto_pause) {
-                // we know the game is currently unpaused because we're inside a tick event
-                // so we don't need the fancy PauseGame function
-                context.executeAction('pausetoggle', {});
+            if(global_settings.auto_pause) {
+                PauseGame();
             }
         createChangesWindow();
         });
@@ -134,8 +132,8 @@ function archipelagoLocations(){
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
 
-    var game_choice = ["Ocarina of Time", "Adventure", "Donkey Kong Country 3", "Final Fantasy 1", "Hollow Knight", 
-    "The Legend of Zelda", "A Link to the Past", "Links Awakening", "Pokemon Red and Blue", "Rogue Legacy", 
+    var game_choice = ["Ocarina of Time", "Adventure", "Donkey Kong Country 3", "Final Fantasy 1", "Hollow Knight",
+    "The Legend of Zelda", "A Link to the Past", "Links Awakening", "Pokemon Red and Blue", "Rogue Legacy",
     "Sonic Adventure 2", "Super Mario World", "Super Mario 64", "Super Metroid", "VVVVVV"];
     var game = game_choice[Math.floor(Math.random() * game_choice.length)];//Gotta throw that shade
 
