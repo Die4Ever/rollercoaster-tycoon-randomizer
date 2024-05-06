@@ -364,7 +364,7 @@ class RCTRArchipelago extends ModuleBase {
                 if (compare_number === undefined)
                 compare_number = 0;
                 if(compare_list[i][j] > compare_number){//If its not on the list already
-                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000118){//This number will need to change if we ever add more items/traps/etc.
+                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000119){//This number will need to change if we ever add more items/traps/etc.
                         var item = item_id_to_name[compare_list[i][0]];
                         console.log(item);
                         if(item.indexOf("Trap") > -1)
