@@ -167,8 +167,12 @@ function runNextTick(func: Function) {
 function ifPaused(whenPaused: () => void, whenUnpaused: () => void) {
     var wasPaused = context.paused;
 
-    if(wasPaused) whenPaused();
-    else whenUnpaused();
+    if(wasPaused && whenPaused) {
+        whenPaused();
+    }
+    else if(!wasPaused && whenUnpaused) {
+        whenUnpaused();
+    }
 
     return wasPaused;
 }

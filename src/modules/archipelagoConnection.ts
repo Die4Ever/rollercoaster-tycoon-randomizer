@@ -18,96 +18,106 @@ var send_timeout = false; //For plugin side sends
 var spam_timeout = false; //For user side sends
 
 function archipelago_send_message(type: string, message?: any) {
-    console.log(connection.buffer.length);
-    if (connection.buffer.length == 0){
-        if (!send_timeout){
-            switch(type){//Gotta fill these in as we improve crud
-                case "Connect":
-                    console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
-                    break;
-                case "ConnectUpdate":
-                    console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
-                    break;
-                case "Sync":
-                    connection.send({cmd: "Sync"});
-                    break;
-                case "LocationChecks":
-                    var checks = [];//List of unlocked locations
-                    for (let i = 0; i < message.length; i++){
-                        checks.push(message[i].LocationID + 2000000);//OpenRCT2 has reserved the item ID space starting at 2000000
-                    }
-                    connection.send({cmd: "LocationChecks", locations: checks});
-                    break;
-                case "LocationScouts":
-                    var wanted_locations = [];
-                    for(let i = 0; i < archipelago_location_prices.length; i++){
-                        wanted_locations.push(2000000 + i);
-                    }
-                    connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
-                    break;
-                case "LocationHints":
-                    connection.send({cmd: "LocationScouts", locations: message, create_as_hint: 2});
-                    break;
-                case "StatusUpdate":
-                    connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
-                    break;
-                case "Say":
-                    const regex = /peck/gi;
-                    message = message.replace(regex, 'p*ck');
-                    console.log({cmd: "Say", text: message});
-                    connection.send({cmd: "Say", text: message});
-                    break;
-                case "GetDataPackage":
-                    var self = this;
-                    var requested_games = [];
-                    var timeout = 1;
-                    if (archipelago_multiple_requests){
-                        for(let i = 0; i < archipelago_settings.multiworld_games.length; i++){
-                            requested_games.push(archipelago_settings.multiworld_games[i]);
-                            console.log(requested_games);
-                            if (requested_games.length == 1){
-                                let games = requested_games;
-                                if(games)//Why is it trying to send empty lists of games?
-                                context.setTimeout(() => {
-                                    connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
-                                    }, timeout);//console.log("Sending the following games for IDs: " + requested_games);
-                                timeout += 5000;
-                                requested_games = [];
-                            }
-                        }
-                        // if (requested_games){//request any remaining games
-                        //     let games = requested_games; 
-                        //     context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
-                        // }
-                    }
-                    // else{
-                    //     connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games}); 
-                    //     archipelago_games_requested += archipelago_settings.multiworld_games.length;
-                    // }
-                    break;
-                case "Bounce":
-                    if(message.tag == "DeathLink"){
-                        connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: archipelago_settings.player[0]}});
-                    }
-                    break;
-                case "Get":
-                    connection.send({cmd: "Get", keys: []});
-                    break;
-                case "Set":
-                    break;
-                case "SetNotify":
-                    break;
+    try {
+        console.log(connection.buffer.length);
+        if (connection.buffer.length == 0){
+            if (!send_timeout){
+                archipelago_select_message(type, message);
+                send_timeout = true;
+                context.setTimeout(() => {send_timeout = false;}, 3000);
             }
-            send_timeout = true;
-            context.setTimeout(() => {send_timeout = false;}, 3000);
-        }
-        else{
-            context.setTimeout(() => {archipelago_send_message(type,message);}, 3000);
+            else{
+                context.setTimeout(() => {archipelago_send_message(type,message);}, 3000);
+            }
         }
     }
-    else{
-        console.log("Receiving message. Will send once complete.");
-        context.setTimeout(() => {archipelago_send_message(type,message);}, 3000);
+    catch(e) {
+        printException('error sending '+this.name, e);
+        throw(e);
+    }
+    // else{
+    //     console.log("Receiving message. Will send once complete.");
+    //     context.setTimeout(() => {archipelago_send_message(type,message);}, 3000);
+    // }
+}
+
+function archipelago_select_message(type: string, message?: any){
+    switch(type){
+    case "Connect":
+        console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
+        break;
+    case "ConnectUpdate":
+        console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
+        break;
+    case "Sync":
+        connection.send({cmd: "Sync"});
+        break;
+    case "LocationChecks":
+        var checks = [];//List of unlocked locations
+        for (let i = 0; i < message.length; i++){
+            checks.push(message[i].LocationID + 2000000);//OpenRCT2 has reserved the item ID space starting at 2000000
+        }
+        connection.send({cmd: "LocationChecks", locations: checks});
+        break;
+    case "LocationScouts":
+        var wanted_locations = [];
+        for(let i = 0; i < archipelago_location_prices.length; i++){
+            wanted_locations.push(2000000 + i);
+        }
+        connection.send({cmd: "LocationScouts", locations: wanted_locations, create_as_hint: 0});
+        break;
+    case "LocationHints":
+        connection.send({cmd: "LocationScouts", locations: message, create_as_hint: 2});
+        break;
+    case "StatusUpdate":
+        connection.send({cmd: "StatusUpdate", status: message});//CLIENT_UNKNOWN = 0; CLIENT_CONNECTED = 5; CLIENT_READY = 10; CLIENT_PLAYING = 20; CLIENT_GOAL = 30
+        break;
+    case "Say":
+        const regex = /peck/gi;
+        message = message.replace(regex, 'p*ck');
+        console.log({cmd: "Say", text: message});
+        connection.send({cmd: "Say", text: message});
+        break;
+    case "GetDataPackage":
+        var self = this;
+        var requested_games = [];
+        var timeout = 1;
+        if (archipelago_multiple_requests){
+            for(let i = 0; i < archipelago_settings.multiworld_games.length; i++){
+                requested_games.push(archipelago_settings.multiworld_games[i]);
+                console.log(requested_games);
+                if (requested_games.length == 1){
+                    let games = requested_games;
+                    if(games)//Why is it trying to send empty lists of games?
+                    context.setTimeout(() => {
+                        connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
+                        }, timeout);//console.log("Sending the following games for IDs: " + requested_games);
+                    timeout += 9000;
+                    requested_games = [];
+                }
+            }
+            // if (requested_games){//request any remaining games
+            //     let games = requested_games; 
+            //     context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
+            // }
+        }
+        // else{
+        //     connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games}); 
+        //     archipelago_games_requested += archipelago_settings.multiworld_games.length;
+        // }
+        break;
+    case "Bounce":
+        if(message.tag == "DeathLink"){
+            connection.send({cmd: "Bounce", tags: ["DeathLink"], data: {time: Math.round(+new Date()/1000), cause: message.ride + " has crashed!", source: archipelago_settings.player[0]}});
+        }
+        break;
+    case "Get":
+        connection.send({cmd: "Get", keys: []});
+        break;
+    case "Set":
+        break;
+    case "SetNotify":
+        break;
     }
 }
 

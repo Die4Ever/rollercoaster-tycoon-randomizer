@@ -106,38 +106,36 @@ class APIConnection
         let data: Object = null;
         let resp: Object = null;
 
-        let packets = message.split('\0')
-        message = packets[0];
+        let packets = message.split('\0');
 
-        // try
-        try {
-            data = JSON.parse(message);
-            this.buffer = "";
-        } catch(e) {
+        info("OnDataReceived ", message.length);
+        info("Buffer:", this.buffer.length);
+        info("packets.length:", packets.length);
+
+        for(let i=0; i<packets.length; i++) {
+            let message = packets[i];
+            if(message.length == 0) continue;
+
             try {
-                this.buffer += message;
-                data = JSON.parse(this.buffer);
+                data = JSON.parse(message);
                 this.buffer = "";
+            } catch(e) {
+                try {
+                    this.buffer += message;
+                    data = JSON.parse(this.buffer);
+                    this.buffer = "";
+                }
+                catch(e) {
+                    printException('error parsing '+this.name, e);//+' request JSON: ' + this.buffer, e);
+                    continue;
+                }
             }
-            catch(e) {
-                printException('error parsing '+this.name+' request JSON: ' + message, e);
-                return;
-            }
-        }
 
-        try {
-            info(this.name+" received data: ", data);
-            resp = this.callback(data);
-            // this.send(resp);
-        } catch(e) {
-            printException('error handling '+this.name+' request: ' + message, e);
-        }
-
-        if(packets.length > 1) {
-            packets = packets.slice(1);
-            message = packets.join('\0');
-            if(message.length > 1) {
-                this.onData(message);
+            try {
+                info(this.name+" received data: ", data);
+                resp = this.callback(data);
+            } catch(e) {
+                printException('error handling '+this.name+' request: ' + message, e);
             }
         }
     }

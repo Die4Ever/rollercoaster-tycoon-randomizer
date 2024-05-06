@@ -7,26 +7,32 @@ function archipelagoGui(){
     let y = 0;
 
     var onStart = function() {
-        console.log('This is where we connect to Archipelago and set up the game.');
-        //TODO: Get seed from Archipelago
-        setGlobalSeed(Math.floor(Math.random() * 1000000));//Maybe someday I'll allow custom seeds
-        //No need for research, since we're using a different system entirely for that
-        settings.rando_research = false;
-        //Crowd control has a lot of options that would most likely break Archipelago. We're going to disable both at once until further notice.
-        archipelago_settings.deathlink_timeout = false;
-        //We're going to track the objectives ourselves instead
-        scenario.objective.type = "haveFun";
-        archipelago_settings.started = true;
-        saveArchipelagoProgress();//Save the settings to our Archipelago tracker
-        // we need to unpause the game in order for the next tick to run
-        UnpauseGame();
-        runNextTick(function() {
-            initRando();
-            if(global_settings.auto_pause) {
-                PauseGame();
-            }
-        createChangesWindow();
-        });
+        try{
+            console.log('This is where we connect to Archipelago and set up the game.');
+            //TODO: Get seed from Archipelago
+            setGlobalSeed(Math.floor(Math.random() * 1000000));//Maybe someday I'll allow custom seeds
+            //No need for research, since we're using a different system entirely for that
+            settings.rando_research = false;
+            //Crowd control has a lot of options that would most likely break Archipelago. We're going to disable both at once until further notice.
+            archipelago_settings.deathlink_timeout = false;
+            //We're going to track the objectives ourselves instead
+            scenario.objective.type = "haveFun";
+            archipelago_settings.started = true;
+            saveArchipelagoProgress();//Save the settings to our Archipelago tracker
+            // we need to unpause the game in order for the next tick to run
+            UnpauseGame();
+            runNextTick(function() {
+                initRando();
+                if(global_settings.auto_pause) {
+                    PauseGame();
+                }
+            createChangesWindow();
+            });
+        }
+        catch(e){
+            printException("Error in onStart (archipelagoWindow):", e);
+            throw e;
+        }
     }
 
     var window = ui.openWindow({
