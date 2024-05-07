@@ -14,6 +14,9 @@ class APIConnection
     onErrorCallback: (hadError: any) => void;
     onDataCallback: (hadError: any) => void;
     buffer:string = "";
+    awaitingResponse:boolean = false;
+    responseTimeout: number = null;
+    sendQueue = [];
 
     constructor(name:string, port:number, callback:CallableFunction, errorCallback?:CallableFunction, connectCallback?:CallableFunction) {
         this.name = name;
@@ -31,17 +34,62 @@ class APIConnection
         this.connect();
     }
 
-    send(data:Object) {
+    send(data:Object, awaitResponse:boolean) {
         try {
             let r: string = JSON.stringify(data) + '\0';
-            info(this.name+' sending:', r.length, r);
-            this.end(r);
+
+            if(this.awaitingResponse) {
+                info(this.name+' queuing:', r.length, r);
+                this.sendQueue.push(r);
+                this.sendQueue.push(awaitResponse);
+            } else {
+                info(this.name+' sending:', r.length, r);
+                if(awaitResponse) {
+                    this._setAwaitResponse();
+                }
+                this.end(r);
+            }
         } catch(e) {
             printException('error sending '+this.name, e);
         }
     }
 
-    destroy() {
+    private _setAwaitResponse() {
+        this.awaitingResponse = true;
+        this.responseTimeout = context.setTimeout(function() {
+            this.responseTimeout = null;
+            this._sendNext();
+        }, 30000);
+    }
+
+    private _sendNext() {
+        try {
+            if(this.responseTimeout) {
+                context.clearTimeout(this.responseTimeout);
+            }
+            this.awaitingResponse = false;
+
+            let r:string = this.sendQueue.shift();
+            let awaitResponse:boolean = this.sendQueue.shift();
+            if(!r) return;
+            info(this.name+' _sendNext() sending:', r.length, r);
+
+            if(awaitResponse) {
+                this._setAwaitResponse();
+            }
+
+            this.end(r);
+        } catch(e) {
+            printException('error in _sendNext() '+this.name, e);
+        }
+    }
+
+    private _checkSendQueue() {
+        if(this.awaitingResponse) return;
+        this._sendNext();
+    }
+
+    private destroy() {
         if(!this.sock) return;
 
         info(this.name+'.destroy()');
@@ -105,6 +153,7 @@ class APIConnection
     private onData(message: string) {
         let data: Object = null;
         let resp: Object = null;
+        let success: boolean = false;
 
         let packets = message.split('\0');
 
@@ -114,6 +163,7 @@ class APIConnection
 
         for(let i=0; i<packets.length; i++) {
             let message = packets[i];
+            resp = null;
             if(message.length == 0) continue;
 
             try {
@@ -133,10 +183,19 @@ class APIConnection
 
             try {
                 info(this.name+" received data: ", data);
+                success = true;
                 resp = this.callback(data);
             } catch(e) {
                 printException('error handling '+this.name+' request: ' + message, e);
             }
+
+            if(resp) {
+                this.send(resp, false);
+            }
+        }
+
+        if(success) {
+            this._sendNext();
         }
     }
 
@@ -205,6 +264,7 @@ class APIConnection
                 if(self.connectCallback) {
                     self.connectCallback();
                 }
+                this._checkSendQueue();
             }
             self.good = true;
         });
