@@ -97,12 +97,12 @@ function archipelago_select_message(type: string, message?: any){
                 }
             }
             // if (requested_games){//request any remaining games
-            //     let games = requested_games; 
+            //     let games = requested_games;
             //     context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
             // }
         }
         // else{
-        //     connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games}); 
+        //     connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games});
         //     archipelago_games_requested += archipelago_settings.multiworld_games.length;
         // }
         break;
@@ -122,6 +122,7 @@ function archipelago_select_message(type: string, message?: any){
 }
 
 function ac_req(data) {//This is what we do when we receive a data packet
+    // TODO: come up with a better name for this function, and also move some of these big cases into their own functions
     var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
     var archipelagoPlayers: playerTuple[] = [];
     switch(data.cmd){
@@ -348,12 +349,12 @@ function ac_req(data) {//This is what we do when we receive a data packet
                         }
                         else{
                             var player_color = "{PALELAVENDER}" + source;
-                            var message_choice = [player_color + " {RED}is bad at video games!", player_color + " {RED}just got Windows Vista'd.", 
-                                player_color + " {RED}should have upgraded to Linux.", player_color + " {RED}has met their maker!", 
-                                '{RED}"What is death anyways?"\n{PALELAVENDER}-' + player_color, 
+                            var message_choice = [player_color + " {RED}is bad at video games!", player_color + " {RED}just got Windows Vista'd.",
+                                player_color + " {RED}should have upgraded to Linux.", player_color + " {RED}has met their maker!",
+                                '{RED}"What is death anyways?"\n{PALELAVENDER}-' + player_color,
                                 "{RED}If it makes you feel better, at least it's " + player_color + "{RED}'s fault and not yours.", player_color + " {RED}is an airsick lowlander!",
                                 player_color + "{RED} missed 100% of the shots they didn't take.", "{RED}It was " + player_color + "{RED}'s controller, I swear!",
-                                player_color + "{RED} was not the imposter.", player_color + "{RED} rolled a natural 1.", 
+                                player_color + "{RED} was not the imposter.", player_color + "{RED} rolled a natural 1.",
                                 player_color + "{RED} should not have tried stealing the kings flocks from Ammon!", player_color + "{RED} started a land war in Asia!"];
                             var death_message = message_choice[Math.floor(Math.random() * message_choice.length)];
                             archipelago_print_message(death_message);
@@ -395,7 +396,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     console.log("Instert bee movie here");
                     context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000)
                 }
-                
+
             }
             break;
         case "SetReply"://Handles hints
