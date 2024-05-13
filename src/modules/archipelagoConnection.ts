@@ -81,19 +81,16 @@ function archipelago_select_message(type: string, message?: any){
     case "GetDataPackage":
         var self = this;
         var requested_games = [];
-        var timeout = 1;
         if (archipelago_multiple_requests){
             for(let i = 0; i < archipelago_settings.multiworld_games.length; i++){
                 requested_games.push(archipelago_settings.multiworld_games[i]);
                 console.log(requested_games);
                 if (requested_games.length == 1){
                     let games = requested_games;
-                    if(games)//Why is it trying to send empty lists of games?
-                    context.setTimeout(() => {
+                    if(games){//Why is it trying to send empty lists of games?
                         connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
-                        }, timeout);//console.log("Sending the following games for IDs: " + requested_games);
-                    timeout += 9000;
-                    requested_games = [];
+                        requested_games = [];
+                    }
                 }
             }
             // if (requested_games){//request any remaining games
@@ -388,7 +385,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 // }
                 if(ready){
                     for(let i = 0; i < data.locations.length; i++){
-                        archipelago_locked_locations.push({LocationID: i, Item: full_item_id_to_name[data.locations[i][0]], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
+                        archipelago_locked_locations.push({LocationID: i, Item: data.locations[i][0], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
                     }
                     ArchipelagoSaveLocations(archipelago_locked_locations,[]);
                 }
@@ -405,16 +402,6 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
                 for(let i = 0; i < data.value.length; i++){
                     let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
-                    // console.log("Receiving Player:")
-                    // console.log(archipelagoPlayers[Number(data.value[i].receiving_player) - 1][0])
-                    // console.log("Finding Player:")
-                    // console.log(archipelagoPlayers[Number(data.value[i].finding_player) - 1][0])
-                    // console.log("Location:")
-                    // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName")[Number(data.value[i].location)])
-                    // console.log("Item:")
-                    // console.log(context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[Number(data.value[i].item)])
-                    // console.log("Found:")
-                    // console.log(data.value[i].found)
                     var hint: archipelago_hint = {
                         ReceivingPlayer: archipelagoPlayers[Number(data.value[i].receiving_player) - 1][0],
                         FindingPlayer: archipelagoPlayers[Number(data.value[i].finding_player) - 1][0],

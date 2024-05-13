@@ -10,10 +10,10 @@ class RCTRArchipelago extends ModuleBase {
             return;
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         let timeout = archipelago_settings.multiworld_games.length * 10000;
-        context.setTimeout(() => {archipelago_send_message("Sync");}, 1000);
-        context.setTimeout(() => {archipelago_send_message("GetDataPackage");}, 2500);//We have to stagger these to not break the connection.
-        context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 10000 + timeout);
-        context.setTimeout(() => {self.SetPostGenerationSettings();}, 6500+ timeout);//Wait a few seconds for the other settings to do their thing
+        archipelago_send_message("Sync");
+        archipelago_send_message("GetDataPackage");
+        archipelago_send_message("LocationScouts");
+        self.SetPostGenerationSettings();//Let the other settings to do their thing
         //Setting rules for Archipelago, dictated by the YAML
         var setRules = function(){
             if(archipelago_settings.rule_locations[0])
@@ -971,7 +971,10 @@ class RCTRArchipelago extends ModuleBase {
                         locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
                         break;
                     case 'Full':
-                        locked.push("          Unlocks " + archipelago_locked_locations[i].Item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                        console.log(archipelago_locked_locations[i].Item);
+                        let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_locked_locations[i].Item]
+                        console.log(item);
+                        locked.push("          Unlocks " + item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
                         break;
                 }
             }

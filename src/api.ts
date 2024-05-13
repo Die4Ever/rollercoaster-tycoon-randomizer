@@ -44,7 +44,7 @@ class APIConnection
                 this.sendQueue.push(awaitResponse);
             } else {
                 info(this.name+' sending:', r.length, r);
-                if(awaitResponse) {
+                if(awaitResponse !== false) {
                     this._setAwaitResponse();
                 }
                 this.end(r);
@@ -55,10 +55,11 @@ class APIConnection
     }
 
     private _setAwaitResponse() {
+        let self = this;
         this.awaitingResponse = true;
         this.responseTimeout = context.setTimeout(function() {
-            this.responseTimeout = null;
-            this._sendNext();
+            self.responseTimeout = null;
+            self._sendNext();
         }, 30000);
     }
 
@@ -264,9 +265,9 @@ class APIConnection
                 if(self.connectCallback) {
                     self.connectCallback();
                 }
-                this._checkSendQueue();
             }
             self.good = true;
+            self._checkSendQueue();
         });
         this.sock.setNoDelay(true);
 
