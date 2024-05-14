@@ -176,6 +176,18 @@ const adPool: Ad[] = [
         header: "Something broke!",
         message: "TELL COLBY RIGHT NOW!",
         button: "CALL 1-800-FIX-IT-4-U!"
+    },
+    {
+        title: "Ein deutscher Text",
+        header: "Dieser Aufplopper ist nun Teil der Bundesrepublik Deutschland",
+        message: "Jegliche Nutzung von Angelsächsich ist strengstens untersagt",
+        button: "Sehr schön!"
+    },
+    {
+        title: "ERROR",
+        header: "The archipelago client has detected a desync.",
+        message: "Tell the dev to make error reporting work better.",
+        button: "Discord"
     }
 ]
 
