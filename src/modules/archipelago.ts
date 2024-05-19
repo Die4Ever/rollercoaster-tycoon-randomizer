@@ -11,8 +11,8 @@ class RCTRArchipelago extends ModuleBase {
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         let timeout = archipelago_settings.multiworld_games.length * 10000;
         archipelago_send_message("Sync");
-        archipelago_send_message("GetDataPackage");
         archipelago_send_message("LocationScouts");
+        archipelago_send_message("GetDataPackage");
         self.SetPostGenerationSettings();//Let the other settings to do their thing
         //Setting rules for Archipelago, dictated by the YAML
         var setRules = function(){
@@ -877,7 +877,8 @@ class RCTRArchipelago extends ModuleBase {
         var location = archipelago_unlocked_locations;
         var prices = archipelago_location_prices;
         for(var i = 0; i < location.length; i++){//Loop through every locked location
-            unlocked.push("[" + location[i].LocationID + "] " + "Unlocked " + archipelago_unlocked_locations[i].Item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
+            let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_locked_locations[i].Item]
+            unlocked.push("[" + location[i].LocationID + "] " + "Unlocked " + item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
             if (prices[location[i].LocationID].Price == 0){//If the price is 0, paid with blood instead of cash
                 unlocked.push("          Instead of cash, you sacrificed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
             }
