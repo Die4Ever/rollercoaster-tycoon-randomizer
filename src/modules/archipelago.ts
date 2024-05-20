@@ -1497,6 +1497,7 @@ function explodeRide(args: any){
     console.log(DeathLinkPacket);
     var self = this;
     var car = map.getAllEntities('car');
+    context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
     var movingCar = [];
     for (let i = 0; i < car.length; i++){
         if(car[i].status == 'travelling'){
@@ -1509,9 +1510,34 @@ function explodeRide(args: any){
             context.setTimeout(function() {archipelago.ReceiveDeathLink(DeathLinkPacket)}, 5000);
         return {};
     }
-    var r = context.getRandom(0, movingCar.length);//Pick a car at random. It seems to only pick the first car of the train though...
+    var r = movingCar[context.getRandom(0, movingCar.length)];//Pick a car at random
+    var counter = r.id; //Keeps track of which car we're dealing with
+
+    //Future Colby, Delete this
+    // var found = false;
+    // do{
+    //     try{
+    //         console.log(counter);
+    //         counter = car[counter].previousCarOnRide;//Set counter to the first car on the ride
+    //     }
+    //     catch{
+    //         found = true;
+    //     }
+        
+    // }
+    // while(!found);
+    
+    do{
+        (map.getEntity(counter) as Car).status = "crashed";//Crash the ride!
+        console.log((map.getEntity(counter) as Car));
+        counter = (map.getEntity(counter) as Car).nextCarOnRide;
+    }
+    while ((map.getEntity(counter) as Car).id != (r as Car).id);
+
     archipelago_settings.deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
-    movingCar[r].status = "crashed";//Crash the ride!
+    // console.log("The car should say crashed and actually be crashed");
+    // console.log(movingCar[r].status);
+    // console.log(movingCar[r]);
     context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
     return {};
 }
