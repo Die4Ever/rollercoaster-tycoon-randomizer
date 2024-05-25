@@ -1184,7 +1184,7 @@ function archipelagoDebug(){
                     onClick: function() { 
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
-                        console.log(archipelago_locked_locations);
+                        console.log(JSON.stringify(archipelago_locked_locations));
                         // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // console.log(JSON.stringify(archipelago_settings.received_items));

@@ -877,7 +877,7 @@ class RCTRArchipelago extends ModuleBase {
         var location = archipelago_unlocked_locations;
         var prices = archipelago_location_prices;
         for(var i = 0; i < location.length; i++){//Loop through every locked location
-            let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_locked_locations[i].Item]
+            let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_unlocked_locations[i].Item]
             unlocked.push("[" + location[i].LocationID + "] " + "Unlocked " + item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
             if (prices[location[i].LocationID].Price == 0){//If the price is 0, paid with blood instead of cash
                 unlocked.push("          Instead of cash, you sacrificed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
@@ -972,6 +972,8 @@ class RCTRArchipelago extends ModuleBase {
                         locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
                         break;
                     case 'Full':
+                        console.log("Here's our current item:");
+                        console.log(archipelago_locked_locations[i]);
                         console.log(archipelago_locked_locations[i].Item);
                         let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_locked_locations[i].Item]
                         console.log(item);
