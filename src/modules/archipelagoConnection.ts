@@ -35,10 +35,6 @@ function archipelago_send_message(type: string, message?: any) {
         printException('error sending '+this.name, e);
         throw(e);
     }
-    // else{
-    //     console.log("Receiving message. Will send once complete.");
-    //     context.setTimeout(() => {archipelago_send_message(type,message);}, 3000);
-    // }
 }
 
 function archipelago_select_message(type: string, message?: any){

@@ -9,7 +9,6 @@ class RCTRArchipelago extends ModuleBase {
         if(!settings.rando_archipelago)
             return;
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
-        let timeout = archipelago_settings.multiworld_games.length * 10000;
         archipelago_send_message("Sync");
         archipelago_send_message("LocationScouts");
         archipelago_send_message("GetDataPackage");
@@ -872,84 +871,20 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     CreateUnlockedList(): any{
-        var self = this;
-        var unlocked = [];
-        var location = archipelago_unlocked_locations;
-        var prices = archipelago_location_prices;
-        for(var i = 0; i < location.length; i++){//Loop through every locked location
-            let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_unlocked_locations[i].Item]
-            unlocked.push("[" + location[i].LocationID + "] " + "Unlocked " + item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
-            if (prices[location[i].LocationID].Price == 0){//If the price is 0, paid with blood instead of cash
-                unlocked.push("          Instead of cash, you sacrificed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
-            }
-            else{//Set up the string denoting the price
-                var prereqs = prices[location[i].LocationID].RidePrereq;
-                var cost = "          " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
-                if(prereqs.length != 0) {//Handle prerequisites
-                    cost += " + " + prereqs[0].toString() + " ";
-                    cost += prereqs[1] + "(s)";
-                    if(prereqs[2] != 0)//Check for excitement requirement
-                        cost += ', (> ' + prereqs[2] + ' excitement)';
-                    if(prereqs[3] != 0)//Check for intensity requirement
-                        cost += ', (> ' + prereqs[3] + ' intensity)';
-                    if(prereqs[4] != 0)//Check for nausea requirement
-                        cost += ', (> ' + prereqs[4] + ' nausea)';
-                    if(prereqs[5] != 0)//Check for length requirement
-                        cost += ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')';
-                }
-                unlocked.push(cost);
-            }
-        }
-        return unlocked;
-    }
-
-    CreateLockedList(): any{
-        var self = this;
-        var locked = [];
-        var location = archipelago_locked_locations.slice();
-        // console.log(location);
-        var prices = archipelago_location_prices.slice();
-        for(var i = 0; i < location.length; i++){//Loop through every locked location
-            if (self.IsVisible(location[i].LocationID)){
-                var color = '{WHITE}';
-                if (location[i].LocationID < 7)
-                color = '{WHITE}';
-                else{
-                    switch(location[i].LocationID%8){
-                        case 0: 
-                            color = '{RED}';
-                            break;
-                        case 1: 
-                            color = '{GREEN}'
-                            break;
-                        case 2: 
-                            color = '{BABYBLUE}';
-                            break;
-                        case 3: 
-                            color = '{YELLOW}';
-                            break;
-                        case 4: 
-                            color = '{PALEGOLD}';
-                            break;
-                        case 5: 
-                            color = '{PALESILVER}';
-                            break;
-                        case 6: 
-                            color = '{CELADON}'
-                            break;
-                        case 7:
-                            color = '{LIGHTPINK}';
-                            break;
-                    }
-                }
-                if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
-                    locked.push(color + "[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+        try{
+            var self = this;
+            var unlocked = [];
+            var location = archipelago_unlocked_locations;
+            var prices = archipelago_location_prices;
+            for(var i = 0; i < location.length; i++){//Loop through every locked location
+                let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_unlocked_locations[i].Item]
+                unlocked.push("[" + location[i].LocationID + "] " + "Unlocked " + item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
+                if (prices[location[i].LocationID].Price == 0){//If the price is 0, paid with blood instead of cash
+                    unlocked.push("          Instead of cash, you sacrificed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                 }
                 else{//Set up the string denoting the price
                     var prereqs = prices[location[i].LocationID].RidePrereq;
-
-                    var cost = color + "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
-                    // console.log(prereqs);
+                    var cost = "          " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                     if(prereqs.length != 0) {//Handle prerequisites
                         cost += " + " + prereqs[0].toString() + " ";
                         cost += prereqs[1] + "(s)";
@@ -962,292 +897,373 @@ class RCTRArchipelago extends ModuleBase {
                         if(prereqs[5] != 0)//Check for length requirement
                             cost += ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')';
                     }
-                    locked.push(cost);
-                }
-                switch(archipelago_settings.location_information){
-                    case 'None':
-                        locked.push("          Unlocks something for somebody!")
-                        break;
-                    case 'Recipient':
-                        locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
-                        break;
-                    case 'Full':
-                        console.log("Here's our current item:");
-                        console.log(archipelago_locked_locations[i]);
-                        console.log(archipelago_locked_locations[i].Item);
-                        let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_locked_locations[i].Item]
-                        console.log(item);
-                        locked.push("          Unlocks " + item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
-                        break;
+                    unlocked.push(cost);
                 }
             }
+            return unlocked;
         }
-        console.log(locked);
-        console.log(archipelago_unlocked_locations);
-        if(!locked.length){
-            if(!archipelago_unlocked_locations.length){
-                return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
-                "{WHITE}If you're still seeing this message after 2 minutes (Be sure to actually close and reopen this window),",
-                "{WHITE}bother Colby in the Discord and he'll complain about past Colby.",
-                "{WHITE}Current Progress: " + String(archipelago_games_requested) + "/" + String(archipelago_settings.multiworld_games.length)
-                + " games requested."];
+        catch(e){
+            console.log("Error in Create Unlocked List:" + e);
+        }
+    }
+
+    CreateLockedList(): any{
+        try{
+            var self = this;
+            var locked = [];
+            var location = archipelago_locked_locations.slice();
+            // console.log(location);
+            var prices = archipelago_location_prices.slice();
+            for(var i = 0; i < location.length; i++){//Loop through every locked location
+                if (self.IsVisible(location[i].LocationID)){
+                    var color = '{WHITE}';
+                    if (location[i].LocationID < 7)
+                    color = '{WHITE}';
+                    else{
+                        switch(location[i].LocationID%8){
+                            case 0: 
+                                color = '{RED}';
+                                break;
+                            case 1: 
+                                color = '{GREEN}'
+                                break;
+                            case 2: 
+                                color = '{BABYBLUE}';
+                                break;
+                            case 3: 
+                                color = '{YELLOW}';
+                                break;
+                            case 4: 
+                                color = '{PALEGOLD}';
+                                break;
+                            case 5: 
+                                color = '{PALESILVER}';
+                                break;
+                            case 6: 
+                                color = '{CELADON}'
+                                break;
+                            case 7:
+                                color = '{LIGHTPINK}';
+                                break;
+                        }
+                    }
+                    if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
+                        locked.push(color + "[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                    }
+                    else{//Set up the string denoting the price
+                        var prereqs = prices[location[i].LocationID].RidePrereq;
+
+                        var cost = color + "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                        // console.log(prereqs);
+                        if(prereqs.length != 0) {//Handle prerequisites
+                            cost += " + " + prereqs[0].toString() + " ";
+                            cost += prereqs[1] + "(s)";
+                            if(prereqs[2] != 0)//Check for excitement requirement
+                                cost += ', (> ' + prereqs[2] + ' excitement)';
+                            if(prereqs[3] != 0)//Check for intensity requirement
+                                cost += ', (> ' + prereqs[3] + ' intensity)';
+                            if(prereqs[4] != 0)//Check for nausea requirement
+                                cost += ', (> ' + prereqs[4] + ' nausea)';
+                            if(prereqs[5] != 0)//Check for length requirement
+                                cost += ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')';
+                        }
+                        locked.push(cost);
+                    }
+                    switch(archipelago_settings.location_information){
+                        case 'None':
+                            locked.push("          Unlocks something for somebody!")
+                            break;
+                        case 'Recipient':
+                            locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                            break;
+                        case 'Full':
+                            console.log("Here's our current item:");
+                            console.log(archipelago_locked_locations[i]);
+                            console.log(archipelago_locked_locations[i].Item);
+                            let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_locked_locations[i].Item]
+                            console.log(item);
+                            locked.push("          Unlocks " + item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                            break;
+                    }
+                }
             }
-            else
-            return ["Conglaturations! You've unlocked everything! Now go outside and touch some grass."]
+            console.log(locked);
+            console.log(archipelago_unlocked_locations);
+            if(!locked.length){
+                if(!archipelago_unlocked_locations.length){
+                    return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
+                    "{WHITE}If you're still seeing this message after 2 minutes (Be sure to actually close and reopen this window),",
+                    "{WHITE}bother Colby in the Discord and he'll complain about past Colby.",
+                    "{WHITE}Current Progress: " + String(archipelago_games_requested) + "/" + String(archipelago_settings.multiworld_games.length)
+                    + " games requested."];
+                }
+                else
+                return ["Conglaturations! You've unlocked everything! Now go outside and touch some grass."]
+            }
+            return locked;
         }
-        return locked;
+        catch(e){
+            console.log("Error in CreateLockedList:" + e);
+        }
     }
 
     CreateObjectiveList(): any{
-        var self = this;
-        var objective = [];
-        if (archipelago_objectives.Guests[0]){
-            objective.push("Guests:");
-            //Place a checkmark beforehand if the objective is complete
-            objective.push(archipelago_objectives.Guests[1] ? ("✓        " + archipelago_objectives.Guests[0].toString()) : ("          " + archipelago_objectives.Guests[0].toString()) );
-        }
-        if (archipelago_objectives.ParkValue[0]){
-            objective.push("Park Value:");
-            //Multiply by 10 to get in-game amount
-            objective.push(archipelago_objectives.ParkValue[1] ? ("✓        " + context.formatString("{CURRENCY2DP}",  Number(archipelago_objectives.ParkValue[0]) * 10)) : ("          " + context.formatString("{CURRENCY2DP}",  Number(archipelago_objectives.ParkValue[0]) * 10)));
-        }
-        var RollerCoaster = archipelago_objectives.RollerCoasters;
-        if (RollerCoaster[0]){
-            objective.push("Roller Coasters:");
-            var Line = (RollerCoaster[5] ? ("✓        " + RollerCoaster[0]) : ("          " + RollerCoaster[0]));
-            if(RollerCoaster[1]){
-                Line += " (> " + RollerCoaster[1] + " Excitement)";
+        try{
+            var self = this;
+            var objective = [];
+            if (archipelago_objectives.Guests[0]){
+                objective.push("Guests:");
+                //Place a checkmark beforehand if the objective is complete
+                objective.push(archipelago_objectives.Guests[1] ? ("✓        " + archipelago_objectives.Guests[0].toString()) : ("          " + archipelago_objectives.Guests[0].toString()) );
             }
-            if(RollerCoaster[2]){
-                Line += " (> " + RollerCoaster[2] + " Intensity)";
+            if (archipelago_objectives.ParkValue[0]){
+                objective.push("Park Value:");
+                //Multiply by 10 to get in-game amount
+                objective.push(archipelago_objectives.ParkValue[1] ? ("✓        " + context.formatString("{CURRENCY2DP}",  Number(archipelago_objectives.ParkValue[0]) * 10)) : ("          " + context.formatString("{CURRENCY2DP}",  Number(archipelago_objectives.ParkValue[0]) * 10)));
             }
-            if(RollerCoaster[3]){
-                Line += " (> " + RollerCoaster[3] + " Nausea)";
+            var RollerCoaster = archipelago_objectives.RollerCoasters;
+            if (RollerCoaster[0]){
+                objective.push("Roller Coasters:");
+                var Line = (RollerCoaster[5] ? ("✓        " + RollerCoaster[0]) : ("          " + RollerCoaster[0]));
+                if(RollerCoaster[1]){
+                    Line += " (> " + RollerCoaster[1] + " Excitement)";
+                }
+                if(RollerCoaster[2]){
+                    Line += " (> " + RollerCoaster[2] + " Intensity)";
+                }
+                if(RollerCoaster[3]){
+                    Line += " (> " + RollerCoaster[3] + " Nausea)";
+                }
+                objective.push(Line);
             }
-            objective.push(Line);
-        }
-        // if (archipelago_objectives.RideIncome[0]){
-        //     objective.push("Ride Income:");
-        //     objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.RideIncome[0]) * 10));
-        // }
-        // if (archipelago_objectives.ShopIncome[0]){
-        //     objective.push("Shop Income:");
-        //     objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ShopIncome[0]) * 10));
-        // }
-        if (archipelago_objectives.ParkRating[0]){
-            objective.push("Park Rating:");
-            objective.push(archipelago_objectives.ParkRating[1] ? ("✓        " + archipelago_objectives.ParkRating[0].toString()) : ("          " + archipelago_objectives.ParkRating[0].toString()));
-        }
-        if (archipelago_objectives.LoanPaidOff[0]){
-            objective.push("Repaid Loan:");
-            objective.push(archipelago_objectives.LoanPaidOff[1] ? ("✓        Check your bank statement.") : ("          Check your bank statement."));
-        }
-        if (archipelago_objectives.Monopoly[0]){
-            objective.push("Real Estate Monopoly:");
-            objective.push(archipelago_objectives.Monopoly[1] ? ("✓        Own every tile on the map!") : ("          Own every tile on the map!"));
-        }
-        if (archipelago_objectives.UniqueRides[0].length){
-            objective.push("Required Rides:");
-            var ride_list = (archipelago_objectives.UniqueRides[1]) ? "✓        " : "        ";
-            for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
-                ride_list += (archipelago_objectives.UniqueRides[0][i]) + ", ";
+            // if (archipelago_objectives.RideIncome[0]){
+            //     objective.push("Ride Income:");
+            //     objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.RideIncome[0]) * 10));
+            // }
+            // if (archipelago_objectives.ShopIncome[0]){
+            //     objective.push("Shop Income:");
+            //     objective.push("          " + context.formatString("{CURRENCY2DP}",  (archipelago_objectives.ShopIncome[0]) * 10));
+            // }
+            if (archipelago_objectives.ParkRating[0]){
+                objective.push("Park Rating:");
+                objective.push(archipelago_objectives.ParkRating[1] ? ("✓        " + archipelago_objectives.ParkRating[0].toString()) : ("          " + archipelago_objectives.ParkRating[0].toString()));
             }
-            objective.push(ride_list);
+            if (archipelago_objectives.LoanPaidOff[0]){
+                objective.push("Repaid Loan:");
+                objective.push(archipelago_objectives.LoanPaidOff[1] ? ("✓        Check your bank statement.") : ("          Check your bank statement."));
+            }
+            if (archipelago_objectives.Monopoly[0]){
+                objective.push("Real Estate Monopoly:");
+                objective.push(archipelago_objectives.Monopoly[1] ? ("✓        Own every tile on the map!") : ("          Own every tile on the map!"));
+            }
+            if (archipelago_objectives.UniqueRides[0].length){
+                objective.push("Required Rides:");
+                var ride_list = (archipelago_objectives.UniqueRides[1]) ? "✓        " : "        ";
+                for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
+                    ride_list += (archipelago_objectives.UniqueRides[0][i]) + ", ";
+                }
+                objective.push(ride_list);
+            }
+            return objective;
         }
-        return objective;
+        catch(e){
+            console.log("Error in Create Objective List:" + e);
+        }
     }
 
     CheckObjectives(): any{
-        var self = this;
-        if (scenario.status == "completed"){
-            if(!archipelago_settings.player[1])
-            archipelago_send_message("StatusUpdate", 30);
-            return;
-        }
-        if (park.guests >= Number(archipelago_objectives.Guests[0])){
-            archipelago_objectives.Guests[1] = true;
-        }
-        else{
-            archipelago_objectives.Guests[1] = false;
-        }
-        console.log("Current park value: " + String(park.value));
-        console.log("Park value objective: "+ String(archipelago_objectives.ParkValue));
-        if (park.value >= (Number(archipelago_objectives.ParkValue[0])*10)){
-            archipelago_objectives.ParkValue[1] = true;
-        }
-        else{
-            archipelago_objectives.ParkValue[1] = false;
-        }
+        try{
+            var self = this;
+            if (scenario.status == "completed"){
+                if(!archipelago_settings.player[1])
+                archipelago_send_message("StatusUpdate", 30);
+                return;
+            }
+            if (park.guests >= Number(archipelago_objectives.Guests[0])){
+                archipelago_objectives.Guests[1] = true;
+            }
+            else{
+                archipelago_objectives.Guests[1] = false;
+            }
+            console.log("Current park value: " + String(park.value));
+            console.log("Park value objective: "+ String(archipelago_objectives.ParkValue));
+            if (park.value >= (Number(archipelago_objectives.ParkValue[0])*10)){
+                archipelago_objectives.ParkValue[1] = true;
+            }
+            else{
+                archipelago_objectives.ParkValue[1] = false;
+            }
 
-        if (archipelago_objectives.RollerCoasters[0]){
-            let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
-            var NumQualifiedRides = 0;
-            for(var i = 0; i < map.numRides; i++){
-                var ride = map.rides[i].type;
-                var QualifiedExcitement = false;
-                var QualifiedIntensity = false;
-                var QualifiedNausea = false;
-                var QualifiedLength = false;
-                var elligible = false;
+            if (archipelago_objectives.RollerCoasters[0]){
+                let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
+                var NumQualifiedRides = 0;
+                for(var i = 0; i < map.numRides; i++){
+                    var ride = map.rides[i].type;
+                    var QualifiedExcitement = false;
+                    var QualifiedIntensity = false;
+                    var QualifiedNausea = false;
+                    var QualifiedLength = false;
+                    var elligible = false;
 
-                //Handle checks for Roller Coasters
-                if (!(ride == 28 || ride == 30 || ride == 32)){
-                    for(var j = 0; j < researchItems.length; j++){
-                        if((researchItems[j] as RideResearchItem).rideType == ride){//If the items match...
-                            if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
-                                elligible = true;
+                    //Handle checks for Roller Coasters
+                    if (!(ride == 28 || ride == 30 || ride == 32)){
+                        for(var j = 0; j < researchItems.length; j++){
+                            if((researchItems[j] as RideResearchItem).rideType == ride){//If the items match...
+                                if(researchItems[j].category == "rollercoaster"){//Check if it's a coaster
+                                    elligible = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (elligible){
+                            QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
+                            if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[1]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                                QualifiedExcitement = true;
+                            }
+                            if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){
+                                QualifiedIntensity = true;
+                            }
+                            if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
+                                QualifiedNausea = true;
+                            }
+
+                            if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
+                                NumQualifiedRides += 1;
+                            }
+
+                            if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0])){
+                                archipelago_objectives.RollerCoasters[5] = true;
+                                break;
+                            }
+                            else {
+                                archipelago_objectives.RollerCoasters[5] = false;
+                            }
+                        }
+                    }
+
+                }
+            }
+            else
+            archipelago_objectives.RollerCoasters[5] = true;
+
+            //TODO: Wait for monthly ride and shop income to become visible to the API
+            archipelago_objectives.RideIncome[1] = true;
+            archipelago_objectives.ShopIncome[1] = true;
+
+
+            if (park.rating >= Number(archipelago_objectives.ParkRating[0])){
+                archipelago_objectives.ParkRating[1] = true;
+            }
+            else{
+                archipelago_objectives.ParkRating[1] = false;
+            }
+
+            if (archipelago_objectives.LoanPaidOff[0] == true)//Check if Loans are enabled
+            {
+                if (park.bankLoan <= 0){//Check if loan is paid off //TODO: This may be a glitch. Go check future Colby
+                    archipelago_objectives.LoanPaidOff[1] = true;
+                }
+                else{
+                    archipelago_objectives.LoanPaidOff[1] = false;
+                }
+            }
+            else {//If loans are not enabled, set the condition for winning to true
+                archipelago_objectives.LoanPaidOff[1] = true;
+            }
+
+            if (archipelago_objectives.Monopoly[0]){//Check if Monopoly is Enabled
+                if(archipelago_settings.monopoly_complete)
+                archipelago_objectives.Monopoly[1] = true;
+            }
+            else {//If Monopoly isn't enabled, autoset to true
+                archipelago_objectives.Monopoly[1] = true;
+            }
+            if (archipelago_objectives.UniqueRides[0]){
+                var goal_complete = true;
+                for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
+                    var found = false;
+                    var checkedRide = archipelago_objectives.UniqueRides[0][i];
+                    for(let j = 0; j < map.numRides; j++){
+                        if (Number(RideType[checkedRide]) == map.rides[j].type){
+                            if (map.rides[j].excitement > 1){
+                                console.log(map.rides[j].excitement);
+                                found = true;
                                 break;
                             }
                         }
                     }
-                    if (elligible){
-                        // console.log("Apples!!!");
-                        // console.log(Number(archipelago_objectives.RollerCoasters[2]) * 100);
-                        // console.log(Number(archipelago_objectives.RollerCoasters[3]) * 100);
-                        // console.log(Number(archipelago_objectives.RollerCoasters[4]) * 100);
-                        // console.log(map.rides[i].excitement);
-                        // console.log(map.rides[i].intensity);
-                        // console.log(map.rides[i].nausea);
-                        QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                        if (map.rides[i].excitement >= (Number(archipelago_objectives.RollerCoasters[1]) * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
-                            QualifiedExcitement = true;
-                        }
-                        if (map.rides[i].intensity >= (Number(archipelago_objectives.RollerCoasters[2]) * 100)){
-                            QualifiedIntensity = true;
-                        }
-                        if (map.rides[i].nausea >= (Number(archipelago_objectives.RollerCoasters[3]) * 100)){
-                            QualifiedNausea = true;
-                        }
-
-                        if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
-                            NumQualifiedRides += 1;
-                        }
-
-                        if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0])){
-                            archipelago_objectives.RollerCoasters[5] = true;
-                            break;
-                        }
-                        else {
-                            archipelago_objectives.RollerCoasters[5] = false;
-                        }
+                    if (!found){
+                        goal_complete = false;
+                        break;
                     }
                 }
-
-            }
-        }
-        else
-        archipelago_objectives.RollerCoasters[5] = true;
-
-        //TODO: Wait for monthly ride and shop income to become visible to the API
-        archipelago_objectives.RideIncome[1] = true;
-        archipelago_objectives.ShopIncome[1] = true;
-
-
-        if (park.rating >= Number(archipelago_objectives.ParkRating[0])){
-            archipelago_objectives.ParkRating[1] = true;
-        }
-        else{
-            archipelago_objectives.ParkRating[1] = false;
-        }
-
-        if (archipelago_objectives.LoanPaidOff[0] == true)//Check if Loans are enabled
-        {
-            if (park.bankLoan <= 0){//Check if loan is paid off //TODO: This may be a glitch. Go check future Colby
-                archipelago_objectives.LoanPaidOff[1] = true;
+                if (goal_complete)
+                archipelago_objectives.UniqueRides[1] = true;
+                else
+                archipelago_objectives.UniqueRides[1] = false;
             }
             else{
-                archipelago_objectives.LoanPaidOff[1] = false;
+                archipelago_objectives.UniqueRides[1] = true;
+            }
+            //Check if all conditions are met
+            if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true &&
+                archipelago_objectives.RollerCoasters[5] == true && archipelago_objectives.RideIncome[1] == true &&
+                archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true &&
+                archipelago_objectives.LoanPaidOff[1] == true &&
+                archipelago_objectives.Monopoly[1] == true && archipelago_objectives.UniqueRides[1] == true){
+                context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => archipelago_send_message("StatusUpdate", 30));
+
             }
         }
-        else {//If loans are not enabled, set the condition for winning to true
-            archipelago_objectives.LoanPaidOff[1] = true;
+        catch(e){
+            console.log("Error in CheckObjectives:" + e);
         }
-
-        if (archipelago_objectives.Monopoly[0]){//Check if Monopoly is Enabled
-            if(archipelago_settings.monopoly_complete)
-            archipelago_objectives.Monopoly[1] = true;
-        }
-        else {//If Monopoly isn't enabled, autoset to true
-            archipelago_objectives.Monopoly[1] = true;
-        }
-        if (archipelago_objectives.UniqueRides[0]){
-            var goal_complete = true;
-            for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
-                var found = false;
-                var checkedRide = archipelago_objectives.UniqueRides[0][i];
-                for(let j = 0; j < map.numRides; j++){
-                    if (Number(RideType[checkedRide]) == map.rides[j].type){
-                        if (map.rides[j].excitement > 1){
-                            console.log(map.rides[j].excitement);
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                if (!found){
-                    goal_complete = false;
-                    break;
-                }
-            }
-            if (goal_complete)
-            archipelago_objectives.UniqueRides[1] = true;
-            else
-            archipelago_objectives.UniqueRides[1] = false;
-        }
-        else{
-            archipelago_objectives.UniqueRides[1] = true;
-        }
-        //Check if all conditions are met
-        if (archipelago_objectives.Guests[1] == true && archipelago_objectives.ParkValue[1] == true &&
-            archipelago_objectives.RollerCoasters[5] == true && archipelago_objectives.RideIncome[1] == true &&
-            archipelago_objectives.ShopIncome[1] == true && archipelago_objectives.ParkRating[1] == true &&
-            archipelago_objectives.LoanPaidOff[1] == true &&
-            archipelago_objectives.Monopoly[1] == true && archipelago_objectives.UniqueRides[1] == true){
-            context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => archipelago_send_message("StatusUpdate", 30));
-
-        }
-
     }
 
     CheckMonopoly(): any{
-        if(archipelago_objectives.Monopoly[0] && !(archipelago_settings.monopoly_complete)){
-            var x = map.size.x;//Gets the size of the map
-            var y = map.size.y;
-            var monopoly = true;//Assume true until proven false
-            var timeout_counter = 0;//Only check 16 tiles/tick max
-            for(let i = archipelago_settings.monopoly_x; i < (x - 1); i++){//check the x's. Map.size gives a couple coordinates off the map, so we exclude those.
-                for(let j = archipelago_settings.monopoly_y; j < (y - 1); j++){//check the y's
-                    var tile = map.getTile(i,j).elements;//get the tile data
-                    for(let k = 0; k < tile.length; k++){//iterate through everything on the tile
-                        if(tile[k].type == "surface"){//if it's a surface element
-                            var surface = tile[k] as SurfaceElement;
-                            var tile_ownership = surface.hasOwnership;//check ownership and construction rights
-                            var tile_construction_rights = surface.hasConstructionRights;
-                            var is_entrance = false;//Park entrance won't have ownership or construction rights
-                            if((!tile_ownership) && (!tile_construction_rights)){
-                                for(let l = k + 1; l < tile.length; l++){
-                                    if(tile[l].type == "entrance"){
-                                        is_entrance = true;
-                                        break;
+        try{
+            if(archipelago_objectives.Monopoly[0] && !(archipelago_settings.monopoly_complete)){
+                var x = map.size.x;//Gets the size of the map
+                var y = map.size.y;
+                var monopoly = true;//Assume true until proven false
+                var timeout_counter = 0;//Only check 16 tiles/tick max
+                for(let i = archipelago_settings.monopoly_x; i < (x - 1); i++){//check the x's. Map.size gives a couple coordinates off the map, so we exclude those.
+                    for(let j = archipelago_settings.monopoly_y; j < (y - 1); j++){//check the y's
+                        var tile = map.getTile(i,j).elements;//get the tile data
+                        for(let k = 0; k < tile.length; k++){//iterate through everything on the tile
+                            if(tile[k].type == "surface"){//if it's a surface element
+                                var surface = tile[k] as SurfaceElement;
+                                var tile_ownership = surface.hasOwnership;//check ownership and construction rights
+                                var tile_construction_rights = surface.hasConstructionRights;
+                                var is_entrance = false;//Park entrance won't have ownership or construction rights
+                                if((!tile_ownership) && (!tile_construction_rights)){
+                                    for(let l = k + 1; l < tile.length; l++){
+                                        if(tile[l].type == "entrance"){
+                                            is_entrance = true;
+                                            break;
+                                        }
+                                    }
+                                    if(is_entrance == false){//if unowned and lacking an entrance
+                                        return;
                                     }
                                 }
-                                if(is_entrance == false){//if unowned and lacking an entrance
-                                    return;
-                                }
+                                break;
                             }
-                            break;
+                        }
+                        timeout_counter++;
+                        if(timeout_counter >= 16){
+                            archipelago_settings.monopoly_x = i;
+                            archipelago_settings.monopoly_y = j;
+                            saveArchipelagoProgress();
+                            return;
                         }
                     }
-                    timeout_counter++;
-                    if(timeout_counter >= 16){
-                        archipelago_settings.monopoly_x = i;
-                        archipelago_settings.monopoly_y = j;
-                        saveArchipelagoProgress();
-                        return;
-                    }
                 }
+                archipelago_settings.monopoly_complete = true;
             }
-            archipelago_settings.monopoly_complete = true;
+        }
+        catch(e){
+            console.log("Error in CheckMonopoly:" + e);
         }
     }
 
