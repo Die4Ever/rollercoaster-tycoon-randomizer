@@ -73,8 +73,10 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
             archipelago_settings = context.getParkStorage().get('RCTRando.ArchipelagoSettings');
         }
-        full_item_id_to_name = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName");
-        full_location_id_to_name = context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName");
+        if (context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")){
+            full_item_id_to_name = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName");
+            full_location_id_to_name = context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName");
+        }
         //Set up connection to client
         if (!archipelago_connected_to_game)
         init_archipelago_connection();
