@@ -951,10 +951,10 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Decision',
                     onClick: function() {
-                        console.log(scenario.name);
-                        console.log(ScenarioName[0]);
-                        archipelago_settings.location_information = locationInfo.Full;
-                        archipelago_send_message("GetDataPackage");
+                        console.log(archipelago_settings.multiworld_games);
+                        // console.log(ScenarioName[0]);
+                        // archipelago_settings.location_information = locationInfo.Full;
+                        // archipelago_send_message("GetDataPackage");
                     }
                 },
                 {

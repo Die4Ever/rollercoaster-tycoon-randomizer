@@ -11,7 +11,7 @@ class RCTRArchipelago extends ModuleBase {
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         archipelago_send_message("Sync");
         archipelago_send_message("LocationScouts");
-        archipelago_send_message("GetDataPackage");
+        // archipelago_send_message("GetDataPackage");
         self.SetPostGenerationSettings();//Let the other settings to do their thing
         //Setting rules for Archipelago, dictated by the YAML
         var setRules = function(){
@@ -84,6 +84,8 @@ class RCTRArchipelago extends ModuleBase {
         context.subscribe('action.execute',e => self.InterpretAction(e.player, e.action, e.args, e.result));
         context.subscribe('interval.tick', (e: any) => self.CheckMonopoly());
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
+
+        self.RequestGames();
 
         //Set shortcuts
         ui.registerShortcut(
@@ -1502,6 +1504,40 @@ class RCTRArchipelago extends ModuleBase {
                 break;
             }
         park.setFlag("unlockAllPrices", true);//Allows charging for the entrance, rides, or both
+    }
+
+    RequestGames(): void{
+        console.log("Captain Crunch");
+        var self = this;
+        let games = archipelago_settings.multiworld_games
+        let received_games = archipelago_settings.received_games
+        console.log(received_games);
+        if (!games.length || !archipelago_connected_to_server){//If we haven't received the game list yet, we can't actually do anything
+            context.setTimeout(() => {self.RequestGames();}, 250);
+            return;
+        }
+        console.log("We have the list of games!")
+        if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){
+            for(let i = 0; i < games.length; i++){
+                if(received_games.indexOf(games[i]) === -1){
+                    archipelago_current_game_request = games[i];
+                    archipelago_repeat_game_request_ready = true;
+                    console.log("We have a new game to request:");
+                    console.log(archipelago_current_game_request);
+                    break;
+                }
+            }
+        }
+        if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){//The above code couldn't find any new games, whch hypothetically means we have them all
+            console.log("We have all the games! Either that or future Colby is really annoyed right now");
+            return;
+        }
+        if (archipelago_repeat_game_request_counter > 40)
+            archipelago_repeat_game_request_ready = true;
+        if (archipelago_repeat_game_request_ready)
+            archipelago_send_message("GetDataPackage", archipelago_current_game_request);
+        archipelago_repeat_game_request_counter ++;
+        context.setTimeout(() => {self.RequestGames();}, 2250);
     }
 }
 

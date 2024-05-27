@@ -75,25 +75,26 @@ function archipelago_select_message(type: string, message?: any){
         connection.send({cmd: "Say", text: message});
         break;
     case "GetDataPackage":
-        var self = this;
-        var requested_games = [];
-        if (archipelago_multiple_requests){
-            for(let i = 0; i < archipelago_settings.multiworld_games.length; i++){
-                requested_games.push(archipelago_settings.multiworld_games[i]);
-                console.log(requested_games);
-                if (requested_games.length == 1){
-                    let games = requested_games;
-                    if(games){//Why is it trying to send empty lists of games?
-                        connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
-                        requested_games = [];
-                    }
-                }
-            }
+        connection.send({cmd: "GetDataPackage", games: [message]});
+        // var self = this;
+        // var requested_games = [];
+        // if (archipelago_multiple_requests){
+        //     for(let i = 0; i < archipelago_settings.multiworld_games.length; i++){
+        //         requested_games.push(archipelago_settings.multiworld_games[i]);
+        //         console.log(requested_games);
+        //         if (requested_games.length == 1){
+        //             let games = requested_games;
+        //             if(games){//Why is it trying to send empty lists of games?
+        //                 connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
+        //                 requested_games = [];
+        //             }
+        //         }
+        //     }
             // if (requested_games){//request any remaining games
             //     let games = requested_games;
             //     context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
             // }
-        }
+        // }
         // else{
         //     connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games});
         //     archipelago_games_requested += archipelago_settings.multiworld_games.length;
@@ -285,12 +286,24 @@ function ac_req(data) {//This is what we do when we receive a data packet
             var item_id_to_name = {};
             var location_name_to_id = {};
             var location_id_to_name = {};
+            let current_game = Object.keys(data.data.games)[0];
+
+            console.log("Here's all the keys:");
+            console.log(Object.keys(data.data.games));
+
+            console.log("Here's our current game:");
+            console.log(current_game);
+            console.log("Here's every game we've received so far (This shouldn't have the current game):");
+            console.log(archipelago_settings.received_games);
+
+            if(archipelago_settings.received_games.indexOf(current_game) !== -1)//Throw away data we already have
+                break;
 
             console.log("Received DataPackage, updating translation tables");
 
             function mergeObjects(target: { [key: string]: any }, source: { [key: string]: any }): void {
                 for (const key in source) {
-                    console.log(key);
+                    // console.log(key);
                   if (source.hasOwnProperty(key)) {
                     target[key] = source[key];
                   }
@@ -324,8 +337,13 @@ function ac_req(data) {//This is what we do when we receive a data packet
             context.getParkStorage().set("RCTRando.ArchipelagoItemIDToName",full_item_id_to_name);
             context.getParkStorage().set("RCTRando.ArchipelagoLocationIDToName",full_location_id_to_name);
 
-            console.log(full_item_id_to_name);
-            console.log(full_location_id_to_name);
+            // console.log(full_item_id_to_name);
+            // console.log(full_location_id_to_name);
+
+            console.log("Just added data for this game:");
+            console.log(current_game);
+
+            archipelago_settings.received_games.push(current_game);
             break;
 
         case "Bounced"://Keeps the connection alive and recevies the Deathlink Signal from other games

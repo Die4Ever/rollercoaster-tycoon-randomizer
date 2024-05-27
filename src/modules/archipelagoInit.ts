@@ -50,6 +50,9 @@ var archipelago_correct_scenario = true;
 var archipelago_multiple_requests = true;
 var archipelago_games_requested = 0;
 var archipelago_skip_enabled = false;
+var archipelago_current_game_request = undefined;
+var archipelago_repeat_game_request_ready = true;
+var archipelago_repeat_game_request_counter = 0;
 
 var archipelago_settings: any = {
     deathlink: false,
@@ -72,6 +75,7 @@ var archipelago_settings: any = {
     monopoly_x: 1,
     monopoly_y: 1,
     multiworld_games: [],
+    received_games: [],
     received_items: [],
     hints: [],
     skips: 1,
