@@ -11,6 +11,7 @@ class RCTRArchipelago extends ModuleBase {
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         archipelago_send_message("Sync");
         archipelago_send_message("LocationScouts");
+
         // archipelago_send_message("GetDataPackage");
         self.SetPostGenerationSettings();//Let the other settings to do their thing
         //Setting rules for Archipelago, dictated by the YAML
@@ -72,6 +73,8 @@ class RCTRArchipelago extends ModuleBase {
             archipelago_objectives = context.getParkStorage().get('RCTRando.ArchipelagoObjectives');
             archipelago_settings = context.getParkStorage().get('RCTRando.ArchipelagoSettings');
         }
+        full_item_id_to_name = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName");
+        full_location_id_to_name = context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName");
         //Set up connection to client
         if (!archipelago_connected_to_game)
         init_archipelago_connection();
@@ -84,7 +87,7 @@ class RCTRArchipelago extends ModuleBase {
         context.subscribe('action.execute',e => self.InterpretAction(e.player, e.action, e.args, e.result));
         context.subscribe('interval.tick', (e: any) => self.CheckMonopoly());
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
-
+        //Get our games if we don't have them yet
         self.RequestGames();
 
         //Set shortcuts
@@ -1509,14 +1512,16 @@ class RCTRArchipelago extends ModuleBase {
     RequestGames(): void{
         console.log("Captain Crunch");
         var self = this;
-        let games = archipelago_settings.multiworld_games
-        let received_games = archipelago_settings.received_games
+        let games = archipelago_settings.multiworld_games;
+        let received_games = archipelago_settings.received_games;
+        archipelago_repeat_game_request_ready = false;
         console.log(received_games);
         if (!games.length || !archipelago_connected_to_server){//If we haven't received the game list yet, we can't actually do anything
             context.setTimeout(() => {self.RequestGames();}, 250);
             return;
         }
         console.log("We have the list of games!")
+        //If we haven't started yet or if the current game has already been received
         if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){
             for(let i = 0; i < games.length; i++){
                 if(received_games.indexOf(games[i]) === -1){
@@ -1524,20 +1529,26 @@ class RCTRArchipelago extends ModuleBase {
                     archipelago_repeat_game_request_ready = true;
                     console.log("We have a new game to request:");
                     console.log(archipelago_current_game_request);
+                    archipelago_repeat_game_request_counter = 0;
                     break;
                 }
             }
         }
+
         if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){//The above code couldn't find any new games, whch hypothetically means we have them all
             console.log("We have all the games! Either that or future Colby is really annoyed right now");
             return;
         }
-        if (archipelago_repeat_game_request_counter > 40)
+        console.log("Request Counter:");
+        console.log(archipelago_repeat_game_request_counter);
+        if (archipelago_repeat_game_request_counter > 80){
             archipelago_repeat_game_request_ready = true;
+            archipelago_repeat_game_request_counter = 0;
+        }
         if (archipelago_repeat_game_request_ready)
             archipelago_send_message("GetDataPackage", archipelago_current_game_request);
         archipelago_repeat_game_request_counter ++;
-        context.setTimeout(() => {self.RequestGames();}, 2250);
+        context.setTimeout(() => {self.RequestGames();}, 250);
     }
 }
 

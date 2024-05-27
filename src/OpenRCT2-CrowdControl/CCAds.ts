@@ -188,6 +188,12 @@ const adPool: Ad[] = [
         header: "The archipelago client has detected a desync.",
         message: "Tell the dev to make error reporting work better.",
         button: "Discord"
+    },
+    {
+        title: "Typescript!",
+        header: "Ever want to pull your hair out learning the dumbest language?.",
+        message: "Try Typescript today!.",
+        button: "[object Object]"
     }
 ]
 
