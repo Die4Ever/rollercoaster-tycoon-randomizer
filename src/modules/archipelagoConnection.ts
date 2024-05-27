@@ -426,6 +426,12 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 }
                 saveArchipelagoProgress();
             }
+            break;
+
+        case "Ping":
+            data.cmd = "Pong";
+            connection.send(data);
+            break;
     }
     return;
 }
