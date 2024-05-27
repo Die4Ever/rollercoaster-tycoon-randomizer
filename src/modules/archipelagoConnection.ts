@@ -344,6 +344,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
             console.log(current_game);
 
             archipelago_settings.received_games.push(current_game);
+            saveArchipelagoProgress();
             break;
 
         case "Bounced"://Keeps the connection alive and recevies the Deathlink Signal from other games
