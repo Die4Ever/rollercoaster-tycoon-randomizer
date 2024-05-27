@@ -158,9 +158,7 @@ class APIConnection
 
         let packets = message.split('\0');
 
-        info("OnDataReceived ", message.length);
-        info("Buffer:", this.buffer.length);
-        info("packets.length:", packets.length);
+        info("OnDataReceived " + message.length + ", Buffer:" + this.buffer.length + ", packets.length:" + packets.length);
 
         for(let i=0; i<packets.length; i++) {
             let message = packets[i];
@@ -177,13 +175,13 @@ class APIConnection
                     this.buffer = "";
                 }
                 catch(e) {
-                    printException('error parsing '+this.name, e);//+' request JSON: ' + this.buffer, e);
+                    //printException('error parsing '+this.name, e);//+' request JSON: ' + this.buffer, e);
                     continue;
                 }
             }
 
             try {
-                info(this.name+" received data: ", data);
+                info(this.name+" received data: ", JSON.stringify(data));
                 success = true;
                 resp = this.callback(data);
             } catch(e) {
@@ -212,7 +210,7 @@ class APIConnection
     private end(data?:string) {
         if(!this.sock) return;
 
-        info(this.name+'.end()');
+        info(this.name+'.end('+data.length+')');
         try {
             this.sock.off('close', this.onCloseCallback);
             this.sock.on('close', this.onExpectedCloseCallback);
@@ -222,7 +220,7 @@ class APIConnection
 
         try {
             data = data ? data : '{"id": 0, "status": 0}\0';
-            info(this.name+'.sock.end('+data+')');
+            //info(this.name+'.sock.end('+data+')');
             this.sock.end(data);
         } catch(e) {
             printException('error closing old '+this.name+' connection ', e);
