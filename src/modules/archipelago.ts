@@ -1609,6 +1609,42 @@ function explodeRide(args: any){
     return {};
 }
 
+function archipelago_update_locations(checked_locations){
+    try{
+        if(archipelago_locked_locations.length){
+            console.log("Updating locations to latest progress from Server");
+            for(let i = 0; i < checked_locations.length; i++){
+                let inquired_location = checked_locations[i] - 2000000 //Locations in game have the 2000000 stripped out
+                for(let j = 0; j < archipelago_locked_locations.length; j++){
+                    if (archipelago_locked_locations[j].LocationID == inquired_location){
+                        let Locked = archipelago_locked_locations.slice();
+                        let Unlocked = archipelago_unlocked_locations.slice();
+                        Unlocked.push(Locked[j]);
+                        Locked.splice(j,1);
+                        archipelago_locked_locations = Locked;
+                        archipelago_unlocked_locations = Unlocked;
+                    }
+                }
+            }
+            ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
+            try{
+                var Archipelago = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                var lockedWindow = ui.getWindow("archipelago-locations");
+                lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = Archipelago.CreateLockedList();
+            }
+            catch{
+                console.log("It appears the unlock shop is not open. They'll find the updated shop when they do so.");
+            }
+        }
+        else{
+            context.setTimeout(() => {archipelago_update_locations(checked_locations)}, 500);
+        }
+    }
+    catch(e){
+        console.log("Error in archipelago_update_locations:" + e);
+    }
+}
+
 function saveArchipelagoProgress(){
     context.getParkStorage().set('RCTRando.ArchipelagoSettings', archipelago_settings);
     console.log("Progress Saved!")

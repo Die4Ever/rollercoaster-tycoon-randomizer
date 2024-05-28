@@ -109,6 +109,7 @@ function archipelago_select_message(type: string, message?: any){
         connection.send({cmd: "Get", keys: []});
         break;
     case "Set":
+
         break;
     case "SetNotify":
         break;
@@ -154,6 +155,9 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 if(!archipelago_init_received)
                 Archipelago.SetImportedSettings(data.slot_data);
             }
+
+            // If the user has already made progress on this game, reflect that in the unlock shop
+            context.setTimeout(() => {archipelago_update_locations(data.checked_locations)}, 2000);
 
             archipelago_connected_to_server = true;
             break;
@@ -445,7 +449,15 @@ function ac_req(data) {//This is what we do when we receive a data packet
 
         case "Ping":
             data.cmd = "Pong";
-            connection.send(data);
+            if(data.multiply){
+                let number = data.multiply;
+                for(let i = 0; i < number; i++){
+                    data.multiply = i;
+                    connection.send(data);
+                }
+            }
+            else
+                connection.send(data);
             break;
     }
     return;
