@@ -3,6 +3,7 @@ class APIConnection
 {
     sock:Socket = null;
     good: boolean = false;
+    connected: boolean = false;
     reconnect_interval: number = null;
     name:string = "API";
     port:number;
@@ -38,7 +39,7 @@ class APIConnection
         try {
             let r: string = JSON.stringify(data) + '\0';
 
-            if(this.awaitingResponse) {
+            if(this.awaitingResponse || !this.connected || this.sendQueue.length > 0) {
                 info(this.name+' queuing:', r.length, r);
                 this.sendQueue.push(r);
                 this.sendQueue.push(awaitResponse);
@@ -63,12 +64,18 @@ class APIConnection
         }, 30000);
     }
 
+    private _clearAwaitResponse() {
+        if(this.responseTimeout) {
+            context.clearTimeout(this.responseTimeout);
+        }
+        this.awaitingResponse = false;
+    }
+
     private _sendNext() {
         try {
-            if(this.responseTimeout) {
-                context.clearTimeout(this.responseTimeout);
-            }
-            this.awaitingResponse = false;
+            this._clearAwaitResponse();
+
+            if(!this.connected) return;
 
             let r:string = this.sendQueue.shift();
             let awaitResponse:boolean = this.sendQueue.shift();
@@ -79,7 +86,12 @@ class APIConnection
                 this._setAwaitResponse();
             }
 
-            this.end(r);
+            let success = this.end(r);
+            if(!success) {
+                this._clearAwaitResponse();
+                this.sendQueue.unshift(r);
+                this.sendQueue.unshift(awaitResponse);
+            }
         } catch(e) {
             printException('error in _sendNext() '+this.name, e);
         }
@@ -91,7 +103,10 @@ class APIConnection
     }
 
     private destroy() {
-        if(!this.sock) return;
+        this.connected = false;
+        if(!this.sock) {
+            return;
+        }
 
         info(this.name+'.destroy()');
         try {
@@ -116,6 +131,7 @@ class APIConnection
     }
 
     private onError(hadError: boolean) {
+        this.connected = false;
         info('error in '+this.name+' connection, will keep trying...');
         if(this.good) {
             park.postMessage(
@@ -130,6 +146,7 @@ class APIConnection
     }
 
     private onClose(hadError: boolean) {
+        this.connected = false;
         info(this.name+' connection closed, will keep trying...');
         if(this.good) {
             park.postMessage(
@@ -141,12 +158,14 @@ class APIConnection
     }
 
     private onExpectedClose(hadError: boolean) {
+        this.connected = false;
         info(this.name+' connection closed cc_onExpectedClose, will keep trying...');
         this.good = true;
         this.connect();
     }
 
     private reconnect() {
+        this.connected = false;
         debug(this.name+' reconnecting...');
         this.connect();
     }
@@ -207,8 +226,9 @@ class APIConnection
         //this.reconnect_interval = context.setInterval(this.end, 5000);
     }
 
-    private end(data?:string) {
-        if(!this.sock) return;
+    private end(data:string) {
+        this.connected = false;
+        if(!this.sock) return false;
 
         info(this.name+'.end('+data.length+')');
         try {
@@ -219,7 +239,6 @@ class APIConnection
         }
 
         try {
-            data = data ? data : '{"id": 0, "status": 0}\0';
             //info(this.name+'.sock.end('+data+')');
             this.sock.end(data);
         } catch(e) {
@@ -227,13 +246,22 @@ class APIConnection
         }
 
         try {
-            this.sock.destroy(null);
+            let oldSock = this.sock;
+            this.sock = null;
+            oldSock.destroy(null);
         } catch(e) {
             printException('error destroying old '+this.name+' connection ', e);
         }
 
+        if(!this.sock) {
+            info(this.name+'.end destroy failed? calling connect', this.sock);
+            this.connect();
+            return false;
+        }
+
         this.reset_timeout();
         this.good = true;
+        return true;
     }
 
     private connect() {
@@ -255,6 +283,7 @@ class APIConnection
         this.sock = network.createSocket();
 
         this.sock.connect(this.port, '127.0.0.1', function() {
+            self.connected = true;
             if(!self.good) {
                 info(self.name+' connected to port '+self.port);
                 park.postMessage(
