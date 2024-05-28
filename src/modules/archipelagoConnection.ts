@@ -453,11 +453,11 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 let number = data.multiply;
                 for(let i = 0; i < number; i++){
                     data.multiply = i;
-                    connection.send(data);
+                    connection.send(data, false);
                 }
             }
             else
-                connection.send(data);
+                connection.send(data, false);
             break;
     }
     return;
