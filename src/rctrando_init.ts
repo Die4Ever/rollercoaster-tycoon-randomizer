@@ -9,6 +9,10 @@ function debug(message?: any, ...optionalParams: any[]): void {
 function info(message?: any, ...optionalParams: any[]): void {
     console.log(message, optionalParams);
 }
+function trace(message?: any, ...optionalParams: any[]): void {
+    //if(bDebug)
+        //console.log(message, optionalParams);
+}
 
 if (bDebug)
     ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy!
