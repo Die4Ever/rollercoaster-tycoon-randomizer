@@ -19,7 +19,7 @@ var spam_timeout = false; //For user side sends
 
 function archipelago_send_message(type: string, message?: any) {
     try {
-        console.log(connection.buffer.length);
+        trace(connection.buffer.length);
         if (connection.buffer.length == 0){
             if (!send_timeout){
                 archipelago_select_message(type, message);
@@ -40,10 +40,10 @@ function archipelago_send_message(type: string, message?: any) {
 function archipelago_select_message(type: string, message?: any){
     switch(type){
     case "Connect":
-        console.log({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
+        trace({cmd: "Connect", password: message.password, game: "OpenRCT2", name: message.name, uuid: message.name + ": OpenRCT2", version: {major: 0, minor: 4, build: 1}, item_handling: 0b111, tags: (archipelago_settings.deathlink) ? ["DeathLink"] : [], slot_data: true});
         break;
     case "ConnectUpdate":
-        console.log({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
+        trace({cmd: "ConnectUpdate", tags: (archipelago_settings.deathlink) ? ["DeathLink"] : []})
         break;
     case "Sync":
         connection.send({cmd: "Sync"});
@@ -71,34 +71,11 @@ function archipelago_select_message(type: string, message?: any){
     case "Say":
         const regex = /peck/gi;
         message = message.replace(regex, 'p*ck');
-        console.log({cmd: "Say", text: message});
+        trace({cmd: "Say", text: message});
         connection.send({cmd: "Say", text: message});
         break;
     case "GetDataPackage":
         connection.send({cmd: "GetDataPackage", games: [message]});
-        // var self = this;
-        // var requested_games = [];
-        // if (archipelago_multiple_requests){
-        //     for(let i = 0; i < archipelago_settings.multiworld_games.length; i++){
-        //         requested_games.push(archipelago_settings.multiworld_games[i]);
-        //         console.log(requested_games);
-        //         if (requested_games.length == 1){
-        //             let games = requested_games;
-        //             if(games){//Why is it trying to send empty lists of games?
-        //                 connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += 1;
-        //                 requested_games = [];
-        //             }
-        //         }
-        //     }
-            // if (requested_games){//request any remaining games
-            //     let games = requested_games;
-            //     context.setTimeout(() => {connection.send({cmd: "GetDataPackage", games: games}); archipelago_games_requested += games.length;}, timeout);
-            // }
-        // }
-        // else{
-        //     connection.send({cmd: "GetDataPackage", games: archipelago_settings.multiworld_games});
-        //     archipelago_games_requested += archipelago_settings.multiworld_games.length;
-        // }
         break;
     case "Bounce":
         if(message.tag == "DeathLink"){
@@ -123,8 +100,8 @@ function ac_req(data) {//This is what we do when we receive a data packet
     switch(data.cmd){
         case "RoomInfo":
             archipelago_settings.current_time = data.time;
-            console.log("Archipelago Time has been set:");
-            console.log(archipelago_settings.current_time);
+            trace("Archipelago Time has been set:");
+            trace(archipelago_settings.current_time);
             break;
         case "Connected"://Packet stating player is connected to the Archipelago game
             if(!archipelago_settings.started){
@@ -135,9 +112,9 @@ function ac_req(data) {//This is what we do when we receive a data packet
                         archipelagoPlayers.push([data.players[i][2], false]);
                         multiworld_games.push(data.slot_info[i + 1][1]);
                     }
-                    console.log(data.slot_info);
-                    console.log("Here's our players:");
-                    console.log(archipelagoPlayers);
+                    trace(data.slot_info);
+                    trace("Here's our players:");
+                    trace(archipelagoPlayers);
                     context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
                     Archipelago.SetNames();
                     archipelago_settings.player = archipelagoPlayers[data.slot - 1];
@@ -149,8 +126,8 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     return index === self.indexOf(elem);
                 })
                 archipelago_settings.multiworld_games = unique_multiworld_games;
-                console.log("Here's the games in the multiworld:");
-                console.log(archipelago_settings.multiworld_games);
+                trace("Here's the games in the multiworld:");
+                trace(archipelago_settings.multiworld_games);
 
                 if(!archipelago_init_received)
                 Archipelago.SetImportedSettings(data.slot_data);
@@ -292,18 +269,18 @@ function ac_req(data) {//This is what we do when we receive a data packet
             var location_id_to_name = {};
             let current_game = Object.keys(data.data.games)[0];
 
-            console.log("Here's all the keys:");
-            console.log(Object.keys(data.data.games));
+            trace("Here's all the keys:");
+            trace(Object.keys(data.data.games));
 
-            console.log("Here's our current game:");
-            console.log(current_game);
-            console.log("Here's every game we've received so far (This shouldn't have the current game):");
-            console.log(archipelago_settings.received_games);
+            trace("Here's our current game:");
+            trace(current_game);
+            trace("Here's every game we've received so far (This shouldn't have the current game):");
+            trace(archipelago_settings.received_games);
 
             if(archipelago_settings.received_games.indexOf(current_game) !== -1)//Throw away data we already have
                 break;
 
-            console.log("Received DataPackage, updating translation tables");
+            trace("Received DataPackage, updating translation tables");
 
             function mergeObjects(target: { [key: string]: any }, source: { [key: string]: any }): void {
                 for (const key in source) {
@@ -344,8 +321,8 @@ function ac_req(data) {//This is what we do when we receive a data packet
             // console.log(full_item_id_to_name);
             // console.log(full_location_id_to_name);
 
-            console.log("Just added data for this game:");
-            console.log(current_game);
+            trace("Just added data for this game:");
+            trace(current_game);
 
             archipelago_settings.received_games.push(current_game);
             saveArchipelagoProgress();
@@ -409,7 +386,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     ArchipelagoSaveLocations(archipelago_locked_locations,[]);
                 }
                 else{//We don't have all the item info yet. Try again.
-                    console.log("Instert bee movie here");
+                    trace("Item Info incorrect. Retrying.");
                     context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 3000)
                 }
 
@@ -418,7 +395,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
         case "SetReply"://Handles hints
             const hint_pattern: RegExp = /^_read_hints_/;
             if(hint_pattern.test(data.key)){
-                console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
+                trace(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
                 for(let i = 0; i < data.value.length; i++){
                     let archipelagoPlayers = (context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
                     var hint: archipelago_hint = {
@@ -472,15 +449,15 @@ function errorCallback() {
         button.isDisabled = (!archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario);
     }
     catch{
-        console.log("Looks like the Archipelago window isn't open.");
+        trace("Looks like the Archipelago window isn't open.");
     }
     try {
         var window:Window = ui.getWindow("archipelago-locations");
         window.findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
-        console.log(archipelago_connected_to_server);
+        trace(archipelago_connected_to_server);
     }
     catch{
-        console.log("Looks like the Archipelago Shop isn't open");
+        trace("Looks like the Archipelago Shop isn't open");
     }
 }
 
@@ -495,20 +472,20 @@ function connectCallback() {
         }
     }
     catch {
-        console.log("Looks like the setup window isn't open.")
+        trace("Looks like the setup window isn't open.")
     }
     try{
         if(ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
         ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the game!";
     }
     catch{
-        console.log("Looks like the unlock shop isn't open.");
+        trace("Looks like the unlock shop isn't open.");
     }
 }
 
 var connection = null;
 function init_archipelago_connection() {
-    console.log("Hello?");
+    trace("Hello?");
     connection = new APIConnection("Archipelago", 38280, ac_req, errorCallback, connectCallback);
 }
 

@@ -48,7 +48,13 @@ class APIConnection
                 if(awaitResponse !== false) {
                     this._setAwaitResponse();
                 }
-                this.end(r);
+                let success = this.end(r);
+                if(!success) {
+                    info(this.name+' send() failed, queuing');
+                    this._clearAwaitResponse();
+                    this.sendQueue.unshift(r);
+                    this.sendQueue.unshift(awaitResponse);
+                }
             }
         } catch(e) {
             printException('error sending '+this.name, e);
@@ -88,6 +94,7 @@ class APIConnection
 
             let success = this.end(r);
             if(!success) {
+                info(this.name+' _sendNext() failed, requeuing');
                 this._clearAwaitResponse();
                 this.sendQueue.unshift(r);
                 this.sendQueue.unshift(awaitResponse);

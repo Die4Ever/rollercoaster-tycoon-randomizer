@@ -109,7 +109,7 @@ class RCTRArchipelago extends ModuleBase {
                 interpretMessage();
             }
             catch{
-                console.log("Looks like the Archipelago Shop isn't open");
+                trace("Looks like the Archipelago Shop isn't open");
             }}
         });
 
@@ -120,7 +120,7 @@ class RCTRArchipelago extends ModuleBase {
                 archipelagoLocations()
             }
             catch{
-                console.log("Welp. Something went wrong with the shortcut");
+                trace("Welp. Something went wrong with the shortcut");
             }
         }}
         )
@@ -130,7 +130,7 @@ class RCTRArchipelago extends ModuleBase {
             context.registerAction('ExplodeRide', (args) => {return {};}, (args) => explodeRide(args));
         }
         catch(e){
-            console.log("Error:" + e)
+            console.log("Error in registering ExplodeRide:" + e)
         }
 
         if(bDebug){
@@ -147,7 +147,7 @@ class RCTRArchipelago extends ModuleBase {
 
     SetImportedSettings(imported_settings: any): void{
         var self = this;
-        console.log("Setting values retrieved from Archipelago");
+        trace("Setting values retrieved from Archipelago");
         switch(imported_settings.difficulty){
             case 0://very_easy
                 settings.difficulty = difficulties["Very Easy"];
@@ -245,12 +245,12 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_objectives.Monopoly[0] = imported_settings.objectives.Monopoly[0];
         archipelago_objectives.UniqueRides[0] = imported_settings.objectives.UniqueRides[0];
 
-        console.log(archipelago_objectives.Monopoly[0]);
+        trace(archipelago_objectives.Monopoly[0]);
         if(archipelago_objectives.Monopoly[0])
         self.SetPurchasableTiles();
 
         archipelago_settings.rule_locations = imported_settings.rules;
-        console.log("These Park Rules are enabled: " + archipelago_settings.rule_locations);
+        trace("These Park Rules are enabled: " + archipelago_settings.rule_locations);
 
         switch(imported_settings.visibility){
             case 0:
@@ -271,7 +271,7 @@ class RCTRArchipelago extends ModuleBase {
         saveArchipelagoProgress();
 
         var scenario_name: string = scenario.name.toLowerCase();
-        console.log("Game expects: " + scenario_name + "\nArchipelago provided: " + ScenarioName[imported_settings.scenario]);
+        trace("Game expects: " + scenario_name + "\nArchipelago provided: " + ScenarioName[imported_settings.scenario]);
         if(ScenarioName[imported_settings.scenario] == scenario_name)
         archipelago_correct_scenario = true;
         else{
@@ -295,8 +295,8 @@ class RCTRArchipelago extends ModuleBase {
         // }
         switch(action){
             case "gamesetspeed":
-                console.log(args.speed);
-                console.log(archipelago_settings.maximum_speed);
+                trace(args.speed);
+                trace(archipelago_settings.maximum_speed);
                 if(args.speed > archipelago_settings.maximum_speed){
                     ui.showError("Too fast!", "You haven't unlocked that speed tier yet!")
                     context.executeAction("gamesetspeed",{speed: 1} as GameSetSpeedArgs);
@@ -338,8 +338,8 @@ class RCTRArchipelago extends ModuleBase {
 
     ReceiveArchipelagoItem(items: any[], index: number): void{
         var self = this;
-        console.log("Here's the array of items:");
-        console.log(items);
+        trace("Here's the array of items:");
+        trace(items);
         var compare_list: any = [];
         if(index == 0){
             for(let i = 0; i < items.length; i++){
@@ -349,7 +349,7 @@ class RCTRArchipelago extends ModuleBase {
                 else{
                     compare_list.push([items[i][0], 1]);//Create the new item on the list.
                 }
-                console.log(compare_list);
+                trace(compare_list);
             }
         }
         else{
@@ -372,7 +372,7 @@ class RCTRArchipelago extends ModuleBase {
                 if(compare_list[i][j] > compare_number){//If its not on the list already
                     if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000119){//This number will need to change if we ever add more items/traps/etc.
                         var item = item_id_to_name[compare_list[i][0]];
-                        console.log(item);
+                        trace(item);
                         if(item.indexOf("Trap") > -1)
                         category = "trap";
                         if(Number(RideType[item]) > -1)//Any item that fits a ride type is a ride
@@ -476,7 +476,6 @@ class RCTRArchipelago extends ModuleBase {
                     unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
                     park.research.inventedItems = researchedItems;
                     park.research.uninventedItems = unresearchedItems;//Save the researched items list
-                    console.log("Corndags)");
                     return;
                 }
             }
@@ -624,7 +623,7 @@ class RCTRArchipelago extends ModuleBase {
     AddGuests(amount: any): void{
         amount = amount.replace(/\D/g,'');//Strips everything but the number
         amount = Number(amount);
-        context.executeAction("cheatset", {type: 20, param1: amount, param2: 0}, () => console.log("Added " + String(amount) + " guests to the park."));
+        context.executeAction("cheatset", {type: 20, param1: amount, param2: 0}, () => trace("Added " + String(amount) + " guests to the park."));
     }
 
     BeautyContest(): any{//Yep. It's a stupid refrence, but I aint removing it now!
@@ -693,16 +692,16 @@ class RCTRArchipelago extends ModuleBase {
     setWeather(weather: string): any{
         switch(weather){
             case "Rainstorm":
-                context.executeAction("cheatset", {type: 35, param1: 4, param2: 0}, () => console.log("Summoned a " + weather));
+                context.executeAction("cheatset", {type: 35, param1: 4, param2: 0}, () => trace("Summoned a " + weather));
                 break;
             case "Thunderstorm":
-                context.executeAction("cheatset", {type: 35, param1: 5, param2: 0}, () => console.log("Summoned a " + weather));
+                context.executeAction("cheatset", {type: 35, param1: 5, param2: 0}, () => trace("Summoned a " + weather));
                 break;
             case "Snowstorm":
-                context.executeAction("cheatset", {type: 35, param1: 7, param2: 0}, () => console.log("Summoned a " + weather));
+                context.executeAction("cheatset", {type: 35, param1: 7, param2: 0}, () => trace("Summoned a " + weather));
                 break;
             case "Blizzard":
-                context.executeAction("cheatset", {type: 35, param1: 8, param2: 0}, () => console.log("Summoned a " + weather));
+                context.executeAction("cheatset", {type: 35, param1: 8, param2: 0}, () => trace("Summoned a " + weather));
                 break;
             default:
                 console.log("Error in setWeather: Invalid Weather Type Provided.");
@@ -727,7 +726,7 @@ class RCTRArchipelago extends ModuleBase {
             (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isDisabled = !archipelago_settings.skips;
         }
         catch{
-            console.log("Looks like the Archipelago Shop isn't open");
+            trace("Looks like the Archipelago Shop isn't open");
         }
         saveArchipelagoProgress();
     }
@@ -774,11 +773,11 @@ class RCTRArchipelago extends ModuleBase {
     ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string, attempt: number}): any{
         var self = this;
         if (archipelago_settings.deathlink_timeout == true){//If the timeout hasn't expired, don't force another coaster to crash
-            console.log("Death Link Timeout has not expired. Ignoring Death Link signal")
+            trace("Death Link Timeout has not expired. Ignoring Death Link signal")
             return;
         }
         if ((!map.getAllEntities("car").length) || DeathLinkPacket.attempt == 3){//If there's nothing to explode, give the user a pass
-            console.log("Rain check");
+            trace("Rain check");
             var window = ui.openWindow({
                 classification: 'rain-check',
                 title: "Official Archipelago Rain Check",
@@ -820,7 +819,7 @@ class RCTRArchipelago extends ModuleBase {
         if(archipelago_settings.deathlink_timeout == false) {
             archipelago_settings.deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
             context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
-            console.log("We're off to kill the Wizard!");
+            trace("Sending Deathlink");
             if(vehicleID){
                 var cars = map.getAllEntities("car");
                 //console.log((cars));
@@ -835,9 +834,9 @@ class RCTRArchipelago extends ModuleBase {
                                 break;//breaks the for loop
                             }
                         }
-                        console.log("vehicleID:" + vehicleID);
-                        console.log("rideID:" + rideID);
-                        console.log("ride name:" + rideName);
+                        trace("vehicleID:" + vehicleID);
+                        trace("rideID:" + rideID);
+                        trace("ride name:" + rideName);
                         archipelago_send_message("Bounce",{ride: rideName, tag: "DeathLink"});
                         break;
                     }
@@ -984,18 +983,18 @@ class RCTRArchipelago extends ModuleBase {
                             locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
                             break;
                         case 'Full':
-                            console.log("Here's our current item:");
-                            console.log(archipelago_locked_locations[i]);
-                            console.log(archipelago_locked_locations[i].Item);
+                            trace("Here's our current item:");
+                            trace(archipelago_locked_locations[i]);
+                            trace(archipelago_locked_locations[i].Item);
                             let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_locked_locations[i].Item]
-                            console.log(item);
+                            trace(item);
                             locked.push("          Unlocks " + item + " for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
                             break;
                     }
                 }
             }
-            console.log(locked);
-            console.log(archipelago_unlocked_locations);
+            trace(locked);
+            trace(archipelago_unlocked_locations);
             if(!locked.length){
                 if(!archipelago_unlocked_locations.length){
                     return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
@@ -1092,8 +1091,8 @@ class RCTRArchipelago extends ModuleBase {
             else{
                 archipelago_objectives.Guests[1] = false;
             }
-            console.log("Current park value: " + String(park.value));
-            console.log("Park value objective: "+ String(archipelago_objectives.ParkValue));
+            trace("Current park value: " + String(park.value));
+            trace("Park value objective: "+ String(archipelago_objectives.ParkValue));
             if (park.value >= (Number(archipelago_objectives.ParkValue[0])*10)){
                 archipelago_objectives.ParkValue[1] = true;
             }
@@ -1193,7 +1192,7 @@ class RCTRArchipelago extends ModuleBase {
                     for(let j = 0; j < map.numRides; j++){
                         if (Number(RideType[checkedRide]) == map.rides[j].type){
                             if (map.rides[j].excitement > 1){
-                                console.log(map.rides[j].excitement);
+                                trace(map.rides[j].excitement);
                                 found = true;
                                 break;
                             }
@@ -1329,8 +1328,8 @@ class RCTRArchipelago extends ModuleBase {
             return;
         }
         var self = this;
-        console.log("Purchasing item number:");
-        console.log(item);
+        trace("Purchasing item number:");
+        trace(item);
         let Locked = archipelago_locked_locations.slice();
         let Unlocked = archipelago_unlocked_locations.slice();
         let Prices = archipelago_location_prices.slice();
@@ -1342,7 +1341,7 @@ class RCTRArchipelago extends ModuleBase {
                 if(item == counter){
                     LocationID = Locked[i].LocationID;
                     wantedItem = i;
-                    console.log("Here's the locationID: " + String(LocationID));
+                    trace("Here's the locationID: " + String(LocationID));
                     break;
                 }
                 else
@@ -1351,7 +1350,7 @@ class RCTRArchipelago extends ModuleBase {
         }
         let Prereqs = Prices[LocationID].RidePrereq;//Have to get LocationID before we can properly check Prereqs
 
-        console.log(Prices[LocationID]);
+        trace(Prices[LocationID]);
         if((Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0) || archipelago_skip_enabled){//Check if player has enough cash or if the price is 0.
             if((Prices[LocationID].Lives <= park.guests) || archipelago_skip_enabled){//Check if the player has enough guests to sacrifice
                 var NumQualifiedRides = 0;
@@ -1402,7 +1401,7 @@ class RCTRArchipelago extends ModuleBase {
                 }
                 if(!Prereqs.length || NumQualifiedRides >= Prereqs[0] || archipelago_skip_enabled){
                     if(!archipelago_skip_enabled){
-                        console.log("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
+                        trace("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
                         if(Prices[LocationID].Lives != 0){//Code to explode guests
                         var doomed = Math.floor(Prices[LocationID].Lives * 1.5);//Add a buffer to the stated cost to make up for janky guest exploding code
                             if(doomed < guest_list.length){//Explode either the doomed amount, or every guest in the park, whichever is less
@@ -1427,12 +1426,11 @@ class RCTRArchipelago extends ModuleBase {
                     }
 
                     Unlocked.push(Locked[wantedItem]);
-                    console.log("pickle");
                     Locked.splice(wantedItem,1);
                     archipelago_locked_locations = Locked;
-                    console.log(JSON.stringify(archipelago_locked_locations));
+                    trace(JSON.stringify(archipelago_locked_locations));
                     archipelago_unlocked_locations = Unlocked;
-                    console.log(archipelago_locked_locations);
+                    trace(archipelago_locked_locations);
                     ArchipelagoSaveLocations(archipelago_locked_locations, archipelago_unlocked_locations);
                     var lockedWindow = ui.getWindow("archipelago-locations");
                     lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = self.CreateLockedList();
@@ -1441,17 +1439,15 @@ class RCTRArchipelago extends ModuleBase {
                     //If we have full visibility, send hints for any items shown
                     if(archipelago_settings.location_information == "Full"){
                         let hint_list = [];
-                        console.log("Jill me");
-                        console.log(hint_list);
+                        trace(hint_list);
                         const temp_list = archipelago_locked_locations.slice();//Dude, screw how lists are handled in this stupid language
                         for(let i = 0; i < temp_list.length; i++){
                             let location = temp_list[i].LocationID;
-                            console.log(location);
+                            trace(location);
                             if(self.IsVisible(location))
                             hint_list.push(location + 2000000);
                         }
-                        console.log("killme");
-                        console.log(hint_list);
+                        trace(hint_list);
                         context.setTimeout(() => (archipelago_send_message("LocationHints",hint_list)), 2000)
                     }
                 }
@@ -1512,25 +1508,24 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     RequestGames(): void{
-        console.log("Captain Crunch");
         var self = this;
         let games = archipelago_settings.multiworld_games;
         let received_games = archipelago_settings.received_games;
         archipelago_repeat_game_request_ready = false;
-        console.log(received_games);
+        trace(received_games);
         if (!games.length || !archipelago_connected_to_server){//If we haven't received the game list yet, we can't actually do anything
             context.setTimeout(() => {self.RequestGames();}, 250);
             return;
         }
-        console.log("We have the list of games!")
+        trace("We have the list of games!")
         //If we haven't started yet or if the current game has already been received
         if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){
             for(let i = 0; i < games.length; i++){
                 if(received_games.indexOf(games[i]) === -1){
                     archipelago_current_game_request = games[i];
                     archipelago_repeat_game_request_ready = true;
-                    console.log("We have a new game to request:");
-                    console.log(archipelago_current_game_request);
+                    trace("We have a new game to request:");
+                    trace(archipelago_current_game_request);
                     archipelago_repeat_game_request_counter = 0;
                     break;
                 }
@@ -1538,11 +1533,11 @@ class RCTRArchipelago extends ModuleBase {
         }
 
         if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){//The above code couldn't find any new games, whch hypothetically means we have them all
-            console.log("We have all the games! Either that or future Colby is really annoyed right now");
+            trace("We have all the games! Either that or future Colby is really annoyed right now");
             return;
         }
-        console.log("Request Counter:");
-        console.log(archipelago_repeat_game_request_counter);
+        trace("Request Counter:");
+        trace(archipelago_repeat_game_request_counter);
         if (archipelago_repeat_game_request_counter > 80){
             archipelago_repeat_game_request_ready = true;
             archipelago_repeat_game_request_counter = 0;
@@ -1556,12 +1551,12 @@ class RCTRArchipelago extends ModuleBase {
 
 
 function explodeRide(args: any){
-    console.log(args);
+    trace(args);
     const cause = args.args.cause;
     const source = args.args.source;
     const attempt = args.args.attempt + 1;
     const DeathLinkPacket = {cause, source, attempt};
-    console.log(DeathLinkPacket);
+    trace(DeathLinkPacket);
     var self = this;
     var car = map.getAllEntities('car');
     context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
@@ -1596,15 +1591,12 @@ function explodeRide(args: any){
     
     do{
         (map.getEntity(counter) as Car).status = "crashed";//Crash the ride!
-        console.log((map.getEntity(counter) as Car));
+        trace((map.getEntity(counter) as Car));
         counter = (map.getEntity(counter) as Car).nextCarOnRide;
     }
     while ((map.getEntity(counter) as Car).id != (r as Car).id);
 
     archipelago_settings.deathlink_timeout = true;//Set the timeout. Rides won't crash twice in 20 seconds (From deathlink, anyways)
-    // console.log("The car should say crashed and actually be crashed");
-    // console.log(movingCar[r].status);
-    // console.log(movingCar[r]);
     context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
     return {};
 }
@@ -1612,7 +1604,7 @@ function explodeRide(args: any){
 function archipelago_update_locations(checked_locations){
     try{
         if(archipelago_locked_locations.length){
-            console.log("Updating locations to latest progress from Server");
+            trace("Updating locations to latest progress from Server");
             for(let i = 0; i < checked_locations.length; i++){
                 let inquired_location = checked_locations[i] - 2000000 //Locations in game have the 2000000 stripped out
                 for(let j = 0; j < archipelago_locked_locations.length; j++){
@@ -1633,7 +1625,7 @@ function archipelago_update_locations(checked_locations){
                 lockedWindow.findWidget<ListViewWidget>("locked-location-list").items = Archipelago.CreateLockedList();
             }
             catch{
-                console.log("It appears the unlock shop is not open. They'll find the updated shop when they do so.");
+                trace("It appears the unlock shop is not open. They'll find the updated shop when they do so.");
             }
         }
         else{
@@ -1641,13 +1633,13 @@ function archipelago_update_locations(checked_locations){
         }
     }
     catch(e){
-        console.log("Error in archipelago_update_locations:" + e);
+        trace("Error in archipelago_update_locations:" + e);
     }
 }
 
 function saveArchipelagoProgress(){
     context.getParkStorage().set('RCTRando.ArchipelagoSettings', archipelago_settings);
-    console.log("Progress Saved!")
+    trace("Progress Saved!")
 }
 
 if(context.apiVersion >= 75)

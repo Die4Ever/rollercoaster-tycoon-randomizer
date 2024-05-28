@@ -90,7 +90,7 @@ function ArchipelagoSaveLocations(LockedLocations, UnlockedLocations) {
         context.setTimeout(() => {archipelago_send_message("LocationChecks", UnlockedLocations)}, 1500);
         context.getParkStorage().set('RCTRando.ArchipelagoLockedLocations', LockedLocations);
         context.getParkStorage().set('RCTRando.ArchipelagoUnlockedLocations', UnlockedLocations);
-        console.log("Location lists updated!");
+        trace("Location lists updated!");
     } catch(e) {
         printException('error in ArchipelagoSaveLocations: ', e);
     }

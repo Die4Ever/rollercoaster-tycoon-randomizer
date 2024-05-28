@@ -8,7 +8,7 @@ function archipelagoGui(){
 
     var onStart = function() {
         try{
-            console.log('This is where we connect to Archipelago and set up the game.');
+            trace('This is where we connect to Archipelago and set up the game.');
             //TODO: Get seed from Archipelago
             setGlobalSeed(Math.floor(Math.random() * 1000000));//Maybe someday I'll allow custom seeds
             //No need for research, since we're using a different system entirely for that
@@ -94,7 +94,7 @@ function archipelagoGui(){
                 isDisabled: (!archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario),
                 onClick: function() {
                     onStart();
-                    console.log("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");
+                    trace("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");
                     window.close();
                 }
             },
@@ -297,12 +297,12 @@ function archipelagoLocations(){
                                 if (!pressed){
                                     (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isPressed = true;
                                     archipelago_skip_enabled = true;
-                                    console.log("Clicky");
+                                    trace("Clicky");
                                 }
                                 else{
                                     (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isPressed = false;
                                     archipelago_skip_enabled = false;
-                                    console.log("Unclicky");
+                                    trace("Unclicky");
                                 }
                             }
                         },
@@ -1221,8 +1221,8 @@ function interpretMessage(){
         var message = currentWindow.findWidget<TextBoxWidget>("chatbox").text;
         if (!message)
         return;
-        console.log("This is the message:");
-        console.log(message);
+        trace("This is the message:");
+        trace(message);
         switch(message){
             case '!!help':
                 archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.");
