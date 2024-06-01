@@ -951,7 +951,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Decision',
                     onClick: function() {
-                        console.log("archipelago_connected_to_server");
+                        console.log(full_item_id_to_name);
                         // console.log(ScenarioName[0]);
                         // archipelago_settings.location_information = locationInfo.Full;
                         // archipelago_send_message("GetDataPackage");
