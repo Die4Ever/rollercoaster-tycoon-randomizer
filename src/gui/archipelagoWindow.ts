@@ -1182,7 +1182,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
-                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName"));
+                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
                         // console.log(JSON.stringify(archipelago_locked_locations));

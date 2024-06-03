@@ -9,8 +9,8 @@ class RCTRArchipelago extends ModuleBase {
         if(!settings.rando_archipelago)
             return;
         self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
-        archipelago_send_message("Sync");
-        archipelago_send_message("LocationScouts");
+        archipelago_send_message("Sync");//Get's all the currently received items for the game
+        archipelago_send_message("LocationScouts");//Gets the item info for every location in the unlock shop
 
         // archipelago_send_message("GetDataPackage");
         self.SetPostGenerationSettings();//Let the other settings to do their thing
@@ -1000,8 +1000,7 @@ class RCTRArchipelago extends ModuleBase {
                     return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
                     "{WHITE}If you're still seeing this message after 2 minutes (Be sure to actually close and reopen this window),",
                     "{WHITE}bother Colby in the Discord and he'll complain about past Colby.",
-                    "{WHITE}Current Progress: " + String(archipelago_games_requested) + "/" + String(archipelago_settings.multiworld_games.length)
-                    + " games requested."];
+                    "{WHITE}The secret word for him is 'Penguins'"];
                 }
                 else
                 return ["Conglaturations! You've unlocked everything! Now go outside and touch some grass."]
@@ -1629,11 +1628,13 @@ function archipelago_update_locations(checked_locations){
             }
         }
         else{
-            context.setTimeout(() => {archipelago_update_locations(checked_locations)}, 500);
+            if(archipelago_settings.started)//If the game is started and we still don't have the unlock shop, ask again
+                context.setTimeout(() => {archipelago_send_message("LocationScouts");}, 250);//If we don't have the list, ask for the list again
+            context.setTimeout(() => {archipelago_update_locations(checked_locations)}, 2000);
         }
     }
     catch(e){
-        trace("Error in archipelago_update_locations:" + e);
+        console.log("Error in archipelago_update_locations:" + e);
     }
 }
 
