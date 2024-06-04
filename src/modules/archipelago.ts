@@ -862,8 +862,15 @@ class RCTRArchipelago extends ModuleBase {
                 for(let j=0; j<(guests.length); j++){
                     if(archipelagoPlayers[i][0] == (guests[j].name)){
                         inPark = true;
-                        if(archipelagoPlayers[i][1] == true)//If this game has beaten their scenario
-                        guests[j].setFlag("joy", true);//Make them do a little dance
+                        if(archipelagoPlayers[i][1] == true){//If this game has beaten their scenario
+                            guests[j].setFlag("joy", true);//Make them do a little dance,
+                            guests[j].happiness = 255;//Make them constantly happy,
+                            guests[j].energy = 128;//Make them energized,
+                            guests[j].trousersColour = context.getRandom(0, 55);//And make them very colorful
+                            guests[j].tshirtColour = context.getRandom(0, 55);
+                            guests[j].umbrellaColour = context.getRandom(0, 55);
+                            guests[j].cash = 6942
+                        }
                         break;
                     }
                 }
