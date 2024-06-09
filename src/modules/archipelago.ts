@@ -338,8 +338,20 @@ class RCTRArchipelago extends ModuleBase {
 
     ReceiveArchipelagoItem(items: any[], index: number): void{
         var self = this;
-        trace("Here's the array of items:");
-        trace(items);
+        console.log("Here's the array of items:");
+        console.log(items);
+        // var new_items = []
+        // var received_items = archipelago_settings.received_items.slice();
+        // for(let i = 0; i < items.length; i++){
+        //     let current_item = items[i][0];
+        //     let current_object = received_items.filter(obj => obj.item === items[i][0]);//Get the item from the list, if it exists
+        //     if (current_object){
+        //         current_object.amount ++;//Add 1 to the amount on the list
+        //     }
+        //     else{
+        //         received_items.push({item: current_item, amount: 1});
+        //     }
+        // }
         var compare_list: any = [];
         if(index == 0){
             for(let i = 0; i < items.length; i++){
@@ -468,21 +480,22 @@ class RCTRArchipelago extends ModuleBase {
     AddRide(ride: any): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items.
         
-            let unresearchedItems = park.research.uninventedItems;
-            let researchedItems = park.research.inventedItems;
-            for(let i=0; i<unresearchedItems.length; i++) {
-                if (((unresearchedItems[i] as RideResearchItem).rideType) == ride){//Check if the ride type matches
-                    researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
-                    unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
-                    park.research.inventedItems = researchedItems;
-                    park.research.uninventedItems = unresearchedItems;//Save the researched items list
-                    return;
-                }
+        let unresearchedItems = park.research.uninventedItems;
+        let researchedItems = park.research.inventedItems;
+        for(let i=0; i<unresearchedItems.length; i++) {
+            if (((unresearchedItems[i] as RideResearchItem).rideType) == ride){//Check if the ride type matches
+                researchedItems.push(unresearchedItems[i]);//Add the ride to researched items
+                unresearchedItems.splice(i,1);          //Remove the ride from unresearched items
+                park.research.inventedItems = researchedItems;
+                park.research.uninventedItems = unresearchedItems;//Save the researched items list
+                return;
             }
-            console.log("Error in AddRide: ride not in uninvented items");
-            archipelago_print_message("CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!")
-            ui.showError("CRITICAL ERROR FOUND!", "CRITICAL ERROR! THIS IS THE THING COLBY NEEDS TO SEE! TELL COLBY RIGHT NOW!");
-            return;
+        }
+
+        console.log("Error in AddRide: ride not in uninvented items");
+        archipelago_print_message("For some reason, the game tried to unlock the following ride unsucessfully:" + String(RideType[ride]));
+        ui.showError("Ride Unsuccessful", "For some reason, the game tried to unlock the following ride unsucessfully:" + String(RideType[ride]));
+        return;
     }
 
     AddScenery(): void{
@@ -811,6 +824,11 @@ class RCTRArchipelago extends ModuleBase {
                 )
             });
             return window;
+        }
+        if(context.paused){//Hold up until we're no longer paused
+            ui.showError("You appear to be paused.", "Could you unpause for a bit so we can activate this Death Link?");
+            context.setTimeout(function() {self.ReceiveDeathLink(DeathLinkPacket)}, 5000);
+            return;
         }
         context.executeAction('ExplodeRide', DeathLinkPacket);
     }
@@ -1580,20 +1598,6 @@ function explodeRide(args: any){
     }
     var r = movingCar[context.getRandom(0, movingCar.length)];//Pick a car at random
     var counter = r.id; //Keeps track of which car we're dealing with
-
-    //Future Colby, Delete this
-    // var found = false;
-    // do{
-    //     try{
-    //         console.log(counter);
-    //         counter = car[counter].previousCarOnRide;//Set counter to the first car on the ride
-    //     }
-    //     catch{
-    //         found = true;
-    //     }
-        
-    // }
-    // while(!found);
     
     do{
         (map.getEntity(counter) as Car).status = "crashed";//Crash the ride!

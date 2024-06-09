@@ -1182,17 +1182,28 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
-                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
+                        // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
-                        // console.log(JSON.stringify(archipelago_locked_locations));
+                        console.log(JSON.stringify(archipelago_settings.received_items));
                         // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
-                        // console.log(JSON.stringify(archipelago_settings.received_items));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
                         // console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayer"));
                         // archipelago_send_message("StatusUpdate", 30)
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button25',
+                    x: 415,
+                    y: 20,
+                    width: 200,
+                    height: 25,
+                    text: 'Add Skip',
+                    onClick: function() {
+                        archipelago_settings.skips ++;
                     }
                 }
            ]
