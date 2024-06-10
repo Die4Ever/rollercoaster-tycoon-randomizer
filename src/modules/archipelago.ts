@@ -1299,10 +1299,11 @@ class RCTRArchipelago extends ModuleBase {
 
     IsVisible(LockedID: number): boolean{
         var CheckID = 0; //We want to limit the locations shown until the correct previous locations have been unlocked
+        const unlocked_list = archipelago_unlocked_locations.slice();
+        const locked_list = archipelago_locked_locations.slice();
         switch(LockedID){//These unlocks form a tree, with 2 branching nodes until item 6. All further nodes have only 1 branch
             case 0:
                 return true;
-                break;
             case 1:
             case 2:
                 CheckID = 0;
@@ -1335,11 +1336,59 @@ class RCTRArchipelago extends ModuleBase {
                 CheckID = LockedID - 8;
             break;
         }
-        // console.log("Locked ID is: " + String(LockedID));
-        // console.log("CheckID is: " + String(CheckID));
-        const temp_list = archipelago_unlocked_locations.slice();
-        for(let i = 0; i < temp_list.length; i++){
-            if (CheckID == temp_list[i].LocationID)
+        //We're done with LockedID now, so we're going to use it to check if collect has broken the list in any way
+        console.log("Locked ID is: " + String(LockedID));
+        console.log("CheckID is: " + String(CheckID));
+
+        LockedID -= 8;
+        while(LockedID > 14){
+            for(let i = 0; i < locked_list.length; i++){
+                    if(locked_list[i].LocationID == LockedID){
+                        return false;
+                    }
+                }
+            LockedID -= 8;
+        }
+
+        switch(LockedID){
+            case 14:
+            case 13:
+                for(let i = 0; i < locked_list.length; i++){
+                    if(locked_list[i].LocationID == 6 || locked_list[i].LocationID == 2 || locked_list[i].LocationID == 0){
+                        return false;
+                    }
+                }
+                break;
+            case 12:
+            case 11:
+                for(let i = 0; i < locked_list.length; i++){
+                    if(locked_list[i].LocationID == 5 || locked_list[i].LocationID == 2 || locked_list[i].LocationID == 0){
+                        return false;
+                    }
+                }
+                break;
+            case 10:
+            case 9:
+                for(let i = 0; i < locked_list.length; i++){
+                    if(locked_list[i].LocationID == 4 || locked_list[i].LocationID == 1 || locked_list[i].LocationID == 0){
+                        return false;
+                    }
+                }
+                break;
+            case 8:
+            case 7:
+                for(let i = 0; i < locked_list.length; i++){
+                    if(locked_list[i].LocationID == 3 || locked_list[i].LocationID == 1 || locked_list[i].LocationID == 0){
+                        return false;
+                    }
+                }
+                break;
+            default:
+                console.log("Error in IsVisible: Illegial locked ID state");
+        }
+
+        for(let i = 0; i < unlocked_list.length; i++){
+            if (CheckID == unlocked_list[i].LocationID)
             return true;
         }
 
