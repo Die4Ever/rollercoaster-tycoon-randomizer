@@ -1090,8 +1090,20 @@ class RCTRArchipelago extends ModuleBase {
                 objective.push("Required Rides:");
                 var ride_list = (archipelago_objectives.UniqueRides[1]) ? "✓        " : "        ";
                 for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
-                    ride_list += (archipelago_objectives.UniqueRides[0][i]) + ", ";
+                    if(isInPark(archipelago_objectives.UniqueRides[0][i])){
+                        ride_list += ("{GREEN}" + archipelago_objectives.UniqueRides[0][i]) + 
+                            ((i + 1 == archipelago_objectives.UniqueRides[0].length) ?  "": "{BLACK}, ");
+                    }
+                    else if(isUnlocked(archipelago_objectives.UniqueRides[0][i])){
+                        ride_list += ("{YELLOW}" + archipelago_objectives.UniqueRides[0][i]) + 
+                            ((i + 1 == archipelago_objectives.UniqueRides[0].length) ?  "": "{BLACK}, ");
+                    }
+                    else{
+                        ride_list += ("{RED}" + archipelago_objectives.UniqueRides[0][i]) + 
+                            ((i + 1 == archipelago_objectives.UniqueRides[0].length) ?  "": "{BLACK}, ");
+                    }
                 }
+                console.log("This is the ride list: " + ride_list);
                 objective.push(ride_list);
             }
             return objective;
@@ -1622,6 +1634,24 @@ class RCTRArchipelago extends ModuleBase {
     }
 }
 
+function isInPark(ride: string): boolean{
+    let ride_list = map.rides;
+    for(let i = 0; i < ride_list.length; i++){
+        if(ride_list[i].type == RideType[ride])
+            return true;
+    }
+    return false;
+}
+
+function isUnlocked(ride: string): boolean{
+    let ride_list = park.research.inventedItems;
+    for(let i = 0; i < ride_list.length; i++){
+        let compared_ride = ride_list[i] as RideResearchItem;//Have to cast the given item as a RideResearchItem to not make VSCode yell at me.
+        if(compared_ride.rideType == RideType[ride])
+            return true;
+    }
+    return false;
+}
 
 function explodeRide(args: any){
     trace(args);
