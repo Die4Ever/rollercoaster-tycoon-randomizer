@@ -954,8 +954,8 @@ class RCTRArchipelago extends ModuleBase {
                     else{
                         switch(location[i].LocationID%8){
                             case 0: 
-                                display_color = '{RED}';
-                                colorblind_color = 'Red';
+                                display_color = '{BLACK}';
+                                colorblind_color = 'Black';
                                 break;
                             case 1: 
                                 display_color = '{GREEN}';

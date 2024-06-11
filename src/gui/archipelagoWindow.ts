@@ -241,7 +241,7 @@ function archipelagoLocations(){
                                 else{
                                     switch (wanted_number % 8){
                                         case 0: 
-                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {RED}Red Branch!");
+                                        archipelago_print_message("Item " + String(wanted_number) + " is on the {BLACK}Black Branch!");
                                         break;
                                     case 1: 
                                         archipelago_print_message("Item " + String(wanted_number) + " is on the {GREEN}Green Branch!");
