@@ -269,6 +269,23 @@ function archipelagoLocations(){
                             }
                         },
                         {
+                            type: 'checkbox',
+                            name: 'colorblind-toggle',
+                            text: 'Enable Colorblind Mode',
+                            x: 130,
+                            y: 285,
+                            width: 240,
+                            height: 10,
+                            tooltip: 'Have you considered increasing the number of cones in your retnia?',
+                            isChecked: archipelago_settings.colorblind_mode,
+                            onChange: function(isChecked: boolean) {
+                                var currentWindow = ui.getWindow("archipelago-locations");
+                                archipelago_settings.colorblind_mode = isChecked;
+                                currentWindow.findWidget<ListViewWidget>("locked-location-list").items = Archipelago.CreateLockedList();
+                                saveArchipelagoProgress();
+                            }
+                        },
+                        {
                             type: 'button',
                             name: 'excorcize-furry-button',
                             x: 500,
@@ -310,7 +327,7 @@ function archipelagoLocations(){
                             type: 'label',
                             name: 'Connected-to-server',
                             x: 200,
-                            y: 300,
+                            y: 330,
                             width: 300,
                             height: 26,
                             text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
@@ -358,7 +375,7 @@ function archipelagoLocations(){
                             type: 'label',
                             name: 'Connected-to-server',
                             x: 200,
-                            y: 300,
+                            y: 330,
                             width: 300,
                             height: 26,
                             text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",

@@ -19,7 +19,7 @@ interface archipelago_price{
     LocationID: number,
     Price: number,
     Lives: number,
-    RidePrereq: any[]
+    RidePrereq: any[]//Amount, category, excitement, intensity, nausea, length
 }
 interface archipelago_hint{
     ReceivingPlayer: string,
@@ -58,6 +58,7 @@ var archipelago_settings: any = {
     deathlink: false,
     deathlink_timeout: false,
     location_information: locationInfo.None,
+    colorblind_mode: false,
     park_message_chat: true,
     network_chat: true,
     universal_item_messages: false,

@@ -947,56 +947,69 @@ class RCTRArchipelago extends ModuleBase {
             var prices = archipelago_location_prices.slice();
             for(var i = 0; i < location.length; i++){//Loop through every locked location
                 if (self.IsVisible(location[i].LocationID)){
-                    var color = '{WHITE}';
+                    var display_color = '{WHITE}';
+                    var colorblind_color = 'White';
                     if (location[i].LocationID < 7)
-                    color = '{WHITE}';
+                    display_color = '{WHITE}';
                     else{
                         switch(location[i].LocationID%8){
                             case 0: 
-                                color = '{RED}';
+                                display_color = '{RED}';
+                                colorblind_color = 'Red';
                                 break;
                             case 1: 
-                                color = '{GREEN}'
+                                display_color = '{GREEN}';
+                                colorblind_color = 'Green';
                                 break;
                             case 2: 
-                                color = '{BABYBLUE}';
+                                display_color = '{BABYBLUE}';
+                                colorblind_color = "Blue";
                                 break;
                             case 3: 
-                                color = '{YELLOW}';
+                                display_color = '{YELLOW}';
+                                colorblind_color = "Yellow";
                                 break;
                             case 4: 
-                                color = '{PALEGOLD}';
+                                display_color = '{PALEGOLD}';
+                                colorblind_color = "Gold";
                                 break;
                             case 5: 
-                                color = '{PALESILVER}';
+                                display_color = '{PALESILVER}';
+                                colorblind_color = "Silver";
                                 break;
                             case 6: 
-                                color = '{CELADON}'
+                                display_color = '{CELADON}'
+                                colorblind_color = "Celadon";
                                 break;
                             case 7:
-                                color = '{LIGHTPINK}';
+                                display_color = '{LIGHTPINK}';
+                                colorblind_color = "Pink";
                                 break;
                         }
                     }
                     if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
-                        locked.push(color + "[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                        locked.push(display_color + "[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                     }
                     else{//Set up the string denoting the price
                         var prereqs = prices[location[i].LocationID].RidePrereq;
-
-                        var cost = color + "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                        var cost = ""
+                        if(archipelago_settings.colorblind_mode)
+                            cost += "[" + colorblind_color + "] ";
+                        cost += display_color + "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                         // console.log(prereqs);
                         if(prereqs.length != 0) {//Handle prerequisites
-                            cost += " + " + prereqs[0].toString() + " ";
+                            var built = self.CheckElligibleRides(location[i].LocationID);
+                            cost += ((built[0] >= prereqs[0]) ? " + " + prereqs[0].toString() + display_color + " ": 
+                            " + {RED}" + prereqs[0].toString() + display_color + " ");
                             cost += prereqs[1] + "(s)";
                             if(prereqs[2] != 0)//Check for excitement requirement
-                                cost += ', (> ' + prereqs[2] + ' excitement)';
+                                cost += ((built[1] >= prereqs[2]) ? ', (> ' + prereqs[2] + ' excitement)': ',{RED} (> ' + prereqs[2] + ' excitement)' + display_color);
                             if(prereqs[3] != 0)//Check for intensity requirement
-                                cost += ', (> ' + prereqs[3] + ' intensity)';
+                                cost += ((built[2] >= prereqs[3]) ? ', (> ' + prereqs[3] + ' intensity)':',{RED} (> ' + prereqs[3] + ' intensity)' + display_color);
                             if(prereqs[4] != 0)//Check for nausea requirement
-                                cost += ', (> ' + prereqs[4] + ' nausea)';
+                                cost += ((built[3] >= prereqs[4]) ? ', (> ' + prereqs[4] + ' nausea)': '{RED}, (> ' + prereqs[4] + ' nausea)' + display_color);
                             if(prereqs[5] != 0)//Check for length requirement
-                                cost += ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')';
+                                cost += ((built[4] >= prereqs[5]) ? ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')': ',{RED} (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')' + display_color);
                         }
                         locked.push(cost);
                     }
@@ -1349,8 +1362,8 @@ class RCTRArchipelago extends ModuleBase {
             break;
         }
         //We're done with LockedID now, so we're going to use it to check if collect has broken the list in any way
-        console.log("Locked ID is: " + String(LockedID));
-        console.log("CheckID is: " + String(CheckID));
+        trace("Locked ID is: " + String(LockedID));
+        trace("CheckID is: " + String(CheckID));
 
         LockedID -= 8;
         while(LockedID > 14){
@@ -1395,8 +1408,6 @@ class RCTRArchipelago extends ModuleBase {
                     }
                 }
                 break;
-            default:
-                console.log("Error in IsVisible: Illegial locked ID state");
         }
 
         for(let i = 0; i < unlocked_list.length; i++){
@@ -1413,12 +1424,12 @@ class RCTRArchipelago extends ModuleBase {
             return;
         }
         var self = this;
-        trace("Purchasing item number:");
-        trace(item);
+        console.log("Purchasing item number:");
+        console.log(item);
         let Locked = archipelago_locked_locations.slice();
         let Unlocked = archipelago_unlocked_locations.slice();
         let Prices = archipelago_location_prices.slice();
-        let LocationID = Locked[item].LocationID;
+        let LocationID = 0;
         let wantedItem = 0;
         let counter = 0;
         for(let i = 0; i < Locked.length; i++){
@@ -1438,52 +1449,8 @@ class RCTRArchipelago extends ModuleBase {
         trace(Prices[LocationID]);
         if((Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0) || archipelago_skip_enabled){//Check if player has enough cash or if the price is 0.
             if((Prices[LocationID].Lives <= park.guests) || archipelago_skip_enabled){//Check if the player has enough guests to sacrifice
-                var NumQualifiedRides = 0;
-                var object = Prices[LocationID]
-                var ride = RideType[Prices[LocationID].RidePrereq[1]];
-                let ride_list = map.rides;
+                var NumQualifiedRides = self.CheckElligibleRides(LocationID)[0];
                 let guest_list = map.getAllEntities("guest");
-
-                for(var i = 0; i < map.numRides; i++){
-                    var QualifiedExcitement = false;
-                    var QualifiedIntensity = false;
-                    var QualifiedNausea = false;
-                    var QualifiedLength = false;
-                    var elligible = false;
-                    if(Number(ride) > -1){//See if there's a prereq that's a specific ride
-                        if (Number(ride) == ride_list[i].type){//If the rides match, they're elligible
-                        elligible = true;
-                        }
-                    }
-
-                    if (ObjectCategory[object.RidePrereq[1]]){//See if there's a prereq that's a category
-                        let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
-                        for(var j = 0; j < researchItems.length; j++){
-                            if((researchItems[j] as RideResearchItem).rideType == ride_list[i].type){//If the items match...
-                                if(researchItems[j].category == Prices[LocationID].RidePrereq[1]){//Check if the categories match
-                                    elligible = true;
-                                }
-                            }
-                        }
-                    }
-
-                    if (elligible){
-                        QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                        if (ride_list[i].excitement >= (Prereqs[2] * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
-                            QualifiedExcitement = true;
-                        }
-                        if (ride_list[i].intensity >= (Prereqs[3] * 100)){
-                            QualifiedIntensity = true;
-                        }
-                        if (ride_list[i].nausea >= (Prereqs[4] * 100)){
-                            QualifiedNausea = true;
-                        }
-                    }
-
-                    if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
-                        NumQualifiedRides += 1;
-                    }
-                }
                 if(!Prereqs.length || NumQualifiedRides >= Prereqs[0] || archipelago_skip_enabled){
                     if(!archipelago_skip_enabled){
                         trace("Prereqs have been met with this many qualified rides: " + String(NumQualifiedRides));
@@ -1549,6 +1516,67 @@ class RCTRArchipelago extends ModuleBase {
         }
 
         return;
+    }
+
+    CheckElligibleRides(LocationID): any{
+        let Prices = archipelago_location_prices.slice();
+        let Locked = archipelago_locked_locations.slice();
+        var object = Prices[LocationID]
+        let Prereqs = Prices[LocationID].RidePrereq;//Have to get LocationID before we can properly check Prereqs
+        var ride = RideType[Prices[LocationID].RidePrereq[1]];
+        let ride_list = map.rides;
+        var NumQualifiedRides = 0;
+        var QualifiedExcitementCounter = 0;
+        var QualifiedIntensityCounter = 0;
+        var QualifiedNauseaCounter = 0;
+        var QualifiedLengthCounter = 0;
+        console.log(JSON.stringify(Locked));
+        console.log(LocationID);
+        for(var i = 0; i < map.numRides; i++){
+            var QualifiedExcitement = false;
+            var QualifiedIntensity = false;
+            var QualifiedNausea = false;
+            var QualifiedLength = false;
+            var elligible = false;
+            if(Number(ride) > -1){//See if there's a prereq that's a specific ride
+                if (Number(ride) == ride_list[i].type){//If the rides match, they're elligible
+                elligible = true;
+                }
+            }
+
+            if (ObjectCategory[object.RidePrereq[1]]){//See if there's a prereq that's a category
+                let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);//Combine the research lists
+                for(var j = 0; j < researchItems.length; j++){
+                    if((researchItems[j] as RideResearchItem).rideType == ride_list[i].type){//If the items match...
+                        if(researchItems[j].category == Prices[LocationID].RidePrereq[1]){//Check if the categories match
+                            elligible = true;
+                        }
+                    }
+                }
+            }
+
+            if (elligible){
+                QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
+                QualifiedLengthCounter++;
+                if (ride_list[i].excitement >= (Prereqs[2] * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
+                    QualifiedExcitement = true;
+                    QualifiedExcitementCounter++;
+                }
+                if (ride_list[i].intensity >= (Prereqs[3] * 100)){
+                    QualifiedIntensity = true;
+                    QualifiedIntensityCounter++;
+                }
+                if (ride_list[i].nausea >= (Prereqs[4] * 100)){
+                    QualifiedNausea = true;
+                    QualifiedNauseaCounter++;
+                }
+            }
+
+            if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
+                NumQualifiedRides += 1;
+            }
+        }
+        return [NumQualifiedRides,QualifiedExcitementCounter,QualifiedIntensityCounter,QualifiedNauseaCounter,QualifiedLengthCounter];
     }
 
     SendStatus(): any{
