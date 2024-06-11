@@ -1038,7 +1038,7 @@ class RCTRArchipelago extends ModuleBase {
                     return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
                     "{WHITE}If you're still seeing this message after 2 minutes (Be sure to actually close and reopen this window),",
                     "{WHITE}bother Colby in the Discord and he'll complain about past Colby.",
-                    "{WHITE}The secret word for him is 'Penguins'"];
+                    "{WHITE}The secret word for him is 'Seagulls'"];
                 }
                 else
                 return ["Conglaturations! You've unlocked everything! Now go outside and touch some grass."]
