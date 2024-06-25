@@ -194,6 +194,18 @@ const adPool: Ad[] = [
         header: "Ever want to pull your hair out learning the dumbest language?.",
         message: "Try Typescript today!.",
         button: "[object Object]"
+    },
+    {
+        title: "Guests Hate Him!",
+        header: "See how this park owner earns millions",
+        message: "each month with this one simple trick!",
+        button: "You need to know!"
+    },
+    {
+        title: "A Companion to the Bible?",
+        header: "This book will change your life!",
+        message: "Order your free copy of The Book of Mormon Today!",
+        button: "Mormon.org"
     }
 ]
 
