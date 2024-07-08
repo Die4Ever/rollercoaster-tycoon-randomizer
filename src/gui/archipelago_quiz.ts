@@ -165,7 +165,7 @@ var challenges = [
                 }
             },
             {
-                text: '{TINYFONT}Decompression Sickness',
+                text: 'Decompression Sickness',
                 tooltip: 'Such little bubbles, so much pain.',
                 onClick: function() {
                     explodeGuests(50);
@@ -690,9 +690,115 @@ var challenges = [
                 }
             }
         ]
+    },
+    {//Ibeish
+        colors: [66,7], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:'"Thibeis ibeis iba gibeood libeangibeuage!"',
+        label2: "but beware, this comes at a great price. Cibean yibeou spibeak ibeibeish?",
+        label2_tooltip: "Ibeit's ibeasibey! Jibust pibeut ibea 'ibeibe' ibein fribeont ibeof ibevibery vibeoul sibeound!",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: 'Yibes',
+                tooltip: 'Thibeis ibeis thibe cibeoribect ibeansiber',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                    ui.showError("Cibeoribect!", "Gibeood jibeob!");
+                }
+            },
+            {
+                text: 'Nibeo',
+                tooltip: 'Dibeon\'t pibeick thibeis ibeone.',
+                onClick: function() {
+                    ui.showError("Wribeong", "Tribey ibeagibeain.");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            },
+            {
+                text: '{SMALLFONT}Mibeay bibe sibeo?',
+                tooltip: 'Thibeis ibeis ibeanibeothiber quibestibeon. Ibeit\'s wribeong.',
+                onClick: function() {
+                    ui.showError("Wribeong", "Wibeomp wibeomp.");
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                }
+            }
+        ]
+    },
+    {//Dance Party!
+        colors: [36,7], //Colors for the popup
+        label1: "We can banish all your furries to the {PALELAVENDER} SHADOW REALM,",//First line
+        label1_tooltip:'"I like to move it move it!"',
+        label2: "but beware, this comes at a great price. Make your guests dance!",
+        label2_tooltip: "You like to move it move it!",
+        buttons: [//Each button will have a text, tooltip, and function. No more than 9 buttons per challenge
+            {
+                text: '{SMALLFONT}Invisible Boatmobile',
+                tooltip: 'Eat my bubbles!',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                    let guests = map.getAllEntities("guest");
+                    for(let i = 0; i < guests.length; i++){
+                        guests[i].animation = "sittingIdle";
+                    } 
+                }
+            },
+            {
+                text: 'Dab dab',
+                tooltip: 'Dab with me!',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                    let guests = map.getAllEntities("guest");
+                    for(let i = 0; i < guests.length; i++){
+                        guests[i].animation = "disgust";
+                    } 
+                }
+            },
+            {
+                text: 'Hangman',
+                tooltip: 'How do you even dance like that?',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                    let guests = map.getAllEntities("guest");
+                    for(let i = 0; i < guests.length; i++){
+                        guests[i].animation = "hanging";
+                    } 
+                }
+            },
+            {
+                text: 'Drownman',
+                tooltip: 'Totally not getting dragged to the underworld by the Elder Gods.',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                    let guests = map.getAllEntities("guest");
+                    for(let i = 0; i < guests.length; i++){
+                        guests[i].animation = "drowning";
+                    } 
+                }
+            },
+            {
+                text: 'Selfie!',
+                tooltip: 'Betcha didn\'t know the guests had phones!',
+                onClick: function() {
+                    explodeFurries();
+                    ui.getWindow("archipelago-excorcize-furries").close();
+                    let guests = map.getAllEntities("guest");
+                    for(let i = 0; i < guests.length; i++){
+                        guests[i].animation = "takePhoto";
+                    } 
+                }
+            }
+        ]
     }
 ]
 
-function returnChallenge(){
-    return challenges[Math.floor(Math.random() * challenges.length)];
+function returnChallenge(quiz?){
+    if(quiz)
+        return challenges[quiz];
+    else
+        return challenges[Math.floor(Math.random() * challenges.length)];
 }

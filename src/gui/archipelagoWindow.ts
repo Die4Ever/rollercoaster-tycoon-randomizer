@@ -648,13 +648,17 @@ function archipelagoLocations(){
     return window;
 }
 
-function archipelagoExcorcizeFurries(){
+function archipelagoExcorcizeFurries(quiz?){
     if (ui.getWindow("archipelago-excorcize-furries"))
     return;
     var ww = 350;
     var wh = 225;
     let y = 0;
-    let challenge = returnChallenge();
+    let challenge = null;
+    if(quiz)
+        challenge = returnChallenge(quiz);
+    else 
+        challenge = returnChallenge();
     let buttons = [];
     for (let i = 0; i < challenge.buttons.length; i++){
         buttons.push({
@@ -1202,7 +1206,10 @@ function archipelagoDebug(){
                         // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
-                        console.log(archipelago_settings.received_items);
+                        var guests = map.getAllEntities("guest");
+                        for(let i = 0; i < guests.length; i++){
+                            guests[i].animation = "takePhoto";
+                        } 
                         // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
@@ -1221,6 +1228,18 @@ function archipelagoDebug(){
                     text: 'Add Skip',
                     onClick: function() {
                         archipelago_settings.skips ++;
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button26',
+                    x: 415,
+                    y: 50,
+                    width: 200,
+                    height: 25,
+                    text: 'Try Furry Quiz',
+                    onClick: function() {
+                        archipelagoExcorcizeFurries(challenges.length - 1);
                     }
                 }
            ]
