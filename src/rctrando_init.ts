@@ -10,8 +10,8 @@ function info(message?: any, ...optionalParams: any[]): void {
     console.log(message, optionalParams);
 }
 function trace(message?: any, ...optionalParams: any[]): void {
-    //if(bDebug)
-        //console.log(message, optionalParams);
+    // if(bDebug)
+    //     console.log(message, optionalParams);
 }
 
 if (bDebug)

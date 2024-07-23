@@ -1128,25 +1128,31 @@ class RCTRArchipelago extends ModuleBase {
 
     CheckObjectives(): any{
         try{
+            trace("Checking Objectives:");
             var self = this;
             if (scenario.status == "completed"){
                 if(!archipelago_settings.player[1])
                 archipelago_send_message("StatusUpdate", 30);
+                trace("Scenairio Already Completed");
                 return;
             }
             if (park.guests >= Number(archipelago_objectives.Guests[0])){
                 archipelago_objectives.Guests[1] = true;
+                trace("Guests is good!")
             }
             else{
                 archipelago_objectives.Guests[1] = false;
+                trace("Guests is no good!")
             }
             trace("Current park value: " + String(park.value));
             trace("Park value objective: "+ String(archipelago_objectives.ParkValue));
             if (park.value >= (Number(archipelago_objectives.ParkValue[0])*10)){
                 archipelago_objectives.ParkValue[1] = true;
+                trace("Park Value is good!")
             }
             else{
                 archipelago_objectives.ParkValue[1] = false;
+                trace("Park Value is no good!")
             }
 
             if (archipelago_objectives.RollerCoasters[0]){
@@ -1188,10 +1194,12 @@ class RCTRArchipelago extends ModuleBase {
 
                             if (NumQualifiedRides >= Number(archipelago_objectives.RollerCoasters[0])){
                                 archipelago_objectives.RollerCoasters[5] = true;
+                                trace("Coasters are good!");
                                 break;
                             }
                             else {
                                 archipelago_objectives.RollerCoasters[5] = false;
+                                trace("Coasters are not good!");
                             }
                         }
                     }
@@ -1208,17 +1216,21 @@ class RCTRArchipelago extends ModuleBase {
 
             if (park.rating >= Number(archipelago_objectives.ParkRating[0])){
                 archipelago_objectives.ParkRating[1] = true;
+                trace("Rating is good!")
             }
             else{
                 archipelago_objectives.ParkRating[1] = false;
+                trace("Rating is no good!")
             }
 
             if (archipelago_objectives.LoanPaidOff[0] == true)//Check if Loans are enabled
             {
                 if (park.bankLoan <= 0){//Check if loan is paid off //TODO: This may be a glitch. Go check future Colby
                     archipelago_objectives.LoanPaidOff[1] = true;
+                    trace("Loan is good!")
                 }
                 else{
+                    trace("Loan is no good!")
                     archipelago_objectives.LoanPaidOff[1] = false;
                 }
             }
@@ -1227,8 +1239,10 @@ class RCTRArchipelago extends ModuleBase {
             }
 
             if (archipelago_objectives.Monopoly[0]){//Check if Monopoly is Enabled
-                if(archipelago_settings.monopoly_complete)
-                archipelago_objectives.Monopoly[1] = true;
+                if(archipelago_settings.monopoly_complete){
+                    archipelago_objectives.Monopoly[1] = true;
+                    trace("Monopoly is good!")
+                }
             }
             else {//If Monopoly isn't enabled, autoset to true
                 archipelago_objectives.Monopoly[1] = true;
@@ -1240,7 +1254,7 @@ class RCTRArchipelago extends ModuleBase {
                     var checkedRide = archipelago_objectives.UniqueRides[0][i];
                     for(let j = 0; j < map.numRides; j++){
                         if (Number(RideType[checkedRide]) == map.rides[j].type){
-                            if (map.rides[j].excitement > 1){
+                            if (map.rides[j].excitement > 1 || map.rides[j].intensity > 1){
                                 trace(map.rides[j].excitement);
                                 found = true;
                                 break;
@@ -1252,10 +1266,14 @@ class RCTRArchipelago extends ModuleBase {
                         break;
                     }
                 }
-                if (goal_complete)
-                archipelago_objectives.UniqueRides[1] = true;
-                else
-                archipelago_objectives.UniqueRides[1] = false;
+                if (goal_complete){
+                    archipelago_objectives.UniqueRides[1] = true;
+                    trace("Unique is good!")
+                }
+                else{
+                    archipelago_objectives.UniqueRides[1] = false;
+                    trace("Unique is no good!")
+                }
             }
             else{
                 archipelago_objectives.UniqueRides[1] = true;
@@ -1267,7 +1285,7 @@ class RCTRArchipelago extends ModuleBase {
                 archipelago_objectives.LoanPaidOff[1] == true &&
                 archipelago_objectives.Monopoly[1] == true && archipelago_objectives.UniqueRides[1] == true){
                 context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => archipelago_send_message("StatusUpdate", 30));
-
+                trace("The file won! Yayyyy!");
             }
         }
         catch(e){
