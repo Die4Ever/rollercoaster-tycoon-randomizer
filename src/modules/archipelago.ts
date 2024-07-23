@@ -1621,20 +1621,22 @@ class RCTRArchipelago extends ModuleBase {
             }
         }
         park.setFlag("noMoney", false);
-        switch(archipelago_settings.preferred_intensity){
-            case 0:
-                park.setFlag("preferLessIntenseRides", true);
-                park.setFlag("preferMoreIntenseRides", false);
-                break;
-            case 1:
-                park.setFlag("preferLessIntenseRides", false);
-                park.setFlag("preferMoreIntenseRides", false);
-                break;
-            case 2:
-                park.setFlag("preferLessIntenseRides", false);
-                park.setFlag("preferMoreIntenseRides", true);
-                break;
-            }
+        context.setTimeout(() => {//Wait 5 seconds to change this back if the base randomizer
+            switch(archipelago_settings.preferred_intensity){//alters it.
+                case 0:
+                    park.setFlag("preferLessIntenseRides", true);
+                    park.setFlag("preferMoreIntenseRides", false);
+                    break;
+                case 1:
+                    park.setFlag("preferLessIntenseRides", false);
+                    park.setFlag("preferMoreIntenseRides", false);
+                    break;
+                case 2:
+                    park.setFlag("preferLessIntenseRides", false);
+                    park.setFlag("preferMoreIntenseRides", true);
+                    break;
+                }
+        }, 5000);
         park.setFlag("unlockAllPrices", true);//Allows charging for the entrance, rides, or both
     }
 
