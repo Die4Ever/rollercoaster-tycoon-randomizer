@@ -1206,10 +1206,7 @@ function archipelagoDebug(){
                         // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
-                        var guests = map.getAllEntities("guest");
-                        for(let i = 0; i < guests.length; i++){
-                            guests[i].animation = "takePhoto";
-                        } 
+                        console.log(scenario.name);
                         // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
