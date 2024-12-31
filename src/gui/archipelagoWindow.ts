@@ -276,7 +276,7 @@ function archipelagoLocations(){
                             y: 285,
                             width: 240,
                             height: 10,
-                            tooltip: 'Have you considered increasing the number of cones in your retnia?',
+                            tooltip: 'If you\'re clicking this, you are most likely caucasian and male! That\s true of both colorblind people *and* Archipelago players!',
                             isChecked: archipelago_settings.colorblind_mode,
                             onChange: function(isChecked: boolean) {
                                 var currentWindow = ui.getWindow("archipelago-locations");
