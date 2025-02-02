@@ -35,6 +35,288 @@ function archipelagoGui(){
         }
     }
 
+    var tutorial_0 = function() {
+        var tutorial_0 = ui.openWindow({
+            classification: 'tutorial-1',
+            title: "How to play!",
+            width: ww,
+            height: wh,
+            widgets: [].concat(
+                NewLabel("Welcome to Archipelago! You may be thinking \"Gee, how do you even play Roller Coaster Tycoon on Archipelago?\" or \"What IS Archipelago?", {
+                    name: 'Line-1',
+                    y: 0,
+                    width: 2,
+                    tooltip: "You may also be thinking \"Gee, I bet the developer of this mod is really cool, good looking and humble!\", but that's neither here nor there."
+                }),
+                NewLabel("Archipelago is a multi-game, multi-world randomizer! Have you ever wanted to play Minecraft, Ocarina of Time, and OpenRCT2 cooperatively at the same time, with everything interlinked? Now you can!", {
+                    name: 'Line-2',
+                    y: 1.5,
+                    width: 2,
+                    tooltip: "If you said no, you're probably a liar."
+                }),
+                NewLabel("First off, make sure your game is connected and you have Archipelago running. You can find those instructions at archipelago.gg", {
+                    name: 'Line-3',
+                    y: 3,
+                    width: 2,
+                    tooltip: "Fun fact: gg is the country code top-level domain for the Bailiwick of Guernsey. Fun fact 2: I have no idea where the p*ck the Balilwick of Guernsey is."
+                }),
+                [{
+                    type: 'button',
+                    name: 'cancel-button',
+                    x: ww - 160 - 88 - 6,
+                    y: wh - 6 - 26 - 29,
+                    width: 85,
+                    height: 26,
+                    text: 'Cancel',
+                    tooltip: 'Changed your mind? Fine, I didn\'t want you to read this anyways!',
+                    onClick: function() {
+                        tutorial_0.close();
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'next-button',
+                    x: ww - 160 - 6,
+                    y: wh - 6 - 26 - 29,
+                    width: 85,
+                    height: 26,
+                    text: 'Next Page',
+                    tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                    isDisabled: false,
+                    onClick: function() {
+                        tutorial_0.close();
+                        tutorial_1();
+                    }
+                },
+                {
+                    type: 'custom',
+                    name: 'custom-archipealgo-logo-1',
+                    x: 5,
+                    y: wh - 24,
+                    width: 22,
+                    height: 20,
+                    tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                }
+                ]
+            )
+        })
+        return tutorial_0;
+    }
+
+    var tutorial_1 = function() {
+        var tutorial_1 = ui.openWindow({
+            classification: 'tutorial-1',
+            title: "How to play!",
+            width: ww,
+            height: wh + 80,
+            widgets: [].concat(
+                NewLabel("Once your game is connected, hit the \"Start Game!\" button to begin!", {
+                    name: 'Line-1',
+                    y: 0,
+                    width: 2,
+                    tooltip: "In online games, usually people run a countdown before everyone begins. You'll probably want to look at the client for that, since messages are weird while the game is paused."
+                }),
+                NewLabel("The primary method of progress in your game will be purchasing items in the shop. You can find the shop under the map icon labeled \"Archipelago Checks!\". You can also strike the \"Home\" key to open it.", {
+                    name: 'Line-2',
+                    y: 1.5,
+                    width: 2,
+                    tooltip: "If the shop is empty, past Colby p*cked up the code. See the troubleshooting guide online. Just kidding! There isn't one."
+                }),
+                {
+                    type: 'custom',
+                    name: 'menu-location',
+                    x: ww / 3,
+                    y: wh - 120,
+                    width: 131,
+                    height: 160,
+                    tooltip: 'Importing images to an OpenRCT2 plugin is a pain. I hope you\'re thankful!',
+                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_menu_location_image_ID.start).id, 0,0)}
+                },
+                [{
+                    type: 'button',
+                    name: 'back-button',
+                    x: ww - 160 - 88 - 6,
+                    y: wh - 6 - 26 - 29 + 90,
+                    width: 85,
+                    height: 26,
+                    text: 'Back',
+                    tooltip: 'The previous page was pretty good, wasn\'t it?',
+                    onClick: function() {
+                        tutorial_1.close();
+                        tutorial_0();
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'next-button',
+                    x: ww - 160 - 6,
+                    y: wh - 6 - 26 - 29 + 90,
+                    width: 85,
+                    height: 26,
+                    text: 'Next Page',
+                    tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                    isDisabled: false,
+                    onClick: function() {
+                        tutorial_1.close();
+                        tutorial_2();
+                    }
+                },
+                {
+                    type: 'custom',
+                    name: 'custom-archipealgo-logo-1',
+                    x: 5,
+                    y: wh - 24 + 80,
+                    width: 22,
+                    height: 20,
+                    tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                }
+                ]
+            )
+        })
+        return tutorial_1;
+    }
+
+    var tutorial_2 = function() {
+        var tutorial_2 = ui.openWindow({
+            classification: 'tutorial-2',
+            title: "How to play!",
+            width: ww,
+            height: wh,
+            widgets: [].concat(
+                NewLabel("The first tab you'll see upon opening the shop is well, the shop. Here you can buy items for other games! Depending on your settings, you'll see who it goes to and what it is.", {
+                    name: 'Line-1',
+                    y: 0,
+                    width: 2,
+                    tooltip: "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+                }),
+                NewLabel("You'll see some items in the shop have different colors.", {
+                    name: 'Line-2',
+                    y: 1.5,
+                    width: 2,
+                    tooltip: "I'll be honest, I put that in because its easy to track and looks more important than it actually is."
+                }),
+                NewLabel("Tab 3 is the goals tab! Here you'll see what needs to be done to complete your scenario. The colors you see under \"required rides\" indicates their completion. {GREEN}Green rides are built and ready! {YELLOW}Yellow rides are unlocked, but not yet built. {RED}Red rides are not unlocked. Somebody will need to find them before you can build it.", {
+                    name: 'Line-3',
+                    y: 3,
+                    width: 2,
+                    tooltip: ""
+                }),
+                [{
+                    type: 'button',
+                    name: 'back-button',
+                    x: ww - 160 - 88 - 6,
+                    y: wh - 6 - 26 - 29,
+                    width: 85,
+                    height: 26,
+                    text: 'Back',
+                    tooltip: 'The previous page was pretty good, wasn\'t it?',
+                    onClick: function() {
+                        tutorial_2.close();
+                        tutorial_1();
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'next-button',
+                    x: ww - 160 - 6,
+                    y: wh - 6 - 26 - 29,
+                    width: 85,
+                    height: 26,
+                    text: 'Next Page',
+                    tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                    isDisabled: false,
+                    onClick: function() {
+                        tutorial_2.close();
+                        tutorial_3();
+                    }
+                },
+                {
+                    type: 'custom',
+                    name: 'custom-archipealgo-logo-1',
+                    x: 5,
+                    y: wh - 24,
+                    width: 22,
+                    height: 20,
+                    tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                }
+                ]
+            )
+        })
+        return tutorial_2;
+    }
+
+    var tutorial_3 = function() {
+        var tutorial_3 = ui.openWindow({
+            classification: 'tutorial-2',
+            title: "How to play!",
+            width: ww,
+            height: wh,
+            widgets: [].concat(
+                NewLabel("The first tab you'll see upon opening the shop is well, the shop. Here you can buy items for other games! Depending on your settings, you'll see who it goes to and what it is.", {
+                    name: 'Line-1',
+                    y: 0,
+                    width: 2,
+                    tooltip: "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+                }),
+                NewLabel("The second tab is your purchase history. Use it when your friends say you aren't pulling your weight.", {
+                    name: 'Line-2',
+                    y: 1.5,
+                    width: 2,
+                    tooltip: "I'll be honest, I put that in because its easy to track and looks more important than it actually is."
+                }),
+                NewLabel("Tab 3 is the goals tab! Here you'll see what needs to be done to complete your scenario. The colors you see under \"required rides\" indicates their completion. {GREEN}Green rides are built and ready! {YELLOW}Yellow rides are unlocked, but not yet built. {RED}Red rides are not unlocked. Somebody will need to find them before you can build it.", {
+                    name: 'Line-3',
+                    y: 3,
+                    width: 2,
+                    tooltip: ""
+                }),
+                [{
+                    type: 'button',
+                    name: 'back-button',
+                    x: ww - 160 - 88 - 6,
+                    y: wh - 6 - 26 - 29,
+                    width: 85,
+                    height: 26,
+                    text: 'Back',
+                    tooltip: 'The previous page was pretty good, wasn\'t it?',
+                    onClick: function() {
+                        tutorial_3.close();
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'next-button',
+                    x: ww - 160 - 6,
+                    y: wh - 6 - 26 - 29,
+                    width: 85,
+                    height: 26,
+                    text: 'Next Page',
+                    tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                    isDisabled: false,
+                    onClick: function() {
+                        tutorial_3.close();
+                    }
+                },
+                {
+                    type: 'custom',
+                    name: 'custom-archipealgo-logo-1',
+                    x: 5,
+                    y: wh - 24,
+                    width: 22,
+                    height: 20,
+                    tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                }
+                ]
+            )
+        })
+        return tutorial_3;
+    }
+
+
     var window = ui.openWindow({
         classification: 'archipelago-connect',
         title: "Archipelago Connection",
@@ -96,6 +378,20 @@ function archipelagoGui(){
                     onStart();
                     trace("At this point, the user should be playing Archipelago! This only needs to be clicked once per multiworld");
                     window.close();
+                }
+            },
+            {
+                type: 'button',
+                name: 'Tutorial-button',
+                x: ww - 160 - 44 - 6,
+                y: wh - 24 - 6,
+                width: 85,
+                height: 26,
+                text: 'Tutorial',
+                tooltip: 'I\'ll learn you good!',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_0();
                 }
             },
             {
