@@ -949,7 +949,7 @@ class RCTRArchipelago extends ModuleBase {
                 if (self.IsVisible(location[i].LocationID)){
                     var display_color = '{WHITE}';
                     var colorblind_color = 'White';
-                    if (location[i].LocationID < 7)
+                    if (location[i].LocationID < 8)
                     display_color = '{WHITE}';
                     else{
                         switch(location[i].LocationID%8){
