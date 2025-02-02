@@ -937,7 +937,7 @@ class RCTRArchipelago extends ModuleBase {
             console.log("Error in Create Unlocked List:" + e);
         }
     }
-
+    //TODO: Update code to show correct color branch instead of total location number
     CreateLockedList(): any{
         try{
             var self = this;
