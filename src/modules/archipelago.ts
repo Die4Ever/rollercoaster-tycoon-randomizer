@@ -1667,6 +1667,9 @@ class RCTRArchipelago extends ModuleBase {
 
         if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){//The above code couldn't find any new games, whch hypothetically means we have them all
             trace("We have all the games! Either that or future Colby is really annoyed right now");
+            if(!context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")){
+                context.getParkStorage().set("RCTRando.ArchipelagoItemIDToName",full_item_id_to_name);//P*cking past Colby forgot to check for the case of a single player game
+                context.getParkStorage().set("RCTRando.ArchipelagoLocationIDToName",full_location_id_to_name);
             return;
         }
         trace("Request Counter:");
