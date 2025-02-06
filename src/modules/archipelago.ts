@@ -1671,6 +1671,7 @@ class RCTRArchipelago extends ModuleBase {
                 context.getParkStorage().set("RCTRando.ArchipelagoItemIDToName",full_item_id_to_name);//P*cking past Colby forgot to check for the case of a single player game
                 context.getParkStorage().set("RCTRando.ArchipelagoLocationIDToName",full_location_id_to_name);
             return;
+            }
         }
         trace("Request Counter:");
         trace(archipelago_repeat_game_request_counter);
