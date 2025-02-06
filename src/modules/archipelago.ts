@@ -907,15 +907,16 @@ class RCTRArchipelago extends ModuleBase {
             var unlocked = [];
             var location = archipelago_unlocked_locations;
             var prices = archipelago_location_prices;
-            for(var i = 0; i < location.length; i++){//Loop through every locked location
+            for(var i = 0; i < location.length; i++){//Loop through every unlocked location
+                var [display_color, colorblind_color] = self.GetColors(location[i].LocationID);
                 let item = context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")[archipelago_unlocked_locations[i].Item]
-                unlocked.push("[" + location[i].LocationID + "] " + "Unlocked " + item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
+                unlocked.push("Unlocked " + item + " for " + archipelago_unlocked_locations[i].ReceivingPlayer + "!");
                 if (prices[location[i].LocationID].Price == 0){//If the price is 0, paid with blood instead of cash
-                    unlocked.push("          Instead of cash, you sacrificed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                    unlocked.push(display_color + "          [" + (location[i].LocationID < 8 ? location[i].LocationID : Math.floor(location[i].LocationID / 8) - 1) + "] " + "Instead of cash, you sacrificed " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                 }
                 else{//Set up the string denoting the price
                     var prereqs = prices[location[i].LocationID].RidePrereq;
-                    var cost = "          " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                    var cost = display_color + "          " + "[" + (location[i].LocationID < 8 ? location[i].LocationID : Math.floor(location[i].LocationID / 8) - 1) + "] "  + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                     if(prereqs.length != 0) {//Handle prerequisites
                         cost += " + " + prereqs[0].toString() + " ";
                         cost += prereqs[1] + "(s)";
@@ -943,61 +944,22 @@ class RCTRArchipelago extends ModuleBase {
             var self = this;
             var locked = [];
             var location = archipelago_locked_locations.slice();
-            // console.log(location);
             var prices = archipelago_location_prices.slice();
             for(var i = 0; i < location.length; i++){//Loop through every locked location
                 if (self.IsVisible(location[i].LocationID)){
-                    var display_color = '{WHITE}';
-                    var colorblind_color = 'White';
-                    if (location[i].LocationID < 8)
-                    display_color = '{WHITE}';
-                    else{
-                        switch(location[i].LocationID%8){
-                            case 0: 
-                                display_color = '{BLACK}';
-                                colorblind_color = 'Black';
-                                break;
-                            case 1: 
-                                display_color = '{GREEN}';
-                                colorblind_color = 'Green';
-                                break;
-                            case 2: 
-                                display_color = '{BABYBLUE}';
-                                colorblind_color = "Blue";
-                                break;
-                            case 3: 
-                                display_color = '{YELLOW}';
-                                colorblind_color = "Yellow";
-                                break;
-                            case 4: 
-                                display_color = '{PALEGOLD}';
-                                colorblind_color = "Gold";
-                                break;
-                            case 5: 
-                                display_color = '{PALESILVER}';
-                                colorblind_color = "Silver";
-                                break;
-                            case 6: 
-                                display_color = '{CELADON}'
-                                colorblind_color = "Celadon";
-                                break;
-                            case 7:
-                                display_color = '{LIGHTPINK}';
-                                colorblind_color = "Pink";
-                                break;
-                        }
-                    }
+                    var [display_color, colorblind_color] = self.GetColors(location[i].LocationID);
                     if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
                         locked.push(display_color + "[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                     }
+                    //Maybe I'll use this somewhere for colorblind mode: ❌
                     else{//Set up the string denoting the price
                         var prereqs = prices[location[i].LocationID].RidePrereq;
                         var cost = ""
-                        if(archipelago_settings.colorblind_mode)
-                            cost += "[" + colorblind_color + "] ";
-                        cost += display_color + "[" + location[i].LocationID + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
+                        // if(archipelago_settings.colorblind_mode)
+                        //     cost += "[" + colorblind_color + "] ";
+                        cost += (archipelago_settings.colorblind_mode ? "[" + colorblind_color + "] ": display_color) + "[" + (location[i].LocationID < 8 ? location[i].LocationID : Math.floor(location[i].LocationID / 8) - 1) + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                         // console.log(prereqs);
-                        if(prereqs.length != 0) {//Handle prerequisites
+                        if(prereqs.length != 0) {//Handle prerequisites 
                             var built = self.CheckElligibleRides(location[i].LocationID);
                             cost += ((built[0] >= prereqs[0]) ? " + " + prereqs[0].toString() + display_color + " ": 
                             " + {RED}" + prereqs[0].toString() + display_color + " ");
@@ -1048,6 +1010,52 @@ class RCTRArchipelago extends ModuleBase {
         catch(e){
             console.log("Error in CreateLockedList:" + e);
         }
+    }
+
+    GetColors(locationID): any{
+        var display_color = '{WHITE}';
+        var colorblind_color = 'White';
+        if (locationID < 8)
+            display_color = '{WHITE}';
+        else{
+            switch(locationID%8){
+                case 0: 
+                    display_color = '{BLACK}';
+                    colorblind_color = 'Black';
+                    break;
+                case 1: 
+                    display_color = '{GREEN}';
+                    colorblind_color = 'Green';
+                    break;
+                case 2: 
+                    display_color = '{BABYBLUE}';
+                    colorblind_color = "Blue";
+                    break;
+                case 3: 
+                    display_color = '{YELLOW}';
+                    colorblind_color = "Yellow";
+                    break;
+                case 4: 
+                    display_color = '{PALEGOLD}';
+                    colorblind_color = "Gold";
+                    break;
+                case 5: 
+                    display_color = '{PALESILVER}';
+                    colorblind_color = "Silver";
+                    break;
+                case 6: 
+                    display_color = '{CELADON}'
+                    colorblind_color = "Celadon";
+                    break;
+                case 7:
+                    display_color = '{LIGHTPINK}';
+                    colorblind_color = "Pink";
+                    break;
+            }
+        }
+        if (archipelago_settings.colorblind_mode)
+            display_color = '{BLACK}';
+        return [display_color, colorblind_color];
     }
 
     CreateObjectiveList(): any{
@@ -1116,7 +1124,7 @@ class RCTRArchipelago extends ModuleBase {
                             ((i + 1 == archipelago_objectives.UniqueRides[0].length) ?  "": "{BLACK}, ");
                     }
                 }
-                console.log("This is the ride list: " + ride_list);
+                // console.log("This is the ride list: " + ride_list);
                 objective.push(ride_list);
             }
             return objective;
