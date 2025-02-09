@@ -323,6 +323,8 @@ class RCTRArchipelago extends ModuleBase {
         // console.log("\n\n\n\n\n");
 
         objectManager.load(["rct2.ride.atm1","rct2.ride.faid1"]);//Add First Aid Room and ATM. They won't be unlocked if the yaml says they won't
+        //Loads the entertainers into the park for the furry trap
+        objectManager.load(["rct2.peep_animations.entertainer_elephant.json","rct2.peep_animations.entertainer_gorilla.json","rct2.peep_animations.entertainer_panda.json","rct2.peep_animations.entertainer_tiger.json"])
 
         for(let i=0; i<researchItems.length; i++) {//We still randomize the items since finding multiple copies will unlock different vehicles
             let a = researchItems[i];
@@ -382,7 +384,7 @@ class RCTRArchipelago extends ModuleBase {
                 if (compare_number === undefined)
                 compare_number = 0;
                 if(compare_list[i][j] > compare_number){//If its not on the list already
-                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000119){//This number will need to change if we ever add more items/traps/etc.
+                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000121){//This number will need to change if we ever add more items/traps/etc.
                         var item = item_id_to_name[compare_list[i][0]];
                         trace(item);
                         if(item.indexOf("Trap") > -1)
@@ -553,7 +555,8 @@ class RCTRArchipelago extends ModuleBase {
         furry_number = 300;
         for(let i = 0; i < furry_number; i++){
             var furry_type = Math.floor(Math.random() * 3);
-            context.executeAction("staffhire",{autoPosition: true, staffType: 3, entertainerType: furry_type, staffOrders: 0} as StaffHireArgs);
+            // context.executeAction("staffhire",{autoPosition: true, staffType: 3, entertainerType: furry_type, staffOrders: 0} as StaffHireArgs);
+            let furry = context.executeAction("staffhire", {autoPosition: true, staffType: 3});
         }
     }
 
@@ -1646,6 +1649,7 @@ class RCTRArchipelago extends ModuleBase {
                 }
         }, 5000);
         park.setFlag("unlockAllPrices", true);//Allows charging for the entrance, rides, or both
+        console.log("Ducks");
     }
 
     RequestGames(): void{
