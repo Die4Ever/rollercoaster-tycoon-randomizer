@@ -102,5 +102,8 @@ enum RideType {
     "Hybrid Coaster",
     "Single Rail Roller Coaster",
     "Alpine Roller Coaster",
-    "Classic Wooden Roller Coaster"
+    "Classic Wooden Roller Coaster",
+    "Classic Stand-up Roller Coaster",
+    "LSM Launched Roller Coaster",
+    "Classic Wooden Twister Roller Coaster"
 }

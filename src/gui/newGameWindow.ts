@@ -7,7 +7,7 @@ function startGameGui() {
     if (typeof ui === 'undefined') {
         info('startGameGui() ui is undefined');
         initRando();
-        return;
+        return null;
     }
 
     if(global_settings.auto_pause) {
@@ -17,6 +17,9 @@ function startGameGui() {
     let y = 0;
 
     var onStart = function(window) {
+        if(settings.rando_archipelago === true) {
+            return;
+        }
         var s = window.findWidget('edit-seed');
         setGlobalSeed(s['text']);
         var d = window.findWidget('difficulty');
@@ -35,13 +38,11 @@ function startGameGui() {
         settings.num_months_cycle = randoCycles[cycle['text']];
 
         // we need to unpause the game in order for the next tick to run
-        var wasPaused = UnpauseGame();
+        UnpauseGame();
         runNextTick(function() {
             initRando();
-            if(wasPaused.wasPaused && global_settings.auto_pause) {
-                // we know the game is currently unpaused because we're inside a tick event
-                // so we don't need the fancy PauseGame function
-                context.executeAction('pausetoggle', {});
+            if(global_settings.auto_pause) {
+                PauseGame();
             }
             createChangesWindow();
         });
@@ -53,7 +54,7 @@ function startGameGui() {
         width: ww,
         height: wh,
         widgets: [].concat(
-            NewLabel('https://discord.gg/jjfKT9nYDR', {
+            NewLabel('Mods4Ever.com/discord', {
                 name: 'url',
                 y: y++,
                 width: 2,
@@ -103,9 +104,9 @@ function startGameGui() {
             [{
                 type: 'button',
                 name: 'cancel-button',
-                x: ww - 90 - 6,
-                y: wh - 6 - 26 - 29,
-                width: 90,
+                x: ww - 90 - 88 - 6,
+                y: wh - 6 - 26,
+                width: 85,
                 height: 26,
                 text: 'Disable Rando',
                 onClick: function() {
@@ -124,6 +125,42 @@ function startGameGui() {
                 onClick: function() {
                     window.close();
                 }
+            },
+            {
+                type: 'button',
+                name: 'archipelago-button',
+                x: ww - 90 - 63,
+                y: wh - 6 - 26 - 29,
+                width: 114,
+                height: 26,
+                text: 'Archipelago!',
+                tooltip: 'Prepares this park to connect to a game of Archipelago!',
+                onClick: function() {
+                    init_archipelago_connection();
+                    archipelagoGui();
+                    settings.rando_archipelago = true;
+                    window.close();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: ww - 90 - 88,
+                y: wh - 4 - 26 - 29,
+                width: 22,
+                height: 20,
+                tooltip: 'Archipelago is a multiworld randomizer that lets you play your favorite games with your friends, no matter what they play!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-2',
+                x: ww - 35,
+                y: wh - 4 - 26 - 29,
+                width: 22,
+                height: 20,
+                tooltip: 'Ever wanted to see Zelda, Hollow Knight, Mario, and OpenRCT2 all mix together?',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
             }]
         ),
         onClose: function() {

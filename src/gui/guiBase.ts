@@ -127,7 +127,7 @@ function createOptionsWindow() {
         width: window_width,
         height: window_height,
         widgets: [
-            NewLabel('https://discord.gg/jjfKT9nYDR', {
+            NewLabel('Mods4Ever.com/discord', {
                 name: 'url',
                 y: 0,
                 width: 1.3,

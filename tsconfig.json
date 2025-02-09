@@ -1,9 +1,22 @@
 {
     "compilerOptions": {
-        "lib": ["es2015"],
+        "lib": [
+            "es2015"
+        ],
         "outFile": "./out/rctrando.js",
         "target": "ES5",
-        "removeComments": true
+        "removeComments": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": false,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": false,
+        "noImplicitOverride": false,
+        "noImplicitReturns": true,
+        "noImplicitThis": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "strict": false,
+        "noEmitOnError": false
     },
     "filesGlob": [
         "lib/openrct2.d.ts",

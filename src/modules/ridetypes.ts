@@ -66,6 +66,25 @@ class RCTRRideTypes extends ModuleBase {
         }
     }
 
+    GetRideTypeMultipliers(rideTypeId) {
+        let isIntense:boolean = true;// TODO: need a list of rides that aren't intense so they get a larger range
+
+        this.SetRideTypeSeed(rideTypeId, 'ride');
+        let ret = {}
+        ret['excitement'] = this.GetRideTypeFieldMult(-1, 0.5);
+        ret['intensity'] = this.GetRideTypeFieldMult(0, isIntense ? 0.3 : 0.5);
+        ret['nausea'] = this.GetRideTypeFieldMult(-1, 0.3);
+
+        return ret;
+    }
+
+    GetShopTypeMultipliers(shopTypeId) {
+        this.SetRideTypeSeed(shopTypeId, 'runningCost');
+        let ret = {};
+        ret['runningCost'] = this.GetRideTypeFieldMult(1, 0.5);
+        return ret;
+    }
+
     RandomizeRideTypeStats(rideId, ride, rideTypeId, classification) {
         let changed:boolean = false;
         let isIntense:boolean = true;// TODO: need a list of rides that aren't intense so they get a larger range
@@ -74,14 +93,14 @@ class RCTRRideTypes extends ModuleBase {
 
         if(isRide) {
             this.SetRideTypeSeed(rideTypeId, 'ride');
-            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'excitement', -1) || changed;
-            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'intensity', 0, isIntense ? 0.5 : 1.0) || changed;
-            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1, 0.7) || changed;
+            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'excitement', -1, 0.5) || changed;
+            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'intensity', 0, isIntense ? 0.3 : 0.5) || changed;
+            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'nausea', -1, 0.3) || changed;
         }
 
         if(ride && ride.runningCost > 0) {
             this.SetRideTypeSeed(rideTypeId, 'runningCost');
-            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1) || changed;
+            changed = this.RandomizeRideTypeField(ride, rideTypeName, rideTypeId, 'runningCost', 1, 0.5) || changed;
         }
 
         /*if(changed) {
@@ -114,11 +133,16 @@ class RCTRRideTypes extends ModuleBase {
         setLocalSeed('RandomizeRide ' + rideTypeId + ' ' + cycle + salt);
     }
 
-    RandomizeRideTypeField(ride, rideTypeName, rideTypeId, name, difficulty, wetdry=1) {
-        const type = rideTypeId;
+    GetRideTypeFieldMult(difficulty, wetdry=1) {
         let factor = randomize(1, difficulty);
         const dry = 1 - wetdry;
         factor = (factor * wetdry) + (1 * dry);
+        return factor;
+    }
+
+    RandomizeRideTypeField(ride, rideTypeName, rideTypeId, name, difficulty, wetdry=1) {
+        const type = rideTypeId;
+        let factor = this.GetRideTypeFieldMult(difficulty, wetdry);
         if(ride && ride[name])
             ride[name] *= factor;
         const key_name = 'ride:'+type+':'+name;
