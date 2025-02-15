@@ -1657,20 +1657,20 @@ class RCTRArchipelago extends ModuleBase {
         let games = archipelago_settings.multiworld_games;
         let received_games = archipelago_settings.received_games;
         archipelago_repeat_game_request_ready = false;
-        trace(received_games);
+        //console.log(received_games);
         if (!games.length || !archipelago_connected_to_server){//If we haven't received the game list yet, we can't actually do anything
             context.setTimeout(() => {self.RequestGames();}, 250);
             return;
         }
-        trace("We have the list of games!")
+        console.log("We have the list of games!")
         //If we haven't started yet or if the current game has already been received
         if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){
             for(let i = 0; i < games.length; i++){
                 if(received_games.indexOf(games[i]) === -1){
                     archipelago_current_game_request = games[i];
                     archipelago_repeat_game_request_ready = true;
-                    trace("We have a new game to request:");
-                    trace(archipelago_current_game_request);
+                    console.log("We have a new game to request:");
+                    console.log(archipelago_current_game_request);
                     archipelago_repeat_game_request_counter = 0;
                     break;
                 }
@@ -1678,15 +1678,15 @@ class RCTRArchipelago extends ModuleBase {
         }
 
         if(!archipelago_current_game_request || received_games.indexOf(archipelago_current_game_request) !== -1){//The above code couldn't find any new games, whch hypothetically means we have them all
-            trace("We have all the games! Either that or future Colby is really annoyed right now");
+            console.log("We have all the games! Either that or future Colby is really annoyed right now");
             if(!context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName")){
                 context.getParkStorage().set("RCTRando.ArchipelagoItemIDToName",full_item_id_to_name);//P*cking past Colby forgot to check for the case of a single player game
                 context.getParkStorage().set("RCTRando.ArchipelagoLocationIDToName",full_location_id_to_name);
-            return;
             }
+            return;//P*cking past Colby needs to put his returns in the right spot
         }
-        trace("Request Counter:");
-        trace(archipelago_repeat_game_request_counter);
+        console.log("Request Counter:");
+        console.log(archipelago_repeat_game_request_counter);
         if (archipelago_repeat_game_request_counter > 80){
             archipelago_repeat_game_request_ready = true;
             archipelago_repeat_game_request_counter = 0;
