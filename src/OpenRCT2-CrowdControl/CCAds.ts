@@ -18,7 +18,7 @@ const adPool: Ad[] = [
         title: "FREE!!!!!!!!!!!!!!!!",
         header: "Get Free Money!!",
         message: "Get Money Right Now!!",
-        button: "Get " + context.formatString("{CURRENCY2DP}", 10000),
+        button: ("Get " + context.formatString("{CURRENCY2DP}", 10000)),
         onClick: () => 
             {
                 park.cash += 10000;
