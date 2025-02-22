@@ -305,9 +305,8 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    RemoveItems(): void{
+    RemoveItems(): void{//Removes items from the invented list and loads objects for Archipelago
         const origNumResearched = park.research.inventedItems.length;
-        let numResearched = 0;
         let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
 
         //Used to show what items are in the scenario
@@ -339,10 +338,13 @@ class RCTRArchipelago extends ModuleBase {
             researchItems[i] = researchItems[slot];
             researchItems[slot] = a;
         }
-        park.research.inventedItems = researchItems.slice(0, numResearched);
-        park.research.uninventedItems = researchItems.slice(numResearched);
+        park.research.inventedItems = researchItems.slice(0);
+        park.research.uninventedItems = researchItems.slice(0,0);
+        researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
+        park.research.inventedItems = researchItems.slice(0, 0);//Nothing left in Researched. These will be unlocked by playing Archipelago
+        park.research.uninventedItems = researchItems.slice(0);//Everything is unresearched until further notice.
         this.AddChange('ShuffledResearch', 'Shuffled research items', null, null, null);
-        this.AddChange('NumInventedItems', 'Invented items', origNumResearched, numResearched);
+        this.AddChange('NumInventedItems', 'Invented items', origNumResearched, 0);
     }
 
     ReceiveArchipelagoItem(items: any[], index: number): void{
@@ -475,6 +477,7 @@ class RCTRArchipelago extends ModuleBase {
     AddRide(ride: any): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items.
         
+        console.log(ride);
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
         for(let i=0; i<unresearchedItems.length; i++) {

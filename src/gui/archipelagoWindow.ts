@@ -1208,7 +1208,8 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Decision',
                     onClick: function() {
-                        console.log(archipelago_locked_locations);
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.AddRide(6);
                         // console.log(ScenarioName[0]);
                         // archipelago_settings.location_information = locationInfo.Full;
                         // archipelago_send_message("GetDataPackage");
@@ -1442,7 +1443,10 @@ function archipelagoDebug(){
                         // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
-                        console.log(archipelago_settings.multiworld_games);
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        // BathroomTrap.AddRide(6);
+                        BathroomTrap.RemoveItems();
+                        console.log(JSON.stringify(park.research.uninventedItems));
                         // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
