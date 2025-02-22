@@ -234,7 +234,6 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     break;
 
                 case "ItemCheat":
-                    // var cheatMessage = "Colby will write out code to figure out how cheats work when he gets the proxy client";
                     archipelago_print_message(data.data[0].text);
                     break;
 
@@ -364,6 +363,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
             break;
 
         case "ReceivedItems":
+            trace("This Far?");
             if (archipelago_settings.started){//We don't want to apply all the previously received items before we start the game.
                 Archipelago.ReceiveArchipelagoItem(data.items, data.index);
             }
