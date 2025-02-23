@@ -360,7 +360,7 @@ function archipelagoGui(){
                     startGameGui();
                     settings.rando_archipelago = false;
                     // var connection = GetModule("APIConnection") as APIConnection;
-                    connection.destroy()
+                    connection.destroy();
                     window.close();
                 }
             },
@@ -1440,13 +1440,14 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
+                        context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
                         // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
-                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.AddRide(6);
-                        BathroomTrap.RemoveItems();
-                        console.log(JSON.stringify(park.research.uninventedItems));
+                        // BathroomTrap.RemoveItems();
+                        // console.log(JSON.stringify(park.research.uninventedItems));
                         // console.log(JSON.stringify(archipelago_settings.hints));
                         // park.setFlag("unlockAllPrices", true);
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;

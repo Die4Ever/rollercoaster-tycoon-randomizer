@@ -120,7 +120,7 @@ class RCTRArchipelago extends ModuleBase {
                 archipelagoLocations()
             }
             catch{
-                trace("Welp. Something went wrong with the shortcut");
+                console.log("Error in openUnlockShop shortcut: Welp. Something went wrong with the shortcut");
             }
         }}
         )
@@ -264,7 +264,7 @@ class RCTRArchipelago extends ModuleBase {
                 archipelago_settings.location_information = "Full"
                 break;
         }
-
+        archipelago_settings.seed = imported_settings.seed;
         archipelago_location_prices = imported_settings.location_prices;
         context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
 
@@ -338,8 +338,8 @@ class RCTRArchipelago extends ModuleBase {
             researchItems[i] = researchItems[slot];
             researchItems[slot] = a;
         }
-        park.research.inventedItems = researchItems.slice(0);
-        park.research.uninventedItems = researchItems.slice(0,0);
+        park.research.inventedItems = researchItems.slice(0);//Due to some weird quirks with old parks, we need to force everything into unlocked to ensure
+        park.research.uninventedItems = researchItems.slice(0,0);//every item has either a locked or unlocked state. It will glitch out otherwise.
         researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
         park.research.inventedItems = researchItems.slice(0, 0);//Nothing left in Researched. These will be unlocked by playing Archipelago
         park.research.uninventedItems = researchItems.slice(0);//Everything is unresearched until further notice.
