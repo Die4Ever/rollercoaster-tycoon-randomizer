@@ -953,7 +953,7 @@ class RCTRArchipelago extends ModuleBase {
                 if (self.IsVisible(location[i].LocationID)){
                     var [display_color, colorblind_color] = self.GetColors(location[i].LocationID);
                     if (prices[location[i].LocationID].Price == 0){//If the price is 0, pay with blood instead of cash
-                        locked.push(display_color + "[" + location[i].LocationID + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
+                        locked.push(display_color + "[" + (location[i].LocationID < 8 ? location[i].LocationID : Math.floor(location[i].LocationID / 8) - 1) + "] " + "Instead of cash, you must sacrifice " + (prices[location[i].LocationID].Lives).toString() + " guests to the ELDER GODS!");
                     }
                     //Maybe I'll use this somewhere for colorblind mode: ❌
                     else{//Set up the string denoting the price
