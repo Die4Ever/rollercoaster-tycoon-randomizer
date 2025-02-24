@@ -1440,8 +1440,8 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
-                        context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
-                        // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
+                        // context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
+                        console.log(JSON.stringify(archipelago_settings.received_items));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;

@@ -78,6 +78,7 @@ var archipelago_settings: any = {
     multiworld_games: [],
     received_games: ["OpenRCT2"],
     received_items: [],
+    index: 0,
     hints: [],
     skips: 1,
     player: "",

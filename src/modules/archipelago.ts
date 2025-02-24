@@ -347,125 +347,131 @@ class RCTRArchipelago extends ModuleBase {
         this.AddChange('NumInventedItems', 'Invented items', origNumResearched, 0);
     }
 
-    ReceiveArchipelagoItem(items: any[], index: number): void{
+    ReceiveArchipelagoItem(items: any[], newIndex: number): void{
         var self = this;
-        console.log("Here's the array of items:");
-        console.log(items);
-        // var new_items = []
-        // var received_items = archipelago_settings.received_items.slice();
-        // for(let i = 0; i < items.length; i++){
-        //     let current_item = items[i][0];
-        //     let current_object = received_items.filter(obj => obj.item === items[i][0]);//Get the item from the list, if it exists
-        //     if (current_object){
-        //         current_object.amount ++;//Add 1 to the amount on the list
-        //     }
-        //     else{
-        //         received_items.push({item: current_item, amount: 1});
-        //     }
-        // }
+        var current_index = (archipelago_settings.received_items.length - 1);
+        var counter = 0;
+        trace("Here's the array of items:");
+        trace(items);
         var compare_list: any = [];
         compare_list = archipelago_settings.received_items.slice();//Stupid p*cking Typescript, throwing refrences arround in the air like it just don't care
-        for(let i = 0; i < items.length; i++){
-            if (compare_list.indexOf(items[i][0]) > -1){//Item, Location, Player, Flags, Class
-                compare_list.indexOf(items[i][0])[1] ++;//Add 1 to the count
+        trace("Archipelagos newIndex: " + String(newIndex));
+        trace("My newIndex for 0 case: " + String(items.length - 1));
+        trace("Current Index: " + String(current_index));
+        if (newIndex == 0){//Anytime we get the 0 index, we know we have the full list of items.
+            newIndex = items.length - 1;//We'll make the newIndex correct.
+            if(newIndex > current_index){//If the new list is bigger than our current item pool,
+                counter = current_index + 1;//We'll add all the new stuff
             }
-            else{
-                compare_list.push([items[i][0], 1]);//Create the new item on the list.
+            else if(newIndex < current_index){
+                console.log("Error in ReceiveArchipelagoItem: Server Index smaller than games");
+                archipelago_print_message("Something seems to have gone wrong. The server insists the game has items it hasn't rewaded yet.");
+                return;
+            }
+            else{//If the list is the same length, we don't have any new items to unlock.
+                trace("Ain't nothings changed!");
+                return;
             }
         }
-        for(let i = 0; i < compare_list.length; i++){//Each item
-            for(let j = 0; j < compare_list[i][1]; j++){//Each instance of item
-                var category = "item";
-                let compare_number = archipelago_settings.received_items[i];
-                if (compare_number === undefined)
-                compare_number = 0;
-                if(compare_list[i][j] > compare_number){//If its not on the list already
-                    if(compare_list[i][0] >= 2000000 && compare_list[i][0] <= 2000121){//This number will need to change if we ever add more items/traps/etc.
-                        var item = item_id_to_name[compare_list[i][0]];
-                        trace(item);
-                        if(item.indexOf("Trap") > -1)
-                        category = "trap";
-                        if(Number(RideType[item]) > -1)//Any item that fits a ride type is a ride
-                        category = "ride";
-                        if(item.indexOf("$") > -1)
-                        category = "cash";
-                        if(item.indexOf("Guests") > -1)
-                        category = "guests";
-                        if(category == "item"){//Check the actual item if none of the above works out
-                            switch(item){
-                                case "scenery":
-                                    category = "scenery";
-                                    break;
-                                case "Land Discount":
-                                case "Construction Rights Discount":
-                                    category = "discount";
-                                    break;
-                                case "Easier Guest Generation":
-                                case "Easier Park Rating":
-                                case "Allow High Construction":
-                                case "Allow Landscape Changes":
-                                case "Allow Marketing Campaigns":
-                                case "Allow Tree Removal":
-                                    category = "rule";
-                                    break;
-                                case "Beauty Contest":
-                                    category = "beauty";
-                                    break;
-                                case "Rainstorm":
-                                case "Thunderstorm":
-                                case "Snowstorm":
-                                case "Blizzard":
-                                    category = "weather";
-                                    break;
-                                case "Progressive Speed":
-                                    category = "speed";
-                                    break;
-                                case "Skip":
-                                    category = "skip";
-                                    break;
-                            }
-                        }
-                        switch(category){
-                            case "ride":
-                                self.AddRide(RideType[item]);
-                                break;
-                            case "stall":
-                                self.AddRide(item);
-                                break;
-                            case "trap":
-                                self.ActivateTrap(item);
-                                break;
-                            case "rule":
-                                self.ReleaseRule(item);
-                                break;
-                            case "scenery":
-                                self.AddScenery();
-                                break;
-                            case "discount":
-                                self.GrantDiscount(item);
-                                break;
-                            case "cash":
-                                self.AddCash(item)
-                                break;
-                            case "guests":
-                                self.AddGuests(item)
-                                break;
-                            case "beauty":
-                                self.BeautyContest();
-                                break;
-                            case "weather":
-                                self.setWeather(item)
-                                break;
-                            case "speed":
-                                self.updateMaxSpeed();
-                                break;
-                            case "skip":
-                                self.addSkip();
-                                break;
-                            default:
-                                console.log("Error in ReceiveArchipelagoItem: category not found");
-                        }
+        else if(newIndex > current_index){//Check if it lines up
+            if((current_index + 1) == newIndex){
+                counter = 0;//Add everything.
+            }
+            else{
+                archipelago_send_message("Sync");//We sync to get back on track.
+                return;
+            }
+        }
+        else if(newIndex <= current_index){
+            console.log("Error in ReceiveArchipelagoItem: Server Index smaller than games");
+            archipelago_print_message("Something seems to have gone wrong. The server insists the game has items it hasn't rewaded yet.");
+        }
+        for(let i = counter; i < items.length; i++){//Each item
+            var category = "item";
+            compare_list.push(items[i]);
+            if(items[i][0] >= 2000000 && items[i][0] <= 2000121){//This number will need to change if we ever add more items/traps/etc.
+                var item = item_id_to_name[items[i][0]];
+                if(item.indexOf("Trap") > -1)
+                category = "trap";
+                if(Number(RideType[item]) > -1)//Any item that fits a ride type is a ride
+                category = "ride";
+                if(item.indexOf("$") > -1)
+                category = "cash";
+                if(item.indexOf("Guests") > -1)
+                category = "guests";
+                if(category == "item"){//Check the actual item if none of the above works out
+                    switch(item){
+                        case "scenery":
+                            category = "scenery";
+                            break;
+                        case "Land Discount":
+                        case "Construction Rights Discount":
+                            category = "discount";
+                            break;
+                        case "Easier Guest Generation":
+                        case "Easier Park Rating":
+                        case "Allow High Construction":
+                        case "Allow Landscape Changes":
+                        case "Allow Marketing Campaigns":
+                        case "Allow Tree Removal":
+                            category = "rule";
+                            break;
+                        case "Beauty Contest":
+                            category = "beauty";
+                            break;
+                        case "Rainstorm":
+                        case "Thunderstorm":
+                        case "Snowstorm":
+                        case "Blizzard":
+                            category = "weather";
+                            break;
+                        case "Progressive Speed":
+                            category = "speed";
+                            break;
+                        case "Skip":
+                            category = "skip";
+                            break;
                     }
+                }
+                switch(category){
+                    case "ride":
+                        self.AddRide(RideType[item]);
+                        break;
+                    case "stall":
+                        self.AddRide(item);
+                        break;
+                    case "trap":
+                        self.ActivateTrap(item);
+                        break;
+                    case "rule":
+                        self.ReleaseRule(item);
+                        break;
+                    case "scenery":
+                        self.AddScenery();
+                        break;
+                    case "discount":
+                        self.GrantDiscount(item);
+                        break;
+                    case "cash":
+                        self.AddCash(item)
+                        break;
+                    case "guests":
+                        self.AddGuests(item)
+                        break;
+                    case "beauty":
+                        self.BeautyContest();
+                        break;
+                    case "weather":
+                        self.setWeather(item)
+                        break;
+                    case "speed":
+                        self.updateMaxSpeed();
+                        break;
+                    case "skip":
+                        self.addSkip();
+                        break;
+                    default:
+                        console.log("Error in ReceiveArchipelagoItem: category not found");
                 }
             }
         }
@@ -477,7 +483,7 @@ class RCTRArchipelago extends ModuleBase {
     AddRide(ride: any): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items.
         
-        console.log(ride);
+        trace(ride);
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
         for(let i=0; i<unresearchedItems.length; i++) {
@@ -491,8 +497,8 @@ class RCTRArchipelago extends ModuleBase {
         }
 
         console.log("Error in AddRide: ride not in uninvented items");
-        archipelago_print_message("For some reason, the game tried to unlock the following ride unsucessfully:" + String(RideType[ride]));
-        ui.showError("Ride Unsuccessful", "For some reason, the game tried to unlock the following ride unsucessfully:" + String(RideType[ride]));
+        archipelago_print_message("For some reason, the game tried to unlock the following ride unsuccessfully:" + String(RideType[ride]));
+        ui.showError("Ride Unsuccessful", "For some reason, the game tried to unlock the following ride unsuccessfully:" + String(RideType[ride]));
         return;
     }
 
