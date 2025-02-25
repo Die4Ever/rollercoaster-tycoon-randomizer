@@ -84,6 +84,8 @@ var archipelago_settings: any = {
     player: "",
     preferred_intensity: 1,
     maximum_speed: 1,
+    all_rides_and_scenery_base: false,
+    all_rides_and_scenery_expansion: false,
     seed: undefined,
     started: false
 };
