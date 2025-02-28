@@ -256,10 +256,16 @@ class RCTRArchipelago extends ModuleBase {
             case 0:
                 archipelago_settings.location_information = "None"
                 break;
-            case 1:
-                archipelago_settings.location_information = "Recipient"
+            case 1: 
+                archipelago_settings.location_information = "Progression"
                 break;
             case 2:
+                archipelago_settings.location_information = "Recipient"
+                break;
+            case 3: 
+                archipelago_settings.location_information = "Progression Recipient"
+                break;
+            case 4:
                 archipelago_settings.location_information = "Full"
                 break;
         }
@@ -1000,8 +1006,40 @@ class RCTRArchipelago extends ModuleBase {
                         case 'None':
                             locked.push("          Unlocks something for somebody!")
                             break;
+                        case 'Progression':
+                            switch(archipelago_locked_locations[i].Flags){
+                                case 0:
+                                    locked.push("          Unlocks a boring item for somebody.")
+                                    break;
+                                case 1:
+                                    locked.push("          Unlocks a progression item for somebody!")
+                                    break;
+                                case 2:
+                                    locked.push("          Unlocks a cool item for somebody!")
+                                    break;
+                                case 4:
+                                    locked.push("          IT'S A TRAP!")
+                                    break;
+                            }
+                            break;
                         case 'Recipient':
                             locked.push("          Unlocks something for " + archipelago_locked_locations[i].ReceivingPlayer + "!");
+                            break;
+                        case 'Progression Recipient':
+                            switch(archipelago_locked_locations[i].Flags){
+                                case 0:
+                                    locked.push("          Unlocks a boring item for " + archipelago_locked_locations[i].ReceivingPlayer + ".")
+                                    break;
+                                case 1:
+                                    locked.push("          Unlocks a progression item for " + archipelago_locked_locations[i].ReceivingPlayer + "!")
+                                    break;
+                                case 2:
+                                    locked.push("          Unlocks a cool item for " + archipelago_locked_locations[i].ReceivingPlayer + "!")
+                                    break;
+                                case 4:
+                                    locked.push("          IT'S A TRAP FOR " + archipelago_locked_locations[i].ReceivingPlayer + "!")
+                                    break;
+                            }
                             break;
                         case 'Full':
                             trace("Here's our current item:");

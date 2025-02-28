@@ -439,7 +439,8 @@ function ac_req(data) {//This is what we do when we receive a data packet
                                 "{RED}If it makes you feel better, at least it's " + player_color + "{RED}'s fault and not yours.", player_color + " {RED}is an airsick lowlander!",
                                 player_color + "{RED} missed 100% of the shots they didn't take.", "{RED}It was " + player_color + "{RED}'s controller, I swear!",
                                 player_color + "{RED} was not the imposter.", player_color + "{RED} rolled a natural 1.",
-                                player_color + "{RED} should not have tried stealing the kings flocks from Ammon!", player_color + "{RED} started a land war in Asia!"];
+                                player_color + "{RED} should not have tried stealing the kings flocks from Ammon!", player_color + "{RED} started a land war in Asia!",
+                                player_color + "{RED} was burninated by Trogdor!"];
                             var death_message = message_choice[Math.floor(Math.random() * message_choice.length)];
                             archipelago_print_message(death_message);
                         }
@@ -470,7 +471,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
 
                 if(ready){
                     for(let i = 0; i < data.locations.length; i++){
-                        archipelago_locked_locations.push({LocationID: i, Item: data.locations[i][0], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
+                        archipelago_locked_locations.push({LocationID: i, Item: data.locations[i][0], ReceivingPlayer: players[data.locations[i][2] - 1][0], Flags: data.locations[i][3]})
                     }
                     ArchipelagoSaveLocations(archipelago_locked_locations,[]);
                 }
