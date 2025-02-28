@@ -211,6 +211,42 @@ const adPool: Ad[] = [
         header: "This book will change your life!",
         message: "Order your free copy of The Book of Mormon Today!",
         button: "Mormon.org"
+    },
+    {
+        title: "Compy 386",
+        header: "FLAGRANT SYSTEM ERROR",
+        message: "COMPUTER OVER",
+        button: "VIRUS = VERY YES",
+        onClick: () => 
+            {
+                ui.showError("","That's not a good prize!")
+            }
+    },
+    {
+        title: "Compy 386",
+        header: "Edgar the Virus Hunter",
+        message: "Programmed entirely in Mom's basement",
+        button: "Scan System",
+        onClick: () => 
+            {
+                archipelago_print_message("Scanning...........................423,827 Viruses Found! A New Record!")
+            }
+    },
+    {
+        title: "Got Problem?",
+        header: "Rat Biting Problem in your Car?",
+        message: "It's extremely hazardous!",
+        button: "Call Kumar Babu Today!",
+    },
+    {
+        title: "Get Orange Pilled",
+        header: "Cities aren't loud!",
+        message: "CARS ARE LOUD!",
+        button: "Remove Cars From Your City",
+        onClick: () => 
+            {
+                ui.showError("Learn More!", "Look up 'Not Just Bikes' on YouTube!")
+            }
     }
 ]
 
