@@ -1442,6 +1442,7 @@ function archipelagoDebug(){
                     onClick: function() { 
                         // context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
                         console.log(JSON.stringify(scenario.filename));
+                        console.log(convert_scenario_name_to_archipelago("scenarioName", scenario.filename));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;

@@ -278,8 +278,9 @@ class RCTRArchipelago extends ModuleBase {
         context.getParkStorage().set('RCTRando.ArchipelagoObjectives', archipelago_objectives);
         saveArchipelagoProgress();
 
-        var scenario_name: string = scenario.name.toLowerCase();
-        trace("Game expects: " + scenario_name + "\nArchipelago provided: " + ScenarioName[imported_settings.scenario]);
+        //Get the right scenario name, regardless of the version or language
+        var scenario_name: string = convert_scenario_name_to_archipelago(scenario.name.toLowerCase(), scenario.filename.toLowerCase());
+        console.log("Game expects: " + scenario_name + "\nArchipelago provided: " + ScenarioName[imported_settings.scenario]);
         if(ScenarioName[imported_settings.scenario] == scenario_name)
         archipelago_correct_scenario = true;
         else{
