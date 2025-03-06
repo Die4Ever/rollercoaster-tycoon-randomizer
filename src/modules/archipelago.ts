@@ -965,7 +965,6 @@ class RCTRArchipelago extends ModuleBase {
             console.log("Error in Create Unlocked List:" + e);
         }
     }
-    //TODO: Update code to show correct color branch instead of total location number
     CreateLockedList(): any{
         try{
             var self = this;
@@ -992,13 +991,18 @@ class RCTRArchipelago extends ModuleBase {
                             " + {RED}" + prereqs[0].toString() + display_color + " ");
                             cost += prereqs[1] + "(s)";
                             if(prereqs[2] != 0)//Check for excitement requirement
-                                cost += ((built[1] >= prereqs[2]) ? ', (> ' + prereqs[2] + ' excitement)': ',{RED} (> ' + prereqs[2] + ' excitement)' + display_color);
+                                cost += ((built[1] >= prereqs[0]) ? ', (> ' + prereqs[2] + ' excitement)': ',{RED} (> ' + prereqs[2] + ' excitement)' + display_color);
                             if(prereqs[3] != 0)//Check for intensity requirement
-                                cost += ((built[2] >= prereqs[3]) ? ', (> ' + prereqs[3] + ' intensity)':',{RED} (> ' + prereqs[3] + ' intensity)' + display_color);
+                                cost += ((built[2] >= prereqs[0]) ? ', (> ' + prereqs[3] + ' intensity)':',{RED} (> ' + prereqs[3] + ' intensity)' + display_color);
                             if(prereqs[4] != 0)//Check for nausea requirement
-                                cost += ((built[3] >= prereqs[4]) ? ', (> ' + prereqs[4] + ' nausea)': '{RED}, (> ' + prereqs[4] + ' nausea)' + display_color);
+                                cost += ((built[3] >= prereqs[0]) ? ', (> ' + prereqs[4] + ' nausea)': '{RED}, (> ' + prereqs[4] + ' nausea)' + display_color);
                             if(prereqs[5] != 0)//Check for length requirement
-                                cost += ((built[4] >= prereqs[5]) ? ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')': ',{RED} (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')' + display_color);
+                                cost += ((built[4] >= prereqs[0]) ? ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')': ',{RED} (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')' + display_color);
+                            if(prereqs[6] != 0)//Check for total customers requirement
+                                cost += ((built[5] >= prereqs[0]) ? ', (> ' + prereqs[6] + ' Total Guests)': '{RED}, (> ' + prereqs[6] + ' Total Guests)' + display_color);
+                        console.log(JSON.stringify((built)));
+                        console.log(JSON.stringify((prereqs)));
+                        console.log("asntueh");
                         }
                         locked.push(cost);
                     }
@@ -1619,6 +1623,7 @@ class RCTRArchipelago extends ModuleBase {
         var QualifiedIntensityCounter = 0;
         var QualifiedNauseaCounter = 0;
         var QualifiedLengthCounter = 0;
+        var QualifiedTotalCustomerCounter = 0;
         console.log(JSON.stringify(Locked));
         console.log(LocationID);
         for(var i = 0; i < map.numRides; i++){
@@ -1626,6 +1631,7 @@ class RCTRArchipelago extends ModuleBase {
             var QualifiedIntensity = false;
             var QualifiedNausea = false;
             var QualifiedLength = false;
+            var QualifiedTotalCustomer = false;
             var elligible = false;
             if(Number(ride) > -1){//See if there's a prereq that's a specific ride
                 if (Number(ride) == ride_list[i].type){//If the rides match, they're elligible
@@ -1645,8 +1651,6 @@ class RCTRArchipelago extends ModuleBase {
             }
 
             if (elligible){
-                QualifiedLength = true;//It appears ride objects don't actually give length as a property. I'll leave finding ride lengths as an excercize for future Colby
-                QualifiedLengthCounter++;
                 if (ride_list[i].excitement >= (Prereqs[2] * 100)){//Check if excitement is met. To translate ingame excitement to incode excitement, multiply ingame excitement by 100
                     QualifiedExcitement = true;
                     QualifiedExcitementCounter++;
@@ -1659,13 +1663,25 @@ class RCTRArchipelago extends ModuleBase {
                     QualifiedNausea = true;
                     QualifiedNauseaCounter++;
                 }
+                //Somethings going janky with this one. If you modify a coaster, it will retain its length value until tested again.
+                if (ride_list[i].rideLength >= (Prereqs[5])){//I want my freedom units!
+                    trace("Ride length: " + String(ride_list[i].rideLength));
+                    trace("Wanted: " + Prereqs[5])
+                    QualifiedLength = true;
+                    QualifiedLengthCounter++;
+                }
+                if (ride_list[i].totalCustomers >= (Prereqs[6])){
+                    QualifiedTotalCustomer = true;
+                    QualifiedTotalCustomerCounter++;
+                }
             }
 
-            if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength){
+            if (QualifiedExcitement && QualifiedIntensity && QualifiedNausea && QualifiedLength && QualifiedTotalCustomer){
                 NumQualifiedRides += 1;
             }
         }
-        return [NumQualifiedRides,QualifiedExcitementCounter,QualifiedIntensityCounter,QualifiedNauseaCounter,QualifiedLengthCounter];
+        console.log(QualifiedTotalCustomerCounter);
+        return [NumQualifiedRides,QualifiedExcitementCounter,QualifiedIntensityCounter,QualifiedNauseaCounter,QualifiedLengthCounter,QualifiedTotalCustomerCounter];
     }
 
     SendStatus(): any{

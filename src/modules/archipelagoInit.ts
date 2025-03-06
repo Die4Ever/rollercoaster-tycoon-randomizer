@@ -20,7 +20,7 @@ interface archipelago_price{
     LocationID: number,
     Price: number,
     Lives: number,
-    RidePrereq: any[]//Amount, category, excitement, intensity, nausea, length, total profit
+    RidePrereq: any[]//Amount, category, excitement, intensity, nausea, length, total customers
 }
 interface archipelago_hint{
     ReceivingPlayer: string,
