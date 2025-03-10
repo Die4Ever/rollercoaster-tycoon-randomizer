@@ -86,7 +86,7 @@ function archipelago_select_message(type: string, message?: any){
         connection.send({cmd: "Get", keys: []});
         break;
     case "Set":
-
+        connection.send({cmd: "Set", key: message.key, tag: message.tag, default: message.default, want_reply: message.want_reply, operations: message.operations})
         break;
     case "SetNotify":
         break;
@@ -287,33 +287,6 @@ function ac_req(data) {//This is what we do when we receive a data packet
                                     segment = context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName")[Number(data.data[i].text)];
                                     color = "GREEN";
                                     break;
-
-                                // Once upon a time, the client sent a different datapacket.
-                                // case "black":
-                                //     color = "BLACK";
-                                //     break;
-                                // case "red":
-                                //     color = "RED"
-                                //     break;
-                                // case "green":
-                                //     color = "GREEN"
-                                //     break;
-                                // case "yellow":
-                                //     color = "YELLOW";
-                                //     break;
-                                // case "blue":
-                                // case "cyan":
-                                // case "slateblue":
-                                //     color = "BABYBLUE";
-                                //     break;
-                                // case "magenta":
-                                // case "plum":
-                                //     color = "PALELAVENDER";
-                                //     segment = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1]
-                                //     break;
-                                // case "white":
-                                //     color = "WHITE";
-                                //     break;
                             }
                             message += '{' + color + '}' + segment + '{WHITE}';
                         }
@@ -482,8 +455,9 @@ function ac_req(data) {//This is what we do when we receive a data packet
 
             }
             break;
-        case "SetReply"://Handles hints
+        case "SetReply"://Handles hints and energylink
             const hint_pattern: RegExp = /^_read_hints_/;
+            const receipt_pattern: RegExp = /^EnergyLink/;            
             if(hint_pattern.test(data.key)){
                 trace(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
                 for(let i = 0; i < data.value.length; i++){
@@ -511,6 +485,9 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     }
                 }
                 saveArchipelagoProgress();
+            }
+            else if (receipt_pattern.test(data.key)){
+                Archipelago.BankReceipt(data.original_value, data.value, data.tag);
             }
             break;
 

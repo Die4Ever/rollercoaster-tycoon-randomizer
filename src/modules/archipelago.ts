@@ -272,6 +272,7 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_settings.all_rides_and_scenery_base = imported_settings.all_rides_and_scenery_base;
         archipelago_settings.all_rides_and_scenery_expansion = imported_settings.all_rides_and_scenery_expansion;
         archipelago_settings.seed = imported_settings.seed;
+        archipelago_settings.team = imported_settings.team;
         archipelago_location_prices = imported_settings.location_prices;
         context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
 
@@ -770,6 +771,188 @@ class RCTRArchipelago extends ModuleBase {
             trace("Looks like the Archipelago Shop isn't open");
         }
         saveArchipelagoProgress();
+    }
+
+    BankReceipt(original_value, new_value, tag): any{
+        var amount = 0;
+        var tax = 0;
+        var item_list = []
+        var tax_list = ["Sales Tax", "VAT Tax", "Income Tax", "DOGE \"Efficiency\" Tax", "401K Contribution", "529 Contribution", "\"Optional Tips\"",
+            "Service Fee", "Gratiuity", "Archipelago Maintenace Fee", "Developers Offering", "Local Authority Contribution (Totally not a bribe)",
+            "Political Donations", "Maintenace Fee", "Convenince Fee", "Inconvenience Fee", "Health Insurance", "Transaction Protection Plan", 
+            "Overdraft Protection"
+        ]
+        for(let i = 0; i < archipelago_settings.received_games.length; i++){
+            switch(true){
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("zelda") !== -1:
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("ocarina") !== -1:
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("smz3") !== -1:
+                    tax_list.push("Hyrule Pot Replacement Tax");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("pokemon") !== -1:
+                    tax_list.push("Pokemon Center Upkeep Tax");
+                    tax_list.push("Pokedex Subscription");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("metroid") !== -1:
+                    tax_list.push("Space Pirate Tax");
+                    tax_list.push("Bounty Hunter Commission")
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("overcooked") !== -1:
+                    tax_list.push("Restaurant Tip");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("kingdomhearts") !== -1:
+                    tax_list.push("Mickey Mouse Fee");
+                    tax_list.push("Hollow Bastion Restoration Committee Membership Dues")
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("mario") !== -1:
+                    tax_list.push("Bowser Time");
+                    tax_list.push("Yoshi Tax Services");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("factorio") !== -1:
+                    tax_list.push("Biter Defense Fee");
+                    tax_list.push("Oil Subsidies");
+                    tax_list.push("Token Biter Reparations");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("minecraft") !== -1:
+                    tax_list.push("Emerald Conversion Fee");
+                    tax_list.push("Nether Import Duties");
+                    break;    
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("sonic") !== -1:
+                    tax_list.push("Ring Processing Fee");
+                    tax_list.push("Hedgehog Tax")
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("hollow") !== -1:
+                    tax_list.push("Colosseum of Fools Entrance Fee");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("hike") !== -1:
+                    tax_list.push("Hawk Peak Conservation Tax");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("stardew") !== -1:
+                    tax_list.push("Pierre Delivery Fee");
+                    tax_list.push("Joja Membership Dues");
+                    tax_list.push("Organic Markup");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("hat") !== -1:
+                    tax_list.push("Mafia Dues");
+                    tax_list.push("Deadbird Studio Dues")
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("terraria") !== -1:
+                    tax_list.push("Nurse Bill");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("dlc") !== -1:
+                    tax_list.push("DLC");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("celeste") !== -1:
+                    tax_list.push("Strawberry Tax");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("mega") !== -1:
+                    tax_list.push("Android Repair Fee");
+                    tax_list.push("Internet Fees")
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("fantasy") !== -1:
+                    tax_list.push("Coneria Bridge Toll");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("donkey") !== -1:
+                    tax_list.push("Bananna Republic Surcharge");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("vvvvvv") !== -1:
+                    tax_list.push("Spike Tax");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("undertale") !== -1:
+                    tax_list.push("Spider Bake Sale");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("muse") !== -1:
+                    tax_list.push("Royalty Fees");
+                    break;
+                case archipelago_settings.received_games[i].toLowerCase().indexOf("runescape") !== -1:
+                    tax_list.push("Grand Exchange Sales Tax");
+                    break;
+            }
+        }
+        if(new_value > original_value){//We sent the bank money
+            amount = Math.floor(((new_value - original_value) * (1/.9)) / (5 * 10**6))//Turn the amount back into OpenRCT2 amounts. 
+            tax = Math.ceil(amount * .1);
+            amount -= tax;
+            // ui.showError("This much" + String(amount), context.formatString("{CURRENCY2DP}",  (amount)))
+            item_list.push("Deposit Amount");
+            item_list.push(context.formatString("{CURRENCY2DP}",  (amount)));
+            item_list.push("New Balance")
+            item_list.push(context.formatString("{CURRENCY2DP}",  (new_value / (5 * 10**6))))
+            park.cash -= (amount + tax);//We send it all when we make a deposit
+        }
+        else if (new_value < original_value){//We withdrew from the bank
+            amount = Math.floor((original_value - new_value) / (5 * 10**6))//Turn the amount back into OpenRCT2 amounts. 
+            tax = Math.ceil(amount * .1);
+            amount -= tax;
+            // ui.showError("This much" + String(amount), context.formatString("{CURRENCY2DP}",  (amount)))
+            item_list.push("Withdrawl Amount");
+            item_list.push(context.formatString("{CURRENCY2DP}",  (amount)));
+            item_list.push("New Balance")
+            item_list.push(context.formatString("{CURRENCY2DP}",  (new_value / (5 * 10**6))))
+            park.cash += (amount);//We only get the amount minus fees when we make a withdrawl
+        }
+        else if (tag == "inquiry"){
+            item_list.push("Account Balance");
+            item_list.push(context.formatString("{CURRENCY2DP}",  (new_value) / (5 * 10**6)));
+        }
+        else{
+            amount = 0;
+            tax = 0;
+            item_list.push("Error: Overdraft. You have received a " + context.formatString("{CURRENCY2DP}",  (200)) + " fee.")
+            park.cash -= 200;
+        }
+        var number_of_fees = 6;//Fills the receipt
+        var values = [0, tax];//Thanks Quill!
+        for (var i = 0; i < number_of_fees - 1; i++) {
+            values.push(Math.floor(Math.random() * tax));
+        }
+        values.sort(function (a, b) {return a - b;});
+
+        var result = [];
+        for (var i = 0; i < number_of_fees; i++) {
+            result.push(values[i + 1] - values[i]);
+        }
+        if (amount != 0){
+            for (let i = 0; i < number_of_fees; i++){//Fill the receipt list
+                let fee = Math.floor(Math.random()*tax_list.length)
+                item_list.push(tax_list[fee]);
+                tax_list.splice(fee, 1);
+                item_list.push(context.formatString("{CURRENCY2DP}",  (result[i])));
+            }
+        }
+        var receipt = ui.openWindow({
+            classification: 'receipt',
+            title: "EnergyLink Transaction Receipt",
+            width: 400,
+            height: 300,
+            colours: [7,7],
+            widgets: [].concat(
+                [
+                    {
+                        type: 'listview',
+                        name: 'receipt',
+                        x: 25,
+                        y: 35,
+                        width: 350,
+                        height: 200,
+                        isStriped: true,
+                        items: item_list
+                    },
+                    {
+                        type: 'button',
+                        name: 'Ok',
+                        x: 125,
+                        y: 250,
+                        width: 150,
+                        height: 25,
+                        text: 'Click here to sign and close.',
+                        onClick: function() {
+                            receipt.close();
+                    }
+                }]
+            )
+            });
+            return receipt;
     }
 
     SetPurchasableTiles(): any{

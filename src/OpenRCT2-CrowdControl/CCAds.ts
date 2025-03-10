@@ -247,6 +247,29 @@ const adPool: Ad[] = [
             {
                 ui.showError("Learn More!", "Look up 'Not Just Bikes' on YouTube!")
             }
+    },
+    {
+        title: "A Conspiracy in the Greater Cosmere",
+        header: "Money isn't actually money. Each guest is invested, roughly between .75 and 1.8 Breath Equivalent Units.",
+        message: "Rides are powered by guests using investiture, measured in $$$. If a perpendicularity is opened in a park, the park will become an important part of the greater Cosmere.",
+        button: "This is why ride costs $300 instead of $50,000.",
+        onClick: () => 
+            {
+                ui.showError("We convert the guests essence directly into rides.", "Keep an eye out for Hoid!");
+            }
+    },
+    {
+        title: "Feel the power of the dark side!",
+        header: "Did you ever hear the tragedy of Darth Plagueis the Wise?",
+        message: "It's not a story the Jedi would tell you.",
+        button: "Kill 50 younglings",
+        onClick: () => 
+            {
+                try{
+                    explodeGuests(50);
+                ui.closeAllWindows();}
+                catch{ui.showError("Archipelago not open", "You should try this while playing Archipelago!")}
+            }
     }
 ]
 

@@ -878,6 +878,122 @@ function archipelagoLocations(){
                         }
                     ]
                 )
+            },
+            {//EnergyLink
+                image: {frameBase: 5277,frameCount: 7,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+                        {
+                            type: 'label',
+                            name: 'Bank-Label',
+                            x: 250,
+                            y: 50,
+                            width: 160,
+                            height: 26,
+                            text: 'EnergyLink Bank ATM Machine',
+                            tooltip: "We here at this Multi-Billion Dollar Bank care deeply about you, just like how oil companies care deeply about climate change."
+                        },
+                        {
+                            type: 'button',
+                            name: 'withdraw-button',
+                            x: 25,
+                            y: 100,
+                            width: 200,
+                            height: 200,
+                            text: 'Withdraw Funds',
+                            tooltip: 'I\'m sure that Stardew Valley player didn\'t need the money anyways!',
+                            onClick: function() {
+                                ui.showTextInput({title: "Enter Amount to be Withdrawn", 
+                                description: "Note: A 10% fee will be assessed on both deposits and withdrawls. " + 
+                                "All users in the multiworld have access to this account.", 
+                                callback(value: string){
+                                    if(!(parseInt(value)  > -1)){//Numbers only
+                                        ui.showError("Not A Valid Amount", "This ATM Machine only accepts amounts as a positive integer. Please input a valid amount.")
+                                        return;
+                                    }
+                                    var amount = parseInt(value);
+                                    // Convert 1 internal currency to a multiplier by formatting it into a string and parsing it
+                                    var currency = context.formatString("{CURRENCY2DP}", 1)
+                                    var currencyMultiplierAsArray = currency.match(/[\d.]+/g); // Matches numbers and decimals
+                                    //Finishes converting the value to just the number
+                                    var currencyMultiplier = parseFloat(currencyMultiplierAsArray.join(""));
+                                    // Get the user to type in a value into a textbox and use the multiplier
+                                    amount = Math.floor(amount / currencyMultiplier);//Amount is now in the undelying game currency units
+                                    if(!archipelago_settings.team)//If the team isn't set
+                                        archipelago_settings.team = 0;//Put them on team 0
+                                    const key = "EnergyLink" + String(archipelago_settings.team);
+                                    const tag = archipelago_settings.seed + String(date.ticksElapsed);
+                                    archipelago_send_message("Set", {key: key, default: 0, tag: tag, want_reply: true, operations: [{operation: "add", value: -amount * (5 * 10**6)}, {"operation": "max", "value": 0}]})
+                                } });
+                            }
+                        },
+                        {
+                            type: 'button',
+                            name: 'deposit-button',
+                            x: 250,
+                            y: 100,
+                            width: 200,
+                            height: 200,
+                            text: 'Deposit Funds',
+                            tooltip: 'Look at you. You\'re so generous.',
+                            onClick: function() {
+                                ui.showTextInput({title: "Enter Amount to be Deposited", 
+                                description: "Note: A 10% fee will be assessed on both deposits and withdrawls. " + 
+                                "All users in the multiworld have access to this account.", 
+                                callback(value: string){
+                                    if(!(parseInt(value)  > -1)){//Numbers only
+                                        ui.showError("Not A Valid Amount", "This ATM Machine only accepts amounts as a positive integer. Please input a valid amount.")
+                                        return;
+                                    }
+                                    var amount = parseInt(value);
+                                    // Convert 1 internal currency to a multiplier by formatting it into a string and parsing it
+                                    var currency = context.formatString("{CURRENCY2DP}", 1)
+                                    var currencyMultiplierAsArray = currency.match(/[\d.]+/g); // Matches numbers and decimals
+                                    //Finishes converting the value to just the number
+                                    var currencyMultiplier = parseFloat(currencyMultiplierAsArray.join(""));
+                                    // Get the user to type in a value into a textbox and use the multiplier
+                                    amount = Math.floor(amount / currencyMultiplier);//Amount is now in the undelying game currency units
+                                    if(park.cash - amount < 100000){//The player must have the equivalent of at least $10,000 afterwards to be elligible to deposit
+                                        ui.showError("Insufficient Reserves", "Multiworld Customs and Import laws require that the customer have at least " +
+                                        context.formatString("{CURRENCY2DP}", 100000) + " in reserve to contribute to their account at EnergyLink Bank.")
+                                        return;
+                                    }
+                                    if(!archipelago_settings.team)//If the team isn't set
+                                        archipelago_settings.team = 0;//Put them on team 0
+                                    const key = "EnergyLink" + String(archipelago_settings.team);
+                                    const tag = archipelago_settings.seed + String(date.ticksElapsed);
+                                    archipelago_send_message("Set", {key: key, default: 0, tag: tag, want_reply: true, operations: [{operation: "add", value: .9* amount * (5 * 10**6)}]})
+                                } });                            }
+                        },
+                        {
+                            type: 'button',
+                            name: 'inquiry-button',
+                            x: 475,
+                            y: 100,
+                            width: 200,
+                            height: 200,
+                            text: 'Balance Inquiry',
+                            tooltip: 'IRL ATMs charging you money for this should be a crime.',
+                            onClick: function() {
+                                if(!archipelago_settings.team)//If the team isn't set
+                                    archipelago_settings.team = 0;//Put them on team 0
+                                const key = "EnergyLink" + String(archipelago_settings.team);
+                                const tag = "inquiry";
+                                archipelago_send_message("Set", {key: key, default: 0, tag: tag, want_reply: true, operations: []})                            }
+                        },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: wh - 24,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'Linux is clearly the superior operating system. We all agree, right?',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                        }
+                    ]
+                )
             }
         ]
     });
@@ -1209,7 +1325,10 @@ function archipelagoDebug(){
                     text: 'Colbys Decision',
                     onClick: function() {
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.AddRide(6);
+                        archipelago_settings.received_games.push("Ocarina of Time", "Adventure", "Donkey Kong Country 3", "Final Fantasy 1", "Hollow Knight",
+                        "The Legend of Zelda", "A Link to the Past", "Links Awakening", "Pokemon Red and Blue", "Rogue Legacy",
+                        "Sonic Adventure 2", "Super Mario World", "Super Mario 64", "Super Metroid", "VVVVVV")
+                        console.log(archipelago_settings.received_games.length);
                         // console.log(ScenarioName[0]);
                         // archipelago_settings.location_information = locationInfo.Full;
                         // archipelago_send_message("GetDataPackage");
@@ -1441,8 +1560,8 @@ function archipelagoDebug(){
                     text: 'Colbys Choice',
                     onClick: function() { 
                         // context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
-                        console.log(JSON.stringify(scenario.filename));
-                        console.log(convert_scenario_name_to_archipelago("scenarioName", scenario.filename));
+                        // console.log(JSON.stringify(scenario.filename));
+                        // console.log(convert_scenario_name_to_archipelago("scenarioName", scenario.filename));
                         // console.log(objectManager.load("Ferris Wheel"));
                         // console.log((objectManager.getAllObjects("ride")[0]));
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
@@ -1453,8 +1572,12 @@ function archipelagoDebug(){
                         // park.setFlag("unlockAllPrices", true);
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // BathroomTrap.updateMaxSpeed();
-                        // console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayer"));
-                        // archipelago_send_message("StatusUpdate", 30)
+                        console.log((context.formatString("{CURRENCY2DP}", 1)));
+                        console.log(date.ticksElapsed);
+                        // ui.showTextInput({title: "Test", description: "Hi", callback(value: string){console.log(value)} })
+                        var value = 20000
+                        // archipelago_print_message(context.formatString("{CURRENCY2DP}",  (value)));
+                        archipelago_send_message("Set", {key: "EnergyLink0", default: 0, tag: "inquiry", want_reply: true, operations: [{operation: "add", value: value * (5 * 10**6)}, {"operation": "max", "value": 0}]})
                     }
                 },
                 {
