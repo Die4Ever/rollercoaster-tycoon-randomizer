@@ -319,7 +319,7 @@ function archipelagoGui(){
 
     var window = ui.openWindow({
         classification: 'archipelago-connect',
-        title: "Archipelago Connection",
+        title: "Archipelago " + archipelago_version,
         width: ww,
         height: wh,
         widgets: [].concat(
@@ -561,13 +561,13 @@ function archipelagoLocations(){
                         },
                         {
                             type: 'label',
-                            name: 'Connected-to-server',
+                            name: 'Version',
                             x: 200,
                             y: 330,
                             width: 300,
                             height: 26,
-                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                            text: "Archipelago " + archipelago_version,
+                            tooltip: "You see that number? We like watching that number go up. That means I'm good at programming."
                         },
                         {
                             type: 'custom',
@@ -607,16 +607,16 @@ function archipelagoLocations(){
                             isStriped: true,
                             items: Archipelago.CreateUnlockedList()
                         },
-                        {
-                            type: 'label',
-                            name: 'Connected-to-server',
-                            x: 200,
-                            y: 330,
-                            width: 300,
-                            height: 26,
-                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
-                        },
+                        // {
+                        //     type: 'label',
+                        //     name: 'Connected-to-server',
+                        //     x: 200,
+                        //     y: 330,
+                        //     width: 300,
+                        //     height: 26,
+                        //     text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                        //     tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        // },
                         {
                             type: 'custom',
                             name: 'custom-archipealgo-logo-1',
@@ -658,16 +658,16 @@ function archipelagoLocations(){
                             columns:[{width: 1400}],
                             items: Archipelago.CreateObjectiveList()
                         },
-                        {
-                            type: 'label',
-                            name: 'Connected-to-server',
-                            x: 200,
-                            y: 300,
-                            width: 300,
-                            height: 26,
-                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
-                        },
+                        // {
+                        //     type: 'label',
+                        //     name: 'Connected-to-server',
+                        //     x: 200,
+                        //     y: 300,
+                        //     width: 300,
+                        //     height: 26,
+                        //     text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                        //     tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        // },
                         {
                             type: 'custom',
                             name: 'custom-archipealgo-logo-1',

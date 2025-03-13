@@ -224,11 +224,103 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     }
                 }
             }
-
             // If the user has already made progress on this game, reflect that in the unlock shop
             context.setTimeout(() => {archipelago_update_locations(data.checked_locations)}, 2000);
 
             archipelago_connected_to_server = true;
+
+            if(data.slot_data.version != archipelago_version){
+                var bad_version_warning = ui.openWindow({
+                    classification: 'bad_version_warning',
+                    title: "WARNING",
+                    width: 500,
+                    height: 300,
+                    widgets: [].concat(
+                        {
+                            type: 'label',   
+                            name: 'warning-label-1',
+                            text: "{RED}WARNING: The version of this plugin does not match the version used to generate", 
+                            x: 25,
+                            y: 40,
+                            width: 450,
+                            height: 20,
+                            textAlign: "centred",
+                            tooltip: "No more worlds will be ruined at the hands of an incorrect version. Man, I'm a hero!"
+                        },{
+                            type: 'label',   
+                            name: 'warning-label-2',
+                            text: "{RED}this world! Continuing may cause glitches and lead to an unwinnable scenario!", 
+                            x: 25,
+                            y: 60,
+                            width: 450,
+                            textAlign: "centred",
+                            height: 20,
+                            tooltip: "You know how version numbers work, right?"
+                        },
+                        {
+                            type: 'label',   
+                            name: 'warning-label-3',
+                            text: "The version used to generate this world was: " + String(data.slot_data.version) + ".", 
+                            x: 25,
+                            y: 80,
+                            width: 450,
+                            height: 20,
+                            textAlign: "centred",
+                            tooltip: "When the leftmost number increases, the developer is very proud!"
+                        },
+                        {
+                            type: 'label',   
+                            name: 'warning-label-4',
+                            text: "The plugins version is: " + String(archipelago_version) + ".", 
+                            x: 25,
+                            y: 100,
+                            width: 450,
+                            height: 20,
+                            textAlign: "centred",
+                            tooltip: "When the rightmost number increases, the developer is ashamed."
+                        },
+                        {
+                            type: 'button',
+                            name: 'confirm-button',
+                            x: 50,
+                            y: 150,
+                            width: 400,
+                            height: 100,
+                            text: 'I Understand and Wish to Continue',
+                            tooltip: 'You\'ve been warned.',
+                            onClick: function() {
+                                bad_version_warning.close();
+                            }
+                        },
+                        // {
+                        //     type: 'button',
+                        //     name: 'load-button',
+                        //     x: 250,
+                        //     y: 150,
+                        //     width: 200,
+                        //     height: 100,
+                        //     text: 'Load a Different Save',
+                        //     tooltip: ('Be sure to select the correct one this time! Maybe this will help!   ' + data.slot_data.seed),
+                        //     isDisabled: false,
+                        //     onClick: function() {
+                        //         context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
+                        //     }
+                        // },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: 275,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'It\'s crazy how long it took me to add this, given how many "glitches" could have been prevented when testing.',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                        }
+                    )
+                })
+                // return bad_version_warning;
+            }
+
             break;
 
         case "ConnectionRefused"://Packet stating an error has occured in connecting to the Archipelago game
@@ -518,14 +610,14 @@ function errorCallback() {
     catch{
         trace("Looks like the Archipelago window isn't open.");
     }
-    try {
-        var window:Window = ui.getWindow("archipelago-locations");
-        window.findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
-        trace(archipelago_connected_to_server);
-    }
-    catch{
-        trace("Looks like the Archipelago Shop isn't open");
-    }
+    // try {
+    //     var window:Window = ui.getWindow("archipelago-locations");
+    //     window.findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
+    //     trace(archipelago_connected_to_server);
+    // }
+    // catch{
+    //     trace("Looks like the Archipelago Shop isn't open");
+    // }
 }
 
 function connectCallback() {
@@ -541,13 +633,13 @@ function connectCallback() {
     catch {
         trace("Looks like the setup window isn't open.")
     }
-    try{
-        if(ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
-        ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the game!";
-    }
-    catch{
-        trace("Looks like the unlock shop isn't open.");
-    }
+    // try{
+    //     if(ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
+    //     ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the game!";
+    // }
+    // catch{
+    //     trace("Looks like the unlock shop isn't open.");
+    // }
 }
 
 var connection = null;
