@@ -1574,10 +1574,11 @@ function archipelagoDebug(){
                         // BathroomTrap.updateMaxSpeed();
                         console.log((context.formatString("{CURRENCY2DP}", 1)));
                         console.log(date.ticksElapsed);
+                        console.log(JSON.stringify(archipelago_settings));
                         // ui.showTextInput({title: "Test", description: "Hi", callback(value: string){console.log(value)} })
                         var value = 20000
                         // archipelago_print_message(context.formatString("{CURRENCY2DP}",  (value)));
-                        archipelago_send_message("Set", {key: "EnergyLink0", default: 0, tag: "inquiry", want_reply: true, operations: [{operation: "add", value: value * (5 * 10**6)}, {"operation": "max", "value": 0}]})
+                        archipelago_send_message("Set", {key: "EnergyLink0", default: 0, tag: "p*ck", want_reply: true, operations: [{operation: "add", value: value * (5 * 10**6)}, {"operation": "max", "value": 0}]})
                     }
                 },
                 {

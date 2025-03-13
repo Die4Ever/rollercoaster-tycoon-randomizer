@@ -84,6 +84,7 @@ var archipelago_settings: any = {
     skips: 1,
     player: "",
     team: undefined,
+    tags: [],
     preferred_intensity: 1,
     maximum_speed: 1,
     all_rides_and_scenery_base: false,

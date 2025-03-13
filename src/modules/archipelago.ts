@@ -782,6 +782,14 @@ class RCTRArchipelago extends ModuleBase {
             "Political Donations", "Maintenace Fee", "Convenince Fee", "Inconvenience Fee", "Health Insurance", "Transaction Protection Plan", 
             "Overdraft Protection"
         ]
+        if(tag != "inquiry"){
+            if(archipelago_settings.tags.indexOf(tag) !== -1){
+                return // We've already handled this tag
+            }
+            else{
+                archipelago_settings.tags.push(tag);
+            }
+        }
         for(let i = 0; i < archipelago_settings.received_games.length; i++){
             switch(true){
                 case archipelago_settings.received_games[i].toLowerCase().indexOf("zelda") !== -1:
