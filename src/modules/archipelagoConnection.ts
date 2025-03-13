@@ -292,20 +292,6 @@ function ac_req(data) {//This is what we do when we receive a data packet
                                 bad_version_warning.close();
                             }
                         },
-                        // {
-                        //     type: 'button',
-                        //     name: 'load-button',
-                        //     x: 250,
-                        //     y: 150,
-                        //     width: 200,
-                        //     height: 100,
-                        //     text: 'Load a Different Save',
-                        //     tooltip: ('Be sure to select the correct one this time! Maybe this will help!   ' + data.slot_data.seed),
-                        //     isDisabled: false,
-                        //     onClick: function() {
-                        //         context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
-                        //     }
-                        // },
                         {
                             type: 'custom',
                             name: 'custom-archipealgo-logo-1',

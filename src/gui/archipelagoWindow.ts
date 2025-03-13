@@ -191,9 +191,9 @@ function archipelagoGui(){
                     width: 2,
                     tooltip: "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
                 }),
-                NewLabel("You'll see some items in the shop have different colors.", {
+                NewLabel("The second tab is your purchase history. Use it when your friends say you aren't pulling your weight.", {
                     name: 'Line-2',
-                    y: 1.5,
+                    y: 1,
                     width: 2,
                     tooltip: "I'll be honest, I put that in because its easy to track and looks more important than it actually is."
                 }),
@@ -1634,59 +1634,66 @@ function interpretMessage(){
         return;
         trace("This is the message:");
         trace(message);
-        switch(message){
-            case '!!help':
-                archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.");
-                archipelago_print_message("!!toggleDeathLink: Enables/Disables Deathlink\n");
-                archipelago_print_message("!!setMaxSpeed x: Sets the maximum allowed speed.");
-                archipelago_print_message("!!sync: syncs all the items in case the connector is bad at its job.");
-                archipelago_print_message("!!addSkip: Cheats in a skip for the unlock shop. This is on the honor system.");
-                break;
-            case '!!toggleDeathLink':
-                archipelago_settings.death_link = !archipelago_settings.death_link;
-                if(archipelago_settings.death_link)
-                archipelago_print_message("Deathlink Enabled you monster");
-                else
-                archipelago_print_message("Deathlink Disabled you coward");
-                break;
-            case '!!setMaxSpeed 1'://Changes maximum speed allowed
-                archipelago_settings.maximum_speed = 1;
-                archipelago_print_message("Maximum speed reset to 1. We're off! Like a herd of turtles!")
-                break;
-            case '!!setMaxSpeed 2':
-                archipelago_settings.maximum_speed = 2;
-                archipelago_print_message("Maximum speed set to 2. Those guests sure are slow, ain't they?");
-                break;
-            case '!!setMaxSpeed 3':
-                archipelago_settings.maximum_speed = 3;
-                archipelago_print_message("Maximum speed set to 3. Zoom. Look at it go.");
-                break;
-            case '!!setMaxSpeed 4':
-                archipelago_settings.maximum_speed = 4;
-                archipelago_print_message("Maximum speed set to 4. Is this not fast enough for you yet?");
-                break;
-            case '!!setMaxSpeed 5':
-                archipelago_settings.maximum_speed = 8;
-                archipelago_print_message("Maximum speed set. You better pray you don't get a furry trap.");
-                break;
-            case '!!sync':
-                ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
-                archipelago_send_message("Sync");
-                break;
-            case '!!addSkip':
-                archipelago_settings.skips ++;
-                archipelago_print_message("It appears somebody set their difficulty too high. This is where your hubris brought you!");
-                break;
-            case '!!fixUnlockShop':
-                archipelago_print_message("Apologies from present Colby for past Colby being bad at programming.");
-                archipelago_send_message("LocationScouts");
-                break;
-            case 'Colby sucks'://Gotta do some error correction here.
+        if(message.charAt(0) === '!' && message.charAt(1) === '!'){
+            message = message.toLocaleLowerCase();
+            switch(message){
+                case '!!help':
+                    archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.");
+                    archipelago_print_message("!!toggleDeathLink: Enables/Disables Deathlink\n");
+                    archipelago_print_message("!!setMaxSpeed x: Sets the maximum allowed speed.");
+                    archipelago_print_message("!!sync: syncs all the items in case the connector is bad at its job.");
+                    archipelago_print_message("!!addSkip: Cheats in a skip for the unlock shop. This is on the honor system.");
+                    break;
+                case '!!toggledeathlink':
+                    archipelago_settings.death_link = !archipelago_settings.death_link;
+                    if(archipelago_settings.death_link)
+                    archipelago_print_message("Deathlink Enabled you monster");
+                    else
+                    archipelago_print_message("Deathlink Disabled you coward");
+                    break;
+                case '!!setmaxspeed 1'://Changes maximum speed allowed
+                    archipelago_settings.maximum_speed = 1;
+                    archipelago_print_message("Maximum speed reset to 1. We're off! Like a herd of turtles!")
+                    break;
+                case '!!setmaxspeed 2':
+                    archipelago_settings.maximum_speed = 2;
+                    archipelago_print_message("Maximum speed set to 2. Those guests sure are slow, ain't they?");
+                    break;
+                case '!!setmaxspeed 3':
+                    archipelago_settings.maximum_speed = 3;
+                    archipelago_print_message("Maximum speed set to 3. Zoom. Look at it go.");
+                    break;
+                case '!!setmaxspeed 4':
+                    archipelago_settings.maximum_speed = 4;
+                    archipelago_print_message("Maximum speed set to 4. Is this not fast enough for you yet?");
+                    break;
+                case '!!setmaxspeed 5':
+                    archipelago_settings.maximum_speed = 8;
+                    archipelago_print_message("Maximum speed set. You better pray you don't get a furry trap.");
+                    break;
+                case '!!sync':
+                    ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
+                    archipelago_send_message("Sync");
+                    break;
+                case '!!addskip':
+                    archipelago_settings.skips ++;
+                    archipelago_print_message("It appears somebody set their difficulty too high. This is where your hubris brought you!");
+                    break;
+                case '!!fixunlockshop':
+                    archipelago_print_message("Apologies from present Colby for past Colby being bad at programming.");
+                    archipelago_send_message("LocationScouts");
+                    break;
+                default:
+                    archipelago_print_message("Unknown command: try using !!help");
+                    break;
+            }
+        }
+        else {
+            if(message == "Colby sucks"){ //Gotta do some error correction here.
                 archipelago_send_message("Say","Colby is awesome!");
-                break;
-            default:
-                archipelago_send_message("Say", message);
-                break;
+                return;
+            }
+            archipelago_send_message("Say", message);
         }
         currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
     }
