@@ -1730,6 +1730,15 @@ class RCTRArchipelago extends ModuleBase {
         trace(Prices[LocationID]);
         if(!context.paused){
             if((Prices[LocationID].Price <= (park.cash / 10) || Prices[LocationID].Price == 0) || archipelago_skip_enabled){//Check if player has enough cash or if the price is 0.
+                if(archipelago_skip_enabled){
+                    var archipelago_skip_elligible = self.CheckIfUnlocked(Prices[LocationID].RidePrereq[1]);//Make sure the rides unlocked, even if not built.
+                    if(!archipelago_skip_elligible){
+                        ui.showError("You must have this ride or category unlocked to use a skip.", "We'd break progression otherwise! You don't want that on your consience.");
+                        (ui.getWindow("archipelago-locations").findWidget("skip-button") as ButtonWidget).isPressed = false;
+                        archipelago_skip_enabled = false;
+                        return;
+                    }
+                }
                 if((Prices[LocationID].Lives <= park.guests) || archipelago_skip_enabled){//Check if the player has enough guests to sacrifice
                     var NumQualifiedRides = self.CheckElligibleRides(LocationID)[0];
                     let guest_list = map.getAllEntities("guest");
@@ -1874,6 +1883,30 @@ class RCTRArchipelago extends ModuleBase {
         }
         console.log(QualifiedTotalCustomerCounter);
         return [NumQualifiedRides,QualifiedExcitementCounter,QualifiedIntensityCounter,QualifiedNauseaCounter,QualifiedLengthCounter,QualifiedTotalCustomerCounter];
+    }
+
+    CheckIfUnlocked(checked_ride): boolean{//Checks if a given ride is in the researched items list
+        let researchItems = park.research.inventedItems;//Only what's already researched
+        console.log(checked_ride);
+        if(!checked_ride){//If there's no ride prereq
+            return true;//It's automatically elligible
+        }
+
+        if (ObjectCategory[checked_ride]){//See if there's a prereq that's a category
+            for(var i = 0; i < researchItems.length; i++){
+                if((researchItems[i] as RideResearchItem).category == checked_ride){//If the items match...
+                    return true;
+                }
+            }
+        }
+        checked_ride = RideType[checked_ride];
+        for(let i = 0; i < researchItems.length; i++){
+            console.log((researchItems[i] as RideResearchItem).rideType)
+            if((researchItems[i] as RideResearchItem).rideType == checked_ride){//If the items match...
+                return true;
+            }
+        }
+        return false;
     }
 
     SendStatus(): any{
