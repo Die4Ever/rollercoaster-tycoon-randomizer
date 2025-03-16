@@ -1913,23 +1913,14 @@ function archipelagoDebug(){
                         // context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
                         // console.log(JSON.stringify(scenario.filename));
                         // console.log(convert_scenario_name_to_archipelago("scenarioName", scenario.filename));
-                        // console.log(objectManager.load("Ferris Wheel"));
-                        // console.log((objectManager.getAllObjects("ride")[0]));
-                        // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        // BathroomTrap.AddRide(6);
-                        // BathroomTrap.RemoveItems();
-                        // console.log(JSON.stringify(park.research.uninventedItems));
-                        // console.log(JSON.stringify(archipelago_settings.hints));
-                        // park.setFlag("unlockAllPrices", true);
-                        // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        // BathroomTrap.updateMaxSpeed();
-                        console.log((context.formatString("{CURRENCY2DP}", 1)));
-                        console.log(date.ticksElapsed);
-                        console.log(JSON.stringify(archipelago_settings));
+                        // console.log((context.formatString("{CURRENCY2DP}", 1)));
+                        // console.log(date.ticksElapsed);
+                        // console.log(JSON.stringify(archipelago_settings));
                         // ui.showTextInput({title: "Test", description: "Hi", callback(value: string){console.log(value)} })
-                        var value = 20000
+                        // var value = 20000
                         // archipelago_print_message(context.formatString("{CURRENCY2DP}",  (value)));
-                        archipelago_send_message("Set", {key: "EnergyLink0", default: 0, tag: "p*ck", want_reply: true, operations: [{operation: "add", value: value * (5 * 10**6)}, {"operation": "max", "value": 0}]})
+                        // archipelago_send_message("Set", {key: "EnergyLink0", default: 0, tag: "p*ck", want_reply: true, operations: [{operation: "add", value: value * (5 * 10**6)}, {"operation": "max", "value": 0}]})
+                        context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 6, staffOrders: 0} satisfies StaffHireArgs);
                     }
                 },
                 {

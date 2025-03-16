@@ -311,6 +311,10 @@ class RCTRArchipelago extends ModuleBase {
                     ui.showError("Too fast!", "You haven't unlocked that speed tier yet!")
                     context.executeAction("gamesetspeed",{speed: 1} as GameSetSpeedArgs);
                 }
+                break;
+            case "staffhire":
+                console.log(args);
+                trace(result);
         }
     }
 
@@ -580,9 +584,23 @@ class RCTRArchipelago extends ModuleBase {
         if(furry_number > 300)
         furry_number = 300;
         for(let i = 0; i < furry_number; i++){
-            var furry_type = Math.floor(Math.random() * 3);
+            var furry_type = Math.floor(Math.random() * 4);
+            switch(furry_type){
+                case 0:
+                    furry_type = 4; //Panda
+                    break;
+                case 1:
+                    furry_type = 5; //Elephant
+                    break;
+                case 2: 
+                    furry_type = 6; //Tiger
+                    break;
+                case 3:
+                    furry_type = 9; //Gorilla 
+                    break;
+            }
             // context.executeAction("staffhire",{autoPosition: true, staffType: 3, entertainerType: furry_type, staffOrders: 0} as StaffHireArgs);
-            let furry = context.executeAction("staffhire", {autoPosition: true, staffType: 3});
+            context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: furry_type, staffOrders: 0} satisfies StaffHireArgs);
         }
     }
 
