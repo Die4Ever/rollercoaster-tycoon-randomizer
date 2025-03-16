@@ -412,7 +412,7 @@ class RCTRArchipelago extends ModuleBase {
         for(let i = counter; i < items.length; i++){//Each item
             var category = "item";
             compare_list.push(items[i]);
-            if(items[i][0] >= 2000000 && items[i][0] <= 2000121){//This number will need to change if we ever add more items/traps/etc.
+            if(items[i][0] >= 2000000 && items[i][0] <= 2000122){//This number will need to change if we ever add more items/traps/etc.
                 var item = item_id_to_name[items[i][0]];
                 if(item.indexOf("Trap") > -1)
                 category = "trap";
@@ -562,6 +562,9 @@ class RCTRArchipelago extends ModuleBase {
             case "Spam Trap":
                 self.SpamTrap();
                 break;
+            case "Loan Shark Trap":
+                self.LoanSharkTrap();
+                break;
         }
     }
 
@@ -573,8 +576,86 @@ class RCTRArchipelago extends ModuleBase {
     BathroomTrap(): void{
         var guests = map.getAllEntities("guest");
         for (var i=0; i<guests.length; i++) {
-        guests[i].toilet = 255;
+            guests[i].toilet = 255;
         }
+    }
+
+    LoanSharkTrap(): Window{
+        for(let i = 0; i < map.numRides; i++){
+            switch(map.rides[i].classification){
+                case "ride":
+                    park.bankLoan += 3000;
+                    break;
+                case "stall":
+                    park.bankLoan += 500;
+                    break;
+                case "facility":
+                    park.bankLoan += 500;
+                    break;
+                default:
+                    park.bankLoan += 500;
+                    console.log("Error in LoanSharkTrap: Classification not found.")
+            }
+        }
+        var window = ui.openWindow({
+            classification: 'Repairs',
+            title: "Chance",
+            width: 300,
+            height: 150,
+            colours: [21,41],
+            widgets: [].concat(
+                [
+                    {
+                        type: 'label',
+                        x: 0,
+                        y: 25,
+                        width: 300,
+                        height: 25,
+                        textAlign: "centred",
+                        text: "Make General Repairs"
+                    },
+                    {
+                        type: 'label',
+                        x: 0,
+                        y: 50,
+                        width: 300,
+                        height: 25,
+                        textAlign: "centred",
+                        text: "On All Your Buildings"
+                    },
+                    {
+                        type: 'label',
+                        x: 0,
+                        y: 75,
+                        width: 300,
+                        height: 25,
+                        textAlign: "centred",
+                        text: "For Each Ride Pay " + context.formatString("{CURRENCY2DP}",  3000)
+                    },
+                    {
+                        type: 'label',
+                        x: 0,
+                        y: 100,
+                        width: 300,
+                        height: 25,
+                        textAlign: "centred",
+                        text: "For Each Stall Pay " + context.formatString("{CURRENCY2DP}",  500)
+                    },
+                    {
+                        type: "button",
+                        x: 0,
+                        y: 125,
+                        width: 300,
+                        height: 25,
+                        text: "This has automatically been applied to your bank loan",
+                        onClick: function() {
+                            window.close();
+                        }
+                    }
+                ]
+            )
+        });
+        return window;
     }
 
     FurryConventionTrap(): void{
