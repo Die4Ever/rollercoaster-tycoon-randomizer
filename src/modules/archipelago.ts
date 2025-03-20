@@ -349,7 +349,7 @@ class RCTRArchipelago extends ModuleBase {
             objectManager.load(["rct1aa.ride.bicycles", "rct1aa.ride.floorless_twister_trains", "rct1aa.ride.flying_saucers", "rct1aa.ride.ghost_train_cars", "rct1aa.ride.heartline_twister_cars", "rct1aa.ride.hyper_twister_trains", "rct1aa.ride.lay_down_trains", "rct1aa.ride.mini_helicopters", "rct1aa.ride.reverser_cars", "rct1aa.ride.side_friction_cars", "rct1aa.ride.ski_lift_cars", "rct1aa.ride.splash_boats", "rct1aa.ride.stand_up_twister_trains", "rct1aa.ride.steam_trains_covered", "rct1aa.ride.steel_wild_mouse_cars", "rct1aa.ride.suspended_monorail_trains", "rct1aa.ride.twister_trains", "rct1aa.ride.vintage_cars", "rct1aa.ride.virginia_reel_tubs", "rct1aa.ride.wooden_articulated_trains", "rct1ll.ride.4_across_inverted_trains", "rct1ll.ride.air_powered_trains", "rct1ll.ride.coaster_boats", "rct1ll.ride.face_off_cars", "rct1ll.ride.hypercoaster_trains", "rct1ll.ride.inverted_hairpin_cars", "rct1ll.ride.jet_skis", "rct1ll.ride.rafts", "rct1ll.ride.steam_trains_american", "rct1.ride.bobsleigh_trains", "rct1.ride.bumper_boats", "rct1.ride.cat_cars", "rct1.ride.chairlift_cars", "rct1.ride.corkscrew_trains", "rct1.ride.dinghies", "rct1.ride.dodgems", "rct1.ride.fruity_ices_stall", "rct1.ride.go_karts", "rct1.ride.horses", "rct1.ride.inverted_trains", "rct1.ride.ladybird_trains", "rct1.ride.logs", "rct1.ride.log_trains", "rct1.ride.mine_cars", "rct1.ride.mine_trains", "rct1.ride.motorbikes", "rct1.ride.mouse_cars", "rct1.ride.pickup_trucks", "rct1.ride.racing_cars", "rct1.ride.reverse_freefall_car", "rct1.ride.river_rapids_boats", "rct1.ride.rocket_cars", "rct1.ride.single_person_swinging_cars", "rct1.ride.small_monorail_cars", "rct1.ride.sports_cars", "rct1.ride.stand_up_trains", "rct1.ride.steam_trains", "rct1.ride.steel_rc_trains", "rct1.ride.steel_rc_trains_reversed", "rct1.ride.streamlined_monorail_trains", "rct1.ride.suspended_swinging_aeroplane_cars", "rct1.ride.suspended_swinging_cars", "rct1.ride.swinging_lay_down_cars", "rct1.ride.toilets", "rct1.ride.vertical_drop_trains", "rct1.ride.wooden_rc_trains", "rct1.ride.wooden_rc_trains_reversed", "rct2.ride.4x4", "rct2.ride.aml1", "rct2.ride.amt1", "rct2.ride.arrsw1", "rct2.ride.arrsw2", "rct2.ride.arrt1", "rct2.ride.arrt2", "rct2.ride.arrx", "rct2.ride.atm1", "rct2.ride.balln", "rct2.ride.batfl", "rct2.ride.bboat", "rct2.ride.bmair", "rct2.ride.bmfl", "rct2.ride.bmrb", "rct2.ride.bmsd", "rct2.ride.bmsu", "rct2.ride.bmvd", "rct2.ride.bnoodles", "rct2.ride.bob1", "rct2.ride.burgb", "rct2.ride.c3d", "rct2.ride.cboat", "rct2.ride.chbuild", "rct2.ride.chcks", "rct2.ride.chknug", "rct2.ride.chpsh2", "rct2.ride.chpsh", "rct2.ride.cindr", "rct2.ride.circus1", "rct2.ride.clift1", "rct2.ride.clift2", "rct2.ride.cndyf", "rct2.ride.coffs", "rct2.ride.cookst", "rct2.ride.cstboat", "rct2.ride.ctcar", "rct2.ride.ding1", "rct2.ride.dodg1", "rct2.ride.dough", "rct2.ride.drnks", "rct2.ride.enterp", "rct2.ride.faid1", "rct2.ride.frnood", "rct2.ride.fsauc", "rct2.ride.funcake", "rct2.ride.fwh1", "rct2.ride.gdrop1", "rct2.ride.golf1", "rct2.ride.goltr", "rct2.ride.gtc", "rct2.ride.hatst", "rct2.ride.hchoc", "rct2.ride.helicar", "rct2.ride.hhbuild", "rct2.ride.hmaze", "rct2.ride.hmcar", "rct2.ride.hotds", "rct2.ride.hskelt", "rct2.ride.icecr1", "rct2.ride.icecr2", "rct2.ride.icetst", "rct2.ride.infok", "rct2.ride.intbob", "rct2.ride.intinv", "rct2.ride.intst", "rct2.ride.ivmc1", "rct2.ride.jski", "rct2.ride.jstar1", "rct2.ride.kart1", "rct2.ride.lemst", "rct2.ride.lfb1", "rct2.ride.lift1", "rct2.ride.mbsoup", "rct2.ride.mcarpet1", "rct2.ride.mft", "rct2.ride.mgr1", "rct2.ride.monbk", "rct2.ride.mono1", "rct2.ride.mono2", "rct2.ride.mono3", "rct2.ride.nemt", "rct2.ride.nrl2", "rct2.ride.nrl", "rct2.ride.obs1", "rct2.ride.obs2", "rct2.ride.pizzs", "rct2.ride.pmt1", "rct2.ride.popcs", "rct2.ride.premt1", "rct2.ride.pretst", "rct2.ride.ptct1", "rct2.ride.ptct2", "rct2.ride.ptct2r", "rct2.ride.rapboat", "rct2.ride.rboat", "rct2.ride.rckc", "rct2.ride.rcr", "rct2.ride.revcar", "rct2.ride.revf1", "rct2.ride.rftboat", "rct2.ride.rsaus", "rct2.ride.sbox", "rct2.ride.scht1", "rct2.ride.sfric1", "rct2.ride.simpod", "rct2.ride.skytr", "rct2.ride.slcfo", "rct2.ride.slct", "rct2.ride.smc1", "rct2.ride.smc2", "rct2.ride.smono", "rct2.ride.souvs", "rct2.ride.soybean", "rct2.ride.spboat", "rct2.ride.spcar", "rct2.ride.spdrcr", "rct2.ride.sqdst", "rct2.ride.srings", "rct2.ride.ssc1", "rct2.ride.starfrdr", "rct2.ride.steep1", "rct2.ride.steep2", "rct2.ride.submar", "rct2.ride.substl", "rct2.ride.sungst", "rct2.ride.swans", "rct2.ride.swsh1", "rct2.ride.swsh2", "rct2.ride.thcar", "rct2.ride.tlt1", "rct2.ride.tlt2", "rct2.ride.toffs", "rct2.ride.togst", "rct2.ride.topsp1", "rct2.ride.tram1", "rct2.ride.trike", "rct2.ride.truck1", "rct2.ride.tshrt", "rct2.ride.twist1", "rct2.ride.twist2", "rct2.ride.utcar", "rct2.ride.utcarr", "rct2.ride.vcr", "rct2.ride.vekdv", "rct2.ride.vekst", "rct2.ride.vekvamp", "rct2.ride.vreel", "rct2.ride.wcatc", "rct2.ride.wmmine", "rct2.ride.wmouse", "rct2.ride.wmspin", "rct2.ride.wonton", "rct2.ride.zldb", "rct2.ride.zlog", "openrct2.ride.alpine_coaster", "openrct2.ride.hybrid_coaster", "openrct2.ride.modern_twister", "openrct2.ride.single_rail_coaster", "rct2dlc.ride.zpanda", "rct2.scenery_group.scgabstr", "rct2.scenery_group.scgcandy","rct2.scenery_group.scgclass","rct2.scenery_group.scgegypt","rct2.scenery_group.scgfence","rct2.scenery_group.scggardn","rct2.scenery_group.scggiant","rct2.scenery_group.scghallo","rct2.scenery_group.scgindus","rct2.scenery_group.scgjungl","rct2.scenery_group.scgjuras","rct2.scenery_group.scgmart","rct2.scenery_group.scgmedie","rct2.scenery_group.scgmine","rct2.scenery_group.scgorien","rct2.scenery_group.scgpathx","rct2.scenery_group.scgpirat","rct2.scenery_group.scgshrub","rct2.scenery_group.scgsixfl","rct2.scenery_group.scgsnow","rct2.scenery_group.scgspace","rct2.scenery_group.scgspook","rct2.scenery_group.scgsport","rct2.scenery_group.scgtrees","rct2.scenery_group.scgurban","rct2.scenery_group.scgwalls","rct2.scenery_group.scgwater","rct2.scenery_group.scgwond","rct2.scenery_group.scgwwest"]);
         }
         //Loads the entertainers into the park for the furry trap
-        objectManager.load(["rct2.peep_animations.entertainer_elephant.json","rct2.peep_animations.entertainer_gorilla.json","rct2.peep_animations.entertainer_panda.json","rct2.peep_animations.entertainer_tiger.json"])
+        objectManager.load(["rct2.peep_animations.entertainer_elephant","rct2.peep_animations.entertainer_gorilla","rct2.peep_animations.entertainer_panda","rct2.peep_animations.entertainer_tiger"])
 
         park.research.inventedItems = researchItems.slice(0);//Due to some weird quirks with old parks, we need to force everything into unlocked to ensure
         park.research.uninventedItems = researchItems.slice(0,0);//every item has either a locked or unlocked state. It will glitch out otherwise.
@@ -660,25 +660,48 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     FurryConventionTrap(): void{
+        let panda = undefined;
+        let elephant = undefined;
+        let tiger = undefined;
+        let gorilla = undefined;
+        let costumes = objectManager.getAllObjects("peep_animations");
         var furry_number = Math.ceil(park.guests * .2);
         if(furry_number < 25)
         furry_number = 25;
         if(furry_number > 300)
         furry_number = 300;
+
+        for(let i = 0; i < costumes.length; i++){
+            switch(costumes[i].name){
+                case "Tiger costume":
+                    tiger = costumes[i].index;
+                    break;
+                case "Panda costume":
+                    panda = costumes[i].index;
+                    break;
+                case "Gorilla costume":
+                    gorilla = costumes[i].index;
+                    break;
+                case "Elephant costume":
+                    elephant = costumes[i].index;
+                    break;
+            }
+        }
+
         for(let i = 0; i < furry_number; i++){
             var furry_type = Math.floor(Math.random() * 4);
             switch(furry_type){
                 case 0:
-                    furry_type = 4; //Panda
+                    furry_type = panda; //Panda
                     break;
                 case 1:
-                    furry_type = 5; //Elephant
+                    furry_type = elephant; //Elephant
                     break;
                 case 2: 
-                    furry_type = 6; //Tiger
+                    furry_type = tiger; //Tiger
                     break;
                 case 3:
-                    furry_type = 9; //Gorilla 
+                    furry_type = gorilla; //Gorilla 
                     break;
             }
             // context.executeAction("staffhire",{autoPosition: true, staffType: 3, entertainerType: furry_type, staffOrders: 0} as StaffHireArgs);

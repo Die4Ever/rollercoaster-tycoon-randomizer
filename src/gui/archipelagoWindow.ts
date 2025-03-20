@@ -1287,7 +1287,9 @@ function archipelagoDebug(){
                         // var value = 20000
                         // archipelago_print_message(context.formatString("{CURRENCY2DP}",  (value)));
                         // archipelago_send_message("Set", {key: "EnergyLink0", default: 0, tag: "p*ck", want_reply: true, operations: [{operation: "add", value: value * (5 * 10**6)}, {"operation": "max", "value": 0}]})
-                        // context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 6, staffOrders: 0} satisfies StaffHireArgs);
+                        for(let i = 0; i < 15; i++){
+                        console.log(objectManager.getAllObjects("peep_animations")[i]);}
+                        context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 9, staffOrders: 0} satisfies StaffHireArgs);
                         // for(let i = 0; i < map.numRides; i++){
                         //     switch(map.rides[i].classification){
                         //         case "ride":
@@ -1297,8 +1299,8 @@ function archipelagoDebug(){
                         //             console.log(map.rides[i].type);
                         //     }
                         // }
-                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.LoanSharkTrap();
+                        // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        // BathroomTrap.LoanSharkTrap();
                     }
                 },
                 {
