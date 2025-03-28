@@ -14,8 +14,12 @@ function trace(message?: any, ...optionalParams: any[]): void {
     //     console.log(message, optionalParams);
 }
 
-if (bDebug)
+if (bDebug){
     ui.registerMenuItem("Archipelago Debug", archipelagoDebug);//Colby's debug menu. no touchy!
+    ui.registerShortcut({id:"debug", text:"[AP] Opens the debug window! You should never see this!", bindings:['D'],
+    callback() {archipelagoDebug()}
+    })
+}
 
 var global_settings = {
     rando_version: rando_version,

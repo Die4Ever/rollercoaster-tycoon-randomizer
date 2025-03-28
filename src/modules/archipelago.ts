@@ -689,7 +689,7 @@ class RCTRArchipelago extends ModuleBase {
         }
 
         for(let i = 0; i < furry_number; i++){
-            var furry_type = Math.floor(Math.random() * 4);
+            var furry_type = rng(0,3);//context.getRandom(0, 4)//rng(0, 3)//Math.floor(Math.random() * 4);
             switch(furry_type){
                 case 0:
                     furry_type = panda; //Panda
@@ -704,7 +704,6 @@ class RCTRArchipelago extends ModuleBase {
                     furry_type = gorilla; //Gorilla 
                     break;
             }
-            // context.executeAction("staffhire",{autoPosition: true, staffType: 3, entertainerType: furry_type, staffOrders: 0} as StaffHireArgs);
             context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: furry_type, staffOrders: 0} satisfies StaffHireArgs);
         }
     }

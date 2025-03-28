@@ -647,9 +647,9 @@ function archipelago_print_message(message: string) {
         lockedWindow.findWidget<ListViewWidget>("message-list").items = messageLog;
     }
     if(archipelago_settings.park_message_chat){
-        park.postMessage(
+        runNextTick(() => park.postMessage(
             {type: 'blank', text: message} as ParkMessageDesc
-        );
+        ));
     }
     if(archipelago_settings.network_chat){
         network.sendMessage(message);
