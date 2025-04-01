@@ -1300,7 +1300,7 @@ function archipelagoDebug(){
                         //             console.log(map.rides[i].type);
                         //     }
                         // }
-                        archipelago_print_message(String(rng(0,5)));
+                        runNextTick(() => {park.cash += 20000});
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // runNextTick(BathroomTrap.SpamTrap);
                     }

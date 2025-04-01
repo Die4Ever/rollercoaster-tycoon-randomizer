@@ -2,6 +2,7 @@
 
 
 class RCTRArchipelago extends ModuleBase {
+    //Mutates the game context
     FirstEntry(): void {//Loads on park starting for first time. Something in my code calls it as well
         var self = this;
         info("Module to handle connecting and communicating with Archipelago");
@@ -80,7 +81,7 @@ class RCTRArchipelago extends ModuleBase {
         if (!archipelago_connected_to_game)
         init_archipelago_connection();
         //Set up daily events
-        self.SubscribeEvent("interval.day", ()=>{self.SetArchipelagoResearch(); self.CheckObjectives(); self.SetNames();});
+        self.SubscribeEvent("interval.day", ()=>{context.executeAction("SetArchipelagoResearch", {}); self.CheckObjectives(); self.SetNames();});
         //Add menu items
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu
         ui.registerMenuItem("Archipelago Tutorial", tutorial_0); //Register the tutorial
@@ -131,6 +132,12 @@ class RCTRArchipelago extends ModuleBase {
         }
         catch(e){
             console.log("Error in registering ExplodeRide:" + e)
+        }
+        try{
+            context.registerAction('SetArchipelagoResearch', (args) => {return {};}, (args) => self.SetArchipelagoResearch());
+        }
+        catch(e){
+            console.log("Error in registering SetArchipelagoResearch:" + e)
         }
 
         if(bDebug){
@@ -295,9 +302,10 @@ class RCTRArchipelago extends ModuleBase {
         ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario;
     }
 
-    SetArchipelagoResearch(): void {
+    SetArchipelagoResearch(): any {//Mutates the context
         context.executeAction("parksetresearchfunding", {priorities: 0, fundingAmount: 0}, noop);//Set Funding to 0 and unselect every focus
         park.research.progress = 0; //If any progress is made (Say by users manually re-enabling research), set it back to 0.
+        return {};
     }
 
     InterpretAction(player, action, args, result): void {//Interprets game actions for various processes
@@ -314,7 +322,7 @@ class RCTRArchipelago extends ModuleBase {
                 }
                 break;
             case "staffhire":
-                console.log(args);
+                // console.log(args);
                 trace(result);
         }
     }
@@ -582,22 +590,23 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     LoanSharkTrap(): Window{
-        for(let i = 0; i < map.numRides; i++){
-            switch(map.rides[i].classification){
-                case "ride":
-                    park.bankLoan += 3000;
-                    break;
-                case "stall":
-                    park.bankLoan += 500;
-                    break;
-                case "facility":
-                    park.bankLoan += 500;
-                    break;
-                default:
-                    park.bankLoan += 500;
-                    console.log("Error in LoanSharkTrap: Classification not found.")
+            runNextTick(() => {for(let i = 0; i < map.numRides; i++){
+                switch(map.rides[i].classification){
+                    case "ride":
+                        park.bankLoan += 3000;
+                        break;
+                    case "stall":
+                        park.bankLoan += 500;
+                        break;
+                    case "facility":
+                        park.bankLoan += 500;
+                        break;
+                    default:
+                        park.bankLoan += 500;
+                        console.log("Error in LoanSharkTrap: Classification not found.")
+                }
             }
-        }
+        });
         var window = ui.openWindow({
             classification: 'Repairs',
             title: "Chance",

@@ -135,7 +135,6 @@ function DeepCopy(o) {
 }
 // var action_counter = 0;
 // game state can't be modified outside of synchronized functions, and tick is one of them
-// game state can't be modified outside of synchronized functions, and tick is one of them
 function runNextTick(func) {
     let sub = context.subscribe('interval.tick', function(args) {
         try {
