@@ -136,7 +136,14 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 trace(archipelago_settings.multiworld_games);
 
                 if(!archipelago_init_received){
-                Archipelago.SetImportedSettings(data.slot_data);
+                    try{
+                        context.registerAction('SetImportedSettings', (args) => {return {};}, (args) => Archipelago.SetImportedSettings(args));
+                    }
+                    catch(e){
+                        console.log("Error in registering SetImportedSettings:" + e)
+                    }
+                    context.executeAction("SetImportedSettings", data.slot_data);
+                    // Archipelago.SetImportedSettings(data.slot_data);
                 }
                 
             }

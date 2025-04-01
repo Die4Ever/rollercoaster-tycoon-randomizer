@@ -151,6 +151,18 @@ class RCTRArchipelago extends ModuleBase {
         catch(e){
             console.log("Error in registering SetNames:" + e + "\nThis was probably registered at the start of the game.")
         }
+        try{
+            context.registerAction('SetImportedSettings', (args) => {return {};}, (args) => self.SetImportedSettings(args));
+        }
+        catch(e){
+            console.log("Error in registering SetImportedSettings:" + e + "\nThis was probably registered at the start of the game.");
+        }
+        try{
+            context.registerAction('SetPurchasableTiles', (args) => {return {};}, (args) => self.SetPurchasableTiles());
+        }
+        catch(e){
+            console.log("Error in registering SetPurchasableTiles:" + e + "\nThis was probably registered at the start of the game.");
+        }
 
         if(bDebug){
             // archipelago_settings.location_information = 'Full';
@@ -164,9 +176,11 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    SetImportedSettings(imported_settings: any): void{
+    SetImportedSettings(imported_settings: any): any{
         var self = this;
-        trace("Setting values retrieved from Archipelago");
+        console.log("Setting values retrieved from Archipelago");
+        console.log(imported_settings);
+        imported_settings = imported_settings.args;
         switch(imported_settings.difficulty){
             case 0://very_easy
                 settings.difficulty = difficulties["Very Easy"];
@@ -266,7 +280,12 @@ class RCTRArchipelago extends ModuleBase {
 
         trace(archipelago_objectives.Monopoly[0]);
         if(archipelago_objectives.Monopoly[0]){
-            
+            try{
+                context.registerAction('SetPurchasableTiles', (args) => {return {};}, (args) => self.SetPurchasableTiles());
+            }
+            catch(e){
+                console.log("Error in registering SetPurchasableTiles:" + e)
+            }
             self.SetPurchasableTiles();
         }
 
@@ -313,6 +332,7 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_connected_to_server = true;
         ui.getWindow("archipelago-connect").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the server!";
         ui.getWindow("archipelago-connect").findWidget<ButtonWidget>("start-button").isDisabled = !archipelago_connected_to_game || !archipelago_connected_to_server || !archipelago_correct_scenario;
+        return {};
     }
 
     SetArchipelagoResearch(): any {//Mutates the context
@@ -1131,6 +1151,7 @@ class RCTRArchipelago extends ModuleBase {
                 }
             }
         }
+        return {};
     }
 
     ReceiveDeathLink(DeathLinkPacket: {cause: string, source: string, attempt: number}): any{
