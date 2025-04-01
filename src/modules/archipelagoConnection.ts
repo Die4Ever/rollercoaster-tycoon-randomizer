@@ -116,7 +116,13 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     trace("Here's our players:");
                     trace(archipelagoPlayers);
                     context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
-                    Archipelago.SetNames();
+                    try{
+                        context.registerAction('SetNames', (args) => {return {};}, (args) => Archipelago.SetNames());
+                    }
+                    catch(e){
+                        console.log("Error in registering SetNames:" + e)
+                    }
+                    context.executeAction("SetNames", {});
                     archipelago_settings.player = archipelagoPlayers[data.slot - 1];
                 }
                 context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);

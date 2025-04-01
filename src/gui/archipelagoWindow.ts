@@ -1277,17 +1277,7 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
-                        // context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
-                        // console.log(JSON.stringify(scenario.filename));
-                        // console.log(convert_scenario_name_to_archipelago("scenarioName", scenario.filename));
-                        // console.log((context.formatString("{CURRENCY2DP}", 1)));
-                        // console.log(date.ticksElapsed);
-                        // console.log(JSON.stringify(archipelago_settings));
-                        // ui.showTextInput({title: "Test", description: "Hi", callback(value: string){console.log(value)} })
-                        // var value = 20000
-                        // archipelago_print_message(context.formatString("{CURRENCY2DP}",  (value)));
-                        // archipelago_send_message("Set", {key: "EnergyLink0", default: 0, tag: "p*ck", want_reply: true, operations: [{operation: "add", value: value * (5 * 10**6)}, {"operation": "max", "value": 0}]})
-
+                        ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
                         // for(let i = 0; i < 15; i++){
                         // console.log(objectManager.getAllObjects("peep_animations")[i]);}
                         // context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 9, staffOrders: 0} satisfies StaffHireArgs);
@@ -1300,7 +1290,7 @@ function archipelagoDebug(){
                         //             console.log(map.rides[i].type);
                         //     }
                         // }
-                        runNextTick(() => {park.cash += 20000});
+                        // runNextTick(() => {park.cash += 20000});
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         // runNextTick(BathroomTrap.SpamTrap);
                     }

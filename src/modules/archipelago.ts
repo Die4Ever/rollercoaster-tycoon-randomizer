@@ -87,7 +87,7 @@ class RCTRArchipelago extends ModuleBase {
         if (!archipelago_connected_to_game)
         init_archipelago_connection();
         //Set up daily events
-        self.SubscribeEvent("interval.day", ()=>{context.executeAction("SetArchipelagoResearch", {}); self.CheckObjectives(); self.SetNames();});
+        self.SubscribeEvent("interval.day", ()=>{context.executeAction("SetArchipelagoResearch", {}); self.CheckObjectives(); context.executeAction("SetNames", {});});
         //Add menu items
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu
         ui.registerMenuItem("Archipelago Tutorial", tutorial_0); //Register the tutorial
@@ -144,6 +144,12 @@ class RCTRArchipelago extends ModuleBase {
         }
         catch(e){
             console.log("Error in registering SetArchipelagoResearch:" + e)
+        }
+        try{
+            context.registerAction('SetNames', (args) => {return {};}, (args) => self.SetNames());
+        }
+        catch(e){
+            console.log("Error in registering SetNames:" + e + "\nThis was probably registered at the start of the game.")
         }
 
         if(bDebug){
@@ -259,14 +265,15 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_objectives.UniqueRides[0] = imported_settings.objectives.UniqueRides[0];
 
         trace(archipelago_objectives.Monopoly[0]);
-        if(archipelago_objectives.Monopoly[0])
-        self.SetPurchasableTiles();
+        if(archipelago_objectives.Monopoly[0]){
+            
+            self.SetPurchasableTiles();
+        }
 
         archipelago_settings.rule_locations = imported_settings.rules;
         trace("These Park Rules are enabled: " + archipelago_settings.rule_locations);
 
         switch(imported_settings.visibility){
-            //TODO: Add setting for Progression/Useful/Filler/Trap
             case 0:
                 archipelago_settings.location_information = "None"
                 break;
@@ -1242,6 +1249,7 @@ class RCTRArchipelago extends ModuleBase {
                 }
             }
         }
+        return {};
     }
 
     CreateUnlockedList(): any{
