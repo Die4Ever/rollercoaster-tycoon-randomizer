@@ -8,7 +8,13 @@ class RCTRArchipelago extends ModuleBase {
         info("Module to handle connecting and communicating with Archipelago");
         if(!settings.rando_archipelago)
             return;
-        self.RemoveItems();//Removes everything from the invented items list. They'll be added back when Archipelago sends items
+        try{
+            context.registerAction('RemoveItems', (args) => {return {};}, (args) => self.RemoveItems());
+        }
+        catch(e){
+            console.log("Error in registering RemoveItems:" + e)
+        }
+        context.executeAction("RemoveItems", {});//Removes everything from the invented items list. They'll be added back when Archipelago sends items
         archipelago_send_message("Sync");//Get's all the currently received items for the game
         archipelago_send_message("LocationScouts");//Gets the item info for every location in the unlock shop
 
@@ -327,23 +333,10 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    RemoveItems(): void{//Removes items from the invented list and loads objects for Archipelago
+    //Mutates the Context
+    RemoveItems(): any{//Removes items from the invented list and loads objects for Archipelago
         const origNumResearched = park.research.inventedItems.length;
         let researchItems = park.research.inventedItems.concat(park.research.uninventedItems);
-
-        //Used to show what items are in the scenario
-        // var items: any = [];
-        // for(let i = 0; i < researchItems.length; i++){
-            // if(researchItems[i].category == "scenery")
-            // items.push("scenery");
-            // else
-            // items.push(RideType[researchItems[i].rideType]);
-        // }
-        // console.log("\n\n\n\n\n");
-        // console.log(scenario.name);
-        // console.log(JSON.stringify(items));
-        // console.log("\n\n\n\n\n");
-
 
         // Adds first aid room and cash machine. This will be depreciated when future Colby is good at his job.
         objectManager.load(["rct2.ride.faid1", "rct2.ride.atm1"]);
