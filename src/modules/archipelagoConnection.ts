@@ -647,7 +647,7 @@ function init_archipelago_connection() {
     connection = new APIConnection("Archipelago", 38280, ac_req, errorCallback, connectCallback);
 }
 
-function archipelago_print_message(message: string) {
+function archipelago_print_message(message: string) {//Prints the message in whatever places the user selects
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
     if(messageLog)
     messageLog.push(message);
@@ -660,9 +660,9 @@ function archipelago_print_message(message: string) {
         lockedWindow.findWidget<ListViewWidget>("message-list").items = messageLog;
     }
     if(archipelago_settings.park_message_chat){
-        runNextTick(() => park.postMessage(
-            {type: 'blank', text: message} as ParkMessageDesc
-        ));
+        context.executeAction("postMessage",
+            {message: {type: 'blank', text: message} as ParkMessageDesc}
+        );
     }
     if(archipelago_settings.network_chat){
         network.sendMessage(message);

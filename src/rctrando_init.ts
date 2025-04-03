@@ -45,6 +45,7 @@ if(context.apiVersion < targetApiVersion && typeof ui !== 'undefined') {
 }
 
 function main() {
+    var self = this;
     try {
         context.registerAction('RCTRandoExec',
             (args) => {return {};},
@@ -53,6 +54,18 @@ function main() {
 
         if(context.mode != 'normal') {
             return;
+        }
+        function postMessage(message: any){
+            console.log(message);
+            message = message.args.message;
+            park.postMessage(message);
+            return {};
+        }
+        try{
+            context.registerAction('postMessage', (args) => {return {};}, (args) => postMessage(args));
+        }
+        catch(e){
+            console.log("Error in registering postMessage:" + e)
         }
         if(network.mode == 'client') {
             info(network.mode);

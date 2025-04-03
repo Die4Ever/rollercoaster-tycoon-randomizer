@@ -394,6 +394,7 @@ class RCTRArchipelago extends ModuleBase {
         park.research.uninventedItems = researchItems.slice(0);//Everything is unresearched until further notice.
         this.AddChange('ShuffledResearch', 'Shuffled research items', null, null, null);
         this.AddChange('NumInventedItems', 'Invented items', origNumResearched, 0);
+        return {};
     }
 
     ReceiveArchipelagoItem(items: any[], newIndex: number): void{
@@ -747,34 +748,34 @@ class RCTRArchipelago extends ModuleBase {
         var releaseRule = function(){
             switch(rule){
                 case "Easier Guest Generation":
-                    park.postMessage(
-                        {type: 'award', text: "Congradulations! " + park.name + " has been recognized as an Archipelago historic site! Expect to see a permanent increase in visitors."} as ParkMessageDesc);
+                    context.executeAction("postMessage",
+                        {message:{type: 'award', text: "Congradulations! " + park.name + " has been recognized as an Archipelago historic site! Expect to see a permanent increase in visitors."} as ParkMessageDesc});
                     park.setFlag("difficultGuestGeneration", false);
                     break;
 
                 case "Easier Park Rating":
-                    park.postMessage(
-                        {type: 'peep', text: "Breaking news! The park ratings council has been overthrown in a military backed coup! The new leader has promised easier park ratings for the rest of this game!"} as ParkMessageDesc);
+                    context.executeAction("postMessage",
+                        {message:{type: 'peep', text: "Breaking news! The park ratings council has been overthrown in a military backed coup! The new leader has promised easier park ratings for the rest of this game!"} as ParkMessageDesc});
                     park.setFlag("difficultParkRating", false);
                     break;
                 case "Allow High Construction":
-                    park.postMessage(
-                        {type: 'peep', text: "Wait a second, airplanes don't exist in Roller Coaster Tycoon. Why are we limiting construction height? Let's go ahead and fix that now."} as ParkMessageDesc);
+                    context.executeAction("postMessage",
+                        {message:{type: 'peep', text: "Wait a second, airplanes don't exist in Roller Coaster Tycoon. Why are we limiting construction height? Let's go ahead and fix that now."} as ParkMessageDesc});
                     park.setFlag("forbidHighConstruction", false);
                     break;
                 case "Allow Landscape Changes":
-                    park.postMessage(
-                        {type: "chart", text: "IMPORTANT GOVERNMENT ANNOUNCEMENT: ALL UNEXPLODED ORDINANCE FROM THE GREAT TYCOON WAR HAS BEEN CLEARED FROM THIS SITE. " + park.name + " MAY RESUME LANDSCAPING OPERATIONS."} as ParkMessageDesc);
+                    context.executeAction("postMessage",
+                        {message:{type: "chart", text: "IMPORTANT GOVERNMENT ANNOUNCEMENT: ALL UNEXPLODED ORDINANCE FROM THE GREAT TYCOON WAR HAS BEEN CLEARED FROM THIS SITE. " + park.name + " MAY RESUME LANDSCAPING OPERATIONS."} as ParkMessageDesc});
                     park.setFlag("forbidLandscapeChanges", false);
                     break;
                 case "Allow Marketing Campaigns":
-                    park.postMessage(
-                        {type: 'money', text: "Inspector. The ministry of information has approved your application for promotion in all state media. You may now submit marketing campaigns. Glory to Arstotzka"} as ParkMessageDesc);
+                    context.executeAction("postMessage",
+                        {message:{type: 'money', text: "Inspector. The ministry of information has approved your application for promotion in all state media. You may now submit marketing campaigns. Glory to Arstotzka"} as ParkMessageDesc});
                     park.setFlag("forbidMarketingCampaigns", false);
                     break;
                 case "Allow Tree Removal":
-                    park.postMessage(
-                        {type: 'blank', text: "Upon further research, it would appear that the endangered trees in your park are in fact, invasive species. You may now chop them down."} as ParkMessageDesc);
+                    context.executeAction("postMessage",
+                        {message:{type: 'blank', text: "Upon further research, it would appear that the endangered trees in your park are in fact, invasive species. You may now chop them down."} as ParkMessageDesc});
                     park.setFlag("forbidTreeRemoval", false);
                     break;
                 default:
@@ -792,7 +793,7 @@ class RCTRArchipelago extends ModuleBase {
             }
             archipelago_settings.current_land_checks++;
             park.landPrice = Math.floor(2000 - (2000 * (archipelago_settings.current_land_checks/archipelago_settings.max_land_checks)));
-            park.postMessage("Speech increased to " + (archipelago_settings.current_land_checks + archipelago_settings.current_rights_checks) + ". New land price is: " + context.formatString("{CURRENCY2DP}",  park.landPrice));//Cash price)
+            archipelago_print_message("Speech increased to " + (archipelago_settings.current_land_checks + archipelago_settings.current_rights_checks) + ". New land price is: " + context.formatString("{CURRENCY2DP}",  park.landPrice));//Cash price)
             saveArchipelagoProgress();
         }
         if (type == "Construction Rights Discount"){
@@ -802,7 +803,7 @@ class RCTRArchipelago extends ModuleBase {
             }
             archipelago_settings.current_rights_checks++;
             park.constructionRightsPrice = Math.floor(2000 - (2000 * (archipelago_settings.current_rights_checks/archipelago_settings.max_rights_checks)));
-            park.postMessage("Speech increased to " + (archipelago_settings.current_land_checks + archipelago_settings.current_rights_checks) + ". New construction rights price is: " + context.formatString("{CURRENCY2DP}",  park.constructionRightsPrice));
+            archipelago_print_message("Speech increased to " + (archipelago_settings.current_land_checks + archipelago_settings.current_rights_checks) + ". New construction rights price is: " + context.formatString("{CURRENCY2DP}",  park.constructionRightsPrice));
             saveArchipelagoProgress();
         }
     }
@@ -903,8 +904,8 @@ class RCTRArchipelago extends ModuleBase {
     }
 
     updateMaxSpeed(): any{
-        park.postMessage(
-            {type: 'award', text: "The Elder Gods have granted your petition to defy phyics and create entropy. Your maximum speed has increased!"} as ParkMessageDesc);
+        context.executeAction("postMessage",
+            {message:{type: 'award', text: "The Elder Gods have granted your petition to defy phyics and create entropy. Your maximum speed has increased!"} as ParkMessageDesc});
         if (archipelago_settings.maximum_speed < 4)
             archipelago_settings.maximum_speed ++;
         else

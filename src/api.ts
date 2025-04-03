@@ -141,8 +141,8 @@ class APIConnection
         this.connected = false;
         info('error in '+this.name+' connection, will keep trying...');
         if(this.good) {
-            park.postMessage(
-                {type: 'blank', text: 'error in '+this.name+' connection, will keep trying...'} as ParkMessageDesc
+            context.executeAction("postMessage",
+                {message:{type: 'blank', text: 'error in '+this.name+' connection, will keep trying...'} as ParkMessageDesc}
             );
         }
         if(this.errorCallback) {
@@ -156,8 +156,8 @@ class APIConnection
         this.connected = false;
         info(this.name+' connection closed, will keep trying...');
         if(this.good) {
-            park.postMessage(
-                {type: 'blank', text: this.name+' connection closed, will keep trying...'} as ParkMessageDesc
+            context.executeAction("postMessage",
+                {message:{type: 'blank', text: this.name+' connection closed, will keep trying...'} as ParkMessageDesc}
             );
         }
         this.good = false;
@@ -293,8 +293,8 @@ class APIConnection
             self.connected = true;
             if(!self.good) {
                 info(self.name+' connected to port '+self.port);
-                park.postMessage(
-                    {type: 'blank', text: self.name+' connected!'} as ParkMessageDesc
+                context.executeAction("postMessage",
+                    {message:{type: 'blank', text: self.name+' connected!'} as ParkMessageDesc}
                 );
                 if(self.connectCallback) {
                     self.connectCallback();

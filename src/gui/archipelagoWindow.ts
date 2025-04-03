@@ -992,7 +992,7 @@ function archipelagoDebug(){
                     text: 'Release Rule',
                     onClick: function() {
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.ReleaseRule("forbidTreeRemoval");
+                        BathroomTrap.ReleaseRule("Allow Tree Removal");
                     }
                 },
                 {
@@ -1277,7 +1277,8 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
-                        ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
+                        // ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
+                        context.executeAction("postMessage", {message:"p*ck"});
                         // for(let i = 0; i < 15; i++){
                         // console.log(objectManager.getAllObjects("peep_animations")[i]);}
                         // context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 9, staffOrders: 0} satisfies StaffHireArgs);
