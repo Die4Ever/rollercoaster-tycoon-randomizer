@@ -16,7 +16,13 @@ function archipelagoGui(){
             //Crowd control has a lot of options that would most likely break Archipelago. We're going to disable both at once until further notice.
             archipelago_settings.deathlink_timeout = false;
             //We're going to track the objectives ourselves instead
-            scenario.objective.type = "haveFun";
+            try{
+                context.registerAction('changeObjective', (args) => {return {};}, (args) => {scenario.objective.type = "haveFun"; return {};});
+            }
+            catch(e){
+                console.log("Error in registering changeObjective:" + e)
+            }
+            context.executeAction("changeObjective", {});            
             archipelago_settings.started = true;
             saveArchipelagoProgress();//Save the settings to our Archipelago tracker
             // we need to unpause the game in order for the next tick to run
@@ -1278,7 +1284,9 @@ function archipelagoDebug(){
                     text: 'Colbys Choice',
                     onClick: function() { 
                         // ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
-                        context.executeAction("postMessage", {message:"p*ck"});
+                        console.log(archipelago_unlocked_locations);
+                        console.log(archipelago_locked_locations);
+                        console.log(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'));
                         // for(let i = 0; i < 15; i++){
                         // console.log(objectManager.getAllObjects("peep_animations")[i]);}
                         // context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 9, staffOrders: 0} satisfies StaffHireArgs);
