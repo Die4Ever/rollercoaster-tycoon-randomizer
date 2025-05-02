@@ -1129,14 +1129,19 @@ class RCTRArchipelago extends ModuleBase {
                         if((!tile_ownership) && (!tile_construction_rights)){
                             var has_footpath = false;
                             var elligible = true;
+                            if((surface.ownership == 1 << 6) || (surface.ownership == 1 << 7)){
+                                elligible = false;
+                            }
                             for(let l = 0; l < tile.length; l++){
                                 if(tile[l].type == "footpath"){
                                     has_footpath = true;
                                     if(!(tile[l].baseHeight == surface.baseHeight))
                                     elligible = false;
                                 }
-                                if(tile[l].type == "entrance")
-                                elligible = false;
+                                if(tile[l].type == "entrance"){
+                                    elligible = false;
+                                    surface.ownership = 1 << 6;
+                                }
                             }
                             if(has_footpath){
                                 if(elligible)//Any unowned land that doesn't have a non-surface path or park entrance is elligible
@@ -1715,7 +1720,6 @@ class RCTRArchipelago extends ModuleBase {
             if(archipelago_objectives.Monopoly[0] && !(archipelago_settings.monopoly_complete)){
                 var x = map.size.x;//Gets the size of the map
                 var y = map.size.y;
-                var monopoly = true;//Assume true until proven false
                 var timeout_counter = 0;//Only check 16 tiles/tick max
                 for(let i = archipelago_settings.monopoly_x; i < (x - 1); i++){//check the x's. Map.size gives a couple coordinates off the map, so we exclude those.
                     for(let j = archipelago_settings.monopoly_y; j < (y - 1); j++){//check the y's
@@ -1725,17 +1729,8 @@ class RCTRArchipelago extends ModuleBase {
                                 var surface = tile[k] as SurfaceElement;
                                 var tile_ownership = surface.hasOwnership;//check ownership and construction rights
                                 var tile_construction_rights = surface.hasConstructionRights;
-                                var is_entrance = false;//Park entrance won't have ownership or construction rights
-                                if((!tile_ownership) && (!tile_construction_rights)){
-                                    for(let l = k + 1; l < tile.length; l++){
-                                        if(tile[l].type == "entrance"){
-                                            is_entrance = true;
-                                            break;
-                                        }
-                                    }
-                                    if(is_entrance == false){//if unowned and lacking an entrance
-                                        return;
-                                    }
+                                if((!tile_ownership) && (!tile_construction_rights)){//if unowned    
+                                    return;
                                 }
                                 break;
                             }
