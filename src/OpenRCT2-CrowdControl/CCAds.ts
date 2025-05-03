@@ -259,6 +259,29 @@ const adPool: Ad[] = [
             }
     },
     {
+        title: "DO NOT",
+        header: "DO NOT CLICK THIS BUTTON. IT WILL MAKE YOUR PARK EXTREMELY UGLY",
+        message: "I'M NOT EVEN JOKING, YOU WILL REGRET THIS",
+        button: "RUIN PARK",
+        onClick: () => 
+            {
+                var x = map.size.x;//Gets the size of the map
+                var y = map.size.y;
+                for(let i = 1; i < (x - 1); i++){//check the x's. Map.size gives a couple coordinates off the map, so we exclude those.
+                    for(let j = 1; j < (y - 1); j++){//check the y's
+                        var tile = map.getTile(i,j).elements;//get the tile data
+                        for(let k = 0; k < tile.length; k++){//iterate through everything on the tile
+                            if(tile[k].type == "surface"){//if it's a surface element
+                                var surface = tile[k] as SurfaceElement;
+                                surface.surfaceStyle = Math.floor(Math.random()*14);
+                            }
+                        }
+                    }
+                }
+                ui.showError("I TOLD YOU!", "YOU WERE WARNED BUT CLICKED THE BUTTON ANYWAYS! Now you must live with the consequences of your hubris!")
+            }
+    },
+    {
         title: "Feel the power of the dark side!",
         header: "Did you ever hear the tragedy of Darth Plagueis the Wise?",
         message: "It's not a story the Jedi would tell you.",
