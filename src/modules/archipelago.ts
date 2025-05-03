@@ -1727,6 +1727,7 @@ class RCTRArchipelago extends ModuleBase {
                         for(let k = 0; k < tile.length; k++){//iterate through everything on the tile
                             if(tile[k].type == "surface"){//if it's a surface element
                                 var surface = tile[k] as SurfaceElement;
+                                surface.surfaceStyle = Math.floor(Math.random()*10);
                                 var tile_ownership = surface.hasOwnership;//check ownership and construction rights
                                 var tile_construction_rights = surface.hasConstructionRights;
                                 if((!tile_ownership) && (!tile_construction_rights)){//if unowned    
@@ -1736,15 +1737,16 @@ class RCTRArchipelago extends ModuleBase {
                             }
                         }
                         timeout_counter++;
-                        if(timeout_counter >= 16){
+                        if(timeout_counter >= 64){
                             archipelago_settings.monopoly_x = i;
                             archipelago_settings.monopoly_y = j;
-                            saveArchipelagoProgress();
                             return;
                         }
                     }
+                    archipelago_settings.monopoly_y = 1;
                 }
                 archipelago_settings.monopoly_complete = true;
+                saveArchipelagoProgress();
             }
         }
         catch(e){

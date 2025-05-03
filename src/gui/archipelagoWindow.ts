@@ -1284,9 +1284,9 @@ function archipelagoDebug(){
                     text: 'Colbys Choice',
                     onClick: function() { 
                         // ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
-                        console.log(archipelago_unlocked_locations);
-                        console.log(archipelago_locked_locations);
-                        console.log(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'));
+                        console.log(archipelago_settings.monopoly_x);
+                        console.log(archipelago_settings.monopoly_y);
+                        console.log(archipelago_settings.monopoly_complete);
                         // for(let i = 0; i < 15; i++){
                         // console.log(objectManager.getAllObjects("peep_animations")[i]);}
                         // context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 9, staffOrders: 0} satisfies StaffHireArgs);
