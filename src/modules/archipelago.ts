@@ -1350,7 +1350,7 @@ class RCTRArchipelago extends ModuleBase {
                             if(prereqs[5] != 0)//Check for length requirement
                                 cost += ((built[4] >= prereqs[0]) ? ', (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')': ',{RED} (> ' + context.formatString("{LENGTH}", prereqs[5]) + ')' + display_color);
                             if(prereqs[6] != 0)//Check for total customers requirement
-                                cost += ((built[5] >= prereqs[0]) ? ', (> ' + prereqs[6] + ' Total Guests)': '{RED}, (> ' + prereqs[6] + ' Total Guests)' + display_color);
+                                cost += ((built[5] >= prereqs[0]) ? ', (> ' + prereqs[6] + ' Total Riders Per Ride)': '{RED}, (> ' + prereqs[6] + ' Total Riders Per Ride)' + display_color);
                         console.log(JSON.stringify((built)));
                         console.log(JSON.stringify((prereqs)));
                         console.log("asntueh");
