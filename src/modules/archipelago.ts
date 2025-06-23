@@ -1727,10 +1727,14 @@ class RCTRArchipelago extends ModuleBase {
                         for(let k = 0; k < tile.length; k++){//iterate through everything on the tile
                             if(tile[k].type == "surface"){//if it's a surface element
                                 var surface = tile[k] as SurfaceElement;
-                                //surface.surfaceStyle = Math.floor(Math.random()*10);//Testing function to make sure it's actually looking at the tile.
+                                // surface.surfaceStyle = Math.floor(Math.random()*10);//Testing function to make sure it's actually looking at the tile.
                                 var tile_ownership = surface.hasOwnership;//check ownership and construction rights
                                 var tile_construction_rights = surface.hasConstructionRights;
-                                if((!tile_ownership) && (!tile_construction_rights)){//if unowned    
+                                var elligible = true;
+                                if((surface.ownership == 1 << 6) || (surface.ownership == 1 << 7)){//Make sure you can buy the land or construction rights.
+                                    elligible = false;
+                                }
+                                if((!tile_ownership) && (!tile_construction_rights) && (!elligible)){//if unowned    
                                     return;
                                 }
                                 break;

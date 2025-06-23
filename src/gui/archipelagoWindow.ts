@@ -1284,6 +1284,7 @@ function archipelagoDebug(){
                     text: 'Colbys Choice',
                     onClick: function() { 
                         // ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
+                        // park.setFlag("forbidMarketingCampaigns", true);
                         console.log(archipelago_settings.monopoly_x);
                         console.log(archipelago_settings.monopoly_y);
                         console.log(archipelago_settings.monopoly_complete);
