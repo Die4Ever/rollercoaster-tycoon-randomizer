@@ -797,6 +797,10 @@ function explodeFurries(){
                     switch(effect){
                     case 0://What hilarious effect will banishment have?
                         map.createEntity("balloon",{x,y,z});
+                        var balloons = map.getAllEntities("balloon");//Randomize the colors
+                        for(let i = 0; i < balloons.length; i++){
+                            balloons[i].colour = Math.floor(Math.random() * 40);
+                        }
                         break;
                     case 1:
                         map.createEntity("crash_splash",{x,y,z});
@@ -1285,9 +1289,9 @@ function archipelagoDebug(){
                     onClick: function() { 
                         // ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
                         // park.setFlag("forbidMarketingCampaigns", true);
-                        console.log(archipelago_settings.monopoly_x);
-                        console.log(archipelago_settings.monopoly_y);
-                        console.log(archipelago_settings.monopoly_complete);
+                        // console.log(archipelago_settings.monopoly_x);
+                        // console.log(archipelago_settings.monopoly_y);
+                        // console.log(archipelago_settings.monopoly_complete);
                         // for(let i = 0; i < 15; i++){
                         // console.log(objectManager.getAllObjects("peep_animations")[i]);}
                         // context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 9, staffOrders: 0} satisfies StaffHireArgs);
@@ -1301,8 +1305,8 @@ function archipelagoDebug(){
                         //     }
                         // }
                         // runNextTick(() => {park.cash += 20000});
-                        // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        // runNextTick(BathroomTrap.SpamTrap);
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.Fireworks();
                     }
                 },
                 {

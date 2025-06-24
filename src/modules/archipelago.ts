@@ -1758,6 +1758,30 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
+    Fireworks(): void{
+        archipelago_settings.death_link_timeout = true;//Disable deathlink for the celebratory explosions.
+        var guests = map.getAllEntities("guest");//Pop all the guests
+        for(let i = 0; i < guests.length; i++){
+            let x = guests[i].x;
+            let y = guests[i].y;
+            let z = guests[i].z;
+            map.createEntity("balloon",{x,y,z});
+            map.createEntity("crash_splash",{x,y,z});
+            map.createEntity("explosion_cloud",{x,y,z});
+            map.createEntity("explosion_flare",{x,y,z});
+            guests[i].setFlag("explode",true);
+        }
+        var balloons = map.getAllEntities("balloon");
+        for(let i = 0; i < balloons.length; i++){
+            balloons[i].colour = Math.floor(Math.random() * 40);
+        }
+        var car = map.getAllEntities('car');
+        for(let i = 0; i < car.length; i++){
+            car[i].status = "crashed";
+        }
+        context.setTimeout(() => {archipelago_settings.deathlink_timeout = false;}, 20000);//In 20 seconds, reenable the Death Link
+    }
+
     IsVisible(LockedID: number): boolean{
         var CheckID = 0; //We want to limit the locations shown until the correct previous locations have been unlocked
         const unlocked_list = archipelago_unlocked_locations.slice();
