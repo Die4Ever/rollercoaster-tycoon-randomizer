@@ -293,6 +293,22 @@ const adPool: Ad[] = [
                 ui.closeAllWindows();}
                 catch{ui.showError("Archipelago not open", "You should try this while playing Archipelago!")}
             }
+    },
+    {
+        title: "--  ---  .-.  ...  . / -.-.  ---  -..  .  -.-.--",//Morse code!
+        header: "..  ..-. / -.--  ---  ..- / -.-.  .-  -. / .-.  .  .-  -.. / --  .",//If you can read me
+        message: "-.--  ---  ..- / --  ..  --.  ....  - / ....  .-  ...-  . / .-",//you might have a
+        button: "-  ---  ..-  -.-.  .... / ---  ..-. / -  ....  . / -  ..  ...  --",//touch of the 'tism
+    },
+    {
+        title: "I live in the depths of this Antarctic Winter",
+        header: "The sun doesn't exist",
+        message: "The Sun has Never Existed",
+        button: "Colby shall return with a new Sun soon",
+        onClick: () => 
+            {
+                ui.showError("","This message was written on June 27th 2025, while the developer was in the middle of the Antarctic Winter. I have forgotten the face on the sun...");
+            }
     }
 ]
 
