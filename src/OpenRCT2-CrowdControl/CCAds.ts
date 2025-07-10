@@ -267,17 +267,14 @@ const adPool: Ad[] = [
             {
                 var x = map.size.x;//Gets the size of the map
                 var y = map.size.y;
+                var surfaces = objectManager.getAllObjects("terrain_surface");
                 for(let i = 1; i < (x - 1); i++){//check the x's. Map.size gives a couple coordinates off the map, so we exclude those.
                     for(let j = 1; j < (y - 1); j++){//check the y's
                         var tile = map.getTile(i,j).elements;//get the tile data
                         for(let k = 0; k < tile.length; k++){//iterate through everything on the tile
                             if(tile[k].type == "surface"){//if it's a surface element
                                 var surface = tile[k] as SurfaceElement;
-                                surface.surfaceStyle = Math.floor(Math.random()*14);
-                                // console.log(surface.surfaceStyle);
-                                while(!surface.surfaceStyle){
-                                    surface.surfaceStyle = Math.floor(Math.random()*14);
-                                }
+                                surface.surfaceStyle = Math.floor(Math.random()*surfaces.length);
                             }
                         }
                     }
