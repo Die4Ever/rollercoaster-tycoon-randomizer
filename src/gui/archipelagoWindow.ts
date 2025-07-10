@@ -1346,6 +1346,21 @@ function archipelagoDebug(){
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
                         BathroomTrap.LoanSharkTrap();
                     }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button28',
+                    x: 415,
+                    y: 110,
+                    width: 200,
+                    height: 25,
+                    text: 'Specific Ad',
+                    onClick: function() {
+                        ui.showTextInput({title:"Yeaaaaaah, WHADDA WANT?",description:"Fine, give me an ad number.", callback(value: string){
+                            const adNumber = parseInt(value, 10);
+                            showAd(adPool[adNumber]);
+                        }});
+                    }
                 }
            ]
         )
