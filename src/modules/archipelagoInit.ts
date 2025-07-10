@@ -78,6 +78,7 @@ var archipelago_settings: any = {
     monopoly_complete: false,
     monopoly_x: 1,
     monopoly_y: 1,
+    fireworks: false,
     multiworld_games: [],
     received_games: ["OpenRCT2"],
     received_items: [],

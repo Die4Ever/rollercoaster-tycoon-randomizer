@@ -313,6 +313,7 @@ class RCTRArchipelago extends ModuleBase {
         archipelago_settings.all_rides_and_scenery_expansion = imported_settings.all_rides_and_scenery_expansion;
         archipelago_settings.seed = imported_settings.seed;
         archipelago_settings.team = imported_settings.team;
+        archipelago_settings.fireworks = imported_settings.fireworks;
         archipelago_location_prices = imported_settings.location_prices;
         context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
 
@@ -1707,6 +1708,9 @@ class RCTRArchipelago extends ModuleBase {
                 archipelago_objectives.LoanPaidOff[1] == true &&
                 archipelago_objectives.Monopoly[1] == true && archipelago_objectives.UniqueRides[1] == true){
                 context.executeAction("cheatset", {type: 34, param1: 0, param2: 0}, () => archipelago_send_message("StatusUpdate", 30));
+                if(archipelago_settings.fireworks){
+                    self.fireworks();
+                }
                 trace("The file won! Yayyyy!");
             }
         }
@@ -1758,8 +1762,8 @@ class RCTRArchipelago extends ModuleBase {
         }
     }
 
-    Fireworks(): void{
-        archipelago_settings.death_link_timeout = true;//Disable deathlink for the celebratory explosions.
+    fireworks(): void{
+        archipelago_settings.deathlink_timeout = true;//Disable deathlink for the celebratory explosions.
         var guests = map.getAllEntities("guest");//Pop all the guests
         for(let i = 0; i < guests.length; i++){
             let x = guests[i].x;

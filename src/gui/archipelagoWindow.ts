@@ -1306,7 +1306,7 @@ function archipelagoDebug(){
                         // }
                         // runNextTick(() => {park.cash += 20000});
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.Fireworks();
+                        BathroomTrap.fireworks();
                     }
                 },
                 {

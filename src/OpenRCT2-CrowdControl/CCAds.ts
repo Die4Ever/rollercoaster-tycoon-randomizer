@@ -274,6 +274,10 @@ const adPool: Ad[] = [
                             if(tile[k].type == "surface"){//if it's a surface element
                                 var surface = tile[k] as SurfaceElement;
                                 surface.surfaceStyle = Math.floor(Math.random()*14);
+                                // console.log(surface.surfaceStyle);
+                                while(!surface.surfaceStyle){
+                                    surface.surfaceStyle = Math.floor(Math.random()*14);
+                                }
                             }
                         }
                     }
@@ -307,7 +311,17 @@ const adPool: Ad[] = [
         button: "Colby shall return with a new Sun soon",
         onClick: () => 
             {
-                ui.showError("","This message was written on June 27th 2025, while the developer was in the middle of the Antarctic Winter. I have forgotten the face on the sun...");
+                ui.showError("","This message was written on June 27th 2025, while the developer of Archipelago was in the middle of the Antarctic Winter. I have forgotten the face on the sun...");
+            }
+    },
+    {
+        title: "Official Diplomatic Telegram from Shang Tu",
+        header: "We shall establish",
+        message: "a timtams currency exchange program.",
+        button: "What?",
+        onClick: () => 
+            {
+                ui.showError("","WE SHALL ESTABLISH. A TIMTAMS. CURRENCY EXCHANGE PROGRAM.");
             }
     }
 ]
