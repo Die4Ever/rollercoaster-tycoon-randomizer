@@ -1,7 +1,7 @@
 const rando_name = 'RollerCoaster Tycoon Randomizer';
-const rando_version = '0.9.3';
+const rando_version = '0.9.4 Alpha';
 
-const bDebug:boolean = false;
+const bDebug:boolean = true;
 function debug(message?: any, ...optionalParams: any[]): void {
     if(bDebug)
         console.log(message, optionalParams);
