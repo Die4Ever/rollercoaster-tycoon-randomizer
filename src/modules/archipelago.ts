@@ -22,30 +22,30 @@ class RCTRArchipelago extends ModuleBase {
         self.SetPostGenerationSettings();//Let the other settings to do their thing
         //Setting rules for Archipelago, dictated by the YAML
         var setRules = function(){
-            if(archipelago_settings.rule_locations[0])
-            park.setFlag("difficultGuestGeneration", true);
+            if (archipelago_settings.rule_locations[0])
+                park.setFlag("difficultGuestGeneration", true);
             else
-            park.setFlag("difficultGuestGeneration", false);
-            if(archipelago_settings.rule_locations[1])
-            park.setFlag("difficultParkRating", true);
+                park.setFlag("difficultGuestGeneration", false);
+            if (archipelago_settings.rule_locations[1])
+                park.setFlag("difficultParkRating", true);
             else
-            park.setFlag("difficultParkRating", false);
-            if(archipelago_settings.rule_locations[2])
-            park.setFlag("forbidHighConstruction", true);
+                park.setFlag("difficultParkRating", false);
+            if (archipelago_settings.rule_locations[2])
+                park.setFlag("forbidHighConstruction", true);
             else
-            park.setFlag("forbidHighConstruction", false);
-            if(archipelago_settings.rule_locations[3])
-            park.setFlag("forbidLandscapeChanges", true);
+                park.setFlag("forbidHighConstruction", false);
+            if (archipelago_settings.rule_locations[3])
+                park.setFlag("forbidLandscapeChanges", true);
             else
-            park.setFlag("forbidLandscapeChanges", false);
-            if(archipelago_settings.rule_locations[4])
-            park.setFlag("forbidMarketingCampaigns", true);
+                park.setFlag("forbidLandscapeChanges", false);
+            if (archipelago_settings.rule_locations[4])
+                park.setFlag("forbidMarketingCampaigns", true);
             else
-            park.setFlag("forbidMarketingCampaigns", false);
-            if(archipelago_settings.rule_locations[5])
-            park.setFlag("forbidTreeRemoval", true);
+                park.setFlag("forbidMarketingCampaigns", false);
+            if (archipelago_settings.rule_locations[5])
+                park.setFlag("forbidTreeRemoval", true);
             else
-            park.setFlag("forbidTreeRemoval", false);
+                park.setFlag("forbidTreeRemoval", false);
         }
         runNextTick(setRules);//Mutates the game context, so it has to be run on a tick event
 
@@ -85,14 +85,14 @@ class RCTRArchipelago extends ModuleBase {
         }
         //Set up connection to client
         if (!archipelago_connected_to_game)
-        init_archipelago_connection();
+            init_archipelago_connection();
         //Set up daily events
         self.SubscribeEvent("interval.day", ()=>{context.executeAction("SetArchipelagoResearch", {}); self.CheckObjectives(); context.executeAction("SetNames", {});});
         //Add menu items
         ui.registerMenuItem("Archipelago Checks!", archipelagoLocations); //Register the check menu
         ui.registerMenuItem("Archipelago Tutorial", tutorial_0); //Register the tutorial
         if (archipelago_settings.deathlink)//Enable deathlink checks if deathlink is enabled
-        self.SubscribeEvent('vehicle.crash',(e: any) => self.SendDeathLink(e.id));
+            self.SubscribeEvent('vehicle.crash',(e: any) => self.SendDeathLink(e.id));
         context.subscribe('action.execute',e => self.InterpretAction(e.player, e.action, e.args, e.result));
         context.subscribe('interval.tick', (e: any) => self.CheckMonopoly());
         archipelago_settings.deathlink_timeout = false;//Reset the Deathlink if the game was saved and closed during a timeout period
@@ -213,12 +213,12 @@ class RCTRArchipelago extends ModuleBase {
                 break;
         }
         if(imported_settings.death_link)
-        archipelago_settings.deathlink = true;
+            archipelago_settings.deathlink = true;
         else
-        archipelago_settings.deathlink = false;
+            archipelago_settings.deathlink = false;
         switch(imported_settings.randomization_range){
             case 0://none
-                settings.rando_range = randoRanges.None;
+                settings.rando_range = 1;
                 break;
             case 1://low
                 settings.rando_range = randoRanges.Low;
@@ -255,14 +255,14 @@ class RCTRArchipelago extends ModuleBase {
         }
 
         if(imported_settings.randomize_park_values)
-        settings.rando_park_values = true;
+            settings.rando_park_values = true;
         else
-        settings.rando_park_values = false;
+            settings.rando_park_values = false;
 
         if(imported_settings.ignore_ride_stat_changes)
-        settings.rando_ride_types = false;
+            settings.rando_ride_types = false;
         else
-        settings.rando_ride_types = true;
+            settings.rando_ride_types = true;
 
         archipelago_settings.preferred_intensity = imported_settings.preferred_intensity;
 
@@ -296,13 +296,13 @@ class RCTRArchipelago extends ModuleBase {
             case 0:
                 archipelago_settings.location_information = "None"
                 break;
-            case 1: 
+            case 1:
                 archipelago_settings.location_information = "Progression"
                 break;
             case 2:
                 archipelago_settings.location_information = "Recipient"
                 break;
-            case 3: 
+            case 3:
                 archipelago_settings.location_information = "Progression Recipient"
                 break;
             case 4:
@@ -369,7 +369,7 @@ class RCTRArchipelago extends ModuleBase {
         // Adds first aid room and cash machine. This will be depreciated when future Colby is good at his job.
         objectManager.load(["rct2.ride.faid1", "rct2.ride.atm1"]);
 
-        //Add every ride for specific settings in Archipelago. 
+        //Add every ride for specific settings in Archipelago.
         //Rides are only unlocked by command from the server and some may never be requested based on settings
         if(archipelago_settings.all_rides_and_scenery_expansion){
             objectManager.load(["rct1aa.ride.bicycles", "rct1aa.ride.floorless_twister_trains", "rct1aa.ride.flying_saucers", "rct1aa.ride.ghost_train_cars", "rct1aa.ride.heartline_twister_cars", "rct1aa.ride.hyper_twister_trains", "rct1aa.ride.lay_down_trains", "rct1aa.ride.mini_helicopters", "rct1aa.ride.reverser_cars", "rct1aa.ride.side_friction_cars", "rct1aa.ride.ski_lift_cars", "rct1aa.ride.splash_boats", "rct1aa.ride.stand_up_twister_trains", "rct1aa.ride.steam_trains_covered", "rct1aa.ride.steel_wild_mouse_cars", "rct1aa.ride.suspended_monorail_trains", "rct1aa.ride.twister_trains", "rct1aa.ride.vintage_cars", "rct1aa.ride.virginia_reel_tubs", "rct1aa.ride.wooden_articulated_trains", "rct1ll.ride.4_across_inverted_trains", "rct1ll.ride.air_powered_trains", "rct1ll.ride.coaster_boats", "rct1ll.ride.face_off_cars", "rct1ll.ride.hypercoaster_trains", "rct1ll.ride.inverted_hairpin_cars", "rct1ll.ride.jet_skis", "rct1ll.ride.rafts", "rct1ll.ride.steam_trains_american", "rct1.ride.bobsleigh_trains", "rct1.ride.bumper_boats", "rct1.ride.cat_cars", "rct1.ride.chairlift_cars", "rct1.ride.corkscrew_trains", "rct1.ride.dinghies", "rct1.ride.dodgems", "rct1.ride.fruity_ices_stall", "rct1.ride.go_karts", "rct1.ride.horses", "rct1.ride.inverted_trains", "rct1.ride.ladybird_trains", "rct1.ride.logs", "rct1.ride.log_trains", "rct1.ride.mine_cars", "rct1.ride.mine_trains", "rct1.ride.motorbikes", "rct1.ride.mouse_cars", "rct1.ride.pickup_trucks", "rct1.ride.racing_cars", "rct1.ride.reverse_freefall_car", "rct1.ride.river_rapids_boats", "rct1.ride.rocket_cars", "rct1.ride.single_person_swinging_cars", "rct1.ride.small_monorail_cars", "rct1.ride.sports_cars", "rct1.ride.stand_up_trains", "rct1.ride.steam_trains", "rct1.ride.steel_rc_trains", "rct1.ride.steel_rc_trains_reversed", "rct1.ride.streamlined_monorail_trains", "rct1.ride.suspended_swinging_aeroplane_cars", "rct1.ride.suspended_swinging_cars", "rct1.ride.swinging_lay_down_cars", "rct1.ride.toilets", "rct1.ride.vertical_drop_trains", "rct1.ride.wooden_rc_trains", "rct1.ride.wooden_rc_trains_reversed", "rct2.ride.4x4", "rct2.ride.aml1", "rct2.ride.amt1", "rct2.ride.arrsw1", "rct2.ride.arrsw2", "rct2.ride.arrt1", "rct2.ride.arrt2", "rct2.ride.arrx", "rct2.ride.atm1", "rct2.ride.balln", "rct2.ride.batfl", "rct2.ride.bboat", "rct2.ride.bmair", "rct2.ride.bmfl", "rct2.ride.bmrb", "rct2.ride.bmsd", "rct2.ride.bmsu", "rct2.ride.bmvd", "rct2.ride.bnoodles", "rct2.ride.bob1", "rct2.ride.burgb", "rct2.ride.c3d", "rct2.ride.cboat", "rct2.ride.chbuild", "rct2.ride.chcks", "rct2.ride.chknug", "rct2.ride.chpsh2", "rct2.ride.chpsh", "rct2.ride.cindr", "rct2.ride.circus1", "rct2.ride.clift1", "rct2.ride.clift2", "rct2.ride.cndyf", "rct2.ride.coffs", "rct2.ride.cookst", "rct2.ride.cstboat", "rct2.ride.ctcar", "rct2.ride.ding1", "rct2.ride.dodg1", "rct2.ride.dough", "rct2.ride.drnks", "rct2.ride.enterp", "rct2.ride.faid1", "rct2.ride.frnood", "rct2.ride.fsauc", "rct2.ride.funcake", "rct2.ride.fwh1", "rct2.ride.gdrop1", "rct2.ride.golf1", "rct2.ride.goltr", "rct2.ride.gtc", "rct2.ride.hatst", "rct2.ride.hchoc", "rct2.ride.helicar", "rct2.ride.hhbuild", "rct2.ride.hmaze", "rct2.ride.hmcar", "rct2.ride.hotds", "rct2.ride.hskelt", "rct2.ride.icecr1", "rct2.ride.icecr2", "rct2.ride.icetst", "rct2.ride.infok", "rct2.ride.intbob", "rct2.ride.intinv", "rct2.ride.intst", "rct2.ride.ivmc1", "rct2.ride.jski", "rct2.ride.jstar1", "rct2.ride.kart1", "rct2.ride.lemst", "rct2.ride.lfb1", "rct2.ride.lift1", "rct2.ride.mbsoup", "rct2.ride.mcarpet1", "rct2.ride.mft", "rct2.ride.mgr1", "rct2.ride.monbk", "rct2.ride.mono1", "rct2.ride.mono2", "rct2.ride.mono3", "rct2.ride.nemt", "rct2.ride.nrl2", "rct2.ride.nrl", "rct2.ride.obs1", "rct2.ride.obs2", "rct2.ride.pizzs", "rct2.ride.pmt1", "rct2.ride.popcs", "rct2.ride.premt1", "rct2.ride.pretst", "rct2.ride.ptct1", "rct2.ride.ptct2", "rct2.ride.ptct2r", "rct2.ride.rapboat", "rct2.ride.rboat", "rct2.ride.rckc", "rct2.ride.rcr", "rct2.ride.revcar", "rct2.ride.revf1", "rct2.ride.rftboat", "rct2.ride.rsaus", "rct2.ride.sbox", "rct2.ride.scht1", "rct2.ride.sfric1", "rct2.ride.simpod", "rct2.ride.skytr", "rct2.ride.slcfo", "rct2.ride.slct", "rct2.ride.smc1", "rct2.ride.smc2", "rct2.ride.smono", "rct2.ride.souvs", "rct2.ride.soybean", "rct2.ride.spboat", "rct2.ride.spcar", "rct2.ride.spdrcr", "rct2.ride.sqdst", "rct2.ride.srings", "rct2.ride.ssc1", "rct2.ride.starfrdr", "rct2.ride.steep1", "rct2.ride.steep2", "rct2.ride.submar", "rct2.ride.substl", "rct2.ride.sungst", "rct2.ride.swans", "rct2.ride.swsh1", "rct2.ride.swsh2", "rct2.ride.thcar", "rct2.ride.tlt1", "rct2.ride.tlt2", "rct2.ride.toffs", "rct2.ride.togst", "rct2.ride.topsp1", "rct2.ride.tram1", "rct2.ride.trike", "rct2.ride.truck1", "rct2.ride.tshrt", "rct2.ride.twist1", "rct2.ride.twist2", "rct2.ride.utcar", "rct2.ride.utcarr", "rct2.ride.vcr", "rct2.ride.vekdv", "rct2.ride.vekst", "rct2.ride.vekvamp", "rct2.ride.vreel", "rct2.ride.wcatc", "rct2.ride.wmmine", "rct2.ride.wmouse", "rct2.ride.wmspin", "rct2.ride.wonton", "rct2.ride.zldb", "rct2.ride.zlog", "rct2tt.ride.1920racr", "rct2tt.ride.1920sand", "rct2tt.ride.1960tsrt", "rct2tt.ride.barnstrm", "rct2tt.ride.battrram", "rct2tt.ride.blckdeth", "rct2tt.ride.bmvoctps", "rct2tt.ride.cavmncar", "rct2tt.ride.cerberus", "rct2tt.ride.cyclopsx", "rct2tt.ride.dinoeggs", "rct2tt.ride.dragnfly", "rct2tt.ride.figtknit", "rct2tt.ride.flalmace", "rct2tt.ride.flwrpowr", "rct2tt.ride.flygboat", "rct2tt.ride.funhouse", "rct2tt.ride.ganstrcr", "rct2tt.ride.gintspdr", "rct2tt.ride.halofmrs", "rct2tt.ride.harpiesx", "rct2tt.ride.hotrodxx", "rct2tt.ride.hoverbke", "rct2tt.ride.hovercar", "rct2tt.ride.hovrbord", "rct2tt.ride.jetpackx", "rct2tt.ride.jetplane", "rct2tt.ride.jousting", "rct2tt.ride.medisoup", "rct2tt.ride.mgr2", "rct2tt.ride.microbus", "rct2tt.ride.mktstal1", "rct2tt.ride.mktstal2", "rct2tt.ride.moonjuce", "rct2tt.ride.mythosea", "rct2tt.ride.neptunex", "rct2tt.ride.oakbarel", "rct2tt.ride.pegasusx", "rct2tt.ride.polchase", "rct2tt.ride.policecr", "rct2tt.ride.pterodac", "rct2tt.ride.raptorxx", "rct2tt.ride.rivrstyx", "rct2tt.ride.schoolbs", "rct2tt.ride.seaplane", "rct2tt.ride.softoyst", "rct2tt.ride.spokprsn", "rct2tt.ride.stamphrd", "rct2tt.ride.telepter", "rct2tt.ride.timemach", "rct2tt.ride.tommygun", "rct2tt.ride.trebucht", "rct2tt.ride.tricatop", "rct2tt.ride.trilobte", "rct2tt.ride.valkyrie", "rct2tt.ride.zeplelin", "rct2ww.ride.anaconda", "rct2ww.ride.blackcab", "rct2ww.ride.bomerang", "rct2ww.ride.bullet", "rct2ww.ride.caddilac", "rct2ww.ride.coffeecu", "rct2ww.ride.condorrd", "rct2ww.ride.congaeel", "rct2ww.ride.crnvbfly", "rct2ww.ride.crnvfrog", "rct2ww.ride.crnvlzrd", "rct2ww.ride.crocflum", "rct2ww.ride.dhowwatr", "rct2ww.ride.diamondr", "rct2ww.ride.dolphinr", "rct2ww.ride.dragdodg", "rct2ww.ride.dragon", "rct2ww.ride.faberge", "rct2ww.ride.fightkit", "rct2ww.ride.firecrak", "rct2ww.ride.football", "rct2ww.ride.gorilla", "rct2ww.ride.gratwhte", "rct2ww.ride.hipporid", "rct2ww.ride.huskie", "rct2ww.ride.italypor", "rct2ww.ride.jaguarrd", "rct2ww.ride.junkswng", "rct2ww.ride.killwhal", "rct2ww.ride.kolaride", "rct2ww.ride.lionride", "rct2ww.ride.londonbs", "rct2ww.ride.mandarin", "rct2ww.ride.mantaray", "rct2ww.ride.minecart", "rct2ww.ride.minelift", "rct2ww.ride.ostrich", "rct2ww.ride.outriggr", "rct2ww.ride.penguinb", "rct2ww.ride.polarber", "rct2ww.ride.rhinorid", "rct2ww.ride.rocket", "rct2ww.ride.rssncrrd", "rct2ww.ride.sanftram", "rct2ww.ride.seals", "rct2ww.ride.skidoo", "rct2ww.ride.sloth", "rct2ww.ride.sputnikr", "rct2ww.ride.steamtrn", "rct2ww.ride.stgccstr", "rct2ww.ride.surfbrdc", "rct2ww.ride.taxicstr", "rct2ww.ride.tgvtrain", "rct2ww.ride.tigrtwst", "rct2ww.ride.tutlboat", "rct2ww.ride.whicgrub", "openrct2.ride.alpine_coaster", "openrct2.ride.hybrid_coaster", "openrct2.ride.modern_twister", "openrct2.ride.single_rail_coaster", "rct2dlc.ride.zpanda", "rct2.scenery_group.scgabstr", "rct2.scenery_group.scgcandy","rct2.scenery_group.scgclass","rct2.scenery_group.scgegypt","rct2.scenery_group.scgfence","rct2.scenery_group.scggardn","rct2.scenery_group.scggiant","rct2.scenery_group.scghallo","rct2.scenery_group.scgindus","rct2.scenery_group.scgjungl","rct2.scenery_group.scgjuras","rct2.scenery_group.scgmart","rct2.scenery_group.scgmedie","rct2.scenery_group.scgmine","rct2.scenery_group.scgorien","rct2.scenery_group.scgpathx","rct2.scenery_group.scgpirat","rct2.scenery_group.scgshrub","rct2.scenery_group.scgsixfl","rct2.scenery_group.scgsnow","rct2.scenery_group.scgspace","rct2.scenery_group.scgspook","rct2.scenery_group.scgsport","rct2.scenery_group.scgtrees","rct2.scenery_group.scgurban","rct2.scenery_group.scgwalls","rct2.scenery_group.scgwater","rct2.scenery_group.scgwond","rct2.scenery_group.scgwwest","rct2tt.scenery_group.scg1920s","rct2tt.scenery_group.scg1920w","rct2tt.scenery_group.scg1960s","rct2tt.scenery_group.scgfutur","rct2tt.scenery_group.scgjurra","rct2tt.scenery_group.scgmediv","rct2tt.scenery_group.scgmytho","rct2ww.scenery_group.scgafric","rct2ww.scenery_group.scgartic","rct2ww.scenery_group.scgasia","rct2ww.scenery_group.scgaustr","rct2ww.scenery_group.scgeurop","rct2ww.scenery_group.scgnamrc","rct2ww.scenery_group.scgsamer"]);
@@ -445,14 +445,14 @@ class RCTRArchipelago extends ModuleBase {
             compare_list.push(items[i]);
             if(items[i][0] >= 2000000 && items[i][0] <= 2000122){//This number will need to change if we ever add more items/traps/etc.
                 var item = item_id_to_name[items[i][0]];
-                if(item.indexOf("Trap") > -1)
-                category = "trap";
-                if(Number(RideType[item]) > -1)//Any item that fits a ride type is a ride
-                category = "ride";
-                if(item.indexOf("$") > -1)
-                category = "cash";
-                if(item.indexOf("Guests") > -1)
-                category = "guests";
+                if (item.indexOf("Trap") > -1)
+                    category = "trap";
+                if (Number(RideType[item]) > -1)//Any item that fits a ride type is a ride
+                    category = "ride";
+                if (item.indexOf("$") > -1)
+                    category = "cash";
+                if (item.indexOf("Guests") > -1)
+                    category = "guests";
                 if(category == "item"){//Check the actual item if none of the above works out
                     switch(item){
                         case "scenery":
@@ -536,7 +536,7 @@ class RCTRArchipelago extends ModuleBase {
 
     AddRide(ride: any): void{
         //Creates function that finds the ride in Uninvented and moves it to Invented items.
-        
+
         trace(ride);
         let unresearchedItems = park.research.uninventedItems;
         let researchedItems = park.research.inventedItems;
@@ -697,10 +697,10 @@ class RCTRArchipelago extends ModuleBase {
         let gorilla = undefined;
         let costumes = objectManager.getAllObjects("peep_animations");
         var furry_number = Math.ceil(park.guests * .2);
-        if(furry_number < 25)
-        furry_number = 25;
-        if(furry_number > 300)
-        furry_number = 300;
+        if (furry_number < 25)
+            furry_number = 25;
+        if (furry_number > 300)
+            furry_number = 300;
 
         for(let i = 0; i < costumes.length; i++){
             switch(costumes[i].name){
@@ -728,11 +728,11 @@ class RCTRArchipelago extends ModuleBase {
                 case 1:
                     furry_type = elephant; //Elephant
                     break;
-                case 2: 
+                case 2:
                     furry_type = tiger; //Tiger
                     break;
                 case 3:
-                    furry_type = gorilla; //Gorilla 
+                    furry_type = gorilla; //Gorilla
                     break;
             }
             context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: furry_type, staffOrders: 0} satisfies StaffHireArgs);
@@ -932,7 +932,7 @@ class RCTRArchipelago extends ModuleBase {
         var item_list = []
         var tax_list = ["Sales Tax", "VAT Tax", "Income Tax", "DOGE \"Efficiency\" Tax", "401K Contribution", "529 Contribution", "\"Optional Tips\"",
             "Service Fee", "Gratiuity", "Archipelago Maintenace Fee", "Developers Offering", "Local Authority Contribution (Totally not a bribe)",
-            "Political Donations", "Maintenace Fee", "Convenince Fee", "Inconvenience Fee", "Health Insurance", "Transaction Protection Plan", 
+            "Political Donations", "Maintenace Fee", "Convenince Fee", "Inconvenience Fee", "Health Insurance", "Transaction Protection Plan",
             "Overdraft Protection"
         ]
         if(tag != "inquiry"){
@@ -977,7 +977,7 @@ class RCTRArchipelago extends ModuleBase {
                 case archipelago_settings.received_games[i].toLowerCase().indexOf("minecraft") !== -1:
                     tax_list.push("Emerald Conversion Fee");
                     tax_list.push("Nether Import Duties");
-                    break;    
+                    break;
                 case archipelago_settings.received_games[i].toLowerCase().indexOf("sonic") !== -1:
                     tax_list.push("Ring Processing Fee");
                     tax_list.push("Hedgehog Tax")
@@ -1031,7 +1031,7 @@ class RCTRArchipelago extends ModuleBase {
             }
         }
         if(new_value > original_value){//We sent the bank money
-            amount = Math.floor(((new_value - original_value) * (1/.9)) / (5 * 10**6))//Turn the amount back into OpenRCT2 amounts. 
+            amount = Math.floor(((new_value - original_value) * (1/.9)) / (5 * 10**6))//Turn the amount back into OpenRCT2 amounts.
             tax = Math.ceil(amount * .1);
             amount -= tax;
             // ui.showError("This much" + String(amount), context.formatString("{CURRENCY2DP}",  (amount)))
@@ -1042,7 +1042,7 @@ class RCTRArchipelago extends ModuleBase {
             park.cash -= (amount + tax);//We send it all when we make a deposit
         }
         else if (new_value < original_value){//We withdrew from the bank
-            amount = Math.floor((original_value - new_value) / (5 * 10**6))//Turn the amount back into OpenRCT2 amounts. 
+            amount = Math.floor((original_value - new_value) / (5 * 10**6))//Turn the amount back into OpenRCT2 amounts.
             tax = Math.ceil(amount * .1);
             amount -= tax;
             // ui.showError("This much" + String(amount), context.formatString("{CURRENCY2DP}",  (amount)))
@@ -1241,7 +1241,7 @@ class RCTRArchipelago extends ModuleBase {
             if(name){
                 archipelago_send_message("Bounce",{ride: name, tag: "DeathLink"});
             }
-            
+
         }
         else {
             console.log("Death Link Timeout has not expired. Cancelling Death Link signal. Note: Multiple cars crashing will attempt to send multiple signals")
@@ -1337,9 +1337,9 @@ class RCTRArchipelago extends ModuleBase {
                         //     cost += "[" + colorblind_color + "] ";
                         cost += (archipelago_settings.colorblind_mode ? "[" + colorblind_color + "] ": display_color) + "[" + (location[i].LocationID < 8 ? location[i].LocationID : Math.floor(location[i].LocationID / 8) - 1) + "] " + context.formatString("{CURRENCY2DP}",  (prices[location[i].LocationID].Price) * 10);//Cash price
                         // console.log(prereqs);
-                        if(prereqs.length != 0) {//Handle prerequisites 
+                        if(prereqs.length != 0) {//Handle prerequisites
                             var built = self.CheckElligibleRides(location[i].LocationID);
-                            cost += ((built[0] >= prereqs[0]) ? " + " + prereqs[0].toString() + display_color + " ": 
+                            cost += ((built[0] >= prereqs[0]) ? " + " + prereqs[0].toString() + display_color + " ":
                             " + {RED}" + prereqs[0].toString() + display_color + " ");
                             cost += prereqs[1] + "(s)";
                             if(prereqs[2] != 0)//Check for excitement requirement
@@ -1412,7 +1412,7 @@ class RCTRArchipelago extends ModuleBase {
             trace(archipelago_unlocked_locations);
             if(!locked.length){
                 if(!archipelago_unlocked_locations.length){
-                    return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming", 
+                    return ["{WHITE}Either this game just started and you're impatient, or Colby is bad at programming",
                     "{WHITE}If you're still seeing this message after 2 minutes (Be sure to actually close and reopen this window),",
                     "{WHITE}bother Colby in the Discord and he'll complain about past Colby.",
                     "{WHITE}The secret word for him is 'Ducks'"];
@@ -1434,31 +1434,31 @@ class RCTRArchipelago extends ModuleBase {
             display_color = '{WHITE}';
         else{
             switch(locationID%8){
-                case 0: 
+                case 0:
                     display_color = '{BLACK}';
                     colorblind_color = 'Black';
                     break;
-                case 1: 
+                case 1:
                     display_color = '{GREEN}';
                     colorblind_color = 'Green';
                     break;
-                case 2: 
+                case 2:
                     display_color = '{BABYBLUE}';
                     colorblind_color = "Blue";
                     break;
-                case 3: 
+                case 3:
                     display_color = '{YELLOW}';
                     colorblind_color = "Yellow";
                     break;
-                case 4: 
+                case 4:
                     display_color = '{PALEGOLD}';
                     colorblind_color = "Gold";
                     break;
-                case 5: 
+                case 5:
                     display_color = '{PALESILVER}';
                     colorblind_color = "Silver";
                     break;
-                case 6: 
+                case 6:
                     display_color = '{CELADON}'
                     colorblind_color = "Celadon";
                     break;
@@ -1527,15 +1527,15 @@ class RCTRArchipelago extends ModuleBase {
                 var ride_list = (archipelago_objectives.UniqueRides[1]) ? "✓        " : "        ";
                 for(let i = 0; i < archipelago_objectives.UniqueRides[0].length; i++){
                     if(isInPark(archipelago_objectives.UniqueRides[0][i])){
-                        ride_list += ("{GREEN}" + archipelago_objectives.UniqueRides[0][i]) + 
+                        ride_list += ("{GREEN}" + archipelago_objectives.UniqueRides[0][i]) +
                             ((i + 1 == archipelago_objectives.UniqueRides[0].length) ?  "": "{BLACK}, ");
                     }
                     else if(isUnlocked(archipelago_objectives.UniqueRides[0][i])){
-                        ride_list += ("{YELLOW}" + archipelago_objectives.UniqueRides[0][i]) + 
+                        ride_list += ("{YELLOW}" + archipelago_objectives.UniqueRides[0][i]) +
                             ((i + 1 == archipelago_objectives.UniqueRides[0].length) ?  "": "{BLACK}, ");
                     }
                     else{
-                        ride_list += ("{RED}" + archipelago_objectives.UniqueRides[0][i]) + 
+                        ride_list += ("{RED}" + archipelago_objectives.UniqueRides[0][i]) +
                             ((i + 1 == archipelago_objectives.UniqueRides[0].length) ?  "": "{BLACK}, ");
                     }
                 }
@@ -1738,7 +1738,7 @@ class RCTRArchipelago extends ModuleBase {
                                 if((surface.ownership == 1 << 6) || (surface.ownership == 1 << 7)){//Make sure you can buy the land or construction rights.
                                     elligible = false;
                                 }
-                                if((!tile_ownership) && (!tile_construction_rights) && (!elligible)){//if unowned    
+                                if((!tile_ownership) && (!tile_construction_rights) && (!elligible)){//if unowned
                                     return;
                                 }
                                 break;
@@ -2225,7 +2225,7 @@ function explodeRide(args: any){
     }
     var r = movingCar[context.getRandom(0, movingCar.length)];//Pick a car at random
     var counter = r.id; //Keeps track of which car we're dealing with
-    
+
     do{
         (map.getEntity(counter) as Car).status = "crashed";//Crash the ride!
         trace((map.getEntity(counter) as Car));
