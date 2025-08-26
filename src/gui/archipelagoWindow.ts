@@ -16,7 +16,13 @@ function archipelagoGui(){
             //Crowd control has a lot of options that would most likely break Archipelago. We're going to disable both at once until further notice.
             archipelago_settings.deathlink_timeout = false;
             //We're going to track the objectives ourselves instead
-            scenario.objective.type = "haveFun";
+            try{
+                context.registerAction('changeObjective', (args) => {return {};}, (args) => {scenario.objective.type = "haveFun"; return {};});
+            }
+            catch(e){
+                console.log("Error in registering changeObjective:" + e)
+            }
+            context.executeAction("changeObjective", {});            
             archipelago_settings.started = true;
             saveArchipelagoProgress();//Save the settings to our Archipelago tracker
             // we need to unpause the game in order for the next tick to run
@@ -35,291 +41,9 @@ function archipelagoGui(){
         }
     }
 
-    var tutorial_0 = function() {
-        var tutorial_0 = ui.openWindow({
-            classification: 'tutorial-1',
-            title: "How to play!",
-            width: ww,
-            height: wh,
-            widgets: [].concat(
-                NewLabel("Welcome to Archipelago! You may be thinking \"Gee, how do you even play Roller Coaster Tycoon on Archipelago?\" or \"What IS Archipelago?", {
-                    name: 'Line-1',
-                    y: 0,
-                    width: 2,
-                    tooltip: "You may also be thinking \"Gee, I bet the developer of this mod is really cool, good looking and humble!\", but that's neither here nor there."
-                }),
-                NewLabel("Archipelago is a multi-game, multi-world randomizer! Have you ever wanted to play Minecraft, Ocarina of Time, and OpenRCT2 cooperatively at the same time, with everything interlinked? Now you can!", {
-                    name: 'Line-2',
-                    y: 1.5,
-                    width: 2,
-                    tooltip: "If you said no, you're probably a liar."
-                }),
-                NewLabel("First off, make sure your game is connected and you have Archipelago running. You can find those instructions at archipelago.gg", {
-                    name: 'Line-3',
-                    y: 3,
-                    width: 2,
-                    tooltip: "Fun fact: gg is the country code top-level domain for the Bailiwick of Guernsey. Fun fact 2: I have no idea where the p*ck the Balilwick of Guernsey is."
-                }),
-                [{
-                    type: 'button',
-                    name: 'cancel-button',
-                    x: ww - 160 - 88 - 6,
-                    y: wh - 6 - 26 - 29,
-                    width: 85,
-                    height: 26,
-                    text: 'Cancel',
-                    tooltip: 'Changed your mind? Fine, I didn\'t want you to read this anyways!',
-                    onClick: function() {
-                        tutorial_0.close();
-                    }
-                },
-                {
-                    type: 'button',
-                    name: 'next-button',
-                    x: ww - 160 - 6,
-                    y: wh - 6 - 26 - 29,
-                    width: 85,
-                    height: 26,
-                    text: 'Next Page',
-                    tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
-                    isDisabled: false,
-                    onClick: function() {
-                        tutorial_0.close();
-                        tutorial_1();
-                    }
-                },
-                {
-                    type: 'custom',
-                    name: 'custom-archipealgo-logo-1',
-                    x: 5,
-                    y: wh - 24,
-                    width: 22,
-                    height: 20,
-                    tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
-                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
-                }
-                ]
-            )
-        })
-        return tutorial_0;
-    }
-
-    var tutorial_1 = function() {
-        var tutorial_1 = ui.openWindow({
-            classification: 'tutorial-1',
-            title: "How to play!",
-            width: ww,
-            height: wh + 80,
-            widgets: [].concat(
-                NewLabel("Once your game is connected, hit the \"Start Game!\" button to begin!", {
-                    name: 'Line-1',
-                    y: 0,
-                    width: 2,
-                    tooltip: "In online games, usually people run a countdown before everyone begins. You'll probably want to look at the client for that, since messages are weird while the game is paused."
-                }),
-                NewLabel("The primary method of progress in your game will be purchasing items in the shop. You can find the shop under the map icon labeled \"Archipelago Checks!\". You can also strike the \"Home\" key to open it.", {
-                    name: 'Line-2',
-                    y: 1.5,
-                    width: 2,
-                    tooltip: "If the shop is empty, past Colby p*cked up the code. See the troubleshooting guide online. Just kidding! There isn't one."
-                }),
-                {
-                    type: 'custom',
-                    name: 'menu-location',
-                    x: ww / 3,
-                    y: wh - 120,
-                    width: 131,
-                    height: 160,
-                    tooltip: 'Importing images to an OpenRCT2 plugin is a pain. I hope you\'re thankful!',
-                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_menu_location_image_ID.start).id, 0,0)}
-                },
-                [{
-                    type: 'button',
-                    name: 'back-button',
-                    x: ww - 160 - 88 - 6,
-                    y: wh - 6 - 26 - 29 + 90,
-                    width: 85,
-                    height: 26,
-                    text: 'Back',
-                    tooltip: 'The previous page was pretty good, wasn\'t it?',
-                    onClick: function() {
-                        tutorial_1.close();
-                        tutorial_0();
-                    }
-                },
-                {
-                    type: 'button',
-                    name: 'next-button',
-                    x: ww - 160 - 6,
-                    y: wh - 6 - 26 - 29 + 90,
-                    width: 85,
-                    height: 26,
-                    text: 'Next Page',
-                    tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
-                    isDisabled: false,
-                    onClick: function() {
-                        tutorial_1.close();
-                        tutorial_2();
-                    }
-                },
-                {
-                    type: 'custom',
-                    name: 'custom-archipealgo-logo-1',
-                    x: 5,
-                    y: wh - 24 + 80,
-                    width: 22,
-                    height: 20,
-                    tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
-                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
-                }
-                ]
-            )
-        })
-        return tutorial_1;
-    }
-
-    var tutorial_2 = function() {
-        var tutorial_2 = ui.openWindow({
-            classification: 'tutorial-2',
-            title: "How to play!",
-            width: ww,
-            height: wh,
-            widgets: [].concat(
-                NewLabel("The first tab you'll see upon opening the shop is well, the shop. Here you can buy items for other games! Depending on your settings, you'll see who it goes to and what it is.", {
-                    name: 'Line-1',
-                    y: 0,
-                    width: 2,
-                    tooltip: "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-                }),
-                NewLabel("You'll see some items in the shop have different colors.", {
-                    name: 'Line-2',
-                    y: 1.5,
-                    width: 2,
-                    tooltip: "I'll be honest, I put that in because its easy to track and looks more important than it actually is."
-                }),
-                NewLabel("Tab 3 is the goals tab! Here you'll see what needs to be done to complete your scenario. The colors you see under \"required rides\" indicates their completion. {GREEN}Green rides are built and ready! {YELLOW}Yellow rides are unlocked, but not yet built. {RED}Red rides are not unlocked. Somebody will need to find them before you can build it.", {
-                    name: 'Line-3',
-                    y: 3,
-                    width: 2,
-                    tooltip: ""
-                }),
-                [{
-                    type: 'button',
-                    name: 'back-button',
-                    x: ww - 160 - 88 - 6,
-                    y: wh - 6 - 26 - 29,
-                    width: 85,
-                    height: 26,
-                    text: 'Back',
-                    tooltip: 'The previous page was pretty good, wasn\'t it?',
-                    onClick: function() {
-                        tutorial_2.close();
-                        tutorial_1();
-                    }
-                },
-                {
-                    type: 'button',
-                    name: 'next-button',
-                    x: ww - 160 - 6,
-                    y: wh - 6 - 26 - 29,
-                    width: 85,
-                    height: 26,
-                    text: 'Next Page',
-                    tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
-                    isDisabled: false,
-                    onClick: function() {
-                        tutorial_2.close();
-                        tutorial_3();
-                    }
-                },
-                {
-                    type: 'custom',
-                    name: 'custom-archipealgo-logo-1',
-                    x: 5,
-                    y: wh - 24,
-                    width: 22,
-                    height: 20,
-                    tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
-                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
-                }
-                ]
-            )
-        })
-        return tutorial_2;
-    }
-
-    var tutorial_3 = function() {
-        var tutorial_3 = ui.openWindow({
-            classification: 'tutorial-2',
-            title: "How to play!",
-            width: ww,
-            height: wh,
-            widgets: [].concat(
-                NewLabel("The first tab you'll see upon opening the shop is well, the shop. Here you can buy items for other games! Depending on your settings, you'll see who it goes to and what it is.", {
-                    name: 'Line-1',
-                    y: 0,
-                    width: 2,
-                    tooltip: "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-                }),
-                NewLabel("The second tab is your purchase history. Use it when your friends say you aren't pulling your weight.", {
-                    name: 'Line-2',
-                    y: 1.5,
-                    width: 2,
-                    tooltip: "I'll be honest, I put that in because its easy to track and looks more important than it actually is."
-                }),
-                NewLabel("Tab 3 is the goals tab! Here you'll see what needs to be done to complete your scenario. The colors you see under \"required rides\" indicates their completion. {GREEN}Green rides are built and ready! {YELLOW}Yellow rides are unlocked, but not yet built. {RED}Red rides are not unlocked. Somebody will need to find them before you can build it.", {
-                    name: 'Line-3',
-                    y: 3,
-                    width: 2,
-                    tooltip: ""
-                }),
-                [{
-                    type: 'button',
-                    name: 'back-button',
-                    x: ww - 160 - 88 - 6,
-                    y: wh - 6 - 26 - 29,
-                    width: 85,
-                    height: 26,
-                    text: 'Back',
-                    tooltip: 'The previous page was pretty good, wasn\'t it?',
-                    onClick: function() {
-                        tutorial_3.close();
-                    }
-                },
-                {
-                    type: 'button',
-                    name: 'next-button',
-                    x: ww - 160 - 6,
-                    y: wh - 6 - 26 - 29,
-                    width: 85,
-                    height: 26,
-                    text: 'Next Page',
-                    tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
-                    isDisabled: false,
-                    onClick: function() {
-                        tutorial_3.close();
-                    }
-                },
-                {
-                    type: 'custom',
-                    name: 'custom-archipealgo-logo-1',
-                    x: 5,
-                    y: wh - 24,
-                    width: 22,
-                    height: 20,
-                    tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
-                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
-                }
-                ]
-            )
-        })
-        return tutorial_3;
-    }
-
-
     var window = ui.openWindow({
         classification: 'archipelago-connect',
-        title: "Archipelago Connection",
+        title: "Archipelago " + archipelago_version,
         width: ww,
         height: wh,
         widgets: [].concat(
@@ -360,7 +84,7 @@ function archipelagoGui(){
                     startGameGui();
                     settings.rando_archipelago = false;
                     // var connection = GetModule("APIConnection") as APIConnection;
-                    connection.destroy()
+                    connection.destroy();
                     window.close();
                 }
             },
@@ -561,13 +285,13 @@ function archipelagoLocations(){
                         },
                         {
                             type: 'label',
-                            name: 'Connected-to-server',
+                            name: 'Version',
                             x: 200,
                             y: 330,
                             width: 300,
                             height: 26,
-                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                            text: "Archipelago " + archipelago_version,
+                            tooltip: "You see that number? We like watching that number go up. That means I'm good at programming."
                         },
                         {
                             type: 'custom',
@@ -607,16 +331,16 @@ function archipelagoLocations(){
                             isStriped: true,
                             items: Archipelago.CreateUnlockedList()
                         },
-                        {
-                            type: 'label',
-                            name: 'Connected-to-server',
-                            x: 200,
-                            y: 330,
-                            width: 300,
-                            height: 26,
-                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
-                        },
+                        // {
+                        //     type: 'label',
+                        //     name: 'Connected-to-server',
+                        //     x: 200,
+                        //     y: 330,
+                        //     width: 300,
+                        //     height: 26,
+                        //     text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                        //     tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        // },
                         {
                             type: 'custom',
                             name: 'custom-archipealgo-logo-1',
@@ -658,16 +382,16 @@ function archipelagoLocations(){
                             columns:[{width: 1400}],
                             items: Archipelago.CreateObjectiveList()
                         },
-                        {
-                            type: 'label',
-                            name: 'Connected-to-server',
-                            x: 200,
-                            y: 300,
-                            width: 300,
-                            height: 26,
-                            text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
-                            tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
-                        },
+                        // {
+                        //     type: 'label',
+                        //     name: 'Connected-to-server',
+                        //     x: 200,
+                        //     y: 300,
+                        //     width: 300,
+                        //     height: 26,
+                        //     text: archipelago_connected_to_game ? "The Archipelago Client is connected to the game!" : "The Archipelago Client is {RED}not{WHITE} connected to the game.",
+                        //     tooltip: "Well, back in the day I used to connect at twelve-hundred baud, but ever since the merger, I'm lucky if I get twelve baud! "
+                        // },
                         {
                             type: 'custom',
                             name: 'custom-archipealgo-logo-1',
@@ -878,6 +602,122 @@ function archipelagoLocations(){
                         }
                     ]
                 )
+            },
+            {//EnergyLink
+                image: {frameBase: 5277,frameCount: 7,frameDuration: 4},
+                widgets: [].concat
+                (
+                    [
+                        {
+                            type: 'label',
+                            name: 'Bank-Label',
+                            x: 250,
+                            y: 50,
+                            width: 160,
+                            height: 26,
+                            text: 'EnergyLink Bank ATM Machine',
+                            tooltip: "We here at this Multi-Billion Dollar Bank care deeply about you, just like how oil companies care deeply about climate change."
+                        },
+                        {
+                            type: 'button',
+                            name: 'withdraw-button',
+                            x: 25,
+                            y: 100,
+                            width: 200,
+                            height: 200,
+                            text: 'Withdraw Funds',
+                            tooltip: 'I\'m sure that Stardew Valley player didn\'t need the money anyways!',
+                            onClick: function() {
+                                ui.showTextInput({title: "Enter Amount to be Withdrawn", 
+                                description: "Note: A 10% fee will be assessed on both deposits and withdrawls. " + 
+                                "All users in the multiworld have access to this account.", 
+                                callback(value: string){
+                                    if(!(parseInt(value)  > -1)){//Numbers only
+                                        ui.showError("Not A Valid Amount", "This ATM Machine only accepts amounts as a positive integer. Please input a valid amount.")
+                                        return;
+                                    }
+                                    var amount = parseInt(value);
+                                    // Convert 1 internal currency to a multiplier by formatting it into a string and parsing it
+                                    var currency = context.formatString("{CURRENCY2DP}", 1)
+                                    var currencyMultiplierAsArray = currency.match(/[\d.]+/g); // Matches numbers and decimals
+                                    //Finishes converting the value to just the number
+                                    var currencyMultiplier = parseFloat(currencyMultiplierAsArray.join(""));
+                                    // Get the user to type in a value into a textbox and use the multiplier
+                                    amount = Math.floor(amount / currencyMultiplier);//Amount is now in the undelying game currency units
+                                    if(!archipelago_settings.team)//If the team isn't set
+                                        archipelago_settings.team = 0;//Put them on team 0
+                                    const key = "EnergyLink" + String(archipelago_settings.team);
+                                    const tag = archipelago_settings.seed + String(date.ticksElapsed);
+                                    archipelago_send_message("Set", {key: key, default: 0, tag: tag, want_reply: true, operations: [{operation: "add", value: -amount * (5 * 10**6)}, {"operation": "max", "value": 0}]})
+                                } });
+                            }
+                        },
+                        {
+                            type: 'button',
+                            name: 'deposit-button',
+                            x: 250,
+                            y: 100,
+                            width: 200,
+                            height: 200,
+                            text: 'Deposit Funds',
+                            tooltip: 'Look at you. You\'re so generous.',
+                            onClick: function() {
+                                ui.showTextInput({title: "Enter Amount to be Deposited", 
+                                description: "Note: A 10% fee will be assessed on both deposits and withdrawls. " + 
+                                "All users in the multiworld have access to this account.", 
+                                callback(value: string){
+                                    if(!(parseInt(value)  > -1)){//Numbers only
+                                        ui.showError("Not A Valid Amount", "This ATM Machine only accepts amounts as a positive integer. Please input a valid amount.")
+                                        return;
+                                    }
+                                    var amount = parseInt(value);
+                                    // Convert 1 internal currency to a multiplier by formatting it into a string and parsing it
+                                    var currency = context.formatString("{CURRENCY2DP}", 1)
+                                    var currencyMultiplierAsArray = currency.match(/[\d.]+/g); // Matches numbers and decimals
+                                    //Finishes converting the value to just the number
+                                    var currencyMultiplier = parseFloat(currencyMultiplierAsArray.join(""));
+                                    // Get the user to type in a value into a textbox and use the multiplier
+                                    amount = Math.floor(amount / currencyMultiplier);//Amount is now in the undelying game currency units
+                                    if(park.cash - amount < 100000){//The player must have the equivalent of at least $10,000 afterwards to be elligible to deposit
+                                        ui.showError("Insufficient Reserves", "Multiworld Customs and Import laws require that the customer have at least " +
+                                        context.formatString("{CURRENCY2DP}", 100000) + " in reserve to contribute to their account at EnergyLink Bank.")
+                                        return;
+                                    }
+                                    if(!archipelago_settings.team)//If the team isn't set
+                                        archipelago_settings.team = 0;//Put them on team 0
+                                    const key = "EnergyLink" + String(archipelago_settings.team);
+                                    const tag = archipelago_settings.seed + String(date.ticksElapsed);
+                                    archipelago_send_message("Set", {key: key, default: 0, tag: tag, want_reply: true, operations: [{operation: "add", value: .9* amount * (5 * 10**6)}]})
+                                } });                            }
+                        },
+                        {
+                            type: 'button',
+                            name: 'inquiry-button',
+                            x: 475,
+                            y: 100,
+                            width: 200,
+                            height: 200,
+                            text: 'Balance Inquiry',
+                            tooltip: 'IRL ATMs charging you money for this should be a crime.',
+                            onClick: function() {
+                                if(!archipelago_settings.team)//If the team isn't set
+                                    archipelago_settings.team = 0;//Put them on team 0
+                                const key = "EnergyLink" + String(archipelago_settings.team);
+                                const tag = "inquiry";
+                                archipelago_send_message("Set", {key: key, default: 0, tag: tag, want_reply: true, operations: []})                            }
+                        },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: wh - 24,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'Linux is clearly the superior operating system. We all agree, right?',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                        }
+                    ]
+                )
             }
         ]
     });
@@ -957,6 +797,10 @@ function explodeFurries(){
                     switch(effect){
                     case 0://What hilarious effect will banishment have?
                         map.createEntity("balloon",{x,y,z});
+                        var balloons = map.getAllEntities("balloon");//Randomize the colors
+                        for(let i = 0; i < balloons.length; i++){
+                            balloons[i].colour = Math.floor(Math.random() * 40);
+                        }
                         break;
                     case 1:
                         map.createEntity("crash_splash",{x,y,z});
@@ -1123,8 +967,8 @@ function archipelagoDebug(){
                     text: 'Set Game State',
                     onClick: function() {
                         archipelago_settings.location_information = 'Full';
-                        archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
-                        archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
+                        // archipelago_unlocked_locations = [{LocationID: 0,Item: "Sling Shot",ReceivingPlayer: "Dallin"}, {LocationID: 1,Item: "progressive automation",ReceivingPlayer: "Drew"}, {LocationID: 2,Item: "16 pork chops",ReceivingPlayer: "Minecraft d00ds"}];
+                        // archipelago_locked_locations = [{LocationID: 3,Item: "Howling Wraiths",ReceivingPlayer: "Miranda"},{LocationID: 4,Item: "Hookshot",ReceivingPlayer: "Dallin"}, {LocationID: 5,Item: "progressive flamethrower",ReceivingPlayer: "Drew"}, {LocationID: 6,Item: "egg shard",ReceivingPlayer: "Minecraft d00ds"}, {LocationID: 7,Item: "Descending Dive",ReceivingPlayer: "Miranda"}];
                         archipelago_location_prices = [{LocationID: 0, Price: 500, Lives: 0, RidePrereq: []}, {LocationID: 1, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 2, Price: 2500, Lives: 0, RidePrereq: []},{LocationID: 3, Price: 6000, Lives: 0, RidePrereq: []},{LocationID: 4, Price: 4000, Lives: 0, RidePrereq: [2, "gentle",0,0,0,0]},{LocationID: 5, Price: 4000, Lives: 0, RidePrereq: [3, "Looping Roller Coaster", 6.3,0,0,0]},{LocationID: 6, Price: 0, Lives: 200, RidePrereq: []},{LocationID: 7, Price: 10000, Lives: 0, RidePrereq: [1, "Wooden Roller Coaster", 0, 5.0, 7.0, 1000]}];
                         archipelago_objectives = {Guests: [300, false], ParkValue: [0, false], RollerCoasters: [5,2,2,2,0,false], RideIncome: [0, false], ShopIncome: [8000, false], ParkRating: [700, false], LoanPaidOff: [true, false], Monopoly: [true, false], UniqueRides: [[], true]};
                         context.getParkStorage().set('RCTRando.ArchipelagoLocationPrices', archipelago_location_prices);
@@ -1158,7 +1002,7 @@ function archipelagoDebug(){
                     text: 'Release Rule',
                     onClick: function() {
                         var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        BathroomTrap.ReleaseRule("forbidTreeRemoval");
+                        BathroomTrap.ReleaseRule("Allow Tree Removal");
                     }
                 },
                 {
@@ -1208,7 +1052,11 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Decision',
                     onClick: function() {
-                        console.log(archipelago_locked_locations);
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        archipelago_settings.received_games.push("Ocarina of Time", "Adventure", "Donkey Kong Country 3", "Final Fantasy 1", "Hollow Knight",
+                        "The Legend of Zelda", "A Link to the Past", "Links Awakening", "Pokemon Red and Blue", "Rogue Legacy",
+                        "Sonic Adventure 2", "Super Mario World", "Super Mario 64", "Super Metroid", "VVVVVV")
+                        console.log(archipelago_settings.received_games.length);
                         // console.log(ScenarioName[0]);
                         // archipelago_settings.location_information = locationInfo.Full;
                         // archipelago_send_message("GetDataPackage");
@@ -1439,16 +1287,27 @@ function archipelagoDebug(){
                     height: 25,
                     text: 'Colbys Choice',
                     onClick: function() { 
-                        // console.log(context.getParkStorage().get("RCTRando.ArchipelagoLockedLocations"));
-                        // console.log(objectManager.load("Ferris Wheel"));
-                        // console.log((objectManager.getAllObjects("ride")[0]));
-                        console.log(context.getParkStorage().get("RCTRando.ArchipelagoItemIDToName"));
-                        // console.log(JSON.stringify(archipelago_settings.hints));
-                        // park.setFlag("unlockAllPrices", true);
+                        // ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
+                        // park.setFlag("forbidMarketingCampaigns", true);
+                        // console.log(archipelago_settings.monopoly_x);
+                        // console.log(archipelago_settings.monopoly_y);
+                        // console.log(archipelago_settings.monopoly_complete);
+                        // for(let i = 0; i < 15; i++){
+                        // console.log(objectManager.getAllObjects("peep_animations")[i]);}
+                        // context.executeAction("staffhire", {autoPosition: true, staffType: 3, costumeIndex: 9, staffOrders: 0} satisfies StaffHireArgs);
+                        // for(let i = 0; i < map.numRides; i++){
+                        //     switch(map.rides[i].classification){
+                        //         case "ride":
+                        //             park.bankLoan += 2000;
+                        //             break;
+                        //         default:
+                        //             console.log(map.rides[i].type);
+                        //     }
+                        // }
+                        // runNextTick(() => {park.cash += 20000});
                         // var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
-                        // BathroomTrap.updateMaxSpeed();
-                        // console.log(context.getParkStorage().get("RCTRando.ArchipelagoPlayer"));
-                        // archipelago_send_message("StatusUpdate", 30)
+                        // BathroomTrap.fireworks();
+                        console.log((objectManager.getAllObjects("terrain_surface")));
                     }
                 },
                 {
@@ -1474,11 +1333,699 @@ function archipelagoDebug(){
                     onClick: function() {
                         archipelagoExcorcizeFurries(challenges.length - 1);
                     }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button27',
+                    x: 415,
+                    y: 80,
+                    width: 200,
+                    height: 25,
+                    text: 'Loan Shark Trap',
+                    onClick: function() {
+                        var BathroomTrap = GetModule("RCTRArchipelago") as RCTRArchipelago;
+                        BathroomTrap.LoanSharkTrap();
+                    }
+                },
+                {
+                    type: 'button',
+                    name: 'debug-button28',
+                    x: 415,
+                    y: 110,
+                    width: 200,
+                    height: 25,
+                    text: 'Specific Ad',
+                    onClick: function() {
+                        ui.showTextInput({title:"Yeaaaaaah, WHADDA WANT?",description:"Fine, give me an ad number.", callback(value: string){
+                            const adNumber = parseInt(value, 10);
+                            showAd(adPool[adNumber]);
+                        }});
+                    }
                 }
            ]
         )
     });
     return window;
+}
+
+var tutorial_0 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_0 = ui.openWindow({
+        classification: 'tutorial-1',
+        title: "How to play!",
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel("Welcome to Archipelago! You may be thinking \"Gee, how do you even play Roller Coaster Tycoon on Archipelago?\" or \"What IS Archipelago?", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "You may also be thinking \"Gee, I bet the developer of this mod is really cool, good looking and humble!\", but that's neither here nor there."
+            }),
+            NewLabel("Archipelago is a multi-game, multi-world randomizer! Have you ever wanted to play Minecraft, Ocarina of Time, and OpenRCT2 cooperatively at the same time, with everything interlinked? Now you can!", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "If you said no, you're probably a liar."
+            }),
+            NewLabel("First off, make sure your game is connected and you have Archipelago running. You can find those instructions at archipelago.gg", {
+                name: 'Line-3',
+                y: 3,
+                width: 2,
+                tooltip: "Fun fact: gg is the country code top-level domain for the Bailiwick of Guernsey. Fun fact 2: I have no idea where the p*ck the Balilwick of Guernsey is."
+            }),
+            [{
+                type: 'button',
+                name: 'cancel-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Cancel',
+                tooltip: 'Changed your mind? Fine, I didn\'t want you to read this anyways!',
+                onClick: function() {
+                    tutorial_0.close();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Next Page',
+                tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_0.close();
+                    tutorial_1();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_0;
+}
+
+var tutorial_1 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_1 = ui.openWindow({
+        classification: 'tutorial-1',
+        title: "How to play!",
+        width: ww,
+        height: wh + 80,
+        widgets: [].concat(
+            NewLabel("Once your game is connected, hit the \"Start Game!\" button to begin!", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "In online games, usually people run a countdown before everyone begins. You'll probably want to look at the client for that, since messages are weird while the game is paused."
+            }),
+            NewLabel("The primary method of progress in your game will be purchasing items in the shop. You can find the shop under the map icon labeled \"Archipelago Checks!\". You can also strike the \"Home\" key to open it.", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "If the shop is empty, past Colby p*cked up the code. See the troubleshooting guide online. Just kidding! There isn't one."
+            }),
+            {
+                type: 'custom',
+                name: 'menu-location',
+                x: ww / 3,
+                y: wh - 120,
+                width: 131,
+                height: 160,
+                tooltip: 'Importing images to an OpenRCT2 plugin is a pain. I hope you\'re thankful!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_menu_location_image_ID.start).id, 0,0)}
+            },
+            [{
+                type: 'button',
+                name: 'back-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29 + 90,
+                width: 85,
+                height: 26,
+                text: 'Back',
+                tooltip: 'The previous page was pretty good, wasn\'t it?',
+                onClick: function() {
+                    tutorial_1.close();
+                    tutorial_0();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29 + 90,
+                width: 85,
+                height: 26,
+                text: 'Next Page',
+                tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_1.close();
+                    tutorial_2();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24 + 80,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_1;
+}
+
+var tutorial_2 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_2 = ui.openWindow({
+        classification: 'tutorial-2',
+        title: "How to play!",
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel("The first tab you’ll see upon opening the shop is well, the shop. Here you can buy items for other games! Depending on your settings, you’ll see who it goes to and what it is.", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+            }),
+            NewLabel("The shop is organized into colored branches. When somebody asks you for their {LIGHTPINK}Pink_4{WHITE}, you’ll know it’s the fourth item on the {LIGHTPINK}Pink{WHITE} branch!", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "That's right, {WHITE}I {BLACK}CAN {GREEN}COLOR {RED}THE {BABYBLUE}TEXT!"
+            }),
+            NewLabel("Some items have prerequisites aside cash that need to be met before you can buy them. If it requires any sort of stat (excitement, length, total guests, etc.), they must be posted in the test data tab of the ride before they’ll be counted. Each ride must meet all the listed stats.", {
+                name: 'Line-3',
+                y: 3,
+                width: 2,
+                tooltip: "Nobody told me that balancing the checks would be such a hard task. I guess I gotta keep playing the game to make sure it feels right. Oh no, what a nightmare."
+            }),
+            [{
+                type: 'button',
+                name: 'back-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Back',
+                tooltip: 'The previous page was pretty good, wasn\'t it?',
+                onClick: function() {
+                    tutorial_2.close();
+                    tutorial_1();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Next Page',
+                tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_2.close();
+                    tutorial_3();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_2;
+}
+
+var tutorial_3 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_3 = ui.openWindow({
+        classification: 'tutorial-2',
+        title: "How to play!",
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel("The second tab is your purchase history. Use it when your friends say you aren’t pulling your weight.", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "I'll be honest, I put that in because its easy to track and looks more important than it actually is."
+            }),
+            NewLabel("Tab 3 is the goals tab! In this tab you’ll see what requirements you must fulfill to complete your game in Archipelago. These will have been set in your options file when you generate the game.", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "They should add modular goals as a regular option in the base game!"
+            }),
+            NewLabel("The required rides list has 3 colors: {RED}Red means you haven’t yet unlocked the ride. Keep playing and somebody will find it! {YELLOW}Yellow means the ride is unlocked, but not yet built. {GREEN}Green means the ride is built and ready to go!", {
+                name: 'Line-3',
+                y: 3,
+                width: 2,
+                tooltip: "The goals tab is updated at the start of each day, by the way. Not that that really matters, given that days last about 8 seconds in this weird universe."
+            }),
+            [{
+                type: 'button',
+                name: 'back-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Back',
+                tooltip: 'The previous page was pretty good, wasn\'t it?',
+                onClick: function() {
+                    tutorial_3.close();
+                    tutorial_2();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Next Page',
+                tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_3.close();
+                    tutorial_4();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_3;
+}
+
+var tutorial_4 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_4 = ui.openWindow({
+        classification: 'tutorial-2',
+        title: "How to play!",
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel("The fourth tab is the chat tab. Here you can communicate with other players in the multworld! It also logs messages and unlocks from other players and the server.", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "Someday I'll also have the in-game multiplayer chat work as well, but that would first require getting in-game multiplayer to work, which is a shockingly difficult task."
+            }),
+            NewLabel("You can use the text input to run a select number of commands for the local world. These include some player-debugging tools, Archipelago settings, and so forth. To see the list, type in !!help", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "!!addSkip if you're a filthy cheater."
+            }),
+            NewLabel("", {
+                name: 'Line-3',
+                y: 3,
+                width: 2,
+                tooltip: ""
+            }),
+            [{
+                type: 'button',
+                name: 'back-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Back',
+                tooltip: 'The previous page was pretty good, wasn\'t it?',
+                onClick: function() {
+                    tutorial_4.close();
+                    tutorial_3();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Next Page',
+                tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_4.close();
+                    tutorial_5();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_4;
+}
+
+var tutorial_5 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_5 = ui.openWindow({
+        classification: 'tutorial-2',
+        title: "How to play!",
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel("The fifth tab is the hint tab. It tracks any hits received in the multiworld, most importantly, yours! This will be auto-populated if the visibility setting in the shop is “Visible”.", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "And it's worked every time without ever giving us a glitch! *Cries in developer"
+            }),
+            NewLabel("You can additionally filter by a particular player in this tab. To hint an item, you can use the native Archipelago command !hint {Item Name}", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "You can spam the chat by using !countdown"
+            }),
+            NewLabel("Here’s a few helpful items: “Allow High Construction”, “Allow Tree Removal”, “Allow Landscape Changes”", {
+                name: 'Line-3',
+                y: 3,
+                width: 2,
+                tooltip: "\"$5,000\" if you're feeling greedy."
+            }),
+            [{
+                type: 'button',
+                name: 'back-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Back',
+                tooltip: 'The previous page was pretty good, wasn\'t it?',
+                onClick: function() {
+                    tutorial_5.close();
+                    tutorial_4();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Next Page',
+                tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_5.close();
+                    tutorial_6();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_5;
+}
+
+var tutorial_6 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_6 = ui.openWindow({
+        classification: 'tutorial-2',
+        title: "How to play!",
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel("The sixth and final tab is EnergyLink Bank ATM Machine. This ATM Machine lets you send money to the multiworld for any game that supports EnergyLink.", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "Yes, I do realize \"ATM Machine\" is redundant. Yes, I do know it's annoying you. No, I will not fix it. It's funnier this way."
+            }),
+            NewLabel("These games include (But are not limited to) Pokémon Red/Blue, Factorio (The EnergyLink OG), Stardew Valley, and the OG MegaMan games.", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "Did you know, Red's dad left the family to become a Roller Coaster Tycoon?"
+            }),
+            NewLabel("The ATM Machine charges a 10% fee each way for depositing and withdrawing any funds in EnergyLink. Additionally, you must have at least "+ context.formatString("{CURRENCY2DP}", 100000) + " remaining at the end of any deposit as collateral.", {
+                name: 'Line-3',
+                y: 3,
+                width: 2,
+                tooltip: "You wouldn't believe how expensive the infrastructure to send money across the multiworld is!"
+            }),
+            [{
+                type: 'button',
+                name: 'back-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Back',
+                tooltip: 'The previous page was pretty good, wasn\'t it?',
+                onClick: function() {
+                    tutorial_6.close();
+                    tutorial_5();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Next Page',
+                tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_6.close();
+                    tutorial_7();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_6;
+}
+
+var tutorial_7 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_7 = ui.openWindow({
+        classification: 'tutorial-2',
+        title: "How to play!",
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel("Finally, a few extra notes. Deathlink is an optional rule that players may choose. Any time somebody dies with deathlink enabled; everybody dies. For you, that means a ride will crash.", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "Disable deathlink if you're a coward. Especially if somebody is playing VVVVVV"
+            }),
+            NewLabel("Conversely, if you crash a ride (Yes, even in testing mode), everybody will die. Deathlink has a 20 second cooldown. Fix your ride before it elapses!", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "There's a hidden second way to send a deathlink. Think you can find it?"
+            }),
+            NewLabel("If for some reason, you find an abundance of furries in your park, you can banish them by using the button in the bottom right of the unlock shop. “A Furry Problem? In MY Park?”", {
+                name: 'Line-3',
+                y: 3,
+                width: 2,
+                tooltip: "It's more likely than you think!"
+            }),
+            [{
+                type: 'button',
+                name: 'back-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Back',
+                tooltip: 'The previous page was pretty good, wasn\'t it?',
+                onClick: function() {
+                    tutorial_7.close();
+                    tutorial_6();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Next Page',
+                tooltip: '"Pro tip: Hover your mouse over any of the window elements in this plugin to get insightful and useful commentary!"',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_7.close();
+                    tutorial_8();
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_7;
+}
+
+var tutorial_8 = function() {
+    var ww = 350;
+    var wh = 225;
+    let y = 0;
+    var tutorial_8 = ui.openWindow({
+        classification: 'tutorial-2',
+        title: "How to play!",
+        width: ww,
+        height: wh,
+        widgets: [].concat(
+            NewLabel("In case a ride is too challenging/expensive/tedious to build, you have a limited number of skips to bypass the check. When selecting the world options, you could include more to be found.", {
+                name: 'Line-1',
+                y: 0,
+                width: 2,
+                tooltip: "Nothing is as satisfying as not having to build 10 monorails."
+            }),
+            NewLabel("Skips are found beneath to the Furry Banishment Button TM.", {
+                name: 'Line-2',
+                y: 1.5,
+                width: 2,
+                tooltip: "Skips is also found in a park in California, working with Mordecai and Rigby."
+            }),
+            NewLabel("Thanks for reading the tutorial! As a reward, here "+ context.formatString("{CURRENCY2DP}", 200) + ". Don’t spend it all in one place!", {
+                name: 'Line-3',
+                y: 3,
+                width: 2,
+                tooltip: "You can support me on Patreon at ... just kidding. I don't have a Patreon. I'm doing just fine as an Electrical Engineer."
+            }),
+            [{
+                type: 'button',
+                name: 'back-button',
+                x: ww - 160 - 88 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Back',
+                tooltip: 'The previous page was pretty good, wasn\'t it?',
+                onClick: function() {
+                    tutorial_8.close();
+                    tutorial_7();
+                }
+            },
+            {
+                type: 'button',
+                name: 'next-button',
+                x: ww - 160 - 6,
+                y: wh - 6 - 26 - 29,
+                width: 85,
+                height: 26,
+                text: 'Yay ' + context.formatString("{CURRENCY2DP}", 200) + "!",
+                tooltip: 'What do you mean that\'s not a lot of money?',
+                isDisabled: false,
+                onClick: function() {
+                    tutorial_8.close();
+                    park.cash += 200;
+                }
+            },
+            {
+                type: 'custom',
+                name: 'custom-archipealgo-logo-1',
+                x: 5,
+                y: wh - 24,
+                width: 22,
+                height: 20,
+                tooltip: 'Be sure to play with Deathlink! It\s a fun option that doesn\'t cause any stress at all!',
+                onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+            }
+            ]
+        )
+    })
+    return tutorial_8;
 }
 
 function createHintList(){
@@ -1504,59 +2051,66 @@ function interpretMessage(){
         return;
         trace("This is the message:");
         trace(message);
-        switch(message){
-            case '!!help':
-                archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.");
-                archipelago_print_message("!!toggleDeathLink: Enables/Disables Deathlink\n");
-                archipelago_print_message("!!setMaxSpeed x: Sets the maximum allowed speed.");
-                archipelago_print_message("!!sync: syncs all the items in case the connector is bad at its job.");
-                archipelago_print_message("!!addSkip: Cheats in a skip for the unlock shop. This is on the honor system.");
-                break;
-            case '!!toggleDeathLink':
-                archipelago_settings.death_link = !archipelago_settings.death_link;
-                if(archipelago_settings.death_link)
-                archipelago_print_message("Deathlink Enabled you monster");
-                else
-                archipelago_print_message("Deathlink Disabled you coward");
-                break;
-            case '!!setMaxSpeed 1'://Changes maximum speed allowed
-                archipelago_settings.maximum_speed = 1;
-                archipelago_print_message("Maximum speed reset to 1. We're off! Like a herd of turtles!")
-                break;
-            case '!!setMaxSpeed 2':
-                archipelago_settings.maximum_speed = 2;
-                archipelago_print_message("Maximum speed set to 2. Those guests sure are slow, ain't they?");
-                break;
-            case '!!setMaxSpeed 3':
-                archipelago_settings.maximum_speed = 3;
-                archipelago_print_message("Maximum speed set to 3. Zoom. Look at it go.");
-                break;
-            case '!!setMaxSpeed 4':
-                archipelago_settings.maximum_speed = 4;
-                archipelago_print_message("Maximum speed set to 4. Is this not fast enough for you yet?");
-                break;
-            case '!!setMaxSpeed 5':
-                archipelago_settings.maximum_speed = 8;
-                archipelago_print_message("Maximum speed set. You better pray you don't get a furry trap.");
-                break;
-            case '!!sync':
-                ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
-                archipelago_send_message("Sync");
-                break;
-            case '!!addSkip':
-                archipelago_settings.skips ++;
-                archipelago_print_message("It appears somebody set their difficulty too high. This is where your hubris brought you!");
-                break;
-            case '!!fixUnlockShop':
-                archipelago_print_message("Apologies from present Colby for past Colby being bad at programming.");
-                archipelago_send_message("LocationScouts");
-                break;
-            case 'Colby sucks'://Gotta do some error correction here.
+        if(message.charAt(0) === '!' && message.charAt(1) === '!'){
+            message = message.toLocaleLowerCase();
+            switch(message){
+                case '!!help':
+                    archipelago_print_message("!!help: Prints this menu. I bet you didn't know that.");
+                    archipelago_print_message("!!toggleDeathLink: Enables/Disables Deathlink\n");
+                    archipelago_print_message("!!setMaxSpeed x: Sets the maximum allowed speed.");
+                    archipelago_print_message("!!sync: syncs all the items in case the connector is bad at its job.");
+                    archipelago_print_message("!!addSkip: Cheats in a skip for the unlock shop. This is on the honor system.");
+                    break;
+                case '!!toggledeathlink':
+                    archipelago_settings.death_link = !archipelago_settings.death_link;
+                    if(archipelago_settings.death_link)
+                    archipelago_print_message("Deathlink Enabled you monster");
+                    else
+                    archipelago_print_message("Deathlink Disabled you coward");
+                    break;
+                case '!!setmaxspeed 1'://Changes maximum speed allowed
+                    archipelago_settings.maximum_speed = 1;
+                    archipelago_print_message("Maximum speed reset to 1. We're off! Like a herd of turtles!")
+                    break;
+                case '!!setmaxspeed 2':
+                    archipelago_settings.maximum_speed = 2;
+                    archipelago_print_message("Maximum speed set to 2. Those guests sure are slow, ain't they?");
+                    break;
+                case '!!setmaxspeed 3':
+                    archipelago_settings.maximum_speed = 3;
+                    archipelago_print_message("Maximum speed set to 3. Zoom. Look at it go.");
+                    break;
+                case '!!setmaxspeed 4':
+                    archipelago_settings.maximum_speed = 4;
+                    archipelago_print_message("Maximum speed set to 4. Is this not fast enough for you yet?");
+                    break;
+                case '!!setmaxspeed 5':
+                    archipelago_settings.maximum_speed = 8;
+                    archipelago_print_message("Maximum speed set. You better pray you don't get a furry trap.");
+                    break;
+                case '!!sync':
+                    ArchipelagoSaveLocations(context.getParkStorage().get('RCTRando.ArchipelagoLockedLocations'),context.getParkStorage().get('RCTRando.ArchipelagoUnlockedLocations'));
+                    archipelago_send_message("Sync");
+                    break;
+                case '!!addskip':
+                    archipelago_settings.skips ++;
+                    archipelago_print_message("It appears somebody set their difficulty too high. This is where your hubris brought you!");
+                    break;
+                case '!!fixunlockshop':
+                    archipelago_print_message("Apologies from present Colby for past Colby being bad at programming.");
+                    archipelago_send_message("LocationScouts");
+                    break;
+                default:
+                    archipelago_print_message("Unknown command: try using !!help");
+                    break;
+            }
+        }
+        else {
+            if(message == "Colby sucks"){ //Gotta do some error correction here.
                 archipelago_send_message("Say","Colby is awesome!");
-                break;
-            default:
-                archipelago_send_message("Say", message);
-                break;
+                return;
+            }
+            archipelago_send_message("Say", message);
         }
         currentWindow.findWidget<TextBoxWidget>("chatbox").text = '';
     }

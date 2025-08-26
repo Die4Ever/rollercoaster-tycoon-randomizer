@@ -86,7 +86,7 @@ function archipelago_select_message(type: string, message?: any){
         connection.send({cmd: "Get", keys: []});
         break;
     case "Set":
-
+        connection.send({cmd: "Set", key: message.key, tag: message.tag, default: message.default, want_reply: message.want_reply, operations: message.operations})
         break;
     case "SetNotify":
         break;
@@ -116,7 +116,13 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     trace("Here's our players:");
                     trace(archipelagoPlayers);
                     context.getParkStorage().set("RCTRando.ArchipelagoPlayers",archipelagoPlayers);
-                    Archipelago.SetNames();
+                    try{
+                        context.registerAction('SetNames', (args) => {return {};}, (args) => Archipelago.SetNames());
+                    }
+                    catch(e){
+                        console.log("Error in registering SetNames:" + e)
+                    }
+                    context.executeAction("SetNames", {});
                     archipelago_settings.player = archipelagoPlayers[data.slot - 1];
                 }
                 context.getParkStorage().set("RCTRando.ArchipelagoHintPoints",data.hint_points);
@@ -129,14 +135,191 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 trace("Here's the games in the multiworld:");
                 trace(archipelago_settings.multiworld_games);
 
-                if(!archipelago_init_received)
-                Archipelago.SetImportedSettings(data.slot_data);
+                if(!archipelago_init_received){
+                    try{
+                        context.registerAction('SetImportedSettings', (args) => {return {};}, (args) => Archipelago.SetImportedSettings(args));
+                    }
+                    catch(e){
+                        console.log("Error in registering SetImportedSettings:" + e)
+                    }
+                    context.executeAction("SetImportedSettings", data.slot_data);
+                    // Archipelago.SetImportedSettings(data.slot_data);
+                }
+                
             }
-
+            else {//Verify we're connected to the right save
+                if(data.slot_data.seed != archipelago_settings.seed){
+                    if(archipelago_settings.seed != "Bypass"){
+                        connection.destroy();
+                        connection = null;
+                        var bad_save_warning = ui.openWindow({
+                            classification: 'bad_save_warning',
+                            title: "WARNING",
+                            width: 500,
+                            height: 300,
+                            widgets: [].concat(
+                                {
+                                    type: 'label',   
+                                    name: 'warning-label-1',
+                                    text: "{RED}WARNING: This save does not match with the server! Continuing may cause", 
+                                    x: 50,
+                                    y: 40,
+                                    width: 400,
+                                    height: 260,
+                                    textAlign: "centred",
+                                    tooltip: "No more worlds will be ruined at the hands of an illegitimate save. Man, I'm a hero!"
+                                },{
+                                    type: 'label',   
+                                    name: 'warning-label-2',
+                                    text: "{RED}unwanted changes to your game! If you're sure you want to continue,", 
+                                    x: 50,
+                                    y: 60,
+                                    width: 400,
+                                    textAlign: "centred",
+                                    height: 260,
+                                    tooltip: "No more worlds will be ruined at the hands of an illegitimate save. Man, I'm a hero!"
+                                },
+                                {
+                                    type: 'label',   
+                                    name: 'warning-label-3',
+                                    text: "{RED}select the correct box and reconnect to the server.", 
+                                    x: 50,
+                                    y: 80,
+                                    width: 400,
+                                    height: 260,
+                                    textAlign: "centred",
+                                    tooltip: "No more worlds will be ruined at the hands of an illegitimate save. Man, I'm a hero!"
+                                },
+                                {
+                                    type: 'button',
+                                    name: 'confirm-button',
+                                    x: 50,
+                                    y: 150,
+                                    width: 200,
+                                    height: 100,
+                                    text: 'I Understand and Wish to Continue',
+                                    tooltip: 'You\'ve been warned.',
+                                    onClick: function() {
+                                        bad_save_warning.close();
+                                        archipelago_settings.seed = "Bypass";
+                                        saveArchipelagoProgress();
+                                        init_archipelago_connection();
+                                        ui.showError("", "I'd reccomend disconnecting and reconnecting the client at this time, just in case.");
+                                    }
+                                },
+                                {
+                                    type: 'button',
+                                    name: 'load-button',
+                                    x: 250,
+                                    y: 150,
+                                    width: 200,
+                                    height: 100,
+                                    text: 'Load a Different Save',
+                                    tooltip: ('Be sure to select the correct one this time! Maybe this will help!   ' + data.slot_data.seed),
+                                    isDisabled: false,
+                                    onClick: function() {
+                                        context.executeAction("loadorquit", {mode:0, savePromptMode: 1});
+                                    }
+                                },
+                                {
+                                    type: 'custom',
+                                    name: 'custom-archipealgo-logo-1',
+                                    x: 5,
+                                    y: 275,
+                                    width: 22,
+                                    height: 20,
+                                    tooltip: 'This tooltip comes from past Colby, typing in Antarctica. Will this ever be finished, or will I spend eternity fixing bugs and adding features?',
+                                    onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                                }
+                            )
+                        })
+                        return bad_save_warning;
+                    }
+                }
+            }
             // If the user has already made progress on this game, reflect that in the unlock shop
             context.setTimeout(() => {archipelago_update_locations(data.checked_locations)}, 2000);
 
             archipelago_connected_to_server = true;
+
+            if(data.slot_data.version != archipelago_version){
+                var bad_version_warning = ui.openWindow({
+                    classification: 'bad_version_warning',
+                    title: "WARNING",
+                    width: 500,
+                    height: 300,
+                    widgets: [].concat(
+                        {
+                            type: 'label',   
+                            name: 'warning-label-1',
+                            text: "{RED}WARNING: The version of this plugin does not match the version used to generate", 
+                            x: 25,
+                            y: 40,
+                            width: 450,
+                            height: 20,
+                            textAlign: "centred",
+                            tooltip: "No more worlds will be ruined at the hands of an incorrect version. Man, I'm a hero!"
+                        },{
+                            type: 'label',   
+                            name: 'warning-label-2',
+                            text: "{RED}this world! Continuing may cause glitches and lead to an unwinnable scenario!", 
+                            x: 25,
+                            y: 60,
+                            width: 450,
+                            textAlign: "centred",
+                            height: 20,
+                            tooltip: "You know how version numbers work, right?"
+                        },
+                        {
+                            type: 'label',   
+                            name: 'warning-label-3',
+                            text: "The version used to generate this world was: " + String(data.slot_data.version) + ".", 
+                            x: 25,
+                            y: 80,
+                            width: 450,
+                            height: 20,
+                            textAlign: "centred",
+                            tooltip: "When the leftmost number increases, the developer is very proud!"
+                        },
+                        {
+                            type: 'label',   
+                            name: 'warning-label-4',
+                            text: "The plugins version is: " + String(archipelago_version) + ".", 
+                            x: 25,
+                            y: 100,
+                            width: 450,
+                            height: 20,
+                            textAlign: "centred",
+                            tooltip: "When the rightmost number increases, the developer is ashamed."
+                        },
+                        {
+                            type: 'button',
+                            name: 'confirm-button',
+                            x: 50,
+                            y: 150,
+                            width: 400,
+                            height: 100,
+                            text: 'I Understand and Wish to Continue',
+                            tooltip: 'You\'ve been warned.',
+                            onClick: function() {
+                                bad_version_warning.close();
+                            }
+                        },
+                        {
+                            type: 'custom',
+                            name: 'custom-archipealgo-logo-1',
+                            x: 5,
+                            y: 275,
+                            width: 22,
+                            height: 20,
+                            tooltip: 'It\'s crazy how long it took me to add this, given how many "glitches" could have been prevented when testing.',
+                            onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
+                        }
+                    )
+                })
+                // return bad_version_warning;
+            }
+
             break;
 
         case "ConnectionRefused"://Packet stating an error has occured in connecting to the Archipelago game
@@ -195,33 +378,6 @@ function ac_req(data) {//This is what we do when we receive a data packet
                                     segment = context.getParkStorage().get("RCTRando.ArchipelagoLocationIDToName")[Number(data.data[i].text)];
                                     color = "GREEN";
                                     break;
-
-                                // Once upon a time, the client sent a different datapacket.
-                                // case "black":
-                                //     color = "BLACK";
-                                //     break;
-                                // case "red":
-                                //     color = "RED"
-                                //     break;
-                                // case "green":
-                                //     color = "GREEN"
-                                //     break;
-                                // case "yellow":
-                                //     color = "YELLOW";
-                                //     break;
-                                // case "blue":
-                                // case "cyan":
-                                // case "slateblue":
-                                //     color = "BABYBLUE";
-                                //     break;
-                                // case "magenta":
-                                // case "plum":
-                                //     color = "PALELAVENDER";
-                                //     segment = context.getParkStorage().get("RCTRando.ArchipelagoPlayers")[Number(data.data[i].text)-1]
-                                //     break;
-                                // case "white":
-                                //     color = "WHITE";
-                                //     break;
                             }
                             message += '{' + color + '}' + segment + '{WHITE}';
                         }
@@ -234,7 +390,6 @@ function ac_req(data) {//This is what we do when we receive a data packet
                     break;
 
                 case "ItemCheat":
-                    // var cheatMessage = "Colby will write out code to figure out how cheats work when he gets the proxy client";
                     archipelago_print_message(data.data[0].text);
                     break;
 
@@ -348,7 +503,8 @@ function ac_req(data) {//This is what we do when we receive a data packet
                                 "{RED}If it makes you feel better, at least it's " + player_color + "{RED}'s fault and not yours.", player_color + " {RED}is an airsick lowlander!",
                                 player_color + "{RED} missed 100% of the shots they didn't take.", "{RED}It was " + player_color + "{RED}'s controller, I swear!",
                                 player_color + "{RED} was not the imposter.", player_color + "{RED} rolled a natural 1.",
-                                player_color + "{RED} should not have tried stealing the kings flocks from Ammon!", player_color + "{RED} started a land war in Asia!"];
+                                player_color + "{RED} should not have tried stealing the kings flocks from Ammon!", player_color + "{RED} started a land war in Asia!",
+                                player_color + "{RED} was burninated by Trogdor!"];
                             var death_message = message_choice[Math.floor(Math.random() * message_choice.length)];
                             archipelago_print_message(death_message);
                         }
@@ -364,6 +520,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
             break;
 
         case "ReceivedItems":
+            trace("This Far?");
             if (archipelago_settings.started){//We don't want to apply all the previously received items before we start the game.
                 Archipelago.ReceiveArchipelagoItem(data.items, data.index);
             }
@@ -378,7 +535,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
 
                 if(ready){
                     for(let i = 0; i < data.locations.length; i++){
-                        archipelago_locked_locations.push({LocationID: i, Item: data.locations[i][0], ReceivingPlayer: players[data.locations[i][2] - 1][0]})
+                        archipelago_locked_locations.push({LocationID: i, Item: data.locations[i][0], ReceivingPlayer: players[data.locations[i][2] - 1][0], Flags: data.locations[i][3]})
                     }
                     ArchipelagoSaveLocations(archipelago_locked_locations,[]);
                 }
@@ -389,8 +546,9 @@ function ac_req(data) {//This is what we do when we receive a data packet
 
             }
             break;
-        case "SetReply"://Handles hints
+        case "SetReply"://Handles hints and energylink
             const hint_pattern: RegExp = /^_read_hints_/;
+            const receipt_pattern: RegExp = /^EnergyLink/;            
             if(hint_pattern.test(data.key)){
                 trace(context.getParkStorage().get("RCTRando.ArchipelagoPlayers") as playerTuple[]);
                 for(let i = 0; i < data.value.length; i++){
@@ -419,6 +577,9 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 }
                 saveArchipelagoProgress();
             }
+            else if (receipt_pattern.test(data.key)){
+                Archipelago.BankReceipt(data.original_value, data.value, data.tag);
+            }
             break;
 
         case "Ping":
@@ -434,7 +595,7 @@ function ac_req(data) {//This is what we do when we receive a data packet
                 connection.send(data, false);
             break;
     }
-    return;
+    return null;
 }
 
 function errorCallback() {
@@ -448,14 +609,14 @@ function errorCallback() {
     catch{
         trace("Looks like the Archipelago window isn't open.");
     }
-    try {
-        var window:Window = ui.getWindow("archipelago-locations");
-        window.findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
-        trace(archipelago_connected_to_server);
-    }
-    catch{
-        trace("Looks like the Archipelago Shop isn't open");
-    }
+    // try {
+    //     var window:Window = ui.getWindow("archipelago-locations");
+    //     window.findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is {RED}not{WHITE} connected to the game!";
+    //     trace(archipelago_connected_to_server);
+    // }
+    // catch{
+    //     trace("Looks like the Archipelago Shop isn't open");
+    // }
 }
 
 function connectCallback() {
@@ -471,13 +632,13 @@ function connectCallback() {
     catch {
         trace("Looks like the setup window isn't open.")
     }
-    try{
-        if(ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
-        ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the game!";
-    }
-    catch{
-        trace("Looks like the unlock shop isn't open.");
-    }
+    // try{
+    //     if(ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server"))
+    //     ui.getWindow("archipelago-locations").findWidget<LabelWidget>("label-Connected-to-server").text = "The Archipelago Client is connected to the game!";
+    // }
+    // catch{
+    //     trace("Looks like the unlock shop isn't open.");
+    // }
 }
 
 var connection = null;
@@ -486,7 +647,7 @@ function init_archipelago_connection() {
     connection = new APIConnection("Archipelago", 38280, ac_req, errorCallback, connectCallback);
 }
 
-function archipelago_print_message(message: string) {
+function archipelago_print_message(message: string) {//Prints the message in whatever places the user selects
     var messageLog = context.getParkStorage().get("RCTRando.MessageLog") as Array<any>;
     if(messageLog)
     messageLog.push(message);
@@ -499,8 +660,8 @@ function archipelago_print_message(message: string) {
         lockedWindow.findWidget<ListViewWidget>("message-list").items = messageLog;
     }
     if(archipelago_settings.park_message_chat){
-        park.postMessage(
-            {type: 'blank', text: message} as ParkMessageDesc
+        context.executeAction("postMessage",
+            {message: {type: 'blank', text: message} as ParkMessageDesc}
         );
     }
     if(archipelago_settings.network_chat){
