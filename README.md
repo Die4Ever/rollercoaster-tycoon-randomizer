@@ -1,5 +1,5 @@
 # RollerCoaster Tycoon Randomizer
-RollerCoaster Tycoon Randomizer mod for RCT1 and RCT2 inside of [OpenRCT2](https://openrct2.io/).
+RollerCoaster Tycoon Randomizer mod for RCT1 and RCT2.
 
 You'll need the latest version of OpenRCT2 from https://openrct2.io/download
 

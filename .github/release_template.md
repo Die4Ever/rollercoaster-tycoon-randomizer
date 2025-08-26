@@ -1,6 +1,6 @@
 [//]: # "find+replace VERSION)</details></details>VERSION with the version, example: v0.8"
 
-RollerCoaster Tycoon Randomizer mod for RCT1 and RCT2 inside of [OpenRCT2](https://openrct2.io/).
+RollerCoaster Tycoon Randomizer mod for RCT1 and RCT2.
 
 You'll need OpenRCT2 v0.4.25 or later from https://openrct2.io/download
 
