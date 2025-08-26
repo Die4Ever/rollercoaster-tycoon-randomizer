@@ -1,15 +1,15 @@
 [//]: # "find+replace VERSION)</details></details>VERSION with the version, example: v0.8"
 
-RollerCoaster Tycoon Randomizer mod for RCT1 and RCT2 inside of [OpenRCT2](https://openrct2.org/).
+RollerCoaster Tycoon Randomizer mod for RCT1 and RCT2 inside of [OpenRCT2](https://openrct2.io/).
 
-You'll need OpenRCT2 v0.4.5 or later from https://openrct2.org/downloads/releases/latest
+You'll need OpenRCT2 v0.4.25 or later from https://openrct2.io/download
 
-Copy [the `rctrando.js` file](https://github.com/Die4Ever/rollercoaster-tycoon-randomizer/releases/download/VERSION)</details></details>VERSION/rctrando.js) into the OpenRCT2 plugin folder, which is usually `%USERPROFILE%\Documents\OpenRCT2\plugin\`
+Download [the `rctrando.js` file](https://github.com/Die4Ever/rollercoaster-tycoon-randomizer/releases/download/VERSION)</details></details>VERSION/rctrando.js) into the OpenRCT2 plugin folder, which is usually `%USERPROFILE%\Documents\OpenRCT2\plugin\`
 
 View [the full README here](https://github.com/Die4Ever/rollercoaster-tycoon-randomizer#readme).
 
 ## VERSION)</details></details>VERSION Changes
 
-*
+-
 
-Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR), or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM), or [on Mastodon @Die4ever@mastodon.gamedev.place](https://mastodon.gamedev.place/@Die4ever).
+Join the [Discord discussion here](https://discord.gg/jjfKT9nYDR), or follow me [on Mastodon @Die4ever@mastodon.gamedev.place](https://mastodon.gamedev.place/@Die4ever) or [on BlueSky](https://bsky.app/profile/die4ever.mastodon.gamedev.place.ap.brid.gy).
