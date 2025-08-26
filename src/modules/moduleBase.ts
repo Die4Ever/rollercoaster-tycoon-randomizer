@@ -5,7 +5,7 @@ abstract class ModuleBase {
 
     constructor() {
         this.subscriptions = [];
-        this.settings = {enabled:true, changes:{}};
+        this.settings = {enabled:true, changes:{}, rando_range: settings.rando_range};
     }
 
     LoadSettings() {
@@ -54,7 +54,7 @@ abstract class ModuleBase {
         if(!obj[name]) return;
 
         const old = obj[name];
-        let newVal = randomize(obj[name], difficulty);
+        let newVal = randomize(obj[name], difficulty, this.settings.rando_range);
         if(old != newVal) {
             obj[name] = newVal;
             this.AddChange(name, name, old, obj[name]);

@@ -134,7 +134,7 @@ class RCTRRideTypes extends ModuleBase {
     }
 
     GetRideTypeFieldMult(difficulty, wetdry=1) {
-        let factor = randomize(1, difficulty);
+        let factor = randomize(1, difficulty, this.settings.rando_range);
         const dry = 1 - wetdry;
         factor = (factor * wetdry) + (1 * dry);
         return factor;

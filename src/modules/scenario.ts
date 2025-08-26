@@ -38,7 +38,7 @@ class RCTRScenario extends ModuleBase {
         const old = scenario.objective[name];
         let newVal = old;
         if(settings.rando_goals) {
-            newVal = randomize(old, difficulty) * (scenarioLength ** scenarioLengthExp);
+            newVal = randomize(old, difficulty, this.settings.rando_range) * (scenarioLength ** scenarioLengthExp);
         } else {
             newVal *= (scenarioLength ** scenarioLengthExp);
         }

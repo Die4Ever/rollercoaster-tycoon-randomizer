@@ -25,7 +25,7 @@ function test_difficulty(goal, d) {
     let lows = 0;
     total = 0;
     for(var i=0; i<num; i++) {
-        let v = randomize(1, d);
+        let v = randomize(1, d, settings.rando_range);
         min = Math.min(min, v);
         max = Math.max(max, v);
         if(v > 1) highs++;

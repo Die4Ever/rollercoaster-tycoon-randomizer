@@ -26,6 +26,9 @@ function startGameGui() {
         settings.difficulty = difficulties[d['text']];
         var r = window.findWidget('range');
         settings.rando_range = randoRanges[r['text']];
+        for(const module of modules) {
+            module.settings.rando_range = settings.rando_range; // TODO: better way to do per-module settings
+        }
         var l = window.findWidget('length');
         settings.scenarioLength = scenarioLengths[l['text']];
         settings.rando_ride_types = (window.findWidget('rando-ride-types') as CheckboxWidget).isChecked;
@@ -78,7 +81,7 @@ function startGameGui() {
                 y: y++,
                 items: Object.keys(randoRanges),
                 selectedIndex: GetSelectedIndex(randoRanges, settings.rando_range),
-                tooltip: 'The range/spread of randomized values.'
+                tooltip: 'The range/spread of randomized values. Affects ride stats and park values, which can be disabled individually with the checkboxes below.'
             }),
             NewDropdown('Scenario Length:', {
                 name: 'length',

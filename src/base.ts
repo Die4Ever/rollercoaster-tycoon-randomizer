@@ -17,7 +17,8 @@ function rng(min:number, max:number) {
 
 function rngf()
 {// 0 to 1.0
-    return rng(0, 1000000)/1000000;
+    // divide by 1 less than 0xFFFFFF, so that it's never the max and we don't have to worry about rounding
+    return rng(0, 0xFFFFFF)/0xFFFFFE;
 }
 
 function rngfn()
@@ -40,10 +41,8 @@ function rngexp(origmin:number, origmax:number, curve:number)
 }
 
 // boolean
-function rng_bool() {
-    // next seed
-    rng(0,1);
-    return (tseed >>> 15) & 1;
+function rng_bool(): boolean {
+    return rng(0, 100) < 50;
 }
 
 function clamp(number, min, max) {
@@ -83,10 +82,10 @@ function setLocalSeed(name) {
     setSeed(globalseed + crc32(name));
 }
 
-function randomize(value, difficulty) {
+function randomize(value, difficulty, range) {
     // difficulty > 0 means larger numbers increase difficulty, < 0 means decreases difficulty
     var min = 100.0;
-    var max = settings.rando_range * 100.0;
+    var max = range * 100.0;
     var ret = rng(min, max) / 100.0;
     if(rng_bool())
         ret = 1 / ret;
@@ -97,9 +96,9 @@ function randomize(value, difficulty) {
 }
 
 function shuffle(items:Array<any>) {
-    for(let i=0; i<items.length; i++) {
+    for(let i=items.length-1; i>=0; i--) {
         let a = items[i];
-        let slot = rng(0, items.length - 1);
+        let slot = rng(0, i + 1);
         items[i] = items[slot];
         items[slot] = a;
     }
@@ -133,7 +132,7 @@ function crc32(str) {
 function DeepCopy(o) {
     return JSON.parse(JSON.stringify(o));
 }
-// var action_counter = 0;
+
 // game state can't be modified outside of synchronized functions, and tick is one of them
 function runNextTick(func) {
     let sub = context.subscribe('interval.tick', function(args) {
