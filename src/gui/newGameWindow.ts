@@ -126,7 +126,7 @@ function startGameGui() {
                     window.close();
                 }
             },
-            {
+            /*{
                 type: 'button',
                 name: 'archipelago-button',
                 x: ww - 90 - 63,
@@ -161,7 +161,8 @@ function startGameGui() {
                 height: 20,
                 tooltip: 'Ever wanted to see Zelda, Hollow Knight, Mario, and OpenRCT2 all mix together?',
                 onDraw: (g: GraphicsContext) => {g.colour = 0;g.image(g.getImage(archipelago_icon_ID.start).id, 0,0)}
-            }]
+            }*/
+            ]
         ),
         onClose: function() {
             try {
